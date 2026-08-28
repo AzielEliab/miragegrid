@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "miragegrid"
+version = "0.1.0"
+description = "Distributed identity abstraction for AZ-OS: 25 logical nodes, cryptographic session assignment, internal receipts (MirageGrid 1.0). Not an anonymity network, VPN, or proxy mesh."
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [{name = "Aziel Eliab"}]
+requires-python = ">=3.10"
+keywords = [
+    "identity",
+    "session",
+    "receipts",
+    "az-os",
+    "miragegrid",
+    "logical-nodes",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Intended Audience :: Developers",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4"]
+
+[project.scripts]
+miragegrid = "miragegrid.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/AzielEliab/miragegrid"
+Download = "https://github.com/AzielEliab/miragegrid/releases"
+Issues = "https://github.com/AzielEliab/miragegrid/issues"
+
+[tool.setuptools.packages.find]
+include = ["miragegrid*"]
+
+[tool.setuptools.package-data]
+miragegrid = ["templates/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
