@@ -32,7 +32,8 @@ def _build_parser() -> argparse.ArgumentParser:
         description=(
             "MirageGrid — distributed identity abstraction for AZ-OS "
             "(Aziel Eliab, 2026). Assignment + receipt engine. "
-            "Not an anonymity network, VPN, or proxy mesh."
+            "Not an anonymity network, VPN, proxy mesh, or Tor tether. "
+            "Local UI: `miragegrid ui` at http://127.0.0.1:8080 (loopback only)."
         ),
     )
     sub = parser.add_subparsers(dest="cmd", required=True)

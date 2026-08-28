@@ -18,6 +18,19 @@ How to contribute: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 **Forks are welcome and always allowed.**
 
+## Quick start
+
+```bash
+python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
+miragegrid ui
+```
+
+Open http://127.0.0.1:8080 (loopback only). No CDN, no telemetry. **Not a VPN, proxy mesh, Zoom tether, or Tor hop.** Logical node ids only.
+
+Counted download: [https://miragegrid-download-tracker.vibelock.workers.dev/](https://miragegrid-download-tracker.vibelock.workers.dev/)
+
+
+
 ---
 
 ## This repo is not an anonymity network
@@ -83,6 +96,22 @@ Query params: `owner`, `repo` (`owner/repo` is accepted), `branch`,
 The next session gets an independent selection.
 
 Localhost UI: `miragegrid ui` (alias `serve`) binds **127.0.0.1 only**.
+
+
+## iPhone & Android
+
+Flutter sources: [`mobile/`](mobile/). Application id `com.azieeliab.miragegrid`. Offline. No analytics. Dark matte / gold.
+
+Assign a logical node 1–25 and mint a receipt. Labels only. Never a VPN, proxy, or Tor.
+
+```bash
+cd mobile
+flutter create --org com.azieeliab --project-name miragegrid .
+flutter pub get
+flutter run
+```
+
+The `android/` and `ios/` folders in this tree are skeleton READMEs until you run `flutter create .` (this machine has no Flutter SDK on PATH). Then open `android/` in Android Studio or `ios/Runner.xcworkspace` in Xcode. Not a store listing.
 
 ## Install
 
@@ -151,6 +180,7 @@ docs/whitepaper.md     1.0 conceptual architecture (sections 1–11)
 examples/              assign a session
 workers/download-tracker/   Cloudflare Worker + wrangler.toml (undeployed)
 CONTRIBUTING.md        forks first-class; no real tunnels/IP hiding PRs
+mobile/              Flutter iPhone + Android (`flutter create .`)
 ```
 
 ## License

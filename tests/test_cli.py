@@ -61,3 +61,13 @@ def test_cli_verify_receipt(tmp_path: Path, capsys) -> None:
     assert rc == 1
     payload = json.loads(capsys.readouterr().out)
     assert payload["integrity"] == "FAIL"
+
+
+def test_help_lists_ui_and_version() -> None:
+    from miragegrid.cli import _build_parser
+
+    text = _build_parser().format_help()
+    assert "ui" in text
+    assert "version" in text
+    assert "127.0.0.1:8080" in text or "miragegrid ui" in text
+    assert "VPN" in text or "anonymity" in text.lower() or "loopback" in text.lower()
