@@ -183,6 +183,26 @@ CONTRIBUTING.md        forks first-class; no real tunnels/IP hiding PRs
 mobile/              Flutter iPhone + Android (`flutter create .`)
 ```
 
+## Use with Grok, ChatGPT, Venice
+
+Live HTTPS runtime on the existing download-tracker Worker. **Logical 25-node labels only. Not a VPN, proxy, or Tor. Never hide IPs.**
+
+OpenAPI (ChatGPT GPT Actions / Venice custom HTTP / Grok custom tool):
+
+```
+https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json
+```
+
+Setup notes: [https://miragegrid-download-tracker.vibelock.workers.dev/ai](https://miragegrid-download-tracker.vibelock.workers.dev/ai)
+
+MCP catalog (ships separately): `https://aziel-runtime.vibelock.workers.dev/mcp`
+
+```bash
+curl -sS -X POST https://miragegrid-download-tracker.vibelock.workers.dev/v1/assign \
+  -H "content-type: application/json" \
+  -d '{}'
+```
+
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE).
