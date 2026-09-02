@@ -4,11 +4,13 @@
  * /v1 never touches DOWNLOADS KV.
  */
 const PRODUCT = "miragegrid";
+const EXAMPLE_PAYLOAD = {};
+
 const VERSION = "0.1.0";
 const MOTTO = "You enter the booth. The system selects a booth. The call is attributed to that booth. You leave with no persistent booth identity.";
 const BANNER = "Not a VPN, proxy, or Tor. Logical 25-node labels only. Never hide IPs. This API never connects, tunnels, or hops addresses.";
 const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
-const SKILL = "---\nname: MirageGrid\ndescription: Use when assigning a logical booth/node id from a static 25-node pool. Never claim VPN, Tor, or IP hiding. Hosted /v1 via this Worker or aziel-runtime. Author Aziel Eliab.\n---\n\n# MirageGrid\n\nYou enter the booth. The system selects a booth. The call is attributed to that booth. You leave with no persistent booth identity.\n\nAuthor: **Aziel Eliab**.\n\nUse when assigning a logical booth/node id from a static 25-node pool. Never claim VPN, Tor, or IP hiding.\n\nAlways send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 an empty agent.\n\n## Endpoints (this Worker)\n\nHost: `https://miragegrid-download-tracker.vibelock.workers.dev`\n\n| Method | Path | What |\n|--------|------|------|\n| GET | `/v1/health` | Liveness. Does not increment downloads. |\n| GET | `/v1/skill` | This markdown. Does not increment downloads. |\n| GET | `/v1/nodes` | List the 25 logical node ids. |\n| POST | `/v1/assign` | Assign a session booth. Mapping is not persisted as identity. |\n| POST | `/v1/verify-receipt` | Verify an internal receipt. |\n\nOpenAPI: `https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json`\n\nCatalog OpenAPI: `https://aziel-runtime.vibelock.workers.dev/openapi.json`\n\nMCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`\n\nCatalog aliases under `/p/miragegrid/\u2026`.\n\n## How to call (Mozilla/5.0)\n\n```bash\ncurl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/health\ncurl -s -A 'Mozilla/5.0' -X POST https://miragegrid-download-tracker.vibelock.workers.dev/v1/assign \\\n  -H 'content-type: application/json' -d '{}'\ncurl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill\n```\n\nGrok: import the catalog OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.\n\n## Local (after one-click install)\n\n```bash\ncurl -fsSL https://miragegrid-download-tracker.vibelock.workers.dev/install.sh | bash\nmiragegrid ui\n```\n\nThen open http://127.0.0.1:8080 (this computer only).\n\n## Honest banner\n\nTHIS IS: a static pool of 25 named logical nodes. THIS IS NOT: a VPN, proxy mesh, Zoom tether, Tor hop, or IP hider. Logical node ids only. Author Aziel Eliab.\n\nApache-2.0 (or the repo LICENSE). Forks are welcome and always allowed.\n";
+const SKILL = "---\nname: MirageGrid\ndescription: Use when assigning a logical booth/node id from a static 25-node pool. Never claim VPN, Tor, or IP hiding. Hosted /v1 via this Worker or aziel-runtime. Author Aziel Eliab.\n---\n\n# MirageGrid\n\nYou enter the booth. The system selects a booth. The call is attributed to that booth. You leave with no persistent booth identity.\n\nAuthor: **Aziel Eliab**.\n\nUse when assigning a logical booth/node id from a static 25-node pool. Never claim VPN, Tor, or IP hiding.\n\nAlways send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 an empty agent.\n\n## Endpoints (this Worker)\n\nHost: `https://miragegrid-download-tracker.vibelock.workers.dev`\n\n| Method | Path | What |\n|--------|------|------|\n| GET | `/v1/health` | Liveness. Does not increment downloads. |\n| GET | `/v1/skill` | This markdown. Does not increment downloads. |\n| GET | `/v1/nodes` | List the 25 logical node ids. |\n| POST | `/v1/assign` | Assign a session booth. Mapping is not persisted as identity. |\n| POST | `/v1/verify-receipt` | Verify an internal receipt. |\n\nOpenAPI: `https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json`\n\nCatalog OpenAPI: `https://aziel-runtime.vibelock.workers.dev/openapi.json`\n\nMCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`\n\nCatalog aliases under `/p/miragegrid/\u2026`.\n\n## How to call (Mozilla/5.0)\n\n```bash\ncurl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/health\ncurl -s -A 'Mozilla/5.0' -X POST https://miragegrid-download-tracker.vibelock.workers.dev/v1/assign \\\n  -H 'content-type: application/json' -d '{}'\ncurl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill\n```\n\nGrok: import the catalog OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.\n\n## Local (after one-click install)\n\n```bash\ncurl -fsSL https://miragegrid-download-tracker.vibelock.workers.dev/install.sh | bash\nmiragegrid ui\n```\n\nThen open http://127.0.0.1:8080 (this computer only).\n\n## Honest banner\n\nTHIS IS: a static pool of 25 named logical nodes. THIS IS NOT: a VPN, proxy mesh, Zoom tether, Tor hop, or IP hider. Logical node ids only. Author Aziel Eliab.\n\nApache-2.0 (or the repo LICENSE). Forks are welcome and always allowed.\n\n## Catalog + local UI\n\nAuthor: **Aziel Eliab**. Honest scope: Ephemeral session node assignment. Not a VPN and not an anonymity network.\n\n- Catalog product: https://aziel-runtime.vibelock.workers.dev/p/miragegrid/\n- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json\n- Catalog MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`\n- This Worker skill: `GET https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill`\n- This Worker OpenAPI: https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json\n- Sample payload: `GET https://miragegrid-download-tracker.vibelock.workers.dev/v1/example`\n\nLocal UI: **Import JSON file** (`type=file`) and **Export JSON**. Then `miragegrid doctor`.\n\nGrok: import catalog or Worker OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.\n";
 
 const POOL_SIZE = 25;
 
@@ -195,6 +197,7 @@ function openapiSpec() {
     servers: [{ url: HOST }],
     paths: {
       
+            "/v1/example": { get: { operationId: "miragegridExample", summary: "Sample JSON payload. Does not increment downloads.", responses: { "200": { description: "OK" } } } },
       "/v1/skill": {
         get: {
           operationId: "miragegrid_skill",
@@ -266,8 +269,18 @@ export async function handleRuntimeApi(request, url) {
   if (!isApi) return null;
   try {
     if (path === "/v1/health" && request.method === "GET") {
-      return json({ ok: true, product: PRODUCT, version: VERSION, banner: BANNER });
+      return json({ ok: true, author: "Aziel Eliab", product: PRODUCT, version: VERSION, banner: BANNER });
     }
+  if ((path === "/v1/example" || path === "/v1/example/") && (request.method === "GET" || request.method === "HEAD")) {
+    return json({
+      ok: true,
+      product: PRODUCT,
+      author: "Aziel Eliab",
+      example: EXAMPLE_PAYLOAD,
+      note: "Sample payload only. Does not increment downloads.",
+    });
+  }
+
     if (path === "/v1/skill" && request.method === "GET") {
       return new Response(SKILL, {
       status: 200,

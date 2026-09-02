@@ -213,6 +213,8 @@ mobile/              Flutter iPhone + Android (`flutter create .`)
 
 ## Use with Grok, ChatGPT, Venice
 
+- Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
+
 Live HTTPS runtime on the existing download-tracker Worker. **Logical 25-node labels only. Not a VPN, proxy, or Tor. Never hide IPs.**
 
 OpenAPI (ChatGPT GPT Actions / Venice custom HTTP / Grok custom tool):
