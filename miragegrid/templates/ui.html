@@ -83,6 +83,8 @@
     <button id="assign" type="button">Assign session</button>
     <button id="end" class="secondary" type="button" disabled>End session</button>
     <button id="toggle" class="secondary" type="button" disabled>Show receipt</button>
+    <label class="secondary">Import JSON <input type="file" id="import-json" accept="application/json,.json"></label>
+    <button id="export-json" class="secondary" type="button" disabled>Export JSON</button>
   </div>
   <div class="card" id="status">
     <div class="k">Status</div>
@@ -105,10 +107,13 @@
 <script>
   const $ = (id) => document.getElementById(id);
   let showReceipt = false;
+  let lastSession = null;
 
   async function refresh() {
     const r = await fetch("/session");
     const s = await r.json();
+    lastSession = s;
+    const ex = $("export-json"); if (ex) ex.disabled = !s.session_id;
     $("sid").textContent = s.session_id || "—";
     $("node").textContent = s.closed ? "(mapping destroyed)" : (s.node_id || "—");
     $("integrity").textContent = s.live_integrity || "—";
@@ -140,6 +145,32 @@
   $("toggle").onclick = () => {
     showReceipt = !showReceipt;
     refresh();
+  };
+  $("export-json").onclick = () => {
+    if (!lastSession) return;
+    const blob = new Blob([JSON.stringify(lastSession, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "miragegrid-session.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+  $("import-json").onchange = async () => {
+    const f = $("import-json").files && $("import-json").files[0];
+    if (!f) return;
+    const obj = JSON.parse(await f.text());
+    lastSession = obj;
+    $("sid").textContent = obj.session_id || "—";
+    $("node").textContent = obj.node_id || obj.mirage_node || "—";
+    $("integrity").textContent = obj.live_integrity || (obj.receipt ? "imported" : "—");
+    $("status-text").textContent = "Imported JSON (display only; mapping is not restored).";
+    if (obj.receipt) {
+      showReceipt = true;
+      $("receipt-card").hidden = false;
+      $("receipt").textContent = JSON.stringify(obj.receipt, null, 2);
+    }
+    $("export-json").disabled = false;
+    $("toggle").disabled = false;
   };
   refresh();
 </script>

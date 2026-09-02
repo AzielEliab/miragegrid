@@ -67,6 +67,16 @@ def _build_parser() -> argparse.ArgumentParser:
     p_serve = sub.add_parser("serve", help="Alias for ui. Localhost only.")
     p_serve.add_argument("--host", default=DEFAULT_HOST, help="Bind host (default 127.0.0.1).")
     p_serve.add_argument("--port", type=int, default=DEFAULT_PORT, help="Bind port (default 8080).")
+
+    p_doc = sub.add_parser("doctor", help="Self-check. No network, no telemetry.")
+    p_doc.add_argument("--json", action="store_true", dest="as_json", help="Print doctor results as JSON.")
+
+    p_imp = sub.add_parser("import", help="Import a JSON document.")
+    p_imp.add_argument("path")
+
+    p_exp = sub.add_parser("export", help="Export a JSON document.")
+    p_exp.add_argument("path")
+
     return parser
 
 
@@ -127,6 +137,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             sys.stderr.write("miragegrid: refusing non-loopback bind; using 127.0.0.1\n")
             host = DEFAULT_HOST
         serve(host=host, port=int(args.port))
+        return 0
+
+
+    if args.cmd == "doctor":
+        from miragegrid.doctor import run_doctor
+
+        return run_doctor(as_json=getattr(args, "as_json", False))
+
+    if args.cmd == "import":
+        from miragegrid.jsonio import import_json
+
+        rec = import_json(args.path)
+        sys.stdout.write(json.dumps(rec, indent=2, ensure_ascii=False) + "\n")
+        return 0
+
+    if args.cmd == "export":
+        from miragegrid.jsonio import export_json
+
+        rec = export_json(args.path)
+        sys.stdout.write(json.dumps(rec, indent=2, ensure_ascii=False) + "\n")
         return 0
 
     parser.error(f"unknown command {args.cmd}")
