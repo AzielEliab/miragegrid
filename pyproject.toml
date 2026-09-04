@@ -4,19 +4,20 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "miragegrid"
-version = "0.1.0"
-description = "Distributed identity abstraction for AZ-OS: 25 logical nodes, cryptographic session assignment, internal receipts (MirageGrid 1.0). Not an anonymity network, VPN, or proxy mesh."
+version = "0.2.0"
+description = "Node-mesh VPN and anonymity network for AZ-OS: 25 persistent peers, onion circuits, userspace SOCKS5 (MirageGrid 0.2). Author Aziel Eliab."
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [{name = "Aziel Eliab"}]
 requires-python = ">=3.10"
 keywords = [
-    "identity",
-    "session",
-    "receipts",
+    "vpn",
+    "mesh",
+    "anonymity",
+    "onion",
+    "privacy",
     "az-os",
     "miragegrid",
-    "logical-nodes",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -27,6 +28,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Topic :: Security",
+    "Topic :: System :: Networking",
     "Intended Audience :: Developers",
 ]
 dependencies = []

@@ -1,16 +1,77 @@
 /**
- * MirageGrid hosted runtime (port of pool/session/receipt/rng/canon).
- * Logical 25-node labels ONLY. Not a VPN/proxy/Tor. Never hide IPs.
+ * MirageGrid hosted runtime (control plane).
+ * Node-mesh VPN and anonymity network. Author Aziel Eliab.
  * /v1 never touches DOWNLOADS KV.
  */
 const PRODUCT = "miragegrid";
-const VERSION = "0.1.0";
-const MOTTO = "You enter the booth. The system selects a booth. The call is attributed to that booth. You leave with no persistent booth identity.";
-const BANNER = "Not a VPN, proxy, or Tor. Logical 25-node labels only. Never hide IPs. This API never connects, tunnels, or hops addresses.";
+const VERSION = "0.2.0";
+const MOTTO = "You enter the booth. The mesh selects a booth and builds a circuit. You leave with no persistent booth identity.";
+const BANNER = "MirageGrid is a true node-mesh VPN and anonymity network. Persistent 25-node peer mesh, onion circuits, userspace SOCKS5. Lawful privacy tool. Author Aziel Eliab.";
 const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
-const SKILL = "---\nname: MirageGrid\ndescription: Use when assigning a logical booth/node id from a static 25-node pool. Never claim VPN, Tor, or IP hiding. Hosted /v1 via this Worker or aziel-runtime. Author Aziel Eliab.\n---\n\n# MirageGrid\n\nYou enter the booth. The system selects a booth. The call is attributed to that booth. You leave with no persistent booth identity.\n\nAuthor: **Aziel Eliab**.\n\nUse when assigning a logical booth/node id from a static 25-node pool. Never claim VPN, Tor, or IP hiding.\n\nAlways send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 an empty agent.\n\n## Endpoints (this Worker)\n\nHost: `https://miragegrid-download-tracker.vibelock.workers.dev`\n\n| Method | Path | What |\n|--------|------|------|\n| GET | `/v1/health` | Liveness. Does not increment downloads. |\n| GET | `/v1/skill` | This markdown. Does not increment downloads. |\n| GET | `/v1/nodes` | List the 25 logical node ids. |\n| POST | `/v1/assign` | Assign a session booth. Mapping is not persisted as identity. |\n| POST | `/v1/verify-receipt` | Verify an internal receipt. |\n\nOpenAPI: `https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json`\n\nCatalog OpenAPI: `https://aziel-runtime.vibelock.workers.dev/openapi.json`\n\nMCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`\n\nCatalog aliases under `/p/miragegrid/\u2026`.\n\n## How to call (Mozilla/5.0)\n\n```bash\ncurl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/health\ncurl -s -A 'Mozilla/5.0' -X POST https://miragegrid-download-tracker.vibelock.workers.dev/v1/assign \\\n  -H 'content-type: application/json' -d '{}'\ncurl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill\n```\n\nGrok: import the catalog OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.\n\n## Local (after one-click install)\n\n```bash\ncurl -fsSL https://miragegrid-download-tracker.vibelock.workers.dev/install.sh | bash\nmiragegrid ui\n```\n\nThen open http://127.0.0.1:8080 (this computer only).\n\n## Honest banner\n\nTHIS IS: a static pool of 25 named logical nodes. THIS IS NOT: a VPN, proxy mesh, Zoom tether, Tor hop, or IP hider. Logical node ids only. Author Aziel Eliab.\n\nApache-2.0 (or the repo LICENSE). Forks are welcome and always allowed.\n";
+const SKILL = `---
+name: MirageGrid
+description: Use when assigning a mesh circuit, routing peers, or installing the node-mesh VPN. MirageGrid is a true node-mesh VPN and anonymity network. Author Aziel Eliab.
+---
+
+# MirageGrid
+
+You enter the booth. The mesh selects a booth and builds a circuit. You leave with no persistent booth identity.
+
+Author: **Aziel Eliab**.
+
+**THIS IS:** a node-mesh VPN and anonymity network (25 persistent peers, onion circuits, userspace SOCKS5).
+
+**THIS IS NOT:** a crime tool, a log-wipe, or a guarantee against a global adversary. Hosted \`/v1\` does not increment downloads.
+
+Always send \`User-Agent: Mozilla/5.0\`. Cloudflare Workers may 403 an empty agent.
+
+## Endpoints (this Worker)
+
+Host: \`https://miragegrid-download-tracker.vibelock.workers.dev\`
+
+| Method | Path | What |
+|--------|------|------|
+| GET | \`/v1/health\` | Liveness. Does not increment downloads. |
+| GET | \`/v1/skill\` | This markdown. Does not increment downloads. |
+| GET | \`/v1/nodes\` | List the 25 mesh nodes. |
+| GET | \`/v1/mesh\` | Topology, adjacency, default listen ports. |
+| POST | \`/v1/route\` | Shortest peer path between two nodes. |
+| POST | \`/v1/assign\` | Assign a session circuit (entry + hops + path). |
+| POST | \`/v1/circuit\` | Build circuit hops from entropy/timestamp (or fresh). |
+| POST | \`/v1/verify-receipt\` | Verify an internal receipt. |
+
+OpenAPI: \`https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json\`
+
+Catalog OpenAPI: \`https://aziel-runtime.vibelock.workers.dev/openapi.json\`
+
+MCP: \`POST https://aziel-runtime.vibelock.workers.dev/mcp\`
+
+## How to call (Mozilla/5.0)
+
+\`\`\`bash
+curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/health
+curl -s -A 'Mozilla/5.0' -X POST https://miragegrid-download-tracker.vibelock.workers.dev/v1/assign \\
+  -H 'content-type: application/json' -d '{}'
+curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh
+\`\`\`
+
+Grok: import the catalog OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.
+
+## Local (after one-click install)
+
+\`\`\`bash
+curl -fsSL https://miragegrid-download-tracker.vibelock.workers.dev/install.sh | bash
+miragegrid ui
+miragegrid vpn
+\`\`\`
+
+Then open http://127.0.0.1:8080 and SOCKS5 at 127.0.0.1:1080.
+
+Apache-2.0 (or the repo LICENSE). Forks are welcome and always allowed.
+`;
 
 const POOL_SIZE = 25;
+const PEER_OFFSETS = [1, 2, 5, 20, 23, 24];
 
 function corsHeaders() {
   return {
@@ -40,7 +101,7 @@ function makePool(endpoints) {
   for (let index = 0; index < POOL_SIZE; index++) {
     const id = nodeIdFor(index);
     const label = nodeLabelFor(index);
-    let endpoint = eps[id] || eps[label] || null;
+    let endpoint = eps[id] || eps[label] || `127.0.0.1:${19000 + index + 1}`;
     if (endpoint != null) endpoint = String(endpoint);
     nodes.push({ id, label, index, number: index + 1, endpoint });
   }
@@ -58,7 +119,77 @@ function makePool(endpoints) {
       if (n < 1 || n > POOL_SIZE) throw new Error(`mirage_node ${n} out of range 1..25`);
       return nodes[n - 1];
     },
+    byId(id) {
+      if (!byId[id]) throw new Error(`unknown node ${id}`);
+      return byId[id];
+    },
   };
+}
+
+function neighbors(index) {
+  const seen = [];
+  for (const off of PEER_OFFSETS) {
+    const n = (index + off) % POOL_SIZE;
+    if (n !== index && !seen.includes(n)) seen.push(n);
+  }
+  seen.sort((a, b) => a - b);
+  return seen;
+}
+
+function shortestNextHop(src) {
+  const parent = Array(POOL_SIZE).fill(-1);
+  parent[src] = src;
+  const q = [src];
+  while (q.length) {
+    const cur = q.shift();
+    for (const n of neighbors(cur)) {
+      if (parent[n] === -1 && n !== src) {
+        parent[n] = cur;
+        q.push(n);
+      }
+    }
+  }
+  const nxt = Array(POOL_SIZE).fill(-1);
+  for (let dst = 0; dst < POOL_SIZE; dst++) {
+    if (dst === src) {
+      nxt[dst] = src;
+      continue;
+    }
+    if (parent[dst] === -1) {
+      nxt[dst] = -1;
+      continue;
+    }
+    let walk = dst;
+    while (parent[walk] !== src) walk = parent[walk];
+    nxt[dst] = walk;
+  }
+  return nxt;
+}
+
+function pathIndices(src, dst) {
+  if (src === dst) return [src];
+    const hops = [src];
+    let cur = src;
+    let guard = 0;
+    while (cur !== dst) {
+      const hop = shortestNextHop(cur)[dst];
+    if (hop < 0 || hop === cur) throw new Error("no mesh path");
+    hops.push(hop);
+    cur = hop;
+    guard += 1;
+    if (guard > POOL_SIZE + 2) throw new Error("path too long");
+  }
+  return hops;
+}
+
+function expandCircuitPath(hopIndices) {
+  if (!hopIndices.length) return [];
+  const walk = [hopIndices[0]];
+  for (let i = 0; i < hopIndices.length - 1; i++) {
+    const seg = pathIndices(hopIndices[i], hopIndices[i + 1]);
+    walk.push(...seg.slice(1));
+  }
+  return walk;
 }
 
 function utcNow() {
@@ -145,9 +276,56 @@ async function selectIndex(entropy, timestamp) {
   return Number(n % BigInt(POOL_SIZE));
 }
 
+async function selectCircuitIndices(entropy, timestamp, hops = 3) {
+  const chosen = [await selectIndex(entropy, timestamp)];
+  const used = new Set(chosen);
+  let salt = 0;
+  const enc = new TextEncoder();
+  while (chosen.length < hops) {
+    const extra = enc.encode("|hop|");
+    const saltB = new Uint8Array(4);
+    new DataView(saltB.buffer).setUint32(0, salt);
+    const seed = new Uint8Array(entropy.length + enc.encode(timestamp).length + extra.length + 4);
+    let o = 0;
+    seed.set(entropy, o); o += entropy.length;
+    seed.set(enc.encode(timestamp), o); o += enc.encode(timestamp).length;
+    seed.set(extra, o); o += extra.length;
+    seed.set(saltB, o);
+    const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", seed));
+    let n = 0n;
+    for (const b of digest) n = (n << 8n) + BigInt(b);
+    const idx = Number(n % BigInt(POOL_SIZE));
+    if (!used.has(idx)) {
+      chosen.push(idx);
+      used.add(idx);
+    }
+    salt += 1;
+    if (salt > 10000) throw new Error("unable to select distinct circuit hops");
+  }
+  return chosen;
+}
+
 function hex32() {
   const b = crypto.getRandomValues(new Uint8Array(16));
   return [...b].map((x) => x.toString(16).padStart(2, "0")).join("");
+}
+
+async function buildCircuit(entropy, timestamp, hops = 3) {
+  const indices = await selectCircuitIndices(entropy, timestamp, hops);
+  const path = expandCircuitPath(indices);
+  const roles = indices.length === 1
+    ? ["entry-exit"]
+    : ["entry", ...Array(Math.max(0, indices.length - 2)).fill("middle"), "exit"];
+  return {
+    hops: indices.map((idx, i) => ({
+      index: idx,
+      node_id: nodeIdFor(idx),
+      role: roles[i],
+    })),
+    path: path.map(nodeIdFor),
+    entry: nodeIdFor(indices[0]),
+    exit: nodeIdFor(indices[indices.length - 1]),
+  };
 }
 
 async function assign(body) {
@@ -155,21 +333,25 @@ async function assign(body) {
   const session_id = (body && body.session_id) || hex32();
   const timestamp = (body && body.timestamp) || utcNow();
   const entropy = crypto.getRandomValues(new Uint8Array(32));
+  const hops = Number.isInteger(body && body.hops) ? body.hops : 3;
   const index = await selectIndex(entropy, timestamp);
   const node = pool.byIndex(index);
   const receipt = await mintReceipt(session_id, node, timestamp, pool, false);
+  const circuit = await buildCircuit(entropy, timestamp, hops);
   return {
     product: PRODUCT,
     version: VERSION,
     motto: MOTTO,
     banner: BANNER,
+    kind: "mesh-vpn-circuit",
     session_id,
     node_id: node.id,
     node_label: node.label,
     mirage_node: node.number,
     timestamp,
+    circuit,
     receipt,
-    note: "Mapping is in-request only and is destroyed when the response is sent. Logical labels; no network hop.",
+    note: "Control-plane assignment. Circuit mapping is in-request only. Packet forwarding runs in the local package (miragegrid vpn).",
   };
 }
 
@@ -180,7 +362,46 @@ function listNodes() {
     version: VERSION,
     motto: MOTTO,
     banner: BANNER,
-    nodes: pool.nodes.map((n) => ({ id: n.id, label: n.label, number: n.number })),
+    nodes: pool.nodes.map((n) => ({ id: n.id, label: n.label, number: n.number, endpoint: n.endpoint })),
+  };
+}
+
+function meshView() {
+  const pool = makePool();
+  const adjacency = {};
+  for (let i = 0; i < POOL_SIZE; i++) {
+    adjacency[nodeIdFor(i)] = neighbors(i).map(nodeIdFor);
+  }
+  return {
+    product: PRODUCT,
+    version: VERSION,
+    banner: BANNER,
+    pool_size: POOL_SIZE,
+    topology: "circulant-25-1-2-5",
+    connected: true,
+    peers: pool.nodes.map((n) => ({
+      id: n.id,
+      label: n.label,
+      index: n.index,
+      number: n.number,
+      endpoint: n.endpoint,
+    })),
+    adjacency,
+  };
+}
+
+function routeView(srcId, dstId) {
+  const pool = makePool();
+  const src = pool.byId(srcId).index;
+  const dst = pool.byId(dstId).index;
+  const path = pathIndices(src, dst).map(nodeIdFor);
+  return {
+    product: PRODUCT,
+    version: VERSION,
+    banner: BANNER,
+    from: srcId,
+    to: dstId,
+    path,
   };
 }
 
@@ -194,7 +415,6 @@ function openapiSpec() {
     },
     servers: [{ url: HOST }],
     paths: {
-      
       "/v1/skill": {
         get: {
           operationId: "miragegrid_skill",
@@ -202,16 +422,35 @@ function openapiSpec() {
           responses: { "200": { description: "markdown" } },
         },
       },
-"/v1/health": {
+      "/v1/health": {
         get: { operationId: "health", summary: "Liveness", responses: { "200": { description: "ok", content: { "application/json": { schema: { type: "object" } } } } } },
       },
       "/v1/nodes": {
-        get: { operationId: "nodes", summary: "List 25 logical node labels.", responses: { "200": { description: "nodes", content: { "application/json": { schema: { type: "object" } } } } } },
+        get: { operationId: "nodes", summary: "List 25 mesh nodes.", responses: { "200": { description: "nodes", content: { "application/json": { schema: { type: "object" } } } } } },
+      },
+      "/v1/mesh": {
+        get: { operationId: "mesh", summary: "Persistent 25-node mesh topology.", responses: { "200": { description: "mesh", content: { "application/json": { schema: { type: "object" } } } } } },
+      },
+      "/v1/route": {
+        post: {
+          operationId: "route",
+          summary: "Shortest peer path on the mesh.",
+          requestBody: { required: false, content: { "application/json": { schema: { type: "object" } } } },
+          responses: { "200": { description: "route", content: { "application/json": { schema: { type: "object" } } } } },
+        },
+      },
+      "/v1/circuit": {
+        post: {
+          operationId: "circuit",
+          summary: "Build onion-circuit hops (entry/middle/exit).",
+          requestBody: { required: false, content: { "application/json": { schema: { type: "object" } } } },
+          responses: { "200": { description: "circuit", content: { "application/json": { schema: { type: "object" } } } } },
+        },
       },
       "/v1/assign": {
         post: {
           operationId: "assign",
-          summary: "Assign one logical node for a session and mint a receipt.",
+          summary: "Assign a mesh circuit for a session and mint a receipt.",
           requestBody: { required: false, content: { "application/json": { schema: { type: "object" } } } },
           responses: { "200": { description: "assignment", content: { "application/json": { schema: { type: "object" } } } } },
         },
@@ -250,7 +489,7 @@ function aiHtml() {
   <p>Paste this OpenAPI URL into GPT Actions:</p>
   <p><code>${HOST}/openapi.json</code></p>
   <h2>Grok / xAI</h2>
-  <p>Custom tool pointing at <code>GET ${HOST}/v1/nodes</code>, <code>POST ${HOST}/v1/assign</code>, <code>POST ${HOST}/v1/verify-receipt</code>.</p>
+  <p>Custom tool pointing at <code>GET ${HOST}/v1/mesh</code>, <code>POST ${HOST}/v1/assign</code>, <code>POST ${HOST}/v1/route</code>.</p>
   <h2>Venice</h2>
   <p>Custom HTTP tool from the same OpenAPI URL.</p>
   <h2>MCP catalog</h2>
@@ -266,7 +505,7 @@ export async function handleRuntimeApi(request, url) {
   if (!isApi) return null;
   try {
     if (path === "/v1/health" && request.method === "GET") {
-      return json({ ok: true, product: PRODUCT, version: VERSION, banner: BANNER });
+      return json({ ok: true, product: PRODUCT, version: VERSION, banner: BANNER, kind: "node-mesh-vpn" });
     }
     if (path === "/v1/skill" && request.method === "GET") {
       return new Response(SKILL, {
@@ -279,6 +518,23 @@ export async function handleRuntimeApi(request, url) {
       return new Response(aiHtml(), { headers: { "Content-Type": "text/html; charset=utf-8", ...corsHeaders() } });
     }
     if (path === "/v1/nodes" && request.method === "GET") return json(listNodes());
+    if (path === "/v1/mesh" && request.method === "GET") return json(meshView());
+    if (path === "/v1/route" && request.method === "POST") {
+      let body = {};
+      try { body = await request.json(); } catch { body = {}; }
+      const src = (body && (body.from || body.src)) || "node-01";
+      const dst = (body && (body.to || body.dst)) || "node-13";
+      return json(routeView(src, dst));
+    }
+    if (path === "/v1/circuit" && request.method === "POST") {
+      let body = {};
+      try { body = await request.json(); } catch { body = {}; }
+      const timestamp = (body && body.timestamp) || utcNow();
+      const entropy = crypto.getRandomValues(new Uint8Array(32));
+      const hops = Number.isInteger(body && body.hops) ? body.hops : 3;
+      const circuit = await buildCircuit(entropy, timestamp, hops);
+      return json({ product: PRODUCT, version: VERSION, banner: BANNER, timestamp, circuit });
+    }
     if (path === "/v1/assign" && request.method === "POST") {
       let body = {};
       try { body = await request.json(); } catch { body = {}; }

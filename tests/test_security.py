@@ -1,4 +1,8 @@
-"""No socks/tor/proxy-mesh imports; no socket.bind tricks; no stdlib random protocol."""
+"""Protocol path stays choice-free; attack libraries stay out.
+
+Socket is allowed in the mesh VPN modules (vpn, transport). Bind is
+allowed there for loopback listeners.
+"""
 
 from __future__ import annotations
 
@@ -16,8 +20,10 @@ FORBIDDEN_IMPORTS = {
     "scapy",
     "pydivert",
     "nfqueue",
-    "socket",
 }
+
+SOCKET_OK = {"vpn.py", "transport.py"}
+BIND_OK = {"vpn.py", "transport.py"}
 
 PKG = Path(__file__).resolve().parents[1] / "miragegrid"
 
@@ -39,10 +45,12 @@ def test_no_forbidden_imports() -> None:
             for name in names:
                 if name in FORBIDDEN_IMPORTS:
                     found.append(f"{path.name}:{name}")
+                if name == "socket" and path.name not in SOCKET_OK:
+                    found.append(f"{path.name}:socket")
     assert found == []
 
 
-def test_no_socket_bind_or_choice_calls() -> None:
+def test_no_choice_and_bind_only_in_vpn_modules() -> None:
     for path in _py_files():
         tree = ast.parse(path.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
@@ -50,7 +58,7 @@ def test_no_socket_bind_or_choice_calls() -> None:
                 continue
             func = node.func
             if isinstance(func, ast.Attribute):
-                if func.attr == "bind":
+                if func.attr == "bind" and path.name not in BIND_OK:
                     raise AssertionError(f"{path.name} calls .bind(")
                 if func.attr == "choice":
                     raise AssertionError(f"{path.name} calls .choice(")

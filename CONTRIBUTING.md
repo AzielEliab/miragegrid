@@ -15,25 +15,25 @@ pip install -e ".[dev]"
 python -m pytest -q
 ```
 
-Python 3.10+. Core is stdlib only (`secrets`, `hashlib`, `json`,
-`http.server`). pytest is the dev extra. No network.
+Python 3.10+. Core is stdlib only (`secrets`, `hashlib`, `hmac`,
+`socket`, `http.server`). ChaCha20-Poly1305 and X25519 are in-tree.
+pytest is the dev extra.
 
 ## Ground rules
 
 1. Treat `origin` as one peer among many. Downstream forks are part of
    the download-tracking model (see `workers/download-tracker`): they
    report as `{owner}/{repo}`, not as anonymous noise.
-2. **No real tunnels / IP hiding PRs.** MirageGrid nodes are *logical
-   identities* (`node-01` … `node-25`). Pull requests that add Tor,
-   SOCKS/HTTP proxies, VPNs, encrypted relay tunnels, IP hopping,
-   traffic-analysis evasion, source-address spoofing, raw sockets bound
-   to foreign IPs, or anything that conceals a host on a network will be
-   refused. Optional `endpoint` strings are labels only — never connect.
+2. **This is a lawful privacy mesh VPN.** Keep default binds on
+   loopback (`127.0.0.1`) unless the operator opts into a listen
+   address. Do not add crime instructions, log-wipe APIs, source-address
+   spoofing, or traffic-analysis evasion cookbooks.
 3. **Do not destroy logs to evade inspection.** Session mapping drop is
-   in-process forget of the assignment. It is documented. It is not a
-   wipe API.
+   in-process forget of the assignment and onion keys. It is documented.
+   It is not a wipe API.
 4. **Keep `random.choice` out of the protocol path.** Section 6 is
    `SHA-256(entropy || timestamp_utf8) % 25` via `secrets.token_bytes`.
+   Extra hops use `SHA-256(entropy || timestamp || b"|hop|" || salt)`.
 5. **Receipts stay internal by default.** Do not add a public API that
    always emits receipts. `--emit-receipt` is operator-requested local
    JSON.
@@ -42,10 +42,16 @@ Python 3.10+. Core is stdlib only (`secrets`, `hashlib`, `json`,
 7. **Do not invent evaluation numbers.** If you measure something,
    publish the method next to the number.
 8. New behavior needs a test that fails without the change.
+9. Author line stays **Aziel Eliab**.
 
 ## Where to change things
 
 - Node pool: `miragegrid/pool.py`
+- Mesh / routing: `miragegrid/mesh.py`
+- Onion circuits: `miragegrid/circuit.py`
+- Crypto: `miragegrid/crypto.py`
+- SOCKS5 VPN: `miragegrid/vpn.py`
+- Peer transport: `miragegrid/transport.py`
 - Section 6 RNG: `miragegrid/rng.py`
 - Session lifecycle: `miragegrid/session.py`
 - Receipts / integrity: `miragegrid/receipt.py`, `miragegrid/canon.py`

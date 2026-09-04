@@ -71,3 +71,4 @@ def test_help_lists_ui_and_version() -> None:
     assert "version" in text
     assert "127.0.0.1:8080" in text or "miragegrid ui" in text
     assert "VPN" in text or "anonymity" in text.lower() or "loopback" in text.lower()
+    assert "vpn" in text.lower() or "mesh" in text.lower()
