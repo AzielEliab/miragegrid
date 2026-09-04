@@ -1,7 +1,7 @@
 """Tiny TemporalLock-style canonical digest for MirageGrid receipts.
 
 Copied in-tree so this package does not depend on ``temporallock``.
-Hashed fields (v0.1.0): session_id, mirage_node, timestamp, integrity.
+Hashed fields (v0.2.0, same as v0.1.0): session_id, mirage_node, timestamp, integrity.
 The receipt's own ``hash`` field is excluded.
 
 UTF-8 JSON, sorted keys, no extra whitespace (separators=(",", ":")).

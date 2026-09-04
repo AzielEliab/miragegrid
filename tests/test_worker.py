@@ -24,7 +24,9 @@ def test_worker_live_count_and_isolation() -> None:
     homepage = js.split("function indexHtml")[1].split("export default")[0]
     assert "POST /event" not in homepage
     assert "/event" not in homepage
-    assert 'id = "REPLACE_ME"' in toml
+    assert 'id = "f833961513eb44e3ba061e1d2031fe52"' in toml or 'id = "REPLACE_ME"' in toml
     assert 'name = "miragegrid-download-tracker"' in toml
     assert "ac575a9b822bea2bed97d0ab73aed238" in toml
     assert '"/count"' in toml
+    assert "0.2.0" in js or "miragegrid-0.2.0.tar.gz" in js
+    assert "node-mesh VPN" in js or "node-mesh vpn" in js.lower()

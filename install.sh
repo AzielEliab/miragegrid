@@ -4,7 +4,7 @@
 set -euo pipefail
 
 HOST="${MIRAGEGRID_HOME_HOST:-https://miragegrid-download-tracker.vibelock.workers.dev}"
-ASSET="${MIRAGEGRID_HOME_ASSET:-miragegrid-0.1.0.tar.gz}"
+ASSET="${MIRAGEGRID_HOME_ASSET:-miragegrid-0.2.0.tar.gz}"
 WORKDIR="${MIRAGEGRID_HOME:-$HOME/miragegrid}"
 
 mkdir -p "$WORKDIR"
@@ -26,7 +26,8 @@ python -m pip install -U pip
 python -m pip install -e .
 
 echo
-echo "Installed MirageGrid."
+echo "Installed MirageGrid node-mesh VPN."
 echo "Run:  miragegrid ui"
-echo "Then open http://127.0.0.1:8080  (loopback only)"
+echo "Or:   miragegrid vpn"
+echo "Then open http://127.0.0.1:8080  (loopback mesh-VPN console)"
 echo "Author: Aziel Eliab."

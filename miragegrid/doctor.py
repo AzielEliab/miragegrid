@@ -1,4 +1,4 @@
-"""Self-check for MirageGrid. No network, no telemetry.
+"""Self-check for MirageGrid. Crypto and mesh are in-process. No telemetry.
 
     miragegrid doctor
 """
@@ -65,10 +65,63 @@ def _check_json_roundtrip() -> Check:
         return _ok("json import/export", "roundtrip")
 
 
+def _check_mesh() -> Check:
+    from miragegrid.mesh import NodeMesh
+
+    mesh = NodeMesh()
+    if not mesh.connected():
+        return _fail("mesh", "not connected")
+    path = mesh.path(0, 12)
+    if path[0] != 0 or path[-1] != 12:
+        return _fail("mesh path", str(path))
+    return _ok("mesh", f"circulant-25 connected path={len(path)}")
+
+
+def _check_circuit() -> Check:
+    from miragegrid.circuit import Circuit
+    from miragegrid.mesh import NodeMesh
+
+    mesh = NodeMesh()
+    circ = Circuit.build(
+        mesh,
+        entropy=b"\x11" * 32,
+        timestamp="2026-03-04T13:02:12Z",
+        hops=3,
+    )
+    msg = b"miragegrid-circuit-selfcheck"
+    back = circ.unwrap(circ.wrap(msg))
+    if back != msg:
+        return _fail("circuit", "unwrap mismatch")
+    if circ.entry.node_id == circ.exit.node_id:
+        return _fail("circuit", "entry equals exit")
+    circ.close()
+    try:
+        circ.wrap(b"x")
+    except Exception:
+        return _ok("circuit", "3-hop onion + key drop")
+    return _fail("circuit", "wrap after close")
+
+
+def _check_crypto() -> Check:
+    from miragegrid.crypto import aead_decrypt, aead_encrypt, x25519, x25519_keypair
+
+    secret, pub = x25519_keypair(b"\x01" + b"\x00" * 31)
+    shared = x25519(secret, pub)
+    if len(shared) != 32:
+        return _fail("crypto", "x25519 length")
+    blob = aead_encrypt(b"k" * 32, b"n" * 12, b"hello", b"aad")
+    if aead_decrypt(b"k" * 32, b"n" * 12, blob, b"aad") != b"hello":
+        return _fail("crypto", "aead")
+    return _ok("crypto", "x25519+chacha20-poly1305")
+
+
 CHECKS: tuple[Callable[[], Check], ...] = (
     _check_version,
     _check_identity,
     _check_json_roundtrip,
+    _check_mesh,
+    _check_circuit,
+    _check_crypto,
 )
 
 

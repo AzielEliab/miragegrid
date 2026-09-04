@@ -83,7 +83,7 @@ class _AssignPageState extends State<AssignPage> {
         integrity: integrity,
         hash: digest(sid, number, ts, integrity),
       );
-      _note = 'assigned node-$number (label only). Mapping held in RAM.';
+      _note = 'assigned entry node-$number. Circuit hops held in RAM.';
     });
   }
 
@@ -107,9 +107,10 @@ class _AssignPageState extends State<AssignPage> {
             child: const Padding(
               padding: EdgeInsets.all(12),
               child: Text(
-                'NEVER a VPN, proxy, Tor, or SOCKS mesh. Nodes are logical '
-                'labels (node-01 … node-25). This app never tunnels, never hops '
-                'IPs, and never hides an origin address.',
+                'MirageGrid is a node-mesh VPN and anonymity network. '
+                'This app assigns a 25-node mesh circuit (entry + hops). '
+                'The desktop package runs the userspace SOCKS5 VPN. '
+                'Lawful privacy tool. Author Aziel Eliab.',
                 style: TextStyle(height: 1.4),
               ),
             ),
@@ -133,7 +134,7 @@ class _AssignPageState extends State<AssignPage> {
           const SizedBox(height: 8),
           const Text(
             'Selection: SHA-256(entropy || timestamp) as big-endian int % 25. '
-            'Not random.choice. Endpoint strings would be labels only.',
+            'Not random.choice. Extra hops use SHA-256(...|hop|salt).',
             style: TextStyle(color: kGoldDim, fontSize: 12),
           ),
           if (_live != null && !_closed) ...[

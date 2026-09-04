@@ -1,7 +1,9 @@
-"""Localhost UI for the assignment + receipt engine.
+"""Localhost UI for the node-mesh VPN.
 
-Binds 127.0.0.1 only. Self-contained HTML/CSS, no CDN. Never opens
-tunnels, never hops IPs, never speaks Tor.
+Binds 127.0.0.1 only. Self-contained HTML/CSS, no CDN.
+Shows circuit hops, mesh route, and local SOCKS5 status.
+
+Author: Aziel Eliab
 """
 
 from __future__ import annotations
@@ -12,7 +14,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-from miragegrid.pool import NodePool
+from miragegrid.mesh import NodeMesh
 from miragegrid.session import MirageSession
 
 DEFAULT_HOST = "127.0.0.1"
@@ -27,8 +29,9 @@ def _html() -> bytes:
 
 class _State:
     def __init__(self) -> None:
-        self.pool = NodePool()
+        self.mesh = NodeMesh()
         self.session: MirageSession | None = None
+        self.vpn = None
 
     def snapshot(self, include_receipt: bool = False) -> dict[str, Any]:
         if self.session is None:
@@ -37,6 +40,9 @@ class _State:
                 "node_id": None,
                 "closed": True,
                 "live_integrity": "FAIL",
+                "kind": "mesh-vpn-circuit",
+                "circuit": None,
+                "vpn": None,
             }
         payload = self.session.to_dict(include_receipt=include_receipt)
         payload["live_integrity"] = self.session.integrity
@@ -45,18 +51,46 @@ class _State:
                 payload["receipt"] = self.session.emit_receipt()
             except Exception:
                 payload["receipt"] = None
+        if self.vpn is not None:
+            payload["vpn"] = self.vpn.status().to_dict()
+        else:
+            payload["vpn"] = None
         return payload
 
     def assign(self) -> dict[str, Any]:
+        self._stop_vpn()
         if self.session is not None and not self.session.closed:
             self.session.end()
-        self.session = MirageSession(pool=self.pool)
+        self.session = MirageSession(mesh=self.mesh)
         return self.snapshot(include_receipt=False)
 
     def end(self) -> dict[str, Any]:
+        self._stop_vpn()
         if self.session is not None and not self.session.closed:
             self.session.end()
         return self.snapshot(include_receipt=False)
+
+    def start_vpn(self, port: int = 1080) -> dict[str, Any]:
+        from miragegrid.vpn import MeshVpn
+
+        if self.session is None or self.session.closed:
+            self.assign()
+        self._stop_vpn()
+        self.vpn = MeshVpn(self.session, host=DEFAULT_HOST, port=int(port))
+        self.vpn.start()
+        return self.snapshot()
+
+    def stop_vpn(self) -> dict[str, Any]:
+        self._stop_vpn()
+        return self.snapshot()
+
+    def _stop_vpn(self) -> None:
+        if self.vpn is not None:
+            try:
+                self.vpn.stop()
+            except Exception:
+                pass
+            self.vpn = None
 
 
 def make_handler(state: _State):
@@ -87,16 +121,24 @@ def make_handler(state: _State):
                 self._html()
                 return
             if path == "/session":
-                include = "receipt=1" in (urlparse(self.path).query or "")
-                # UI toggles receipt client-side from this payload when asked.
                 snap = state.snapshot(include_receipt=True)
                 self._json(snap)
                 return
             if path == "/nodes":
-                self._json({"nodes": [n.to_dict() for n in state.pool]})
+                self._json({"nodes": [n.to_dict() for n in state.mesh.pool]})
+                return
+            if path == "/mesh":
+                self._json(state.mesh.to_dict())
                 return
             if path == "/health":
-                self._json({"ok": True, "bind_host": DEFAULT_HOST})
+                self._json(
+                    {
+                        "ok": True,
+                        "bind_host": DEFAULT_HOST,
+                        "kind": "node-mesh-vpn",
+                        "product": "miragegrid",
+                    }
+                )
                 return
             self._json({"error": "not found"}, 404)
 
@@ -108,6 +150,12 @@ def make_handler(state: _State):
             if path == "/end":
                 self._json(state.end())
                 return
+            if path == "/vpn/start":
+                self._json(state.start_vpn())
+                return
+            if path == "/vpn/stop":
+                self._json(state.stop_vpn())
+                return
             self._json({"error": "not found"}, 404)
 
     return Handler
@@ -115,10 +163,9 @@ def make_handler(state: _State):
 
 def serve(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT) -> None:
     if host not in ("127.0.0.1", "localhost", "::1"):
-        # Refuse non-loopback binds. This UI is a research tool.
         host = DEFAULT_HOST
     httpd = ThreadingHTTPServer((host, int(port)), make_handler(_State()))
-    print(f"miragegrid ui  http://{host}:{port}/  (loopback only; not a proxy)")
+    print(f"miragegrid ui  http://{host}:{port}/  (loopback mesh-VPN console)")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

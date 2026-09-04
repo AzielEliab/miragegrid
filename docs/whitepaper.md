@@ -13,20 +13,22 @@ Conceptual Whitepaper — Formal Architecture Draft
 
 ---
 
-## Implementation note (package `miragegrid` 0.1.0)
+## Implementation note (package `miragegrid` 0.2.0)
 
-This repository implements the **assignment + receipt engine** specified
-below. Nodes are **logical identities** (`node-01` … `node-25`). Optional
-`endpoint` strings are labels only. The open core does **not** hop IPs,
-open encrypted relay tunnels, speak Tor, or hide origin addresses.
-Session mapping drop is in-process forget, not a log wipe.
+This repository implements a **userspace node-mesh VPN and anonymity
+network**: persistent 25-node mesh, X25519 identities, circulant peer
+routing, ChaCha20-Poly1305 onion circuits, and a loopback SOCKS5
+gateway. Optional `endpoint` strings are listen targets.
 
-GodLock already used a 25-node logical grid. This is the standalone spec
+Session mapping drop is in-process forget of the assignment and onion
+keys, not a log wipe. Hosted `/v1` is the control plane (assign / mesh
+/ route / receipt). Packet forwarding runs in the local package.
+
+GodLock already used a 25-node grid. This is the standalone mesh VPN
 with receipts and session lifecycle.
 
-The conceptual paper talks about static endpoints and tunnels as an
-architecture story. That story is preserved in sections 1–11. The
-Python package does not expand it into a real network.
+The conceptual paper (sections 1–11) is the architecture story.
+Section 12 records what 0.2.0 actually ships.
 
 ---
 
@@ -113,8 +115,9 @@ Selected Static Node
 External Network
 ```
 
-In v0.1.0 the "selected static node" is a logical identity string. No
-socket is opened for the assignment.
+In v0.2.0 the selected node is the circuit **entry**. The session also
+builds middle/exit hops and a mesh walk. SOCKS5 (`miragegrid vpn`)
+opens sockets on loopback.
 
 ### 3.4 Receipt Layer
 
@@ -139,9 +142,8 @@ Characteristics:
 - Encrypted relay tunnel
 - Ephemeral session binding
 
-**Open-core mapping:** persistent *logical* host identity (`node-NN`),
-ephemeral in-process session binding. This package does not allocate
-real IPs or build relay tunnels.
+**Open-core mapping:** persistent mesh identity (`node-NN` + X25519
+key), ephemeral onion circuit, default listen `127.0.0.1:19000+N`.
 
 ## 5. Session Lifecycle
 
@@ -154,8 +156,9 @@ real IPs or build relay tunnels.
 
 Next session receives a new node selection.
 
-**Open-core mapping:** step 3 is a no-op (no tunnel). Step 6 sets the
-session node to `None` and raises `MappingDestroyedError` on access.
+**Open-core mapping:** step 3 builds a ChaCha20-Poly1305 onion circuit
+and may start the local SOCKS5 gateway. Step 6 drops circuit keys and
+sets the session node to `None` (`MappingDestroyedError` on access).
 It does not shred operator logs.
 
 ## 6. Random Selection Protocol
@@ -166,7 +169,7 @@ rng = cryptographic_random(seed)
 node_index = rng % 25
 ```
 
-### Exact bytes (v0.1.0)
+### Exact bytes (v0.2.0, unchanged from v0.1.0 for hop 0)
 
 | Piece | Encoding |
 |-------|----------|
@@ -205,8 +208,9 @@ Integration modules:
 - node randomizer
 - receipt generator
 
-v0.1.0 ships the node randomizer and receipt generator. Tunnel manager
-and metadata scrubber are out of scope for this open assignment engine.
+v0.2.0 ships the node randomizer, receipt generator, mesh router,
+onion circuit manager, and userspace SOCKS5 gateway. A full metadata
+scrubber remains a later layer.
 
 ## 9. Security Model
 
@@ -232,3 +236,19 @@ MirageGrid is a distributed static identity abstraction system in which
 outbound network identity is randomly selected from a fixed pool of
 persistent nodes, preventing correlation between sessions while
 maintaining deterministic internal auditability.
+
+## 12. Mesh VPN MVP (package 0.2.0)
+
+The open-core package is a lawful privacy **node-mesh VPN**:
+
+- Topology: circulant graph C_25(1,2,5), diameter 3, always connected.
+- Identities: X25519 per node, derived from a mesh seed (RFC 7748).
+- Circuits: 3 hops by default (entry / middle / exit). Hop 0 uses
+  section 6. Further hops use
+  `SHA-256(entropy || timestamp_utf8 || "|hop|" || salt_u32be)`.
+- Payload: ChaCha20-Poly1305 onion (RFC 8439). Link keys: X25519 DH.
+- Local VPN: SOCKS5 CONNECT on 127.0.0.1:1080 (`miragegrid vpn`).
+- Peer listener: `miragegrid node` (loopback by default).
+
+It does not guarantee anonymity against a global adversary. It is not
+a crime tool.

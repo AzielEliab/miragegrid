@@ -1,8 +1,11 @@
-"""Static pool of 25 persistent logical node records.
+"""Static pool of 25 persistent mesh nodes.
 
-Nodes are identities (`node-01` … `node-25`), not hosts on a network.
-Optional `endpoint` strings from a config file are labels only — this
-module never connects, never tunnels, never binds a socket.
+Nodes are named mesh members (``node-01`` … ``node-25``). Optional
+``endpoint`` strings are listen targets (host:port) for peer links.
+The pool itself does not open sockets; ``miragegrid.transport`` and
+``miragegrid.vpn`` do.
+
+Author: Aziel Eliab
 """
 
 from __future__ import annotations
@@ -17,13 +20,13 @@ POOL_SIZE = 25
 
 @dataclass(frozen=True)
 class Node:
-    """One persistent logical node.
+    """One persistent mesh node.
 
     ``id`` is ``node-01`` … ``node-25``.
     ``label`` is ``Node01`` … ``Node25``.
     ``index`` is ``0..24``.
     ``number`` is ``1..25`` (receipt field ``mirage_node``).
-    ``endpoint`` is an optional display label, never a connection target.
+    ``endpoint`` is an optional listen target (``127.0.0.1:19001``).
     """
 
     id: str
@@ -51,7 +54,7 @@ def node_label_for(index: int) -> str:
 
 
 class NodePool:
-    """Exactly 25 named logical nodes. Length is always 25."""
+    """Exactly 25 named mesh nodes. Length is always 25."""
 
     def __init__(self, endpoints: Mapping[str, str] | None = None) -> None:
         eps = dict(endpoints or {})
@@ -62,6 +65,8 @@ class NodePool:
             endpoint = eps.get(nid) or eps.get(label)
             if endpoint is not None:
                 endpoint = str(endpoint)
+            else:
+                endpoint = f"127.0.0.1:{19000 + index + 1}"
             nodes.append(
                 Node(
                     id=nid,
@@ -75,7 +80,7 @@ class NodePool:
         self._by_id: dict[str, Node] = {n.id: n for n in self._nodes}
         self._by_label: dict[str, Node] = {n.label: n for n in self._nodes}
         if len(self._nodes) != POOL_SIZE:
-            raise RuntimeError("NodePool must expose exactly 25 logical nodes")
+            raise RuntimeError("NodePool must expose exactly 25 mesh nodes")
         if len(self._by_id) != POOL_SIZE:
             raise RuntimeError("NodePool ids must be unique")
 
@@ -114,13 +119,11 @@ class NodePool:
 
     @classmethod
     def from_config(cls, path: str | Path) -> "NodePool":
-        """Load optional endpoint *labels* from a JSON file.
+        """Load optional listen endpoints from a JSON file.
 
         Expected shape::
 
-            {"endpoints": {"node-01": "booth-alpha"}}
-
-        Values are never used as connection targets.
+            {"endpoints": {"node-01": "127.0.0.1:19001"}}
         """
         raw = json.loads(Path(path).read_text(encoding="utf-8"))
         endpoints: dict[str, str] = {}
