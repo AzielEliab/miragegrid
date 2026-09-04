@@ -2,7 +2,7 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MirageGrid — phone booth</title>
+<title>MirageGrid — node-mesh VPN</title>
 <style>
   :root {
     --bg: #0e1116;
@@ -10,6 +10,7 @@
     --ink: #e8edf4;
     --muted: #8b97a8;
     --accent: #7eb8ff;
+    --gold: #c9a227;
     --pass: #6fdd8b;
     --fail: #ff7b7b;
     --line: #2a3340;
@@ -22,7 +23,7 @@
     color: var(--ink);
     line-height: 1.45;
   }
-  header, main { max-width: 42rem; margin: 0 auto; padding: 1.5rem; }
+  header, main { max-width: 46rem; margin: 0 auto; padding: 1.5rem; }
   header h1 { margin: 0 0 0.25rem; font-size: 1.6rem; letter-spacing: 0.02em; }
   header p { margin: 0.25rem 0; color: var(--muted); }
   .banner {
@@ -44,6 +45,7 @@
     font-weight: 650;
     cursor: pointer;
   }
+  button.gold { background: var(--gold); }
   button.secondary { background: #2a3340; color: var(--ink); }
   button:disabled { opacity: 0.45; cursor: not-allowed; }
   .card {
@@ -66,35 +68,53 @@
     font-size: 0.85rem;
   }
   footer { color: var(--muted); font-size: 0.85rem; margin-top: 2rem; }
+  .hops { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.4rem 0 0.8rem; }
+  .hop {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.85rem;
+  }
+  .hop.entry { border-color: var(--gold); color: var(--gold); }
+  .hop.exit { border-color: var(--accent); color: var(--accent); }
 </style>
 <body>
 <header>
   <h1>MirageGrid</h1>
-  <p>You enter. The system selects a booth. You leave with no persistent booth identity.</p>
+  <p>You enter. The mesh selects a booth and builds a circuit. You leave with no persistent booth identity.</p>
   <div class="banner">
-    This UI assigns a <strong>logical</strong> node from a static pool of 25.
-    It is not a VPN, proxy mesh, Tor client, or anonymity network.
-    Mapping drop is in-process forget, not a log wipe.
-    Bound to 127.0.0.1 only.
+    This UI is the local console for a <strong>node-mesh VPN</strong> and
+    <strong>anonymity network</strong>: 25 persistent peers, onion circuits,
+    userspace SOCKS5 on 127.0.0.1. Lawful privacy tool. Mapping drop is
+    in-process forget, not a log wipe. Bound to 127.0.0.1 only.
   </div>
 </header>
 <main>
   <div class="row">
-    <button id="assign" type="button">Assign session</button>
+    <button id="assign" type="button">Assign circuit</button>
     <button id="end" class="secondary" type="button" disabled>End session</button>
+    <button id="vpn-start" class="gold" type="button" disabled>Start SOCKS VPN</button>
+    <button id="vpn-stop" class="secondary" type="button" disabled>Stop VPN</button>
     <button id="toggle" class="secondary" type="button" disabled>Show receipt</button>
     <label class="secondary">Import JSON <input type="file" id="import-json" accept="application/json,.json"></label>
     <button id="export-json" class="secondary" type="button" disabled>Export JSON</button>
   </div>
   <div class="card" id="status">
     <div class="k">Status</div>
-    <div class="v" id="status-text">No session. Assign a booth.</div>
-    <div class="k">Node</div>
+    <div class="v" id="status-text">No session. Assign a mesh circuit.</div>
+    <div class="k">Entry node</div>
     <div class="v" id="node">—</div>
+    <div class="k">Circuit hops</div>
+    <div class="hops" id="hops"><span class="hop">—</span></div>
+    <div class="k">Mesh path</div>
+    <div class="v" id="path">—</div>
     <div class="k">Session ID</div>
     <div class="v" id="sid">—</div>
     <div class="k">Live integrity</div>
     <div class="v" id="integrity">—</div>
+    <div class="k">Local SOCKS5</div>
+    <div class="v" id="vpn">off</div>
   </div>
   <div class="card" id="receipt-card" hidden>
     <div class="k">Internal receipt (operator requested)</div>
@@ -102,12 +122,29 @@
   </div>
   <footer>
     Apache-2.0 · Aziel Eliab · 2026 · forks welcome and always allowed.
+    Lawful privacy use only.
   </footer>
 </main>
 <script>
   const $ = (id) => document.getElementById(id);
   let showReceipt = false;
   let lastSession = null;
+
+  function renderHops(circuit) {
+    const box = $("hops");
+    box.innerHTML = "";
+    const hops = (circuit && circuit.hops) || [];
+    if (!hops.length) {
+      box.innerHTML = '<span class="hop">—</span>';
+      return;
+    }
+    hops.forEach((id, i) => {
+      const el = document.createElement("span");
+      el.className = "hop" + (i === 0 ? " entry" : "") + (i === hops.length - 1 ? " exit" : "");
+      el.textContent = id;
+      box.appendChild(el);
+    });
+  }
 
   async function refresh() {
     const r = await fetch("/session");
@@ -118,11 +155,20 @@
     $("node").textContent = s.closed ? "(mapping destroyed)" : (s.node_id || "—");
     $("integrity").textContent = s.live_integrity || "—";
     $("integrity").className = "v " + (s.live_integrity === "PASS" ? "pass" : "fail");
+    const c = s.circuit;
+    renderHops(s.closed ? null : c);
+    $("path").textContent = s.closed ? "—" : ((c && c.path) ? c.path.join(" → ") : "—");
+    const vpn = s.vpn;
+    $("vpn").textContent = vpn && vpn.listening
+      ? ("socks5://" + vpn.host + ":" + vpn.port + "  exit=" + (vpn.exit || "?"))
+      : "off";
     $("status-text").textContent = s.closed
-      ? "Session ended. Mapping destroyed."
-      : (s.node_id ? "Booth assigned. Operate, then leave." : "No session. Assign a booth.");
+      ? "Session ended. Circuit keys destroyed."
+      : (s.node_id ? "Circuit up. Traffic can ride the mesh." : "No session. Assign a mesh circuit.");
     $("end").disabled = !s.session_id || !!s.closed;
     $("toggle").disabled = !s.session_id;
+    $("vpn-start").disabled = !s.session_id || !!s.closed || !!(vpn && vpn.listening);
+    $("vpn-stop").disabled = !(vpn && vpn.listening);
     if (showReceipt && s.receipt) {
       $("receipt-card").hidden = false;
       $("receipt").textContent = JSON.stringify(s.receipt, null, 2);
@@ -140,6 +186,14 @@
   };
   $("end").onclick = async () => {
     await fetch("/end", { method: "POST" });
+    await refresh();
+  };
+  $("vpn-start").onclick = async () => {
+    await fetch("/vpn/start", { method: "POST" });
+    await refresh();
+  };
+  $("vpn-stop").onclick = async () => {
+    await fetch("/vpn/stop", { method: "POST" });
     await refresh();
   };
   $("toggle").onclick = () => {
@@ -164,6 +218,8 @@
     $("node").textContent = obj.node_id || obj.mirage_node || "—";
     $("integrity").textContent = obj.live_integrity || (obj.receipt ? "imported" : "—");
     $("status-text").textContent = "Imported JSON (display only; mapping is not restored).";
+    renderHops(obj.circuit || null);
+    $("path").textContent = (obj.circuit && obj.circuit.path) ? obj.circuit.path.join(" → ") : "—";
     if (obj.receipt) {
       showReceipt = true;
       $("receipt-card").hidden = false;

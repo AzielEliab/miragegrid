@@ -1,6 +1,7 @@
 .venv
 .godlock
 dist
+.miragegrid-state.json
 __pycache__/
 *.pyc
 *.egg-info/

@@ -1,7 +1,7 @@
 name: miragegrid
-description: Assign a logical node 1-25 and mint a receipt. Labels only. Never a VPN, proxy, or Tor.
+description: Assign a MirageGrid mesh circuit (entry 1-25 plus hops). Companion to the node-mesh VPN. Author Aziel Eliab.
 publish_to: "none"
-version: 0.1.0+1
+version: 0.2.0+1
 
 environment:
   sdk: ">=3.3.0 <4.0.0"

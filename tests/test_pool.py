@@ -23,9 +23,9 @@ def test_pool_has_25_unique_nodes() -> None:
     assert node_label_for(13) == "Node14"
 
 
-def test_optional_endpoint_is_label_only() -> None:
-    pool = NodePool(endpoints={"node-01": "booth-alpha"})
-    assert pool.by_id("node-01").endpoint == "booth-alpha"
-    assert pool.by_id("node-02").endpoint is None
+def test_optional_endpoint_is_listen_target() -> None:
+    pool = NodePool(endpoints={"node-01": "127.0.0.1:19101"})
+    assert pool.by_id("node-01").endpoint == "127.0.0.1:19101"
+    assert pool.by_id("node-02").endpoint == "127.0.0.1:19002"
     assert not hasattr(pool, "connect")
     assert not hasattr(pool.by_id("node-01"), "connect")
