@@ -16,7 +16,7 @@ import { handleRuntimeApi } from "./runtime.js";
  */
 
 const PROJECT = "miragegrid";
-const DEFAULT_ASSET = "miragegrid-0.1.0.tar.gz";
+const DEFAULT_ASSET = "miragegrid-0.2.0.tar.gz";
 const DEFAULT_OWNER = "AzielEliab";
 const DEFAULT_REPO = "miragegrid";
 const DEFAULT_BRANCH = "main";
@@ -269,7 +269,8 @@ python -m pip install -e .
 echo
 echo "Installed MirageGrid."
 echo "Run:  miragegrid ui"
-echo "Then open http://127.0.0.1:8080  (loopback only)"
+echo "Or:   miragegrid vpn"
+echo "Then open http://127.0.0.1:8080  (loopback mesh-VPN console)"
 echo "Author: Aziel Eliab."
 `;
 }
@@ -339,8 +340,8 @@ async function indexHtml(env) {
 </style>
 <body>
   <h1>MirageGrid</h1>
-  <p class="motto">You enter the booth. The system selects a booth. The call is attributed to that booth. You leave with no persistent booth identity. Author Aziel Eliab.</p>
-  <p class="banner">THIS IS: a static pool of 25 named logical nodes. THIS IS NOT: a VPN, proxy mesh, Zoom tether, Tor hop, or IP hider. Logical node ids only. Author Aziel Eliab.</p>
+  <p class="motto">You enter the booth. The mesh selects a booth and builds a circuit. You leave with no persistent booth identity. Author Aziel Eliab.</p>
+  <p class="banner">THIS IS: a true node-mesh VPN and anonymity network — 25 persistent peers, onion circuits, userspace SOCKS5. Lawful privacy tool. Isolated counter: not VibeLock. Author Aziel Eliab.</p>
   <div class="card">
     <div class="nums">
       <p class="count">${v}<span>Views</span></p>
@@ -352,8 +353,8 @@ async function indexHtml(env) {
       <button type="button" class="btn install" id="install-btn">One-click install</button>
     </div>
     <pre id="install-cmd">${INSTALL_LINE}</pre>
-    <p class="kid">Then run: <code>miragegrid ui</code> and open http://127.0.0.1:8080 (this computer only).</p>
-    <p class="meta">The download count ticks on the Download click. The Worker serves the gzip (HTTP 200). No 302 to GitHub. Forks using this same link are counted automatically. ${DEFAULT_ASSET} — ${n} counted.</p>
+    <p class="kid">Then run: <code>miragegrid ui</code> or <code>miragegrid vpn</code>. UI is http://127.0.0.1:8080. SOCKS5 is 127.0.0.1:1080.</p>
+    <p class="meta">Live download count ticks on the Download click. The Worker serves the gzip (HTTP 200). No 302 to GitHub. Forks using this same link are counted automatically. ${DEFAULT_ASSET} — ${n} counted.</p>
     <p class="iso">Isolated counter: Worker <code>miragegrid-download-tracker</code>, project <code>${PROJECT}</code>, KV <code>MIRAGEGRID_DOWNLOADS</code>. Not mixed with any other product. /v1 does not increment downloads.</p>
     <p class="meta">GitHub: stars ${gh.stars || 0} · forks ${gh.forks || 0} · watchers ${gh.watchers || 0} · release assets ${gh.release_download_count || 0}</p>
     

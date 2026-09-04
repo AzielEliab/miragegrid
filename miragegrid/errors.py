@@ -4,7 +4,7 @@ from __future__ import annotations
 
 
 class MirageGridError(Exception):
-    """Base error for the assignment + receipt engine."""
+    """Base error for the mesh VPN and receipt engine."""
 
 
 class MappingDestroyedError(MirageGridError):

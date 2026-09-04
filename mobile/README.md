@@ -1,8 +1,11 @@
 # MirageGrid — iPhone & Android
 
-Assign one logical node (1-25) via SHA-256(entropy||timestamp) and mint an in-memory receipt. End session destroys the mapping.
+Assign a mesh circuit (entry 1–25 plus onion hops) via
+SHA-256(entropy||timestamp) and mint an in-memory receipt. End session
+destroys the mapping.
 
-Offline. No analytics. Dark matte / gold.
+Companion to the desktop **node-mesh VPN**. Offline. No analytics.
+Dark matte / gold.
 
 Application id: `com.azieeliab.miragegrid`
 
@@ -21,9 +24,10 @@ flutter run
 Then open `android/` in Android Studio, or `ios/Runner.xcworkspace` in
 Xcode.
 
-## Honest scope
+## Scope
 
-NEVER a VPN, proxy, Tor, SOCKS, or IP-hiding mesh. Nodes are labels only. This package never tunnels.
+This phone app assigns a mesh circuit and shows hops. The full userspace
+SOCKS5 VPN runs in the desktop package (`miragegrid vpn`).
 
 ## Desktop package (counted download)
 

@@ -1,15 +1,15 @@
 ---
 name: MirageGrid
-description: Use when calling MirageGrid hosted /v1 or installing the local package. Author Aziel Eliab.
+description: Use when calling MirageGrid hosted /v1 or installing the local node-mesh VPN. Author Aziel Eliab.
 ---
 
 # MirageGrid
 
-Distributed identity abstraction. 25 logical nodes. Not a VPN. Author: **Aziel Eliab**.
+Node-mesh VPN and anonymity network. 25 persistent peers. Onion circuits. Author: **Aziel Eliab**.
 
-**THIS IS:** a distributed identity abstraction (25 logical nodes, cryptographic sessions).
+**THIS IS:** a true node-mesh VPN and anonymity network (mesh assignment, peer routing, session circuits, userspace SOCKS5).
 
-**THIS IS NOT:** a VPN, Tor, anonymous relay, or untraceable-origin system. Hosted `/v1` does not increment downloads or views.
+**THIS IS NOT:** a crime tool, a log-wipe API, or a guarantee against global surveillance. Hosted `/v1` does not increment downloads or views.
 
 Always send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 an empty agent.
 
@@ -24,6 +24,9 @@ Ops (do **not** increment downloads or views):
 
 - `GET /v1/health` — liveness
 - `GET /v1/skill` — this file
+- `GET /v1/mesh` — persistent topology
+- `POST /v1/route` — peer path
+- `POST /v1/assign` — session circuit
 - Product POSTs listed in OpenAPI
 
 Grok: import OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.
@@ -33,6 +36,8 @@ Grok: import OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.
 ```bash
 curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/health
 curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill
+curl -s -A 'Mozilla/5.0' -X POST https://miragegrid-download-tracker.vibelock.workers.dev/v1/assign \
+  -H 'content-type: application/json' -d '{}'
 ```
 
 ## Local (after one-click install)
@@ -40,10 +45,11 @@ curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.de
 ```bash
 curl -fsSL https://miragegrid-download-tracker.vibelock.workers.dev/install.sh | bash
 miragegrid ui
+miragegrid vpn
 miragegrid doctor
 ```
 
-Then open http://127.0.0.1:8080 (loopback only).
+Then open http://127.0.0.1:8080 (loopback). SOCKS5: 127.0.0.1:1080.
 
-Counted download (gzip HTTP 200, no 302): https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.1.0.tar.gz
+Counted download (gzip HTTP 200, no 302): https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.2.0.tar.gz
 GitHub: https://github.com/AzielEliab/miragegrid

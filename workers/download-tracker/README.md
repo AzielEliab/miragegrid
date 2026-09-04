@@ -5,6 +5,9 @@ KV namespace `MIRAGEGRID_DOWNLOADS` bound as `DOWNLOADS`.
 Does **not** 302 to GitHub on `/download`. Serves gzip via `ASSETS.fetch`,
 `Cache-Control: private, no-store`.
 
+Hosted `/v1` is the mesh-VPN control plane (assign / mesh / route /
+circuit / receipt). Isolated from VibeLock.
+
 GET `/` increments a **page-view** counter (separate from downloads).
 GET `/download` increments **downloads**.
 `/v1` never increments DOWNLOADS KV.
