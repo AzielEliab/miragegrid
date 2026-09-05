@@ -55,7 +55,9 @@ curl -s -A 'Mozilla/5.0' -X POST https://miragegrid-download-tracker.vibelock.wo
 curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh
 \`\`\`
 
-Grok: import the catalog OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.
+Works with any OpenAPI- or MCP-capable assistant: ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.
+
+Import notes: ChatGPT — GPT Actions (OpenAPI URL). Grok — custom tool from OpenAPI. Venice — HTTP tools. Cursor / Glama — MCP catalog. Claude and other OpenAPI/MCP clients — same OpenAPI document or MCP catalog.
 
 ## Local (after one-click install)
 
@@ -485,13 +487,16 @@ function aiHtml() {
   <h1>MirageGrid live API</h1>
   <p class="motto">${MOTTO}</p>
   <p class="banner">${BANNER}</p>
-  <h2>ChatGPT (GPT Actions)</h2>
-  <p>Paste this OpenAPI URL into GPT Actions:</p>
-  <p><code>${HOST}/openapi.json</code></p>
-  <h2>Grok / xAI</h2>
-  <p>Custom tool pointing at <code>GET ${HOST}/v1/mesh</code>, <code>POST ${HOST}/v1/assign</code>, <code>POST ${HOST}/v1/route</code>.</p>
-  <h2>Venice</h2>
-  <p>Custom HTTP tool from the same OpenAPI URL.</p>
+  <h2>Use with AI assistants</h2>
+  <p>Any MCP- or OpenAPI-capable assistant can call this control plane, including ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.</p>
+  <p>OpenAPI: <code>${HOST}/openapi.json</code></p>
+  <ul>
+    <li><strong>ChatGPT (GPT Actions / OpenAI):</strong> paste the OpenAPI URL into GPT Actions.</li>
+    <li><strong>Grok (xAI):</strong> import the OpenAPI document as a custom tool. Useful live ops: <code>GET ${HOST}/v1/mesh</code>, <code>POST ${HOST}/v1/assign</code>, <code>POST ${HOST}/v1/route</code>.</li>
+    <li><strong>Venice:</strong> custom HTTP tool from the same OpenAPI URL.</li>
+    <li><strong>Cursor (MCP) / Glama (MCP):</strong> connect the MCP catalog below.</li>
+    <li><strong>Claude (Anthropic), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and others:</strong> import the OpenAPI document or attach the MCP catalog where the client supports it.</li>
+  </ul>
   <h2>MCP catalog</h2>
   <p>The shared catalog (ships separately) is <code>https://aziel-runtime.vibelock.workers.dev/mcp</code>.</p>
   <p><a href="/openapi.json">openapi.json</a> · <a href="/v1/health">health</a> · <a href="/">MirageGrid</a></p>

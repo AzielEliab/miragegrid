@@ -234,15 +234,37 @@ CONTRIBUTING.md        forks first-class; lawful privacy mesh VPN
 mobile/              Flutter iPhone + Android (`flutter create .`)
 ```
 
-## Use with Grok, ChatGPT, Venice
+## Use with AI assistants
 
 Live HTTPS control plane on the existing download-tracker Worker. **Mesh assignment, peer routes, circuit hops.** Packet forwarding is the local package.
 
-OpenAPI (ChatGPT GPT Actions / Venice custom HTTP / Grok custom tool):
+Any MCP- or OpenAPI-capable assistant can import this API, including:
+
+- ChatGPT (GPT Actions / OpenAI)
+- Grok (xAI)
+- Venice
+- Claude (Anthropic)
+- Cursor (MCP)
+- Glama (MCP)
+- Perplexity
+- Microsoft Copilot / Bing
+- Google Gemini / Vertex
+- Mistral
+- Meta AI
+- Apple Intelligence surfaces
+- Amazon Q tooling
+- DuckAssist
+- You.com
+- Cohere
+- other MCP/OpenAPI-capable assistants
+
+OpenAPI:
 
 ```
 https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json
 ```
+
+Practical import notes: ChatGPT — paste the OpenAPI URL into GPT Actions. Grok — import OpenAPI as a custom tool. Venice — custom HTTP tools from the same URL. Cursor / Glama — connect the MCP catalog. Claude, Perplexity, Copilot / Bing, Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q, DuckAssist, You.com, Cohere, and other OpenAPI/MCP clients — import the OpenAPI document or attach the MCP catalog where the client supports it.
 
 Setup notes: [https://miragegrid-download-tracker.vibelock.workers.dev/ai](https://miragegrid-download-tracker.vibelock.workers.dev/ai)
 
