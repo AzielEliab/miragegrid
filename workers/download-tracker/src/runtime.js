@@ -1,16 +1,16 @@
 /**
  * MirageGrid hosted runtime (control plane).
- * Node-mesh VPN and anonymity network. Author Aziel Eliab.
+ * Session assignment engine. Not a VPN. Author Aziel Eliab.
  * /v1 never touches DOWNLOADS KV.
  */
 const PRODUCT = "miragegrid";
 const VERSION = "0.2.0";
 const MOTTO = "You enter the booth. The mesh selects a booth and builds a circuit. You leave with no persistent booth identity.";
-const BANNER = "MirageGrid is a true node-mesh VPN and anonymity network. Persistent 25-node peer mesh, onion circuits, userspace SOCKS5. Lawful privacy tool. Author Aziel Eliab.";
+const BANNER = "MirageGrid is not a VPN and not an anonymity network. Ephemeral session node assignment with receipts. Packet forwarding is not hosted. Author Aziel Eliab.";
 const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
 const SKILL = `---
 name: MirageGrid
-description: Use when assigning a mesh circuit, routing peers, or installing the node-mesh VPN. MirageGrid is a true node-mesh VPN and anonymity network. Author Aziel Eliab.
+description: Use when assigning a session node, routing peers, or installing MirageGrid. Not a VPN and not an anonymity network. Author Aziel Eliab.
 ---
 
 # MirageGrid
@@ -19,9 +19,9 @@ You enter the booth. The mesh selects a booth and builds a circuit. You leave wi
 
 Author: **Aziel Eliab**.
 
-**THIS IS:** a node-mesh VPN and anonymity network (25 persistent peers, onion circuits, userspace SOCKS5).
+**THIS IS:** ephemeral control-plane node/circuit assignment (25 named peers, receipts, shortest-path maps).
 
-**THIS IS NOT:** a crime tool, a log-wipe, or a guarantee against a global adversary. Hosted \`/v1\` does not increment downloads.
+**THIS IS NOT:** a VPN, an anonymity network, a hosted hop, a crime tool, a log-wipe, or a guarantee against a global adversary. Hosted \`/v1\` does not increment downloads.
 
 Always send \`User-Agent: Mozilla/5.0\`. Cloudflare Workers may 403 an empty agent.
 
@@ -62,10 +62,10 @@ Grok: import the catalog OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice:
 \`\`\`bash
 curl -fsSL https://miragegrid-download-tracker.vibelock.workers.dev/install.sh | bash
 miragegrid ui
-miragegrid vpn
+miragegrid doctor
 \`\`\`
 
-Then open http://127.0.0.1:8080 and SOCKS5 at 127.0.0.1:1080.
+Then open http://127.0.0.1:8080 (loopback console). Hosted MirageGrid is not a VPN.
 
 Apache-2.0 (or the repo LICENSE). Forks are welcome and always allowed.
 `;
@@ -411,7 +411,7 @@ function openapiSpec() {
     info: {
       title: "MirageGrid runtime",
       version: VERSION,
-      description: BANNER + " " + MOTTO,
+      description: BANNER + " " + MOTTO + " Author Aziel Eliab. Apache-2.0.",
     },
     servers: [{ url: HOST }],
     paths: {
@@ -472,7 +472,7 @@ function aiHtml() {
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MirageGrid — use with Grok, ChatGPT, Venice</title>
+<title>MirageGrid — Aziel Eliab</title>
 <style>
   :root { color-scheme: dark; }
   body { font: 16px/1.45 system-ui, sans-serif; max-width: 42rem; margin: 3rem auto; padding: 0 1.25rem; background: #0e1014; color: #e8eaef; }
@@ -494,7 +494,7 @@ function aiHtml() {
   <p>Custom HTTP tool from the same OpenAPI URL.</p>
   <h2>MCP catalog</h2>
   <p>The shared catalog (ships separately) is <code>https://aziel-runtime.vibelock.workers.dev/mcp</code>.</p>
-  <p><a href="/openapi.json">openapi.json</a> · <a href="/v1/health">health</a> · <a href="/">downloads</a></p>
+  <p><a href="/openapi.json">openapi.json</a> · <a href="/v1/health">health</a> · <a href="/">MirageGrid</a></p>
 </body>
 </html>`;
 }
@@ -505,7 +505,7 @@ export async function handleRuntimeApi(request, url) {
   if (!isApi) return null;
   try {
     if (path === "/v1/health" && request.method === "GET") {
-      return json({ ok: true, product: PRODUCT, version: VERSION, banner: BANNER, kind: "node-mesh-vpn" });
+      return json({ ok: true, product: PRODUCT, version: VERSION, banner: BANNER, kind: "session-assignment" });
     }
     if (path === "/v1/skill" && request.method === "GET") {
       return new Response(SKILL, {

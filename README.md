@@ -49,7 +49,8 @@ The script curls the **counted** tarball from this project's Worker
 (`/download`, User-Agent `Mozilla/5.0`), extracts, makes a venv, and
 `pip install -e .`. Then run `miragegrid ui` or `miragegrid vpn`.
 
-Or tap **Download** / **One-click install** on the Worker homepage:
+Or use the Worker homepage (assign / mesh / route / receipts, plus
+**Download** / **One-click install**):
 https://miragegrid-download-tracker.vibelock.workers.dev/
 
 ## Counted download (Cloudflare Worker)

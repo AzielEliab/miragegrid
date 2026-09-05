@@ -1,15 +1,15 @@
 ---
 name: MirageGrid
-description: Use when calling MirageGrid hosted /v1 or installing the local node-mesh VPN. Author Aziel Eliab.
+description: Use when calling MirageGrid hosted /v1 or installing the local package. Not a VPN. Author Aziel Eliab.
 ---
 
 # MirageGrid
 
-Node-mesh VPN and anonymity network. 25 persistent peers. Onion circuits. Author: **Aziel Eliab**.
+Ephemeral session node assignment. 25 named peers. Receipts. Author: **Aziel Eliab**.
 
-**THIS IS:** a true node-mesh VPN and anonymity network (mesh assignment, peer routing, session circuits, userspace SOCKS5).
+**THIS IS:** a session assignment engine (mesh maps, circuit hops, internal receipts).
 
-**THIS IS NOT:** a crime tool, a log-wipe API, or a guarantee against global surveillance. Hosted `/v1` does not increment downloads or views.
+**THIS IS NOT:** a VPN, an anonymity network, a hosted hop, a crime tool, a log-wipe, or a guarantee against global surveillance. Hosted `/v1` does not increment downloads or views.
 
 Always send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 an empty agent.
 
@@ -45,11 +45,10 @@ curl -s -A 'Mozilla/5.0' -X POST https://miragegrid-download-tracker.vibelock.wo
 ```bash
 curl -fsSL https://miragegrid-download-tracker.vibelock.workers.dev/install.sh | bash
 miragegrid ui
-miragegrid vpn
 miragegrid doctor
 ```
 
-Then open http://127.0.0.1:8080 (loopback). SOCKS5: 127.0.0.1:1080.
+Then open http://127.0.0.1:8080 (loopback). Hosted MirageGrid is not a VPN.
 
 Counted download (gzip HTTP 200, no 302): https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.2.0.tar.gz
 GitHub: https://github.com/AzielEliab/miragegrid
