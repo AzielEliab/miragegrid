@@ -29,7 +29,9 @@ Ops (do **not** increment downloads or views):
 - `POST /v1/assign` — session circuit
 - Product POSTs listed in OpenAPI
 
-Grok: import OpenAPI as a custom tool. ChatGPT: GPT Actions. Venice: HTTP tools.
+Works with any OpenAPI- or MCP-capable assistant: ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.
+
+Import notes: ChatGPT — GPT Actions (OpenAPI URL). Grok — custom tool from OpenAPI. Venice — HTTP tools. Cursor / Glama — MCP catalog. Claude and other OpenAPI/MCP clients — same OpenAPI document or MCP catalog.
 
 ## Example
 
