@@ -2,7 +2,9 @@
  * MirageGrid hosted runtime (control plane).
  * Session assignment engine. Not a VPN. Author Aziel Eliab.
  * /v1 never touches DOWNLOADS KV.
+ * /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME (handled in index.js before this catch-all).
  */
+import { meshOpenApiPaths, meshPointer } from "./mesh.js";
 const PRODUCT = "miragegrid";
 const VERSION = "0.2.0";
 const MOTTO = "You enter the booth. The mesh selects a booth and builds a circuit. You leave with no persistent booth identity.";
@@ -10,7 +12,7 @@ const BANNER = "MirageGrid is not a VPN and not an anonymity network. Ephemeral 
 const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
 const SKILL = `---
 name: MirageGrid
-description: Use when assigning a session node, routing peers, or installing MirageGrid. Not a VPN and not an anonymity network. Author Aziel Eliab.
+description: Use when assigning a session node, routing peers, or installing MirageGrid. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
 ---
 
 # MirageGrid
@@ -34,7 +36,10 @@ Host: \`https://miragegrid-download-tracker.vibelock.workers.dev\`
 | GET | \`/v1/health\` | Liveness. Does not increment downloads. |
 | GET | \`/v1/skill\` | This markdown. Does not increment downloads. |
 | GET | \`/v1/nodes\` | List the 25 mesh nodes. |
-| GET | \`/v1/mesh\` | Topology, adjacency, default listen ports. |
+| GET | \`/v1/topology\` | Persistent 25-node circulant topology (local op). |
+| GET | \`/v1/mesh\` | PROXY suite mesh status. Default OFF. QNM live|locked|isolated. Never enables. |
+| GET | \`/v1/mesh/nodes\` | PROXY Live Nodes roster (5-minute presence). |
+| POST | \`/v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}\` | PROXY. Bearer required to enable. No auto-heal. |
 | POST | \`/v1/route\` | Shortest peer path between two nodes. |
 | POST | \`/v1/assign\` | Assign a session circuit (entry + hops + path). |
 | POST | \`/v1/circuit\` | Build circuit hops from entropy/timestamp (or fresh). |
@@ -52,6 +57,7 @@ MCP: \`POST https://aziel-runtime.vibelock.workers.dev/mcp\`
 curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/health
 curl -s -A 'Mozilla/5.0' -X POST https://miragegrid-download-tracker.vibelock.workers.dev/v1/assign \\
   -H 'content-type: application/json' -d '{}'
+curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/topology
 curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh
 \`\`\`
 
@@ -413,7 +419,7 @@ function openapiSpec() {
     info: {
       title: "MirageGrid runtime",
       version: VERSION,
-      description: BANNER + " " + MOTTO + " Author Aziel Eliab. Apache-2.0.",
+      description: BANNER + " " + MOTTO + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Aziel Eliab only. Apache-2.0.",
     },
     servers: [{ url: HOST }],
     paths: {
@@ -430,8 +436,9 @@ function openapiSpec() {
       "/v1/nodes": {
         get: { operationId: "nodes", summary: "List 25 mesh nodes.", responses: { "200": { description: "nodes", content: { "application/json": { schema: { type: "object" } } } } } },
       },
-      "/v1/mesh": {
-        get: { operationId: "mesh", summary: "Persistent 25-node mesh topology.", responses: { "200": { description: "mesh", content: { "application/json": { schema: { type: "object" } } } } } },
+      ...meshOpenApiPaths(),
+      "/v1/topology": {
+        get: { operationId: "topology", summary: "Persistent 25-node circulant topology (local op). Suite mesh is GET /v1/mesh PROXY.", responses: { "200": { description: "topology", content: { "application/json": { schema: { type: "object" } } } } } },
       },
       "/v1/route": {
         post: {
@@ -492,25 +499,27 @@ function aiHtml() {
   <p>OpenAPI: <code>${HOST}/openapi.json</code></p>
   <ul>
     <li><strong>ChatGPT (GPT Actions / OpenAI):</strong> paste the OpenAPI URL into GPT Actions.</li>
-    <li><strong>Grok (xAI):</strong> import the OpenAPI document as a custom tool. Useful live ops: <code>GET ${HOST}/v1/mesh</code>, <code>POST ${HOST}/v1/assign</code>, <code>POST ${HOST}/v1/route</code>.</li>
+    <li><strong>Grok (xAI):</strong> import the OpenAPI document as a custom tool. Useful live ops: <code>GET ${HOST}/v1/topology</code>, <code>GET ${HOST}/v1/mesh</code>, <code>POST ${HOST}/v1/assign</code>, <code>POST ${HOST}/v1/route</code>.</li>
     <li><strong>Venice:</strong> custom HTTP tool from the same OpenAPI URL.</li>
     <li><strong>Cursor (MCP) / Glama (MCP):</strong> connect the MCP catalog below.</li>
     <li><strong>Claude (Anthropic), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and others:</strong> import the OpenAPI document or attach the MCP catalog where the client supports it.</li>
   </ul>
   <h2>MCP catalog</h2>
-  <p>The shared catalog (ships separately) is <code>https://aziel-runtime.vibelock.workers.dev/mcp</code>.</p>
-  <p><a href="/openapi.json">openapi.json</a> · <a href="/v1/health">health</a> · <a href="/">MirageGrid</a></p>
+  <p>The shared catalog (ships separately) is <code>https://aziel-runtime.vibelock.workers.dev/mcp</code> (catalog <code>mesh_*</code> + FragGate <code>slug=mesh</code>).</p>
+  <p>Suite mesh: <code>GET ${HOST}/v1/mesh</code> PROXY to aziel-runtime. Default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Author: Aziel Eliab only.</p>
+  <p><a href="/openapi.json">openapi.json</a> · <a href="/v1/health">health</a> · <a href="/v1/mesh">/v1/mesh</a> · <a href="/">MirageGrid</a></p>
 </body>
 </html>`;
 }
 
 export async function handleRuntimeApi(request, url) {
   const path = url.pathname;
+  if (path === "/v1/mesh" || path.startsWith("/v1/mesh/")) return null;
   const isApi = path === "/v1" || path.startsWith("/v1/") || path === "/openapi.json" || path === "/ai";
   if (!isApi) return null;
   try {
     if (path === "/v1/health" && request.method === "GET") {
-      return json({ ok: true, product: PRODUCT, version: VERSION, banner: BANNER, kind: "session-assignment" });
+      return json({ ok: true, product: PRODUCT, version: VERSION, banner: BANNER, kind: "session-assignment", mesh: meshPointer() });
     }
     if (path === "/v1/skill" && request.method === "GET") {
       return new Response(SKILL, {
@@ -523,7 +532,7 @@ export async function handleRuntimeApi(request, url) {
       return new Response(aiHtml(), { headers: { "Content-Type": "text/html; charset=utf-8", ...corsHeaders() } });
     }
     if (path === "/v1/nodes" && request.method === "GET") return json(listNodes());
-    if (path === "/v1/mesh" && request.method === "GET") return json(meshView());
+    if (path === "/v1/topology" && request.method === "GET") return json(meshView());
     if (path === "/v1/route" && request.method === "POST") {
       let body = {};
       try { body = await request.json(); } catch { body = {}; }
@@ -563,7 +572,7 @@ export async function handleRuntimeApi(request, url) {
         hash_ok: await hashOk(rec),
       });
     }
-    return json({ error: "not found" }, 404);
+    return json({ error: "not found", hint: "GET /v1/health GET /v1/skill GET /v1/topology GET /v1/mesh POST /v1/assign" }, 404);
   } catch (err) {
     return json({ error: String(err.message || err), banner: BANNER }, 400);
   }

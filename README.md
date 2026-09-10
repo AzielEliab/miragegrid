@@ -62,6 +62,7 @@ The Worker serves the gzip itself (HTTP 200, no 302 to GitHub).
 - Direct tarball: [miragegrid-0.2.0.tar.gz](https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.2.0.tar.gz)
 - One-click install: [https://miragegrid-download-tracker.vibelock.workers.dev/install.sh](https://miragegrid-download-tracker.vibelock.workers.dev/install.sh)
 - Skill: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill](https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill)
+- Suite mesh proxy: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh](https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated
 - OpenAPI: [https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json](https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json)
 - GitHub: [https://github.com/AzielEliab/miragegrid](https://github.com/AzielEliab/miragegrid)
 
@@ -268,7 +269,7 @@ Practical import notes: ChatGPT — paste the OpenAPI URL into GPT Actions. Grok
 
 Setup notes: [https://miragegrid-download-tracker.vibelock.workers.dev/ai](https://miragegrid-download-tracker.vibelock.workers.dev/ai)
 
-MCP catalog (ships separately): `https://aziel-runtime.vibelock.workers.dev/mcp`
+MCP catalog (ships separately): `https://aziel-runtime.vibelock.workers.dev/mcp`. Suite mesh `/v1/mesh/*` PROXY via `AZIEL_RUNTIME` (default OFF; QNM-BUILD-1.0 live|locked|isolated; no Node Gate). Catalog MCP `mesh_*` + FragGate `slug=mesh`.
 
 ```bash
 curl -sS -X POST https://miragegrid-download-tracker.vibelock.workers.dev/v1/assign \
