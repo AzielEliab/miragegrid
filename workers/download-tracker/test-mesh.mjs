@@ -19,6 +19,14 @@ assert(status && status.status === 200, "GET /v1/mesh/status HTTP " + (status &&
 const body = await status.json();
 assert(body.code === "MESH-OK", "expected MESH-OK, got " + JSON.stringify(body.code));
 assert(body.enabled === false, "expected enabled:false, got " + JSON.stringify(body.enabled));
+assert(body.qns_cd_spec === "QNS-CD-1.0", "expected qns_cd_spec QNS-CD-1.0, got " + JSON.stringify(body.qns_cd_spec));
+assert(body.qns_cd && body.qns_cd.spec === "QNS-CD-1.0", "expected qns_cd.spec QNS-CD-1.0");
+assert(body.qns_cd.name === "photon QNS1 packet transfer", "expected photon QNS1 name");
+assert(body.qns_cd.public_proxy === false && body.qns_cd.qnsd_proxy === false, "qnsd must not be a public proxy");
+assert(body.qns_cd.softwares_tab === false, "QNS-CD is not a Softwares-tab product");
+assert(body.qns_cd.node_gate === false, "no Node Gate");
+assert(String(body.qns_cd.local_repo || "").includes("qnm-node"), "qns_cd must cite qnm-node");
+assert(String(body.qns_cd.runtime_repo || "").includes("aziel-runtime"), "qns_cd must cite aziel-runtime");
 
 const enable = await call("/v1/mesh/enable", {
   method: "POST",
@@ -44,7 +52,7 @@ const join = await call("/v1/mesh/join", {
 const joinBody = await join.json();
 assert(joinBody.code === "MESH-OFF" || joinBody.enabled === false, "join while OFF should be MESH-OFF, got " + JSON.stringify(joinBody));
 
-console.log("GET /v1/mesh/status MESH-OK enabled:false");
+console.log("GET /v1/mesh/status MESH-OK enabled:false qns_cd_spec=" + body.qns_cd_spec);
 console.log("POST /v1/mesh/enable {} →", enableBody.code);
 console.log("GET /v1/mesh/not-a-door →", unknownBody.code);
 console.log("POST /v1/mesh/join while OFF →", joinBody.code);
