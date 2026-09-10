@@ -41,8 +41,11 @@ pytest is the dev extra.
    is pytest.
 7. **Do not invent evaluation numbers.** If you measure something,
    publish the method next to the number.
-8. New behavior needs a test that fails without the change.
-9. Author line stays **Aziel Eliab**.
+8. **Door vs local op.** `/v1/mesh/*` PROXY to aziel-runtime. Local ops are `/v1/{op}` only.
+   Suite mesh default OFF; QNM rollup live|locked|isolated; no Node Gate;
+   no auto-heal; not anonymity. Product topology stays at `/v1/topology`.
+9. New behavior needs a test that fails without the change.
+10. Author line stays **Aziel Eliab**.
 
 ## Where to change things
 
@@ -57,6 +60,8 @@ pytest is the dev extra.
 - Receipts / integrity: `miragegrid/receipt.py`, `miragegrid/canon.py`
 - CLI: `miragegrid/cli.py`
 - Localhost UI: `miragegrid/ui.py`, `miragegrid/templates/ui.html`
+- Isolated counter: `workers/download-tracker/`
+- Suite mesh / QNM Live Nodes: `workers/download-tracker/src/mesh.js` (`/v1/mesh/*` PROXY to aziel-runtime).
 
 ## Reporting downloads from a fork
 
