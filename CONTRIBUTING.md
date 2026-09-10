@@ -61,7 +61,7 @@ pytest is the dev extra.
 - CLI: `miragegrid/cli.py`
 - Localhost UI: `miragegrid/ui.py`, `miragegrid/templates/ui.html`
 - Isolated counter: `workers/download-tracker/`
-- Suite mesh / QNM Live Nodes: `workers/download-tracker/src/mesh.js` (`/v1/mesh/*` PROXY to aziel-runtime).
+- Suite mesh / QNM Live Nodes: `workers/download-tracker/src/mesh.js` (`/v1/mesh/*` PROXY to aziel-runtime). QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (local qnsd in AzielEliab/qnm-node; runtime cites in AzielEliab/aziel-runtime). Not a Softwares-tab product. No public qnsd proxy.
 
 ## Reporting downloads from a fork
 

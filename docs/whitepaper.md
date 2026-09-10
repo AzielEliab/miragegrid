@@ -255,6 +255,9 @@ a crime tool.
 
 The Worker homepage shows a suite Live Nodes strip. `/v1/mesh/*` PROXY
 to aziel-runtime. Suite mesh default OFF. QNM rollup is
-live|locked|isolated counts only. No Node Gate. No auto-heal. Not an
-anonymity network. Anon-broadcast is not a publish path. Hosted
-MirageGrid remains session assignment; packet forwarding stays local.
+live|locked|isolated counts only. QNS-CD-1.0 (photon QNS1 packet
+transfer) is a hub cite / Worker mesh cross-map only — local qnsd is
+qnm-node; runtime cites live in aziel-runtime. No Node Gate. No public
+qnsd proxy. No auto-heal. Not an anonymity network. Anon-broadcast is
+not a publish path. Hosted MirageGrid remains session assignment;
+packet forwarding stays local.

@@ -1,6 +1,6 @@
 ---
 name: MirageGrid
-description: Use when calling MirageGrid hosted /v1 or installing the local package. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
+description: Use when calling MirageGrid hosted /v1 or installing the local package. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime catalog). No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
 ---
 
 # MirageGrid
@@ -25,8 +25,8 @@ Ops (do **not** increment downloads or views):
 - `GET /v1/health` — liveness
 - `GET /v1/skill` — this file
 - `GET /v1/topology` — persistent 25-node circulant topology (local op)
-- `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM live|locked|isolated. Never enables.
-- `GET /v1/mesh/nodes` — PROXY Live Nodes roster (5-minute presence).
+- `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 cross-map (photon QNS1 packet transfer) is stamped for peers. Never enables. No public qnsd proxy.
+- `GET /v1/mesh/nodes` — PROXY Live Nodes roster (5-minute presence). Same QNS-CD-1.0 cross-map.
 - `POST /v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}` — PROXY. Bearer required to enable. No auto-heal. Anon-broadcast is not a publish path.
 - `POST /v1/route` — peer path
 - `POST /v1/assign` — session circuit
@@ -54,7 +54,7 @@ miragegrid ui
 miragegrid doctor
 ```
 
-Then open http://127.0.0.1:8080 (loopback). Hosted MirageGrid is not a VPN. Worker homepage Live Nodes strip polls `GET /v1/mesh` (default OFF).
+Then open http://127.0.0.1:8080 (loopback). Hosted MirageGrid is not a VPN. Worker homepage Live Nodes strip polls `GET /v1/mesh` (default OFF). QNS-CD-1.0 is a hub cite / mesh cross-map only — local qnsd is [qnm-node](https://github.com/AzielEliab/qnm-node); runtime cites live in [aziel-runtime](https://github.com/AzielEliab/aziel-runtime). Not a Softwares-tab product.
 
 Counted download (gzip HTTP 200, no 302): https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.2.0.tar.gz
 GitHub: https://github.com/AzielEliab/miragegrid
