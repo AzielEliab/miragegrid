@@ -1,6 +1,6 @@
 ---
 name: MirageGrid
-description: Use when calling MirageGrid hosted /v1 or installing the local package. Not a VPN. Author Aziel Eliab.
+description: Use when calling MirageGrid hosted /v1 or installing the local package. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
 ---
 
 # MirageGrid
@@ -24,7 +24,10 @@ Ops (do **not** increment downloads or views):
 
 - `GET /v1/health` — liveness
 - `GET /v1/skill` — this file
-- `GET /v1/mesh` — persistent topology
+- `GET /v1/topology` — persistent 25-node circulant topology (local op)
+- `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM live|locked|isolated. Never enables.
+- `GET /v1/mesh/nodes` — PROXY Live Nodes roster (5-minute presence).
+- `POST /v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}` — PROXY. Bearer required to enable. No auto-heal. Anon-broadcast is not a publish path.
 - `POST /v1/route` — peer path
 - `POST /v1/assign` — session circuit
 - Product POSTs listed in OpenAPI
@@ -38,6 +41,7 @@ Import notes: ChatGPT — GPT Actions (OpenAPI URL). Grok — custom tool from O
 ```bash
 curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/health
 curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill
+curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh
 curl -s -A 'Mozilla/5.0' -X POST https://miragegrid-download-tracker.vibelock.workers.dev/v1/assign \
   -H 'content-type: application/json' -d '{}'
 ```
@@ -50,7 +54,7 @@ miragegrid ui
 miragegrid doctor
 ```
 
-Then open http://127.0.0.1:8080 (loopback). Hosted MirageGrid is not a VPN.
+Then open http://127.0.0.1:8080 (loopback). Hosted MirageGrid is not a VPN. Worker homepage Live Nodes strip polls `GET /v1/mesh` (default OFF).
 
 Counted download (gzip HTTP 200, no 302): https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.2.0.tar.gz
 GitHub: https://github.com/AzielEliab/miragegrid
