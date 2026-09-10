@@ -20,6 +20,15 @@ WORKER_README = (ROOT / "workers/download-tracker/README.md").read_text(encoding
 
 def test_mesh_contract_default_off_qnm_law() -> None:
     assert 'QNM_SPEC = "QNM-BUILD-1.0"' in MESH
+    assert 'QNS_CD_SPEC = "QNS-CD-1.0"' in MESH
+    assert "export const QNS_CD" in MESH
+    assert "photon QNS1 packet transfer" in MESH
+    assert "https://github.com/AzielEliab/qnm-node" in MESH
+    assert "https://github.com/AzielEliab/aziel-runtime" in MESH
+    assert "https://github.com/AzielEliab/azinterface" in MESH
+    assert "softwares_tab: false" in MESH
+    assert "qnsd_proxy: false" in MESH
+    assert "public_proxy: false" in MESH
     assert "MESH_DEFAULT_OFF = true" in MESH
     assert "MESH_ANONYMITY_NETWORK = false" in MESH
     assert "MESH_NODE_GATE = false" in MESH
@@ -32,6 +41,9 @@ def test_mesh_contract_default_off_qnm_law() -> None:
     assert "anon_broadcast_publish_path: false" in MESH
     assert "Aziel Eliab" in MESH
     assert "code: extra.code || \"MESH-OK\"" in MESH or '"MESH-OK"' in MESH
+    assert "QNS-CD-1.0" in MESH
+    assert '"/v1/qnsd"' not in MESH
+    assert "No public qnsd" in MESH or "no public qnsd" in MESH.lower()
 
 
 def test_mesh_pointer_and_openapi_helpers() -> None:
@@ -81,6 +93,17 @@ def test_runtime_advertises_mesh_proxy_and_pointer() -> None:
     assert 'path === "/v1/mesh"' in RUNTIME or 'path.startsWith("/v1/mesh/")' in RUNTIME
 
 
+def test_qns_cd_cross_map_on_live_nodes_payload() -> None:
+    assert "export function qnsCdFields" in MESH
+    assert "export function attachQnsCd" in MESH
+    assert "...qnsCdFields()" in MESH
+    assert "attachQnsCd(data)" in MESH
+    assert "QNS-CD-1.0" in HOMEPAGE
+    assert "QNS-CD-1.0" in RUNTIME
+    assert "No public qnsd" in RUNTIME or "no public qnsd" in RUNTIME.lower()
+    assert "Not a Softwares-tab product" in MESH
+
+
 def test_home_live_nodes_strip_no_node_gate() -> None:
     assert 'id="meshStrip"' in HOMEPAGE
     assert 'id="meshLiveCount"' in HOMEPAGE
@@ -107,3 +130,11 @@ def test_docs_advertise_mesh_proxy() -> None:
     assert "MESH-OK" in WORKER_README
     assert "enabled: false" in WORKER_README
     assert "Aziel Eliab" in MESH
+    assert "QNS-CD-1.0" in README
+    assert "QNS-CD-1.0" in SKILL
+    assert "QNS-CD-1.0" in WORKER_README
+    assert "photon QNS1" in README
+    assert "photon QNS1" in SKILL
+    assert "qnm-node" in README
+    assert "aziel-runtime" in SKILL
+    assert "no public qnsd" in WORKER_README.lower() or "No public qnsd" in WORKER_README
