@@ -252,3 +252,9 @@ The open-core package is a lawful privacy **node-mesh VPN**:
 
 It does not guarantee anonymity against a global adversary. It is not
 a crime tool.
+
+The Worker homepage shows a suite Live Nodes strip. `/v1/mesh/*` PROXY
+to aziel-runtime. Suite mesh default OFF. QNM rollup is
+live|locked|isolated counts only. No Node Gate. No auto-heal. Not an
+anonymity network. Anon-broadcast is not a publish path. Hosted
+MirageGrid remains session assignment; packet forwarding stays local.

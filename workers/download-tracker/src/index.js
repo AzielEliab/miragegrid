@@ -1,3 +1,4 @@
+import { handleMeshApi } from "./mesh.js";
 import { handleRuntimeApi } from "./runtime.js";
 import { citeDocument, renderIndexHtml } from "./homepage.js";
 
@@ -9,6 +10,7 @@ import { citeDocument, renderIndexHtml } from "./homepage.js";
  *      (does not 302 to GitHub)
  * GET  /stats   JSON totals + per-repo + per-branch breakdown
  * POST /event   forks report a download {owner,repo,branch,fork,asset}
+ * /v1, /v1/mesh/* do not increment. Suite mesh PROXY via AZIEL_RUNTIME.
  *
  * KV binding DOWNLOADS. Keys: project|owner|repo|branch|fork
  * CORS *. No secrets in this tree.
@@ -31,8 +33,8 @@ const INSTALL_LINE = "curl -fsSL https://miragegrid-download-tracker.vibelock.wo
 function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "GET, POST, HEAD, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Accept, Authorization, X-Aziel-Runtime-Token, User-Agent",
   };
 }
 
@@ -311,7 +313,7 @@ function robotsTxt() {
 }
 
 function sitemapXml() {
-  const locs = [HOST + "/", HOST + "/download", HOST + "/install.sh", HOST + "/v1/skill", HOST + "/openapi.json", HOST + "/cite.json", GITHUB_REPO];
+  const locs = [HOST + "/", HOST + "/download", HOST + "/install.sh", HOST + "/v1/skill", HOST + "/v1/mesh", HOST + "/openapi.json", HOST + "/cite.json", GITHUB_REPO];
   return (
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     locs.map((u) => "  <url><loc>" + u + "</loc></url>").join("\n") +
@@ -338,6 +340,9 @@ export default {
       });
     }
 
+
+    const mesh = await handleMeshApi(request, url, env);
+    if (mesh) return mesh;
 
     const runtime = await handleRuntimeApi(request, url);
     if (runtime) return runtime;
