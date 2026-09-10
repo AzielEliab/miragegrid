@@ -12,7 +12,7 @@ const BANNER = "MirageGrid is not a VPN and not an anonymity network. Ephemeral 
 const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
 const SKILL = `---
 name: MirageGrid
-description: Use when assigning a session node, routing peers, or installing MirageGrid. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
+description: Use when assigning a session node, routing peers, or installing MirageGrid. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime catalog). No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
 ---
 
 # MirageGrid
@@ -37,8 +37,8 @@ Host: \`https://miragegrid-download-tracker.vibelock.workers.dev\`
 | GET | \`/v1/skill\` | This markdown. Does not increment downloads. |
 | GET | \`/v1/nodes\` | List the 25 mesh nodes. |
 | GET | \`/v1/topology\` | Persistent 25-node circulant topology (local op). |
-| GET | \`/v1/mesh\` | PROXY suite mesh status. Default OFF. QNM live|locked|isolated. Never enables. |
-| GET | \`/v1/mesh/nodes\` | PROXY Live Nodes roster (5-minute presence). |
+| GET | \`/v1/mesh\` | PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 cross-map (photon QNS1). Never enables. No public qnsd. |
+| GET | \`/v1/mesh/nodes\` | PROXY Live Nodes roster (5-minute presence). Same QNS-CD-1.0 cross-map. |
 | POST | \`/v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}\` | PROXY. Bearer required to enable. No auto-heal. |
 | POST | \`/v1/route\` | Shortest peer path between two nodes. |
 | POST | \`/v1/assign\` | Assign a session circuit (entry + hops + path). |
@@ -419,7 +419,7 @@ function openapiSpec() {
     info: {
       title: "MirageGrid runtime",
       version: VERSION,
-      description: BANNER + " " + MOTTO + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Aziel Eliab only. Apache-2.0.",
+      description: BANNER + " " + MOTTO + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Aziel Eliab only. Apache-2.0.",
     },
     servers: [{ url: HOST }],
     paths: {
@@ -506,7 +506,7 @@ function aiHtml() {
   </ul>
   <h2>MCP catalog</h2>
   <p>The shared catalog (ships separately) is <code>https://aziel-runtime.vibelock.workers.dev/mcp</code> (catalog <code>mesh_*</code> + FragGate <code>slug=mesh</code>).</p>
-  <p>Suite mesh: <code>GET ${HOST}/v1/mesh</code> PROXY to aziel-runtime. Default OFF. QNM-BUILD-1.0 live|locked|isolated. No Node Gate. No auto-heal. Not anonymity. Author: Aziel Eliab only.</p>
+  <p>Suite mesh: <code>GET ${HOST}/v1/mesh</code> PROXY to aziel-runtime. Default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (no public qnsd). No Node Gate. No auto-heal. Not anonymity. Author: Aziel Eliab only.</p>
   <p><a href="/openapi.json">openapi.json</a> · <a href="/v1/health">health</a> · <a href="/v1/mesh">/v1/mesh</a> · <a href="/">MirageGrid</a></p>
 </body>
 </html>`;
