@@ -422,8 +422,16 @@ async function originFetch(env, pathAndQuery, init, request) {
   const door_url = joinOriginUrl(runtimeOrigin(env), path);
   const bind = runtimeService(env);
   if (bind) {
-    const res = await bind.fetch(new Request(SERVICE_BINDING_ORIGIN + path, next));
-    return { res, via: "service-binding", door_url };
+    try {
+      const res = await bind.fetch(new Request(SERVICE_BINDING_ORIGIN + path, next));
+      const ct = String(res.headers.get("Content-Type") || "");
+      const looksJson = ct.includes("json");
+      if (res.ok || looksJson) {
+        return { res, via: "service-binding", door_url };
+      }
+    } catch {
+      /* binding missing or local stub — HTTPS fallback */
+    }
   }
 
   try {
