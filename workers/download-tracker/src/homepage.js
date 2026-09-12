@@ -109,7 +109,6 @@ ${JSON.stringify(jsonLd, null, 2)}
     --muted: #9aa3b2;
     --line: #2a3140;
     --gold: #c9a227;
-    --gold-soft: #d4af37;
     --pass: #7dcf9a;
     --fail: #ff8a8a;
   }
@@ -129,13 +128,7 @@ ${JSON.stringify(jsonLd, null, 2)}
   .brandmark {
     width: 48px; height: 48px; border-radius: 12px; object-fit: cover; flex: 0 0 auto;
     box-shadow: 0 0 0 1px #d4af3733, 0 0 18px #c9a22733;
-    animation: everbloom 4.8s ease-in-out infinite;
   }
-  @keyframes everbloom {
-    0%, 100% { box-shadow: 0 0 0 1px #d4af3733, 0 0 10px #c9a22722; filter: saturate(1); }
-    50% { box-shadow: 0 0 0 1px #d4af3766, 0 0 28px #c9a22766; filter: saturate(1.25); }
-  }
-  .stamp { margin: 0; color: var(--gold-soft); font-size: .88rem; letter-spacing: .02em; }
   .motto { color: var(--muted); margin: 0 0 1rem; }
   .banner {
     border: 1px solid #5c4a1a; background: #241c0d; color: #f0d78c;
@@ -205,8 +198,7 @@ ${JSON.stringify(jsonLd, null, 2)}
 </head>
 <body>
   <div class="brandrow">
-    <img class="brandmark" src="/sigil.png" width="48" height="48" alt="Everblooming sigil — Aziel Eliab" decoding="async">
-    <p class="stamp">Everblooming sigil · Aziel Eliab</p>
+    <img class="brandmark" src="/sigil.png" width="48" height="48" alt="" decoding="async">
   </div>
   <h1>MirageGrid</h1>
   <p class="motto">${escapeHtml(MOTTO)} Author Aziel Eliab.</p>
