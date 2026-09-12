@@ -58,7 +58,13 @@ def test_worker_product_homepage() -> None:
     assert "/v1/mesh" in home
     assert "/v1/route" in home
     assert "/v1/verify-receipt" in home
-    assert "Everblooming sigil" in home
+    assert 'class="brandrow"' in home
+    assert 'class="brandmark"' in home
+    assert 'src="/sigil.png"' in home
+    assert 'alt=""' in home
+    assert "everblooming sigil" not in home.lower()
+    assert "everbloom" not in home.lower()
+    assert "THE EVER BLOOMING FLOWER" not in home.upper()
     assert "/sigil.png" in home
     assert "Aziel Eliab" in home
     assert "Apache-2.0" in home
@@ -68,7 +74,8 @@ def test_worker_product_homepage() -> None:
     assert "zenodo.214" not in home.lower()
     assert "10.5281/zenodo" not in home
     assert SIGIL.is_file()
-    assert SIGIL.stat().st_size > 1000
+    assert SIGIL.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"
+    assert 60_000 <= SIGIL.stat().st_size <= 90_000
     toml = TOML.read_text(encoding="utf-8")
     assert "/cite.json" in toml
     assert "/robots.txt" in toml
