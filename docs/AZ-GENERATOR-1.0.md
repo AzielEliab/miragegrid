@@ -228,6 +228,7 @@ hedidntjump.com) remain named public hosts. They are **not** Node Gate.
 - Naked public DNS as the access story
 - Claiming `.com` / `.net` / other ICANN TLDs
 - Pretending `.az` or `.aziel` succeeded after an honest pivot
+- Invented radio PHY / turning MirageGrid into a qnm RF/BT/Wi-Fi/photon mesh (local qnm radios are not this product; hub `GET /v1/mesh` never enables)
 - Visible 15:20 identity-lock HTML
 - Invented Zenodo DOIs
 - Merging papers instead of citing them
