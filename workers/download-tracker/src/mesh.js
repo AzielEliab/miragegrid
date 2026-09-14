@@ -1529,16 +1529,6 @@ export async function runMeshProxy(env, request, pathAndQuery) {
     };
   }
 
-  let search = "";
-  try {
-    if (pathAndQuery && String(pathAndQuery).includes("?")) {
-      search = "?" + String(pathAndQuery).split("?").slice(1).join("?");
-    } else if (request && request.url) {
-      search = new URL(request.url).search || "";
-    }
-  } catch {
-    search = "";
-  }
   const path = pathOnly + search;
 
   let body;

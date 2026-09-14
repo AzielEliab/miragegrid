@@ -249,6 +249,7 @@ def test_split_wires_cold_copy_reheal_law() -> None:
     assert "public_host_pair: 2" in MESH
     assert '".aziel"' in MESH
     assert "MESH-GET-NO-ENABLE" in MESH
+    assert MESH.count("let search =") == 1
     assert "AZG-NOT-CALLABLE" in SKILL
     assert "Cap-7 mesh DNS factory" in README
     assert "radio_phy: false" in MESH
