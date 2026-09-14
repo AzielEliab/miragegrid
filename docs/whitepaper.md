@@ -260,4 +260,28 @@ transfer) is a hub cite / Worker mesh cross-map only — local qnsd is
 qnm-node; runtime cites live in aziel-runtime. No Node Gate. No public
 qnsd proxy. No auto-heal. Not an anonymity network. Anon-broadcast is
 not a publish path. Hosted MirageGrid remains session assignment;
-packet forwarding stays local.
+packet forwarding stays local. Assign stays live. Hosted mesh /
+vpn-hop / tunnel stubs remain refuse.
+
+## 13. Locked mesh law (STW-1.0 · CCS-1.0 · RH-1.0)
+
+Author: Aziel Eliab only. Full text: [mesh-law.md](mesh-law.md).
+
+**SPLIT THE WIRES.** Fast 0.5–1s tip tick = presence + tip hash only,
+fixed-size (no body/diff/file). Payload is a pull-only second plane
+(never sender fan-out). Update is proof, not a timer (cite prev +
+lockset, fail-closed; 777s dwell after a valid cite; clock desync is
+not yes; ambiguous tip isolates). Equivocation ends the peer (same prev,
+two tips → lock/isolate; quorum is not truth). Emit last locally after
+verify. Phoenix is local to the failed node only. No unsend of an
+unverified body. Partition does not auto-splice; rejoin is cite +
+operator/lockset. Heartbeat loss is not poison and does not apply the
+last packet. The 1s tip socket and the 777s dwell socket never share.
+
+**COLD-COPY SURVIVAL.** Multiply cold copies. Refuse live body sync.
+The tip is expensive to erase. A server pull cannot wipe cold replicas.
+Poison is hash-absolute refuse. Data outlives creators.
+
+**REHEAL.** No neighbor talk-dirty-back-to-health. Heal from own tip +
+trusted pull, or phoenix-WAIT. Allowed fields: live / locked / isolated
+/ tip-hash. Forbidden: bodies, diffs, vote-to-fix. Not auto-heal.

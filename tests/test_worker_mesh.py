@@ -138,3 +138,52 @@ def test_docs_advertise_mesh_proxy() -> None:
     assert "qnm-node" in README
     assert "aziel-runtime" in SKILL
     assert "no public qnsd" in WORKER_README.lower() or "No public qnsd" in WORKER_README
+
+
+def test_split_wires_cold_copy_reheal_law() -> None:
+    assert 'SPLIT_WIRES_LAW = "SPLIT THE WIRES"' in MESH
+    assert 'SPLIT_WIRES_SPEC = "STW-1.0"' in MESH
+    assert 'COLD_COPY_LAW = "COLD-COPY SURVIVAL"' in MESH
+    assert 'COLD_COPY_SPEC = "CCS-1.0"' in MESH
+    assert 'REHEAL_LAW = "REHEAL"' in MESH
+    assert 'REHEAL_SPEC = "RH-1.0"' in MESH
+    assert "ASSIGN_LIVE = true" in MESH
+    assert "hostedStubRefuse" in MESH
+    assert "refuseReheal" in MESH
+    assert "tipPlaneContaminated" in MESH
+    assert "socketsShare" in MESH
+    assert "pull-only" in MESH
+    assert "sender_fanout: false" in MESH
+    assert "dwell_s: DWELL_S" in MESH or "dwell_s: 777" in MESH
+    assert "clock_desync_is_yes: false" in MESH
+    assert "quorum_is_truth: false" in MESH
+    assert "unsend_unverified_body: false" in MESH
+    assert "auto_splice: false" in MESH
+    assert "shared: false" in MESH
+    assert "live_body_sync: false" in MESH
+    assert "server_pull_wipes_cold: false" in MESH
+    assert "hash-absolute-refuse" in MESH
+    assert "data_outlives_creators: true" in MESH
+    assert "neighbor_talk_dirty_back_to_health: false" in MESH
+    assert "vote-to-fix" in MESH
+    assert "phoenix-wait" in MESH
+    assert "own-tip+trusted-pull" in MESH
+    assert "MESH-STUB" in MESH
+    assert "RH-NO-NEIGHBOR-TALK" in MESH
+    assert "RH-NO-VOTE-TO-FIX" in MESH
+    assert "STW-TIP-BODY" in MESH
+    assert "STW-SOCKET-SPLIT" in MESH
+    assert '"vpn"' in MESH and '"hop"' in MESH and '"tunnel"' in MESH
+    assert "assign stays live" in MESH
+    assert "...meshLawFields()" in MESH
+    assert "/v1/mesh/reheal" in MESH
+    assert "MESH_AUTO_HEAL = false" in MESH
+    assert "SPLIT THE WIRES" in README
+    assert "COLD-COPY SURVIVAL" in README
+    assert "REHEAL" in README
+    assert "SPLIT THE WIRES" in SKILL
+    assert "REHEAL" in SKILL
+    assert "SPLIT THE WIRES" in HOMEPAGE
+    assert "COLD-COPY SURVIVAL" in HOMEPAGE
+    assert "REHEAL" in HOMEPAGE
+    assert "Aziel Eliab" in MESH
