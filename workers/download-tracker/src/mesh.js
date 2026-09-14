@@ -15,8 +15,8 @@
  * Not callable from outside. 7m77s (497s) tick exits FRONT Node Gate
  * only (claim/plant/flag/restore). First claim www.survivalnetwork.az.
  * ≥49 local vault papers. Vault multiply onto each node as cold copies
- * (bootstrap / join / Cap-7 claim / grid-shift standby). No paper
- * bytes on the 1s tip tick. Mesh-authoritative zone + receipts — not
+ * (bootstrap / join / Cap-7 claim / grid-shift standby).
+ * no paper bytes on the 1s tip tick. Mesh-authoritative zone + receipts — not
  * public ICANN. MIRAGE-GRID-SHIFT-1.0: MESH-VAULT snapshot+standby,
  * cloak burst. AIRGAP-1.0: local vault + no bearer radios + no
  * climb-back. Official hubs are not airgap Node Gate.
@@ -606,7 +606,7 @@ export function vaultMultiply(body) {
     });
   }
   if (b.tip_tick || b.tip_tick_bodies) {
-    return lawVerdict(false, "STW-TIP-BODY", "refuse", "tip tick is presence+tip hash only; no paper bytes on the 1s tick", {
+    return lawVerdict(false, "STW-TIP-BODY", "refuse", "tip tick is presence+tip hash only; no paper bytes on the 1s tip tick", {
       tip_tick_bodies: false,
     });
   }
