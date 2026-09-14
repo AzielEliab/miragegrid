@@ -9,8 +9,17 @@ This paper is law for the next MirageGrid generation. It does not invent a
 Softwares-tab product. MirageGrid remains the Softwares product. Node Gate
 and AZ Generator stay inside MirageGrid.
 
+**AZ Generator is a Cap-7 mesh DNS factory.** It lives **deep in the
+node**. It does **not** get called from outside (no POST `/call-generator`,
+no Worker-invoked back door, no hosted cron into the node). Flow:
+
+    deep node → 7m77s (497s) claim tick → FRONT Node Gate
+    (claim / plant / flag / restore)
+
 Hosted `/v1/assign` stays live. Hosted mesh / vpn-hop / tunnel stubs remain
-refuse. Executable copies live in `miragegrid/mesh.py` and
+refuse. Hosted `GET /v1/mesh/az-generator` **cites** this law. `POST`
+`/v1/mesh/az-generator` **refuses** (`AZG-NOT-CALLABLE`). Executable copies
+live in `miragegrid/mesh.py`, `miragegrid/az_generator.py`, and
 `workers/download-tracker/src/mesh.js`.
 
 ## Public stack (locked wording)
@@ -28,7 +37,10 @@ MirageGrid’s public stack is now three named pieces:
    reheal + archive re-expand, not peer talk-back-to-health.
 
 AZ Generator serves Node Gate (claim / plant / restore) on the 7m77s
-clock. It is not GodLock, not AZBot, and not a hub.
+clock. It is not GodLock, not AZBot, and not a hub. It is not a
+Softwares-tab product. AZNet and AZBrowser are **separate** Softwares
+products; they pair for access only and are never merged into the
+generator.
 
 ## Clock
 
@@ -43,8 +55,9 @@ new domain** ending in **`.az`**.
 | Socket | `claim-7m77s` |
 | Alias | 7m77s |
 
-Domain claimed → site + server hosted by the **node they came from**
-(origin node). Cap: **7 domains per node**.
+Domain claimed → authored into a **mesh-authoritative** zone hosted by
+the **origin node**. Cap: **7 names per node**. This is **not** a public
+ICANN registrar write and **not** takeover of the public `.az` ccTLD.
 
 ## Three clocks, strangers
 
@@ -53,11 +66,38 @@ Tip/presence plane ≠ payload/download plane. The **1s** tip tick, the
 Three clocks. Strangers. STW-1.0 is not rewritten; the claim clock is
 the third stranger.
 
-## Cap-7
+## Cap-7 mesh DNS factory
 
-At most **7** spare/claimed `.az` names per covered node. An eighth
-claim is refuse. Cloak burst (see MIRAGE-GRID-SHIFT-1.0) may plant up
-to the same Cap-7 with a cloak on top; it cannot exceed Cap-7.
+At most **7** spare/claimed names per covered node. An eighth claim is
+refuse. Not “7 doors × 7 domains.” Cloak burst (see
+MIRAGE-GRID-SHIFT-1.0) may plant up to the same Cap-7 with a cloak on
+top; it cannot exceed Cap-7.
+
+The factory authors zone records + claim receipts + tip/hash
+continuity. Mesh tip remains authoritative. Hosted Worker stamps are
+cite-only.
+
+### Honest suffix order (never fake ICANN)
+
+1. Prefer **`.az`**.
+2. If `.az` cannot be honestly claimed/resolved → **`.aziel`**.
+3. If neither is honest → **pivot** to a mesh-authoritative suffix the
+   node can actually register in its Cap-7 zone. Stamp the active
+   suffix. Do **not** pretend `.az` or `.aziel` succeeded.
+
+### Exactly 2 public browser hosts
+
+Of the Cap-7 set, **exactly 2** names become hosted public HTTPS
+gateways/mirrors reachable by a standard internet browser. Those two
+are **mirrors of mesh names** — not ICANN registrations. The other
+Cap-7 slots stay mesh/AZNet-side.
+
+### Access (AZNet + AZBrowser)
+
+All generated names, including the public pair, are resolved/browsed
+through **AZNet** and **AZBrowser** (functional pairing only). This is
+not a naked public DNS story. Standard browsers reach only the public
+pair. Do not merge AZNet, AZBrowser, and MirageGrid into one product.
 
 ## Flag / repost / restore
 
@@ -83,11 +123,22 @@ not fake the flag.
 
 ## First claim
 
-If **no site** in the known set contains the name
-**`www.survivalnetwork.az`**, that is the **first** domain it claims.
+The first-flag name follows the **ACTIVE** honest suffix:
 
-If that cannot be claimed, resume normal operation (continue the 7m77s
-clock for other `.az` names under Cap-7). **Do not fake the flag.**
+- active `.az` → `www.survivalnetwork.az`
+- active `.aziel` → `www.survivalnetwork.aziel`
+- pivoted → `www.survivalnetwork.<active-honest-suffix>`
+
+If that name cannot be claimed, resume the 7m77s clock under Cap-7.
+**Do not fake the flag on a dead suffix.**
+
+## AIRGAP-1.0 (local vault)
+
+The paper vault is air-gapped from the 1s tip plane. Paper bodies never
+ride a tip tick. Vault multiply is allowed only on bootstrap, join,
+Cap-7 claim, and grid-shift standby. Restore / claim requires **≥49**
+hash-absolute Aziel Eliab papers from the **LOCAL** vault. Incomplete
+vault → `AZG-INCOMPLETE-VAULT` / phoenix-WAIT.
 
 ## No falsification. No ambiguity. No misleading.
 
@@ -170,6 +221,13 @@ hedidntjump.com) remain named public hosts. They are **not** Node Gate.
 - Faking the flag when `www.survivalnetwork.az` cannot be claimed
 - Falsify / ambiguous / misleading verbs (NO-FAN-1.0)
 - Sharing the 7m77s claim socket with the 1s tip tick or the 777s dwell
+- Calling the generator from outside / Worker POST run-generator
+- Faking ICANN / Cloudflare registrar success or `.az` ccTLD takeover
+- Hosting more or fewer than exactly 2 public browser gateways of Cap-7
+- Merging AZNet / AZBrowser / generator into one product
+- Naked public DNS as the access story
+- Claiming `.com` / `.net` / other ICANN TLDs
+- Pretending `.az` or `.aziel` succeeded after an honest pivot
 - Visible 15:20 identity-lock HTML
 - Invented Zenodo DOIs
 - Merging papers instead of citing them

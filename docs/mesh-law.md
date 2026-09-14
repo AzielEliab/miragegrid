@@ -87,11 +87,15 @@ vote-to-fix labeled as auto-heal is refuse.
 
 ## AZ GENERATOR (AZ-GENERATOR-1.0)
 
-Every **7 minutes and 77 seconds** (period **497s**) the generator
-attempts to claim a new `.az` domain. Origin node hosts the site +
-server. Cap **7** domains per node. First claim is
-`www.survivalnetwork.az` when no known site contains that name; if that
-cannot be claimed, resume the 7m77s clock under Cap-7.
+The generator **does not get called from outside**. It lives deep in
+the node. Every **7 minutes and 77 seconds** (period **497s**) the
+local tick attempts to claim a name and exits through the **FRONT
+Node Gate**. Cap-7 mesh DNS factory (zone + receipts; not ICANN).
+Honest suffix order: `.az` → `.aziel` → mesh pivot. First flag is
+`www.survivalnetwork.<active-suffix>`. Exactly **2** of Cap-7 are
+hosted public HTTPS gateways; the rest stay mesh/AZNet-side. Access
+is AZNet + AZBrowser (separate Softwares; pairing only). If the first
+flag cannot be claimed, resume the 7m77s clock — do not fake the flag.
 
 Constantly plant a flag and repost current known sites. Broken chain →
 restore at the most active guaranteed point. Restore needs **at least
@@ -205,7 +209,8 @@ First-class refuse law beside NO-LIE / NO-REWRITE.
 | Surface | What it does |
 | --- | --- |
 | `miragegrid/mesh.py` | Topology stays live. Law functions refuse illegal planes. |
-| Worker `mesh.js` | `/v1/mesh/*` PROXY. Stamps STW/CCS/RH/AZG/MGS/AIRGAP + paper-vault-on-node. `/v1/mesh/vpn|hop|tunnel` refuse `MESH-STUB`. `/v1/mesh/reheal` is local law (not neighbor heal). `/v1/mesh/az-generator`, `/v1/mesh/grid-shift`, `/v1/mesh/airgap`, and `/v1/mesh/vault` cite local law. |
+| `miragegrid/az_generator.py` | Deep-node Cap-7 mesh DNS factory, local vault, FRONT Node Gate exit. Not callable. |
+| Worker `mesh.js` | `/v1/mesh/*` PROXY. Stamps STW/CCS/RH/AZG/MGS/AIRGAP + paper-vault-on-node. `/v1/mesh/vpn|hop|tunnel` refuse `MESH-STUB`. `/v1/mesh/reheal` is local law (not neighbor heal). `GET /v1/mesh/az-generator` cites law; `POST` refuses `AZG-NOT-CALLABLE`. `/v1/mesh/airgap` and `/v1/mesh/vault` cite local law. `GET` never enables mesh. |
 | `POST /v1/assign` | Live session assignment. |
 
 Identity: **Aziel Eliab** only.

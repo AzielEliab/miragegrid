@@ -25,10 +25,13 @@ pull, or it phoenix-WAITs. Allowed reheal fields are live / locked /
 isolated / tip-hash. Bodies, diffs, and vote-to-fix are forbidden.
 Public-stack auto-heal means this lawful reheal + archive re-expand.
 
-AZ GENERATOR (AZ-GENERATOR-1.0) claims `.az` names on a 7m77s (497s)
-clock, Cap-7 per origin node, first claim `www.survivalnetwork.az`.
-Restore needs ≥49 Aziel Eliab papers from the local vault
-(hash-absolute; cite don't merge). Every node MUST carry the full
+AZ GENERATOR (AZ-GENERATOR-1.0) is a Cap-7 mesh DNS factory living
+deep inside the node. It does not get called from outside. The 7m77s
+(497s) claim tick exits outward through the FRONT Node Gate (claim /
+plant / flag / restore). Cap-7 `.az` names per node. First claim
+`www.survivalnetwork.az`. Restore / claim needs ≥49 local vault
+papers (hash-absolute; cite don't merge). Mesh-authoritative zone +
+claim receipts — not public ICANN. Every node MUST carry the full
 paper set as a cold vault copy — vault multiply onto each node /
 papers land as cold copies on bootstrap / join / Cap-7 claim /
 grid-shift standby. No live body sync of paper bytes on the 1s tip
@@ -373,8 +376,14 @@ CLAIM_CLOCK_S = CLAIM_MINUTES * 60 + CLAIM_EXTRA_S  # 420 + 77 = 497
 CLAIM_SOCKET = "claim-7m77s"
 CAP_7 = 7
 MIN_PAPERS = 49
+FIRST_CLAIM_LABEL = "www.survivalnetwork"
 FIRST_CLAIM_NAME = "www.survivalnetwork.az"
 AZ_TLD = ".az"
+AZIEL_TLD = ".aziel"
+CLAIM_SUFFIX_ORDER: tuple[str, ...] = (AZ_TLD, AZIEL_TLD)
+ICANN_PUBLIC_TLDS: frozenset[str] = frozenset(
+    {".com", ".net", ".org", ".uk", ".io", ".dev", ".app", ".info", ".co"}
+)
 MESH_VAULT_KIND = "snapshot+official-standby"
 MESH_VAULT_ROLE = "ip-mask-host"
 TIP_HASH_LEN = 32
@@ -1178,9 +1187,92 @@ def _site_text(site: Any) -> str:
     return str(site or "")
 
 
-def known_contains_first_claim(known_sites: Iterable[Any]) -> bool:
-    """True when any known site contains the name www.survivalnetwork.az."""
-    needle = FIRST_CLAIM_NAME
+def normalize_claim_suffix(value: str | None) -> str:
+    text = str(value or "").strip().lower()
+    if not text:
+        return ""
+    if not text.startswith("."):
+        text = "." + text
+    return text
+
+
+def first_claim_for_suffix(suffix: str | None = None) -> str:
+    """First-flag name follows the ACTIVE honest suffix. Do not fake a dead suffix."""
+    s = normalize_claim_suffix(suffix) or AZ_TLD
+    return FIRST_CLAIM_LABEL + s
+
+
+def select_claim_suffix(
+    *,
+    az_usable: bool = True,
+    aziel_usable: bool = True,
+    pivot_suffix: str | None = None,
+) -> dict[str, Any]:
+    """Honest suffix order: .az → .aziel → mesh-authoritative pivot. Never fake ICANN."""
+    if az_usable:
+        return _verdict(
+            True,
+            "AZG-SUFFIX-AZ",
+            verdict=YES,
+            message="active claim suffix is .az",
+            extra={
+                "suffix": AZ_TLD,
+                "first_claim": first_claim_for_suffix(AZ_TLD),
+                "order": list(CLAIM_SUFFIX_ORDER),
+                "public_icann": False,
+                "pretended_az": True,
+                "pretended_aziel": False,
+            },
+        )
+    if aziel_usable:
+        return _verdict(
+            True,
+            "AZG-SUFFIX-AZIEL",
+            verdict=YES,
+            message=".az cannot be honestly claimed; active suffix is .aziel",
+            extra={
+                "suffix": AZIEL_TLD,
+                "first_claim": first_claim_for_suffix(AZIEL_TLD),
+                "order": list(CLAIM_SUFFIX_ORDER),
+                "public_icann": False,
+                "pretended_az": False,
+                "dead_suffix": AZ_TLD,
+            },
+        )
+    pivot = normalize_claim_suffix(pivot_suffix)
+    if pivot and pivot not in ICANN_PUBLIC_TLDS and pivot not in {AZ_TLD, AZIEL_TLD, "."}:
+        return _verdict(
+            True,
+            "AZG-SUFFIX-PIVOT",
+            verdict=YES,
+            message=".az and .aziel cannot be honestly claimed; pivoted to mesh-authoritative suffix",
+            extra={
+                "suffix": pivot,
+                "first_claim": first_claim_for_suffix(pivot),
+                "order": list(CLAIM_SUFFIX_ORDER) + ["pivot"],
+                "public_icann": False,
+                "registrar": False,
+                "pretended_az": False,
+                "pretended_aziel": False,
+                "dead_suffixes": [AZ_TLD, AZIEL_TLD],
+            },
+        )
+    return _verdict(
+        False,
+        "AZG-SUFFIX-NONE",
+        verdict=REFUSE,
+        message="no honest claim suffix; do not invent ICANN success or fake the flag",
+        extra={
+            "order": list(CLAIM_SUFFIX_ORDER),
+            "public_icann": False,
+            "fake_flag": False,
+        },
+    )
+
+
+def known_contains_first_claim(known_sites: Iterable[Any], suffix: str | None = None) -> bool:
+    """True when any known site contains www.survivalnetwork.<active-suffix>."""
+    needle = first_claim_for_suffix(suffix)
     for site in known_sites:
         if needle in _site_text(site).lower():
             return True
@@ -1200,6 +1292,21 @@ def _normalize_az_name(name: str | None) -> str:
 def _is_az_name(name: str) -> bool:
     host = _normalize_az_name(name)
     return bool(host) and host.endswith(AZ_TLD) and host != AZ_TLD.lstrip(".")
+
+
+def _is_claim_name(name: str, *, suffix: str | None = None) -> bool:
+    """Mesh claim name: .az, .aziel, or a declared honest pivot suffix. Not ICANN TLDs."""
+    host = _normalize_az_name(name)
+    if not host or "." not in host:
+        return False
+    if suffix:
+        s = normalize_claim_suffix(suffix)
+        return bool(s) and host.endswith(s) and host != s.lstrip(".")
+    if host.endswith(AZ_TLD) and host != "az":
+        return True
+    if host.endswith(AZIEL_TLD) and host != "aziel":
+        return True
+    return False
 
 
 def _is_official_hub(name: str) -> bool:
@@ -1350,6 +1457,7 @@ def restore_chain(
                 "min_papers": MIN_PAPERS,
                 "false_tip": False,
                 "phoenix": "wait",
+                "incomplete_vault": True,
             },
         )
     if fake:
@@ -1407,8 +1515,40 @@ def claim_az_domain(
     fake_flag: bool = False,
     have_49: bool = False,
     needs_papers: bool = False,
+    public_registrar: bool = False,
+    icann: bool = False,
+    inbound_call: bool = False,
+    az_usable: bool = True,
+    aziel_usable: bool = True,
+    pivot_suffix: str | None = None,
 ) -> dict[str, Any]:
-    """7m77s claim. First claim www.survivalnetwork.az. Cap-7. Origin hosts."""
+    """7m77s claim. First claim follows the ACTIVE suffix. Cap-7. Origin hosts.
+
+    Low-level law primitive. The executable factory tick lives deep in
+    the node (``miragegrid.az_generator.AzGenerator``) and exits the
+    FRONT Node Gate. This function does not publish ICANN DNS.
+    """
+    if inbound_call:
+        return _verdict(
+            False,
+            "AZG-NOT-CALLABLE",
+            verdict=REFUSE,
+            message="AZ Generator lives deep in the node; it is not called from outside",
+            extra={"callable": False, "lives": "deep-node", "exit": "node-gate-front"},
+        )
+    if public_registrar or icann:
+        return _verdict(
+            False,
+            "AZG-NOT-PUBLIC-REGISTRAR",
+            verdict=REFUSE,
+            message="mesh DNS factory is not a public ICANN/Cloudflare registrar; do not fake registration success",
+            extra={
+                "public_icann": False,
+                "registrar": False,
+                "unbounded_public_dns": False,
+                "dns_factory": "cap-7-mesh-authoritative",
+            },
+        )
     if invent_continuity or fake_flag:
         return refuse_falsify(kind="invent-continuity" if invent_continuity else "fake-flag")
     vault_papers = list(vault if vault is not None else (papers or ()))
@@ -1424,46 +1564,70 @@ def claim_az_domain(
             message="unverified tip: refuse claim rather than invent continuity; phoenix-WAIT / hold",
             extra={"false_tip": False, "phoenix": "wait", "no_lie": True, "phrase": NO_FAN_PHRASE},
         )
+    if papers is not None and count_aziel_papers(papers) < MIN_PAPERS:
+        return _verdict(
+            False,
+            "AZG-INCOMPLETE-VAULT",
+            verdict=WAIT,
+            message="incomplete local vault; refuse claim rather than invent continuity; phoenix-WAIT / hold",
+            extra={
+                "papers": count_aziel_papers(papers),
+                "min_papers": MIN_PAPERS,
+                "false_tip": False,
+                "phoenix": "wait",
+                "phrase": NO_FAN_PHRASE,
+            },
+        )
+    chosen = select_claim_suffix(
+        az_usable=az_usable, aziel_usable=aziel_usable, pivot_suffix=pivot_suffix
+    )
+    if not chosen.get("ok"):
+        return chosen
+    suffix = str(chosen["suffix"])
+    first_name = first_claim_for_suffix(suffix)
     known = list(known_sites or ())
     if int(claimed) >= CAP_7:
         return _verdict(
             False,
             "AZG-CAP-7",
             verdict=REFUSE,
-            message="Cap-7: at most 7 .az names per covered node",
-            extra={"claimed": int(claimed), "cap": CAP_7, "origin_node": origin_node},
+            message="Cap-7: at most 7 claim names per covered node",
+            extra={"claimed": int(claimed), "cap": CAP_7, "origin_node": origin_node, "suffix": suffix},
         )
-    first_needed = not known_contains_first_claim(known)
+    first_needed = not known_contains_first_claim(known, suffix=suffix)
     target = _normalize_az_name(name) if name else ""
     if first_needed:
-        target = FIRST_CLAIM_NAME
+        target = first_name
         if not claimable:
             return _verdict(
                 True,
                 "AZG-FIRST-CLAIM-RESUME",
                 verdict=YES,
-                message="www.survivalnetwork.az cannot be claimed; resume 7m77s clock under Cap-7",
+                message=f"{first_name} cannot be claimed; resume 7m77s clock under Cap-7; do not fake the flag on a dead suffix",
                 extra={
-                    "first_claim": FIRST_CLAIM_NAME,
+                    "first_claim": first_name,
                     "resume": True,
                     "fake_flag": False,
                     "period_s": CLAIM_CLOCK_S,
                     "origin_node": origin_node,
                     "hosted_by": origin_node,
                     "phrase": NO_FAN_PHRASE,
+                    "suffix": suffix,
+                    "dead_suffix": False,
                 },
             )
         return _verdict(
             True,
             "AZG-FIRST-CLAIM",
             verdict=YES,
-            message="first claim is www.survivalnetwork.az",
+            message=f"first claim is {first_name}",
             extra={
-                "name": FIRST_CLAIM_NAME,
+                "name": first_name,
                 "origin_node": origin_node,
                 "hosted_by": origin_node,
                 "period_s": CLAIM_CLOCK_S,
                 "cap": CAP_7,
+                "suffix": suffix,
             },
         )
     if not target:
@@ -1482,13 +1646,13 @@ def claim_az_domain(
             message="official hubs are not Node Gate and are not claimed .az names",
             extra={"name": target, "origin_node": origin_node},
         )
-    if not _is_az_name(target):
+    if not _is_claim_name(target, suffix=suffix):
         return _verdict(
             False,
             "AZG-TLD",
             verdict=REFUSE,
-            message="AZ Generator claims domains ending in .az only",
-            extra={"name": target, "origin_node": origin_node},
+            message="AZ Generator claims the active honest suffix only (.az → .aziel → pivot); not ICANN TLDs",
+            extra={"name": target, "origin_node": origin_node, "suffix": suffix},
         )
     if (papers is not None or vault is not None or needs_papers) and first_needed is False:
         if needs_papers or not vault_complete(vault_papers if vault_papers else papers):
@@ -1499,13 +1663,16 @@ def claim_az_domain(
         True,
         "AZG-CLAIM-OK",
         verdict=YES,
-        message="domain claimed; site + server hosted by origin node",
+        message="domain claimed; site + server hosted by origin node (mesh-authoritative .az, not ICANN)",
         extra={
             "name": target,
             "origin_node": origin_node,
             "hosted_by": origin_node,
             "period_s": CLAIM_CLOCK_S,
             "cap": CAP_7,
+            "public_icann": False,
+            "registrar": False,
+            "dns_factory": "cap-7-mesh-authoritative",
         },
     )
 
@@ -1853,8 +2020,8 @@ def auto_heal(
     return out
 
 
-def node_gate_admit(*, name: str) -> dict[str, Any]:
-    """Node Gate admits .az names only. Official hubs are not Node Gate."""
+def node_gate_admit(*, name: str, suffix: str | None = None) -> dict[str, Any]:
+    """Node Gate admits honest claim suffixes (.az / .aziel / pivot). Official hubs are not Node Gate."""
     host = _normalize_az_name(name)
     if _is_official_hub(host) or host in HUB_NOT_NODE_GATE or "corpus" in host:
         return _verdict(
@@ -1864,12 +2031,12 @@ def node_gate_admit(*, name: str) -> dict[str, Any]:
             message="official hubs are not Node Gate",
             extra={"name": host, "node_gate": False, "softwares_tab": False},
         )
-    if not _is_az_name(host):
+    if not _is_claim_name(host, suffix=suffix) and not _is_claim_name(host):
         return _verdict(
             False,
             "MGS-AZ-ONLY",
             verdict=REFUSE,
-            message="Node Gate is the MirageGrid admission/claim surface for .az names",
+            message="Node Gate is the MirageGrid admission/claim surface for honest .az / .aziel / pivot names",
             extra={"name": host, "softwares_tab": False},
         )
     return _verdict(
@@ -1877,7 +2044,13 @@ def node_gate_admit(*, name: str) -> dict[str, Any]:
         "MGS-NODE-GATE-OK",
         verdict=YES,
         message="admitted on MirageGrid Node Gate (.az)",
-        extra={"name": host, "softwares_tab": False, "product": "miragegrid"},
+        extra={
+            "name": host,
+            "softwares_tab": False,
+            "product": "miragegrid",
+            "front": True,
+            "callable": False,
+        },
     )
 
 
@@ -1895,7 +2068,7 @@ def grid_shift(
         return refuse_misleading(
             kind="pretend-hub-cell" if pretend_hub_cell else "neighbor-resurrection"
         )
-    if resurrect_hub or _is_official_hub(domain_pulled) and not _is_az_name(az_name):
+    if resurrect_hub or _is_official_hub(domain_pulled) and not _is_claim_name(az_name):
         return _verdict(
             False,
             "MGS-NO-HUB-RESURRECT",
@@ -1903,7 +2076,7 @@ def grid_shift(
             message="grid shift is not resurrection of godlock.uk / corpus hostnames",
             extra={"domain_pulled": domain_pulled, "az_name": az_name},
         )
-    if not _is_az_name(az_name):
+    if not _is_claim_name(az_name):
         return _verdict(
             False,
             "MGS-AZ-ONLY",
@@ -1957,7 +2130,7 @@ def cloak_burst(
             message="cloak burst does not plant official hub hostnames",
             extra={"origin_node": origin_node},
         )
-    if any(not _is_az_name(n) for n in listed):
+    if any(not _is_claim_name(n) for n in listed):
         return _verdict(
             False,
             "MGS-AZ-ONLY",
@@ -2099,6 +2272,14 @@ def az_generator_dict() -> dict[str, Any]:
         "author": MESH_LAW_AUTHOR,
         "identity": MESH_LAW_AUTHOR,
         "softwares_tab": False,
+        "callable": False,
+        "lives": "deep-node",
+        "exit": "node-gate-front",
+        "dns_factory": "cap-7-mesh-authoritative",
+        "public_icann": False,
+        "registrar": False,
+        "unbounded_public_dns": False,
+        "airgap": "AIRGAP-1.0",
         "clock": {
             "minutes": CLAIM_MINUTES,
             "extra_s": CLAIM_EXTRA_S,
@@ -2107,10 +2288,16 @@ def az_generator_dict() -> dict[str, Any]:
             "alias": "7m77s",
         },
         "cap": CAP_7,
+        "public_host_pair": 2,
         "first_claim": FIRST_CLAIM_NAME,
+        "first_claim_label": FIRST_CLAIM_LABEL,
+        "suffix_order": list(CLAIM_SUFFIX_ORDER) + ["pivot"],
         "min_papers": MIN_PAPERS,
         "paper_vault": paper_vault_dict(),
         "tld": AZ_TLD,
+        "aziel_tld": AZIEL_TLD,
+        "access": {"aznet": True, "azbrowser": True, "merge": False, "naked_public_dns": False},
+        "cctld_takeover": False,
         "no_lie": True,
         "no_rewrite": True,
         "rewrite_key": False,

@@ -38,7 +38,14 @@ three named pieces:
    that lawful reheal + archive re-expand, not peer talk-back-to-health.
 
 AZ Generator and Node Gate are MirageGrid subsystems / law — not
-Softwares-tab products. See [docs/AZ-GENERATOR-1.0.md](docs/AZ-GENERATOR-1.0.md),
+Softwares-tab products. **AZ Generator is a Cap-7 mesh DNS factory**
+that lives **deep in the node** and exits only through the **FRONT
+Node Gate**. It does not get called from outside. Mesh-authoritative
+`.az` / `.aziel` / honest-pivot names (not public ICANN; not `.az`
+ccTLD takeover). Exactly **2** of Cap-7 are hosted public HTTPS
+gateways; the rest stay mesh/AZNet-side. Access is **AZNet +
+AZBrowser** (separate Softwares; pairing only). See
+[docs/AZ-GENERATOR-1.0.md](docs/AZ-GENERATOR-1.0.md),
 [docs/MIRAGE-GRID-SHIFT-1.0.md](docs/MIRAGE-GRID-SHIFT-1.0.md), and
 [docs/AIRGAP-1.0.md](docs/AIRGAP-1.0.md).
 
@@ -134,13 +141,15 @@ isolated / tip-hash. Forbidden: bodies, diffs, vote-to-fix.
 Public-stack auto-heal means this lawful reheal (REHEAL-1.0 /
 MESH-REHEAL), not neighbor vote-to-fix.
 
-**AZ GENERATOR** — every 7 minutes and 77 seconds (497s) claim a `.az`
-name; Cap-7 per node; first claim `www.survivalnetwork.az`; restore
-needs ≥49 Aziel Eliab papers from the node’s local vault; **vault
-multiply onto each node** / papers land as cold copies (no paper-body
-fan-out on the 1s tip tick); incomplete vault refuses
-(AZG-UNVERIFIED-TIP / incomplete vault); offline origin keeps downloads
-up.
+**AZ GENERATOR** — Cap-7 mesh DNS factory living deep in the node.
+7m77s (497s) local tick exits FRONT Node Gate only (not callable).
+Honest suffix order `.az` → `.aziel` → pivot. First flag
+`www.survivalnetwork.<active-suffix>`. Exactly 2 of Cap-7 are public
+browser gateways; the rest stay mesh/AZNet. Access via AZNet +
+AZBrowser. Restore needs ≥49 local vault papers (vault multiply onto
+each node as cold copies; no paper-body fan-out on the 1s tip tick).
+Incomplete vault refuses (AZG-UNVERIFIED-TIP / AZG-INCOMPLETE-VAULT).
+Not ICANN.
 
 **MIRAGE GRID SHIFT** — MESH-VAULT is snapshot + official standby
 (IP-mask host). Grid shift keeps the `.az` answerable and cloaks the
@@ -292,7 +301,7 @@ miragegrid/            library (pool, mesh, circuit, crypto, vpn, session, cli, 
 tests/                 pytest
 docs/whitepaper.md     architecture (sections 1–18)
 docs/mesh-law.md       SPLIT THE WIRES · COLD-COPY · REHEAL · AZ-GENERATOR · GRID-SHIFT · AIRGAP
-docs/AZ-GENERATOR-1.0.md  7m77s claim clock · Cap-7 · 49 papers · paper vault on node
+docs/AZ-GENERATOR-1.0.md  Cap-7 mesh DNS factory · deep-node → Node Gate · paper vault on node
 docs/MIRAGE-GRID-SHIFT-1.0.md  Node Gate · cloak burst · MESH-VAULT grid shift
 docs/AIRGAP-1.0.md     local vault · no bearer radios · no climb-back
 examples/              assign a circuit
