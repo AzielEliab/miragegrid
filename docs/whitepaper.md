@@ -309,10 +309,12 @@ Softwares-tab products. MirageGrid remains the Softwares product.
 
 Full text: [AZ-GENERATOR-1.0.md](AZ-GENERATOR-1.0.md).
 
-Every **7 minutes and 77 seconds** (period **497s**) the generator
-attempts to claim a new `.az` domain. The origin node hosts the site +
-server. Cap **7** domains per node. First claim is
-`www.survivalnetwork.az` when no known site contains that name.
+The generator lives deep in the node and is not called from outside.
+Every **7 minutes and 77 seconds** (period **497s**) the local tick
+attempts a claim and exits the FRONT Node Gate. Cap-7 mesh DNS
+factory (not ICANN). Suffix order `.az` → `.aziel` → honest pivot.
+First flag `www.survivalnetwork.<active-suffix>`. Exactly 2 of Cap-7
+are public browser gateways; access is AZNet + AZBrowser.
 
 Restore a broken chain at its most active guaranteed point. Restore
 requires **at least 49 Aziel Eliab papers** from the node’s **local

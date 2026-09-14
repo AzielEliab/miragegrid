@@ -64,3 +64,27 @@ def test_no_choice_and_bind_only_in_vpn_modules() -> None:
                     raise AssertionError(f"{path.name} calls .choice(")
             if isinstance(func, ast.Name) and func.id == "choice":
                 raise AssertionError(f"{path.name} calls choice(")
+
+
+def test_attack_surface_refuses_call_generator_vpn_and_neighbor_heal() -> None:
+    root = Path(__file__).resolve().parents[1]
+    mesh_py = (root / "miragegrid" / "mesh.py").read_text(encoding="utf-8")
+    gen = (root / "miragegrid" / "az_generator.py").read_text(encoding="utf-8")
+    js = (root / "workers/download-tracker/src/mesh.js").read_text(encoding="utf-8")
+    assert "AZG-NOT-CALLABLE" in gen and "AZG-NOT-CALLABLE" in js
+    assert "MESH-GET-NO-ENABLE" in js
+    assert "GET never enables" in js
+    assert "MESH-STUB" in mesh_py and '"vpn"' in js and '"tunnel"' in js
+    assert "RH-NO-VOTE-TO-FIX" in mesh_py and "RH-NO-NEIGHBOR-TALK" in js
+    assert "CCS-POISON-MARKER" in gen and "CCS-POISON-MARKER" in js
+    assert "public_icann" in gen and "cctld_takeover" in js
+    assert "AZG-PUBLIC-PAIR" in gen
+    assert "cap-7-mesh-authoritative" in gen
+    assert "AZG-NO-RADIO-PHY" in mesh_py
+    assert "radio_phy" in gen or "RADIO_PHY" in mesh_py
+    from miragegrid.mesh import hosted_stub_refuse, reheal
+
+    assert hosted_stub_refuse("vpn")["code"] == "MESH-STUB"
+    assert hosted_stub_refuse("hop")["code"] == "MESH-STUB"
+    assert hosted_stub_refuse("tunnel")["code"] == "MESH-STUB"
+    assert reheal(source="own-tip+trusted-pull", vote_to_fix=True)["code"] == "RH-NO-VOTE-TO-FIX"

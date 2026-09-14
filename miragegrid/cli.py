@@ -102,6 +102,15 @@ def _build_parser() -> argparse.ArgumentParser:
     p_exp = sub.add_parser("export", help="Export a JSON document.")
     p_exp.add_argument("path")
 
+    p_tick = sub.add_parser(
+        "generator-tick",
+        help="Operator-local AZ Generator tick (deep-node; not a hosted call).",
+    )
+    p_tick.add_argument("--id", dest="node_id", default="node-01")
+    p_tick.add_argument("--now", dest="now_s", type=float, default=0)
+    p_tick.add_argument("--papers", type=int, default=0, help="Synthetic local vault size for the operator loop.")
+    p_tick.add_argument("--name", default=None)
+
     return parser
 
 
@@ -238,6 +247,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         rec = export_json(args.path)
         sys.stdout.write(json.dumps(rec, indent=2, ensure_ascii=False) + "\n")
         return 0
+
+    if args.cmd == "generator-tick":
+        from miragegrid.az_generator import DeepNode, PaperVault, synthetic_papers
+
+        vault = PaperVault(synthetic_papers(int(args.papers)))
+        node = DeepNode(args.node_id, vault=vault)
+        out = node.tick(now_s=float(args.now_s), name=args.name)
+        sys.stdout.write(json.dumps(out, indent=2, default=str) + "\n")
+        return 0 if out.get("ok") else 1
 
     parser.error(f"unknown command {args.cmd}")
     return 2
