@@ -5,6 +5,11 @@
  * No Node Gate. No auto-heal. Not an anonymity network.
  * No public qnsd proxy. Local qnsd lives in AzielEliab/qnm-node.
  * /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME binding).
+ * SPLIT THE WIRES (STW-1.0): 0.5–1s tip tick = presence+tip hash only.
+ * Payload pull-only. Update=proof (cite prev+lockset; 777s dwell).
+ * COLD-COPY SURVIVAL (CCS-1.0). REHEAL (RH-1.0): no neighbor talk-back;
+ * own tip+trusted pull or phoenix-WAIT; no bodies/diffs/vote-to-fix.
+ * Assign live. Hosted vpn/hop/tunnel stubs remain refuse.
  * Not a Softwares-tab product. Author: Aziel Eliab only.
  */
 
@@ -64,15 +69,183 @@ export const QNS_CD = Object.freeze({
 });
 
 export const MESH_NOTE =
-  "QNM-BUILD-1.0. QNS-CD-1.0 photon QNS1 packet transfer. Suite mesh default off. Live|locked|isolated counts only. No Node Gate. No auto-heal. Not an anonymity network. No public qnsd proxy. Author: Aziel Eliab only.";
+  "QNM-BUILD-1.0. QNS-CD-1.0 photon QNS1 packet transfer. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. Suite mesh default off. Live|locked|isolated counts only. No Node Gate. No auto-heal. Not an anonymity network. No public qnsd proxy. Author: Aziel Eliab only.";
+
+export const SPLIT_WIRES_LAW = "SPLIT THE WIRES";
+export const SPLIT_WIRES_SPEC = "STW-1.0";
+export const COLD_COPY_LAW = "COLD-COPY SURVIVAL";
+export const COLD_COPY_SPEC = "CCS-1.0";
+export const REHEAL_LAW = "REHEAL";
+export const REHEAL_SPEC = "RH-1.0";
+export const ASSIGN_LIVE = true;
+export const HOSTED_STUB_OPS = Object.freeze(["vpn", "hop", "tunnel", "vpn-hop", "mesh-hop"]);
+export const TIP_TICK_SIZE = 33;
+export const TIP_TICK_MIN_MS = 500;
+export const TIP_TICK_MAX_MS = 1000;
+export const DWELL_S = 777;
+export const TIP_TICK_SOCKET = "tip-1s";
+export const DWELL_SOCKET = "dwell-777s";
+export const TIP_TICK_FORBIDDEN = Object.freeze(["body", "diff", "file", "payload", "bytes"]);
+export const REHEAL_FORBIDDEN = Object.freeze([
+  "body", "bodies", "diff", "diffs", "file", "payload", "vote", "vote-to-fix", "vote_to_fix", "quorum_fix",
+]);
+export const REHEAL_ALLOWED = Object.freeze(["live", "locked", "isolated", "tip_hash", "tip-hash"]);
+
+export const SPLIT_WIRES = Object.freeze({
+  law: SPLIT_WIRES_LAW,
+  spec: SPLIT_WIRES_SPEC,
+  author: IDENTITY,
+  identity: IDENTITY,
+  tip_tick: {
+    min_ms: TIP_TICK_MIN_MS,
+    max_ms: TIP_TICK_MAX_MS,
+    size: TIP_TICK_SIZE,
+    fields: ["presence", "tip_hash"],
+    forbid: TIP_TICK_FORBIDDEN.slice(),
+  },
+  payload: { plane: "pull-only", sender_fanout: false },
+  update: {
+    kind: "proof",
+    timer: false,
+    cite: ["prev", "lockset"],
+    fail_closed: true,
+    dwell_s: DWELL_S,
+    clock_desync_is_yes: false,
+    ambiguous_tip: "isolate",
+  },
+  equivocation: { same_prev_two_tips: "lock-isolate", quorum_is_truth: false },
+  emit: { last: "local-after-verify", phoenix: "failed-node-only", unsend_unverified_body: false },
+  partition: {
+    auto_splice: false,
+    rejoin: ["cite", "operator", "lockset"],
+    heartbeat_loss_is_poison: false,
+    heartbeat_loss_applies_last: false,
+  },
+  sockets: { tip: TIP_TICK_SOCKET, dwell: DWELL_SOCKET, shared: false },
+  assign_live: ASSIGN_LIVE,
+  hosted_stubs: HOSTED_STUB_OPS.slice(),
+});
+
+export const COLD_COPY = Object.freeze({
+  law: COLD_COPY_LAW,
+  spec: COLD_COPY_SPEC,
+  author: IDENTITY,
+  identity: IDENTITY,
+  multiply: true,
+  min_copies: 2,
+  live_body_sync: false,
+  tip_erase: "expensive",
+  server_pull_wipes_cold: false,
+  poison: "hash-absolute-refuse",
+  data_outlives_creators: true,
+});
+
+export const REHEAL = Object.freeze({
+  law: REHEAL_LAW,
+  spec: REHEAL_SPEC,
+  author: IDENTITY,
+  identity: IDENTITY,
+  neighbor_talk_dirty_back_to_health: false,
+  sources: ["own-tip+trusted-pull", "phoenix-wait"],
+  allowed: ["live", "locked", "isolated", "tip-hash"],
+  forbid: ["bodies", "diffs", "vote-to-fix"],
+  auto_heal: false,
+  phoenix: "wait",
+});
 
 export function qnsCdFields() {
   return { qns_cd_spec: QNS_CD_SPEC, qns_cd: QNS_CD };
 }
 
+export function meshLawFields() {
+  return {
+    assign_live: ASSIGN_LIVE,
+    split_wires: SPLIT_WIRES,
+    cold_copy: COLD_COPY,
+    reheal: REHEAL,
+  };
+}
+
 export function attachQnsCd(data) {
   if (!data || typeof data !== "object" || Array.isArray(data)) return data;
-  return { ...data, ...qnsCdFields() };
+  return { ...data, ...qnsCdFields(), ...meshLawFields() };
+}
+
+export function attachMeshLaw(data) {
+  return attachQnsCd(data);
+}
+
+function lawVerdict(ok, code, verdict, message, extra) {
+  return {
+    ok: !!ok,
+    code,
+    verdict,
+    yes: verdict === "yes",
+    message,
+    author: IDENTITY,
+    identity: IDENTITY,
+    ...(extra || {}),
+    ...qnsCdFields(),
+    ...meshLawFields(),
+  };
+}
+
+export function hostedStubRefuse(op) {
+  let key = String(op == null ? "" : op).trim().toLowerCase().replace(/^\/+/, "");
+  for (const prefix of ["v1/mesh/", "mesh/", "v1/"]) {
+    if (key.startsWith(prefix)) key = key.slice(prefix.length);
+  }
+  if (key === "assign") return null;
+  if (HOSTED_STUB_OPS.includes(key)) {
+    return lawVerdict(false, "MESH-STUB", "refuse", "hosted " + key + " remains refuse; assign stays live", {
+      op: key,
+      assign_live: ASSIGN_LIVE,
+    });
+  }
+  return null;
+}
+
+export function tipPlaneContaminated(body) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) return false;
+  const keys = Object.keys(body).map((k) => String(k).toLowerCase().replace(/\s+/g, "-"));
+  return keys.some((k) => TIP_TICK_FORBIDDEN.includes(k) || REHEAL_FORBIDDEN.includes(k));
+}
+
+export function refuseTipContamination(body) {
+  if (!tipPlaneContaminated(body)) return null;
+  if (body && (body.vote_to_fix || body["vote-to-fix"] || body.vote || body.quorum_fix)) {
+    return lawVerdict(false, "RH-NO-VOTE-TO-FIX", "refuse", "vote-to-fix is forbidden");
+  }
+  if (body && (body.neighbor_talk || body.talk_dirty || body.talk_dirty_back_to_health)) {
+    return lawVerdict(false, "RH-NO-NEIGHBOR-TALK", "refuse", "neighbor talk-dirty-back-to-health is refused");
+  }
+  return lawVerdict(false, "STW-TIP-BODY", "refuse", "tip tick is presence+tip hash only (no body/diff/file)");
+}
+
+export function refuseReheal(body) {
+  if (!body || typeof body !== "object") return null;
+  if (body.neighbor_talk || body.talk_dirty || body.talk_dirty_back_to_health) {
+    return lawVerdict(false, "RH-NO-NEIGHBOR-TALK", "refuse", "neighbor talk-dirty-back-to-health is refused");
+  }
+  if (body.vote_to_fix || body["vote-to-fix"] || body.quorum_fix) {
+    return lawVerdict(false, "RH-NO-VOTE-TO-FIX", "refuse", "vote-to-fix is forbidden");
+  }
+  if (body.live_body_sync || body.fanout || body.sender_fanout) {
+    return lawVerdict(false, "STW-NO-FANOUT", "refuse", "payload plane is pull-only; sender fan-out is refused");
+  }
+  return refuseTipContamination(body);
+}
+
+export function socketsShare(planeA, planeB) {
+  const planes = new Set([String(planeA), String(planeB)]);
+  const tip = new Set([TIP_TICK_SOCKET, "1s", "tip", "tip-tick"]);
+  const dwell = new Set([DWELL_SOCKET, "777s", "dwell", "update"]);
+  const hasTip = [...planes].some((p) => tip.has(p));
+  const hasDwell = [...planes].some((p) => dwell.has(p));
+  if (hasTip && hasDwell) {
+    return lawVerdict(false, "STW-SOCKET-SPLIT", "refuse", "1s tip tick and 777s dwell never share a socket");
+  }
+  return lawVerdict(true, "STW-SOCKET-OK", "yes", "planes stay on separate sockets");
 }
 
 export const MESH_OPS = Object.freeze([
@@ -213,6 +386,7 @@ export function emptyMesh(extra = {}) {
     author: MESH_IDENTITY,
     identity: MESH_IDENTITY,
     ...qnsCdFields(),
+    ...meshLawFields(),
   };
 }
 
@@ -314,6 +488,7 @@ export function publicMesh(mesh) {
     origin: RUNTIME + MESH_PATH,
     note: m.note || MESH_NOTE,
     ...qnsCdFields(),
+    ...meshLawFields(),
   };
 }
 
@@ -351,10 +526,11 @@ export function meshPointer() {
     catalog_mcp: FRAGGATE_MCP,
     fraggate_slug: MESH_SLUG,
     origin: RUNTIME + MESH_PATH,
-    note: "PROXY to aziel-runtime /v1/mesh/* via AZIEL_RUNTIME. Not a local op. Not AnonBroadcast. Not AZMail's product-local ring. MirageGrid hosted /v1 remains session assignment (not a hosted hop). Full node process is local qnm-node/. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (no public qnsd proxy). " + MESH_NOTE,
+    note: "PROXY to aziel-runtime /v1/mesh/* via AZIEL_RUNTIME. Not a local op. Not AnonBroadcast. Not AZMail's product-local ring. MirageGrid hosted /v1 remains session assignment (not a hosted hop). Full node process is local qnm-node/. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (no public qnsd proxy). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. " + MESH_NOTE,
     anon_broadcast: ANON_BROADCAST,
     anon_broadcast_publish_path: false,
     ...qnsCdFields(),
+    ...meshLawFields(),
   };
 }
 
@@ -448,6 +624,7 @@ function meshErrFields({ message, door_url, http_status, content_type, via, extr
     via: via || "",
     ...(extra || {}),
     ...qnsCdFields(),
+    ...meshLawFields(),
   };
 }
 
@@ -499,6 +676,55 @@ async function originFetch(env, pathAndQuery, init, request) {
  */
 export async function runMeshProxy(env, request, pathAndQuery) {
   const pathOnly = normalizeMeshPath(pathAndQuery);
+  const stub = hostedStubRefuse(pathOnly);
+  if (stub) {
+    return { status: 403, data: stub };
+  }
+  if (pathOnly === "/v1/mesh/reheal") {
+    const method = String((request && request.method) || "GET").toUpperCase();
+    if (method !== "POST") {
+      return {
+        status: 405,
+        data: meshErrFields({
+          message: "REHEAL is POST-only. Own tip+trusted pull or phoenix-WAIT. No neighbor talk-back.",
+          extra: { code: "MESH-METHOD", path: pathOnly, method },
+        }),
+      };
+    }
+    let healBody = {};
+    try {
+      healBody = await request.json();
+    } catch {
+      healBody = {};
+    }
+    const dirty = refuseReheal(healBody);
+    if (dirty) return { status: 403, data: dirty };
+    const wait = !!(healBody && (healBody.phoenix_wait || healBody.phoenix === "wait" || healBody.source === "phoenix-wait"));
+    const ownTip = healBody && (healBody.own_tip || healBody.tip_hash || healBody["tip-hash"]);
+    const trusted = !!(healBody && healBody.trusted_pull);
+    if (wait) {
+      return {
+        status: 200,
+        data: lawVerdict(true, "RH-PHOENIX-WAIT", "phoenix-wait", "reheal phoenix-WAIT (not neighbor talk-back)", {
+          source: "phoenix-wait",
+          auto_heal: false,
+        }),
+      };
+    }
+    if (ownTip && trusted) {
+      return {
+        status: 200,
+        data: lawVerdict(true, "RH-OWN-TIP", "yes", "reheal from own tip plus trusted pull", {
+          source: "own-tip+trusted-pull",
+          auto_heal: false,
+        }),
+      };
+    }
+    return {
+      status: 403,
+      data: lawVerdict(false, "RH-FAIL-CLOSED", "refuse", "reheal fail-closed without own tip+trusted pull or phoenix-WAIT"),
+    };
+  }
   const allowed = MESH_ROUTE_METHODS[pathOnly];
   if (!allowed) {
     return {
@@ -539,6 +765,8 @@ export async function runMeshProxy(env, request, pathAndQuery) {
     } catch {
       body = {};
     }
+    const dirty = refuseReheal(body);
+    if (dirty) return { status: 403, data: dirty };
   }
 
   const headers = {
