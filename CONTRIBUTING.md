@@ -44,6 +44,10 @@ pytest is the dev extra.
 8. **Door vs local op.** `/v1/mesh/*` PROXY to aziel-runtime. Local ops are `/v1/{op}` only.
    Suite mesh default OFF; QNM rollup live|locked|isolated; no Node Gate;
    no auto-heal; not anonymity. Product topology stays at `/v1/topology`.
+   Mesh law is SPLIT THE WIRES + COLD-COPY SURVIVAL + REHEAL
+   (`docs/mesh-law.md`). Assign stays live. Hosted vpn/hop/tunnel stubs
+   remain refuse. Do not add neighbor talk-back heal, vote-to-fix, live
+   body sync, or a shared 1s/777s socket.
 9. New behavior needs a test that fails without the change.
 10. Author line stays **Aziel Eliab**.
 

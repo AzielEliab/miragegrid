@@ -62,7 +62,7 @@ The Worker serves the gzip itself (HTTP 200, no 302 to GitHub).
 - Direct tarball: [miragegrid-0.2.0.tar.gz](https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.2.0.tar.gz)
 - One-click install: [https://miragegrid-download-tracker.vibelock.workers.dev/install.sh](https://miragegrid-download-tracker.vibelock.workers.dev/install.sh)
 - Skill: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill](https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill)
-- Suite mesh proxy: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh](https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated; QNS-CD-1.0 photon QNS1 cross-map (no public qnsd)
+- Suite mesh proxy: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh](https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated; QNS-CD-1.0 photon QNS1 cross-map (no public qnsd). Locked law: **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL** ([docs/mesh-law.md](docs/mesh-law.md))
 - OpenAPI: [https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json](https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json)
 - GitHub: [https://github.com/AzielEliab/miragegrid](https://github.com/AzielEliab/miragegrid)
 
@@ -94,7 +94,24 @@ MirageGrid is a **userspace node-mesh VPN** and **anonymity network**:
    timestamp, integrity. Mapping drop is in-process forget, not a wipe.
 
 The hosted Worker is the **control plane** (assign / mesh / route /
-receipt). Packet forwarding runs in the **local package**.
+receipt). Packet forwarding runs in the **local package**. Assign stays
+live. Hosted mesh / vpn-hop / tunnel stubs remain refuse.
+
+**SPLIT THE WIRES** — the 0.5–1s tip tick is presence + tip hash only
+(fixed-size; no body/diff/file). Payload is pull-only (never sender
+fan-out). Update is proof, not a timer (cite prev + lockset, fail-closed;
+777s dwell after a valid cite; clock desync is not yes; ambiguous tip
+isolates). Equivocation ends the peer. Emit last locally after verify.
+Phoenix is local to the failed node. Partition does not auto-splice.
+The 1s tip socket and the 777s dwell socket never share.
+
+**COLD-COPY SURVIVAL** — multiply cold copies; refuse live body sync;
+the tip is expensive to erase; a server pull cannot wipe cold replicas;
+poison is hash-absolute refuse; data outlives creators.
+
+**REHEAL** — a neighbor cannot talk a node dirty-back-to-health. Heal
+from own tip + trusted pull, or phoenix-WAIT. Allowed: live / locked /
+isolated / tip-hash. Forbidden: bodies, diffs, vote-to-fix.
 
 MirageGrid does **not** guarantee anonymity against global surveillance
 or endpoint compromise.
@@ -228,7 +245,8 @@ Offline. Stdlib runtime. Mesh/VPN tests use loopback only.
 ```
 miragegrid/            library (pool, mesh, circuit, crypto, vpn, session, cli, ui)
 tests/                 pytest
-docs/whitepaper.md     architecture (sections 1–12)
+docs/whitepaper.md     architecture (sections 1–13)
+docs/mesh-law.md       SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL
 examples/              assign a circuit
 workers/download-tracker/   Cloudflare Worker + wrangler.toml (undeployed)
 CONTRIBUTING.md        forks first-class; lawful privacy mesh VPN
