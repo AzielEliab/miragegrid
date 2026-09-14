@@ -21,6 +21,7 @@ from miragegrid.errors import (
     ReceiptError,
 )
 from miragegrid.az_generator import AzGenerator, DeepNode, MeshDnsZone, PaperVault
+from miragegrid.semantic_bridge import build_bridge_registry, hosted_bridge_document, semantic_bridge_dict
 from miragegrid.mesh import (
     MeshLawError,
     NodeMesh,
@@ -54,6 +55,9 @@ __all__ = [
     "MeshDnsZone",
     "PaperVault",
     "mesh_law_dict",
+    "semantic_bridge_dict",
+    "build_bridge_registry",
+    "hosted_bridge_document",
     "select_index",
     "__version__",
 ]

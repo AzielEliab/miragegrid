@@ -475,7 +475,16 @@ class MeshDnsZone:
             extra={"name": host, "public_icann": False, "dns_factory": DNS_FACTORY_KIND},
         )
 
-    def publish(self, *, name: str, tip_hash: str | None = None, claim: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    def publish(
+        self,
+        *,
+        name: str,
+        tip_hash: str | None = None,
+        claim: Mapping[str, Any] | None = None,
+        design_of: str | None = None,
+        design_pack_sha256: str | None = None,
+        public_gateway_url: str | None = None,
+    ) -> dict[str, Any]:
         host = str(name or "").strip().lower()
         tld = refuse_icann_tld(host, active_suffix=self.active_suffix)
         if tld:
@@ -496,7 +505,10 @@ class MeshDnsZone:
                 message="Cap-7: at most 7 .az names per covered node",
                 extra={"claimed": len(self.records), "cap": CAP_7, "origin_node": self.origin_node},
             )
-        public_host = len(self.public_hosts()) < PUBLIC_HOST_PAIR
+        public_host, demote = self._prefer_public_host(host)
+        for rec in demote:
+            rec["public_host"] = False
+            rec["plane"] = "mesh-aznet"
         plane = "public-gateway" if public_host else "mesh-aznet"
         receipt_body = {
             "kind": "azg-claim-receipt",
@@ -534,7 +546,15 @@ class MeshDnsZone:
             "access": sorted(ACCESS_CLIENTS),
             "public_icann": False,
             "registrar": False,
+            "resolves_to_hub": False,
+            "name_may_change": True,
         }
+        if design_of:
+            rec["design_of"] = design_of
+        if design_pack_sha256:
+            rec["design_pack_sha256"] = design_pack_sha256
+        if public_gateway_url:
+            rec["public_gateway_url"] = public_gateway_url
         self.records.append(rec)
         vault_multiply(reason="cap-7-claim", copies=2)
         return _verdict(
@@ -563,6 +583,20 @@ class MeshDnsZone:
                 "access": sorted(ACCESS_CLIENTS),
             },
         )
+
+    def _prefer_public_host(self, host: str) -> tuple[bool, list[dict[str, Any]]]:
+        """Prefer azcorpus + azlibrary as the Cap-7 public HTTPS pair when claimed."""
+        from miragegrid.semantic_bridge import preferred_public_pair_label
+
+        preferred = preferred_public_pair_label(host) is not None
+        public = [r for r in self.records if r.get("public_host")]
+        if len(public) < PUBLIC_HOST_PAIR:
+            return True, []
+        if preferred:
+            bumpable = [r for r in public if preferred_public_pair_label(str(r.get("name") or "")) is None]
+            if bumpable:
+                return True, [bumpable[0]]
+        return False, []
 
     def designate_public_pair(self, names: Iterable[str]) -> dict[str, Any]:
         """Exactly 2 Cap-7 names may be hosted public browser gateways."""
@@ -609,6 +643,12 @@ class MeshDnsZone:
                 "cctld_takeover": False,
             },
         )
+
+    def bridge_registry(self) -> dict[str, Any]:
+        """Honest SEMANTIC-BRIDGE map of this zone. Never invents hub resolution."""
+        from miragegrid.semantic_bridge import build_bridge_registry
+
+        return build_bridge_registry(zone=self)
 
     def zone_file(self) -> str:
         lines = [

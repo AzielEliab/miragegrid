@@ -234,6 +234,12 @@ def test_split_wires_cold_copy_reheal_law() -> None:
     assert "no paper bytes on the 1s tip tick" in MESH
     assert "official hubs are not airgap Node Gate" in MESH
     assert "have-49-without-bytes" in MESH
+    assert 'spec: "SEMANTIC-BRIDGE-1.0"' in MESH
+    assert "semantic_bridge: SEMANTIC_BRIDGE" in MESH
+    assert "resolves_to_hub: false" in MESH
+    assert "CROSS-NETWORK-SURVIVAL-1.0" in MESH
+    assert "Growth-ON" in MESH
+    assert "15:20" not in HOMEPAGE
     assert "AZG-NOT-CALLABLE" in MESH
     assert "citeAzGenerator" in MESH
     assert "refuseCallGenerator" in MESH

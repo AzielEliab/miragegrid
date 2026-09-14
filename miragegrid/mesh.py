@@ -2370,6 +2370,12 @@ def public_stack_dict() -> dict[str, Any]:
     }
 
 
+def _semantic_bridge_stamp() -> dict[str, Any]:
+    from miragegrid.semantic_bridge import semantic_bridge_dict
+
+    return semantic_bridge_dict()
+
+
 def mesh_law_dict() -> dict[str, Any]:
     return {
         "author": MESH_LAW_AUTHOR,
@@ -2387,6 +2393,7 @@ def mesh_law_dict() -> dict[str, Any]:
         "no_rewrite": True,
         "no_fan": no_fan_dict(),
         "radio_phy": False,
+        "semantic_bridge": _semantic_bridge_stamp(),
     }
 
 

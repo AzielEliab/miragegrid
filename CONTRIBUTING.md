@@ -53,9 +53,12 @@ pytest is the dev extra.
    door, Softwares-tab products for AZ Generator or Node Gate, unmarked
    hub tunnel hydra, official hubs as airgap Node Gate, fake ICANN
    registration success, more than exactly two public browser hosts of
-   Cap-7, visible 15:20 chrome, invented Zenodo DOIs, or
+   Cap-7, mapping mesh names onto hub hostnames as resolution, inventing
+   `www.survivalnetwork.az` as live HTTPS when Cap-7 is empty, visible
+   15:20 chrome, invented Zenodo DOIs, or
    falsify/ambiguous/misleading verbs (NO-FAN-1.0: No falsification. No
-   ambiguity. No misleading.).
+   ambiguity. No misleading.). SEMANTIC-BRIDGE-1.0 is Growth-ON
+   discovery (`docs/SEMANTIC-BRIDGE-1.0.md`).
 9. New behavior needs a test that fails without the change.
 10. Author line stays **Aziel Eliab**.
 
