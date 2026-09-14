@@ -176,6 +176,7 @@ export function namedMeshEntry(site, suffix, digest) {
       download_open: true,
       plane: "pull-only",
     },
+    tip: digest || "",
     tip_sha256: digest || "",
     person: personId(),
   };
@@ -311,6 +312,37 @@ export function refuseHubResolution(name, hub) {
   });
 }
 
+export function refuseFifthProduct(name) {
+  return verdict(false, "BRIDGE-NO-FIFTH-PRODUCT", "refuse", "mesh name is a relocatable label of the four online hubs; not a fifth public product", {
+    name: name || "",
+    fifth_product: false,
+    canonical_hubs: CANONICAL_HUBS.map((row) => row.canonical_hub),
+    public_icann: false,
+    spec: SEMANTIC_BRIDGE_SPEC,
+    no_lie: true,
+  });
+}
+
+export function refuseNeedCanonicalHub(name) {
+  return verdict(false, "BRIDGE-NEED-CANONICAL-HUB", "refuse", "each mesh entry must cite one of the four hubs as canonical_hub; do not invent a fifth product", {
+    name: name || "",
+    canonical_hubs: CANONICAL_HUBS.map((row) => row.canonical_hub),
+    fifth_product: false,
+    public_icann: false,
+    spec: SEMANTIC_BRIDGE_SPEC,
+    no_lie: true,
+  });
+}
+
+export function refuseNeedTip(name) {
+  return verdict(false, "BRIDGE-NEED-TIP", "refuse", "each mesh entry needs a real tip sha256; do not invent one", {
+    name: name || "",
+    public_icann: false,
+    spec: SEMANTIC_BRIDGE_SPEC,
+    no_lie: true,
+  });
+}
+
 export function refuseInventFirstFlagHttps(name) {
   return verdict(false, "BRIDGE-NO-INVENT-HTTPS", "refuse", "empty Cap-7: do not invent www.survivalnetwork.az as live HTTPS", {
     name: name || FIRST_FLAG,
@@ -381,6 +413,7 @@ async function entryFromClaim(claim) {
   const gateway = claim.public_gateway_url || claim.gateway_url || "";
   if (gateway && isHubHost(gateway)) return refuseHubResolution(host, String(gateway));
   if (claim.icann === true || claim.public_icann === true) return refusePublicDnsClaim("claim-icann");
+  if (claim.fifth_product === true) return refuseFifthProduct(host);
 
   const designOf = normalizeDesignOf(claim.design_of || claim.canonical_hub);
   const publicHost = !!(claim.public_host || claim.plane === "public-gateway");
@@ -429,6 +462,11 @@ async function entryFromClaim(claim) {
     if (!entry.tip_sha256) entry.tip_sha256 = digest;
     if (site.upload_plane) entry.upload_plane = site.upload_plane;
   }
+  if (!entry.canonical_hub) return refuseNeedCanonicalHub(host);
+  if (!entry.tip_sha256) return refuseNeedTip(host);
+  entry.tip = entry.tip_sha256;
+  entry.mesh_name = host;
+  entry.person = personId();
   return entry;
 }
 
@@ -576,8 +614,9 @@ export function llmsTxt() {
     "",
     "## SEMANTIC-BRIDGE-1.0",
     "Public Plane-A ICANN hosts + this Worker are the AI-facing bridge.",
-    "Cap-7 mesh names are relocatable labels. public_icann:false. name_may_change:true.",
-    "Not a fifth public product. The four online hubs stay canonical.",
+    "Cap-7 mesh names are relocatable labels (mesh_name ≠ new product).",
+    "public_icann:false. name_may_change:true. Each /bridge.json entry: canonical_hub + tip.",
+    "Ultimately the original 4 websites. Not a fifth public product.",
     "Do not resolve .az on public DNS. Crawlers pull from the URLs below.",
     "Re-expand is archive, not index. CROSS-NETWORK-SURVIVAL + NO-LIE.",
     "Growth-ON.",
@@ -622,6 +661,8 @@ export function aiTxt() {
     "resolves_to_hub:false",
     "name_may_change:true",
     "fifth_product:false",
+    "mesh_name_not_new_product:true",
+    "each_entry:canonical_hub,tip,public_icann:false,name_may_change:true",
     "preferred_public_pair:azcorpus,azlibrary",
     "azcorpus.upload_auth:none",
     "azlibrary.upload_auth:token",

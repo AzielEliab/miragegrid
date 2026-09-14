@@ -23,8 +23,11 @@ from miragegrid.semantic_bridge import (
     design_pack_sha256,
     hosted_bridge_document,
     refuse_azg_icann_publish,
+    refuse_fifth_product,
     refuse_hub_resolution,
     refuse_invent_first_flag_https,
+    refuse_need_canonical_hub,
+    refuse_need_tip,
     refuse_public_dns_claim,
     semantic_bridge_dict,
 )
@@ -33,6 +36,22 @@ from miragegrid.semantic_bridge import (
 ROOT = Path(__file__).resolve().parents[1]
 TIP = hashlib.sha256(b"mesh-tip-survival").hexdigest()
 PACK = hashlib.sha256(b"design-pack-azieleliab").hexdigest()
+
+
+def _assert_mesh_entry_law(row: dict) -> None:
+    assert row["canonical_hub"] in {
+        "https://www.azieleliab.com/",
+        "https://www.azielcorpuslibrary.net/",
+        "https://godlock.uk/",
+        "https://hedidntjump.com/",
+    }
+    assert row["tip"] and len(row["tip"]) == 64
+    assert row["tip"] == row["tip_sha256"]
+    assert row["public_icann"] is False
+    assert row["name_may_change"] is True
+    assert row["fifth_product"] is False
+    assert row["person"]["@id"] == PERSON_ID
+    assert row["resolves_to_hub"] is False
 
 
 def test_law_stamp_public_icann_false_and_person() -> None:
@@ -83,6 +102,10 @@ def test_empty_cap7_is_slot_empty_list() -> None:
     assert corpus["resolves_to_hub"] is False
     assert corpus["fifth_product"] is False
     assert corpus["name_may_change"] is True
+    assert corpus["tip"] == design_pack_sha256("azcorpus")
+    assert corpus["tip"] == corpus["tip_sha256"]
+    _assert_mesh_entry_law(corpus)
+    _assert_mesh_entry_law(library)
     assert corpus["design_pack"]["url"].endswith("/design-packs/azcorpus.json")
     assert corpus["design_pack"]["sha256"] == design_pack_sha256("azcorpus")
     assert library["upload_auth"] == "token"
@@ -112,6 +135,8 @@ def test_inventing_first_flag_https_refuses() -> None:
                 "name": FIRST_CLAIM_NAME,
                 "public_host": True,
                 "status": "https-gateway",
+                "tip_sha256": TIP,
+                "design_of": "https://www.azieleliab.com/",
             }
         ]
     )
@@ -122,6 +147,24 @@ def test_inventing_first_flag_https_refuses() -> None:
     assert "public_gateway_url" not in row
     assert row["icann"] is False
     assert row["resolves_to_hub"] is False
+    _assert_mesh_entry_law(row)
+    assert build_bridge_registry([{"name": "orphan.az", "tip_sha256": TIP}])["code"] == "BRIDGE-NEED-CANONICAL-HUB"
+    assert build_bridge_registry(
+        [{"name": "orphan.az", "design_of": "https://godlock.uk/"}]
+    )["code"] == "BRIDGE-NEED-TIP"
+    assert build_bridge_registry(
+        [
+            {
+                "name": "orphan.az",
+                "tip_sha256": TIP,
+                "design_of": "https://godlock.uk/",
+                "fifth_product": True,
+            }
+        ]
+    )["code"] == "BRIDGE-NO-FIFTH-PRODUCT"
+    assert refuse_need_canonical_hub()["code"] == "BRIDGE-NEED-CANONICAL-HUB"
+    assert refuse_need_tip()["code"] == "BRIDGE-NEED-TIP"
+    assert refuse_fifth_product()["code"] == "BRIDGE-NO-FIFTH-PRODUCT"
 
 
 def test_claimed_names_listed_honestly_with_design_provenance() -> None:
@@ -157,14 +200,21 @@ def test_claimed_names_listed_honestly_with_design_provenance() -> None:
     assert first["access"] == "https-gateway"
     assert first["icann"] is False
     assert first["design_of"] == "https://www.azieleliab.com/"
+    assert first["canonical_hub"] == "https://www.azieleliab.com/"
     assert first["resolves_to_hub"] is False
     assert first["name_may_change"] is True
+    assert first["tip"] == TIP
+    _assert_mesh_entry_law(first)
     mesh = claimed["names"]["mesh-only-three.az"]
     assert mesh["status"] == "mesh-only"
     assert mesh["access"] == "azbrowser"
     assert mesh["design_of"] == "https://godlock.uk/"
+    assert mesh["canonical_hub"] == "https://godlock.uk/"
     assert "public_gateway_url" not in mesh
     assert mesh["resolves_to_hub"] is False
+    _assert_mesh_entry_law(mesh)
+    for row in claimed["names"].values():
+        _assert_mesh_entry_law(row)
 
 
 def test_refuse_hub_resolution_and_icann_publish() -> None:
@@ -201,7 +251,11 @@ def test_zone_bridge_registry_does_not_map_to_hubs() -> None:
         design_pack_sha256=PACK,
         public_gateway_url="https://pair.example.workers.dev/a",
     )
-    zone.publish(name="mesh-only-three.az", tip_hash=hashlib.sha256(b"m3").hexdigest())
+    zone.publish(
+        name="mesh-only-three.az",
+        tip_hash=hashlib.sha256(b"m3").hexdigest(),
+        design_of="https://godlock.uk/",
+    )
     doc = zone.bridge_registry()
     assert doc["ok"] is True
     assert doc["public_icann"] is False
@@ -209,8 +263,12 @@ def test_zone_bridge_registry_does_not_map_to_hubs() -> None:
     first = doc["names"]["www.survivalnetwork.az"]
     assert first["resolves_to_hub"] is False
     assert first["design_of"] == "https://www.azielcorpuslibrary.net/"
+    assert first["canonical_hub"] == "https://www.azielcorpuslibrary.net/"
+    assert first["tip"] == TIP
     assert first["public_gateway_url"].startswith("https://pair.example.workers.dev/")
     assert first["public_gateway_url"] != "https://www.azielcorpuslibrary.net/"
+    _assert_mesh_entry_law(first)
+    _assert_mesh_entry_law(doc["names"]["mesh-only-three.az"])
     labels = {row["label"] for row in DESIGN_HUBS}
     assert labels == {"azieleliab", "azielcorpuslibrary", "godlock", "hedidntjump"}
     assert "azcorpus.az" in doc["names"]
@@ -260,6 +318,9 @@ def test_docs_and_worker_surfaces_exist() -> None:
     assert "azlibrary" in law
     assert "design-packs" in law
     assert "fifth public product" in law or "fifth product" in law
+    assert "relocatable" in law
+    assert "https://www.azieleliab.com/" in law
+    assert "https://hedidntjump.com/" in law
     assert "Growth-ON" in law
     assert "CROSS-NETWORK-SURVIVAL" in law
     assert "Visible 15:20 identity-lock HTML" in law

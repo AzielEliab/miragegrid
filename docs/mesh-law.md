@@ -155,7 +155,10 @@ bridge. Cap-7 mesh names stay mesh-authoritative
 `GET /v1/mesh/az-generator`. Re-expand is archive, not index.
 
 Mesh names are relocatable labels, not a fifth public product.
-`azcorpus` + `azlibrary` are designs inside azielcorpuslibrary.net
+They are ultimately the four online hubs (azieleliab.com,
+azielcorpuslibrary.net, godlock.uk, hedidntjump.com). Each
+`/bridge.json` entry has `canonical_hub`, `tip`, `public_icann:false`,
+`name_may_change:true`. `azcorpus` + `azlibrary` are designs inside azielcorpuslibrary.net
 (download open; azlibrary upload is Plane-A token). They do **not**
 resolve, redirect, or CNAME to those hubs. `canonical_hub` /
 `design_of` is provenance. `resolves_to_hub` is false.

@@ -215,6 +215,7 @@ def named_mesh_entry(site: Mapping[str, Any], *, suffix: str = AZ_TLD) -> dict[s
             "download_open": True,
             "plane": "pull-only",
         },
+        "tip": digest,
         "tip_sha256": digest,
         "person": person_id(),
     }
@@ -363,6 +364,55 @@ def refuse_hub_resolution(*, name: str = "", hub: str = "") -> dict[str, Any]:
     )
 
 
+def refuse_fifth_product(*, name: str = "") -> dict[str, Any]:
+    return _verdict(
+        False,
+        "BRIDGE-NO-FIFTH-PRODUCT",
+        verdict=REFUSE,
+        message="mesh name is a relocatable label of the four online hubs; not a fifth public product",
+        extra={
+            "name": name,
+            "fifth_product": False,
+            "canonical_hubs": [row["canonical_hub"] for row in CANONICAL_HUBS],
+            "public_icann": False,
+            "spec": SEMANTIC_BRIDGE_SPEC,
+            "no_lie": True,
+        },
+    )
+
+
+def refuse_need_canonical_hub(*, name: str = "") -> dict[str, Any]:
+    return _verdict(
+        False,
+        "BRIDGE-NEED-CANONICAL-HUB",
+        verdict=REFUSE,
+        message="each mesh entry must cite one of the four hubs as canonical_hub; do not invent a fifth product",
+        extra={
+            "name": name,
+            "canonical_hubs": [row["canonical_hub"] for row in CANONICAL_HUBS],
+            "fifth_product": False,
+            "public_icann": False,
+            "spec": SEMANTIC_BRIDGE_SPEC,
+            "no_lie": True,
+        },
+    )
+
+
+def refuse_need_tip(*, name: str = "") -> dict[str, Any]:
+    return _verdict(
+        False,
+        "BRIDGE-NEED-TIP",
+        verdict=REFUSE,
+        message="each mesh entry needs a real tip sha256; do not invent one",
+        extra={
+            "name": name,
+            "public_icann": False,
+            "spec": SEMANTIC_BRIDGE_SPEC,
+            "no_lie": True,
+        },
+    )
+
+
 def refuse_invent_first_flag_https(*, name: str = FIRST_CLAIM_NAME) -> dict[str, Any]:
     return _verdict(
         False,
@@ -453,6 +503,8 @@ def _entry_from_claim(claim: Mapping[str, Any]) -> dict[str, Any]:
         return refuse_hub_resolution(name=host, hub=str(gateway))
     if claim.get("icann") is True or claim.get("public_icann") is True:
         return refuse_public_dns_claim(kind="claim-icann")
+    if claim.get("fifth_product") is True:
+        return refuse_fifth_product(name=host)
 
     design_of = normalize_design_of(claim.get("design_of") or claim.get("canonical_hub"))
     public_host = bool(claim.get("public_host") or claim.get("plane") == "public-gateway")
@@ -513,6 +565,13 @@ def _entry_from_claim(claim: Mapping[str, Any]) -> dict[str, Any]:
             entry["tip_sha256"] = design_pack_sha256(label)
         if site.get("upload_plane"):
             entry["upload_plane"] = site["upload_plane"]
+    if not entry.get("canonical_hub"):
+        return refuse_need_canonical_hub(name=host)
+    if not entry.get("tip_sha256"):
+        return refuse_need_tip(name=host)
+    entry["tip"] = entry["tip_sha256"]
+    entry["mesh_name"] = host
+    entry["person"] = person_id()
     return entry
 
 

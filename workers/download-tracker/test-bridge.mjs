@@ -16,6 +16,9 @@ import {
   refuseAzgIcannPublish,
   refuseHubResolution,
   refuseInventFirstFlagHttps,
+  refuseFifthProduct,
+  refuseNeedCanonicalHub,
+  refuseNeedTip,
 } from "./src/bridge.js";
 import { execSync } from "node:child_process";
 
@@ -42,6 +45,13 @@ assert(empty.names["azcorpus.az"].download_open === true, "azcorpus download ope
 assert(empty.names["azcorpus.az"].canonical_hub === CORPUS_HUB, "azcorpus hub");
 assert(empty.names["azcorpus.az"].fifth_product === false, "not fifth product");
 assert(empty.names["azcorpus.az"].public_icann === false, "azcorpus not icann");
+assert(empty.names["azcorpus.az"].name_may_change === true, "azcorpus name may change");
+assert(empty.names["azcorpus.az"].tip && empty.names["azcorpus.az"].tip.length === 64, "azcorpus tip");
+assert(empty.names["azcorpus.az"].tip === empty.names["azcorpus.az"].tip_sha256, "azcorpus tip alias");
+assert(empty.names["azlibrary.az"].canonical_hub === CORPUS_HUB, "azlibrary hub");
+assert(empty.names["azlibrary.az"].tip && empty.names["azlibrary.az"].tip.length === 64, "azlibrary tip");
+assert(empty.names["azlibrary.az"].public_icann === false, "azlibrary not icann");
+assert(empty.names["azlibrary.az"].name_may_change === true, "azlibrary name may change");
 assert(empty.fifth_product === false, "doc not fifth product");
 
 const cite = cap7BridgeCite();
@@ -67,7 +77,18 @@ assert(claimed.names["www.survivalnetwork.az"].status === "https-gateway", "gate
 assert(claimed.names["www.survivalnetwork.az"].resolves_to_hub === false, "claimed no hub resolve");
 assert(claimed.names["www.survivalnetwork.az"].design_of === "https://www.azieleliab.com/", "design_of provenance");
 assert(claimed.names["www.survivalnetwork.az"].icann === false, "row icann false");
+assert(claimed.names["www.survivalnetwork.az"].canonical_hub === "https://www.azieleliab.com/", "claimed hub");
+assert(claimed.names["www.survivalnetwork.az"].tip === tip, "claimed tip");
+assert(claimed.names["www.survivalnetwork.az"].name_may_change === true, "claimed name may change");
 assert(claimed.names["azcorpus.az"].status === "named-mesh-site", "named site stays");
+assert((await buildBridgeRegistry([{ name: "orphan.az", tip_sha256: tip }])).code === "BRIDGE-NEED-CANONICAL-HUB", "need hub");
+assert(
+  (await buildBridgeRegistry([{ name: "orphan.az", design_of: "https://godlock.uk/" }])).code === "BRIDGE-NEED-TIP",
+  "need tip",
+);
+assert(refuseFifthProduct().code === "BRIDGE-NO-FIFTH-PRODUCT", "fifth product refuse");
+assert(refuseNeedCanonicalHub().code === "BRIDGE-NEED-CANONICAL-HUB", "need hub refuse");
+assert(refuseNeedTip().code === "BRIDGE-NEED-TIP", "need tip refuse");
 
 assert(refusePublicDnsClaim().code === "BRIDGE-NO-PUBLIC-DNS", "dns refuse");
 assert(refuseAzgIcannPublish().code === "BRIDGE-NO-ICANN-PUBLISH", "icann publish refuse");
@@ -150,6 +171,13 @@ assert(Array.isArray(bridgeDoc.slots) && bridgeDoc.slots.length === 0, "live emp
 assert(!("www.survivalnetwork.az" in (bridgeDoc.names || {})), "live no invented first-flag https");
 assert(bridgeDoc.names["azcorpus.az"].status === "named-mesh-site", "live azcorpus");
 assert(bridgeDoc.names["azlibrary.az"].upload_auth === "token", "live azlibrary token");
+for (const row of Object.values(bridgeDoc.names)) {
+  assert(row.canonical_hub === CORPUS_HUB, "live hub");
+  assert(row.tip && row.tip.length === 64, "live tip");
+  assert(row.public_icann === false, "live row public_icann");
+  assert(row.name_may_change === true, "live row name_may_change");
+  assert(row.fifth_product === false, "live row not fifth");
+}
 
 const packRes = await hit("/design-packs/azcorpus.json");
 assert(packRes.status === 200, "pack HTTP " + packRes.status);

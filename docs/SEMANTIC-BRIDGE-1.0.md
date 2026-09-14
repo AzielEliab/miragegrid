@@ -46,6 +46,22 @@ The bridge is a map, not a registrar write and not a living network.
 - Not Node Gate. Not a Softwares-tab product.
 - Not visible 15:20 identity-lock HTML.
 
+## SUPERSEDE — mesh name ≠ new product
+
+Cap-7 / mesh-generated site names **may change** (`.az` → `.aziel` →
+pivot; `survivalnetwork.*` and other labels), but they are
+**ultimately the original 4 websites currently online**:
+
+1. https://www.azieleliab.com/
+2. https://www.azielcorpuslibrary.net/ — hosts **azcorpus** + **azlibrary** designs (Corpus vs Library, not separate ICANN sites)
+3. https://godlock.uk/
+4. https://hedidntjump.com/
+
+`mesh_name` is a relocatable claim/label. `canonical_hub` + Person
+`@id` + tip SHA-256 stay those four hubs. Do **not** invent a fifth
+public product. Exactly **2** Cap-7 public gateways are HTTPS mirrors
+of mesh names that still hash-verify as those hubs’ designs.
+
 ## Cap-7 names are independent mesh hosts
 
 The Cap-7 mesh DNS factory lives **deep-node → FRONT Node Gate**. It
@@ -94,8 +110,11 @@ hash. No rewrite key. The network never lies to stay alive.
   (status `named-mesh-site`), not live ICANN hosts. Do **not** invent
   `www.survivalnetwork.az` as live HTTPS if it is not hosted.
 - When local claims exist, list them honestly (status, tip, access,
-  design provenance). Missing tip / missing pack → omit the hash; do
-  not invent one.
+  design provenance). Each listed mesh entry **must** have
+  `canonical_hub` (one of the four hubs), `tip` / `tip_sha256` (real
+  hex), `public_icann: false`, and `name_may_change: true`. Missing
+  hub → `BRIDGE-NEED-CANONICAL-HUB`. Missing tip → `BRIDGE-NEED-TIP`.
+  Do **not** invent a hash or a fifth product.
 - `public_gateway_url` is set only for a name that is actually one of
   the two hosted public gateways **and** the URL is not a hub host.
 - Re-expand remains **archive, not index**. Archive re-expand is
@@ -143,7 +162,8 @@ Locked fields:
 | Field | Law |
 | --- | --- |
 | `status` | `named-mesh-site` / `mesh-only` / `https-gateway` / `claimed-unhosted` |
-| `tip_sha256` | present only when a real tip exists (named sites use pack sha256) |
+| `canonical_hub` | required; one of the four online hubs (provenance only) |
+| `tip` / `tip_sha256` | required; real hex (named sites use pack sha256) |
 | `design_pack` / `design_pack_sha256` | hash-absolute pack URL + sha256 when real |
 | `public_gateway_url` | present only when that name is a hosted public gateway |
 | `access` | AZNet + AZBrowser (named sites) or `aznet` \| `azbrowser` \| `https-gateway` |
@@ -181,6 +201,7 @@ does not operate Node Gate and does not claim `.az` names.
 - Mapping `mesh_name` → hub hostname as resolution, CNAME, or redirect
 - `resolves_to_hub: true`
 - Inventing live ICANN success or a fifth public product
+- Listing a mesh entry without `canonical_hub` or `tip`
 - Inventing `www.survivalnetwork.az` as live HTTPS when Cap-7 claims
   are empty or that name is not hosted
 - Invented tip / design-pack SHA-256
