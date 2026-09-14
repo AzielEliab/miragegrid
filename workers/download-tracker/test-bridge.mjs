@@ -1,3 +1,4 @@
+import worker from "./src/index.js";
 import {
   SEMANTIC_BRIDGE_SPEC,
   buildBridgeRegistry,
@@ -84,5 +85,59 @@ assert(sitemap.includes("/llms.txt"), "sitemap llms");
 assert(sitemap.includes("/v1/bridge"), "sitemap bridge");
 assert(sitemap.includes("/v1/mesh/az-generator"), "sitemap az-generator");
 
+async function hit(path) {
+  const req = new Request("https://miragegrid-download-tracker.vibelock.workers.dev" + path, {
+    method: "GET",
+    headers: { "user-agent": "Mozilla/5.0", accept: "*/*" },
+  });
+  return worker.fetch(req, {});
+}
+
+const llmsRes = await hit("/llms.txt");
+assert(llmsRes.status === 200, "llms HTTP " + llmsRes.status);
+assert(String(llmsRes.headers.get("Content-Signal") || "").includes("ai-input=yes"), "llms Content-Signal");
+const llmsBody = await llmsRes.text();
+assert(llmsBody.includes("SEMANTIC-BRIDGE-1.0"), "llms body");
+assert(!llmsBody.includes("15:20"), "llms no 15:20 chrome");
+
+const aiRes = await hit("/ai.txt");
+assert(aiRes.status === 200, "ai.txt HTTP " + aiRes.status);
+
+const bridgeRes = await hit("/v1/bridge");
+assert(bridgeRes.status === 200, "bridge HTTP " + bridgeRes.status);
+const bridgeDoc = await bridgeRes.json();
+assert(bridgeDoc.public_icann === false, "live public_icann");
+assert(bridgeDoc.resolves_to_hub === false, "live resolves_to_hub");
+assert(bridgeDoc.names && Object.keys(bridgeDoc.names).length === 0, "live empty names");
+assert(Array.isArray(bridgeDoc.slots) && bridgeDoc.slots.length === 0, "live empty slots");
+assert(!("www.survivalnetwork.az" in (bridgeDoc.names || {})), "live no invented first-flag https");
+
+const citeRes = await hit("/cite.json");
+assert(citeRes.status === 200, "cite HTTP " + citeRes.status);
+const citeDoc = await citeRes.json();
+assert(citeDoc.cap7_bridge && citeDoc.cap7_bridge.public_icann === false, "cite cap7 public_icann");
+assert(citeDoc.person && citeDoc.person["@id"] === "https://www.azieleliab.com/#aziel", "cite person");
+assert(citeDoc.cap7_bridge.resolves_to_hub === false, "cite no hub resolve");
+
+const robotsRes = await hit("/robots.txt");
+assert(robotsRes.status === 200, "robots HTTP " + robotsRes.status);
+const robotsBody = await robotsRes.text();
+assert(robotsBody.includes("GPTBot"), "robots GPTBot");
+assert(robotsBody.includes("Content-Signal:"), "robots signal");
+
+const mapRes = await hit("/sitemap.xml");
+assert(mapRes.status === 200, "sitemap HTTP " + mapRes.status);
+const mapBody = await mapRes.text();
+assert(mapBody.includes("/llms.txt"), "sitemap llms");
+assert(mapBody.includes("/v1/mesh/az-generator"), "sitemap az-generator");
+assert(mapBody.includes("/v1/bridge"), "sitemap bridge");
+
+const azg = await hit("/v1/mesh/az-generator");
+assert(azg.status === 200, "az-generator HTTP " + azg.status);
+const azgDoc = await azg.json();
+assert(azgDoc.public_icann === false, "azg cite public_icann");
+assert(azgDoc.callable === false, "azg not callable");
+
 console.log("bridge JSON empty-vs-claimed honesty ok; llms/ai/robots/sitemap stamped");
 console.log("public_icann=false resolves_to_hub=false design_of=provenance-only");
+console.log("Worker fetch: llms/ai/bridge/cite/robots/sitemap/az-generator all 200");

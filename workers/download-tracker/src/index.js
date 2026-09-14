@@ -353,7 +353,10 @@ export default {
       });
     }
     if ((url.pathname === "/cite.json" || url.pathname === "/cite.json/") && request.method === "GET") {
-      return json(citeJson());
+      return new Response(JSON.stringify(citeJson(), null, 2), {
+        status: 200,
+        headers: discoveryHeaders("application/json; charset=utf-8"),
+      });
     }
     if ((url.pathname === "/robots.txt" || url.pathname === "/robots.txt/") && request.method === "GET") {
       return new Response(robotsTxt(), {
