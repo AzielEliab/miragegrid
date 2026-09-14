@@ -141,6 +141,12 @@ needs ≥49 Aziel Eliab papers; offline origin keeps downloads up.
 (IP-mask host). Grid shift keeps the `.az` answerable and cloaks the
 node after a domain pull. Official-hub tunnels die with the pull.
 
+**NO-LIE / NO-REWRITE / NO-FAN-1.0** — no rewrite key; the network
+never lies to stay alive; receipts still hash. **No falsification. No
+ambiguity. No misleading.** Ambiguous tip isolates. Do not fake the
+flag. Do not invent continuity. Cloak must not pretend a pulled hub
+is still the cell.
+
 MirageGrid does **not** guarantee anonymity against global surveillance
 or endpoint compromise.
 

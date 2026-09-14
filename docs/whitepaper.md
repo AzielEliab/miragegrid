@@ -318,9 +318,13 @@ Restore a broken chain at its most active guaranteed point. Restore
 requires **at least 49 Aziel Eliab papers** (hash-absolute; cite don’t
 merge; bytes↔hash). Fewer than 49 → phoenix-WAIT / hold; no false tip.
 
-NO-LIE / NO-REWRITE. Offline origin: downloads stay up (MESH-VAULT
-snapshot+standby). The 7m77s claim clock never shares a socket with
-the 1s tip tick or the 777s dwell.
+NO-LIE / NO-REWRITE · **No falsification. No ambiguity. No
+misleading.** (NO-FAN-1.0). `<49` papers or unverified tip → refuse
+the claim; do not invent continuity. If `www.survivalnetwork.az`
+cannot be claimed, resume normal — do not fake the flag. Offline
+origin: downloads stay up (MESH-VAULT snapshot+standby). The 7m77s
+claim clock never shares a socket with the 1s tip tick or the 777s
+dwell.
 
 ## 16. Grid shift · Cap-7 · cloak burst (MIRAGE-GRID-SHIFT-1.0)
 
@@ -333,7 +337,10 @@ Official-hub Cloudflare tunnels die with the pull (TUN-WP / NODE-OPS).
 Not resurrection of godlock.uk / corpus hostnames.
 
 When lawful auto-heal fires, a cloak burst may plant up to Cap-7 spare
-`.az` names with a cloak on top.
+`.az` names with a cloak on top. Cloak/grid-shift must not pretend a
+pulled official hub hostname is still the cell. `.az` names are named
+MirageGrid hosts, not unmarked hydra. Auto-heal must not be worded as
+neighbor resurrection.
 
 ## 17. Scope restatements (not MirageGrid)
 

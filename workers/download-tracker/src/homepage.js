@@ -207,7 +207,7 @@ ${JSON.stringify(jsonLd, null, 2)}
     <div class="live"><b id="meshLiveCount">0</b> Live Nodes</div>
     <div id="meshLine">Suite mesh: off (default). QNM-BUILD-1.0. QNS-CD-1.0. Not an anonymity network.</div>
     <div class="rollup">live <b id="qnmLive">0</b> · locked <b id="qnmLocked">0</b> · isolated <b id="qnmIsolated">0</b></div>
-    <div>No Node Gate · No auto-heal · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · Aziel Eliab only</div>
+    <div>No Node Gate · No auto-heal · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · NO-FAN-1.0 · No falsification. No ambiguity. No misleading. · Aziel Eliab only</div>
     <div>
       <input id="meshBearer" type="text" maxlength="80" placeholder="bearer (required to enable)" aria-label="mesh bearer">
       <button id="meshEnable" type="button" title="Enable suite mesh. Declared bearer required. Default off.">Enable</button>

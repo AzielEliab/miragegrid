@@ -50,7 +50,8 @@ pytest is the dev extra.
    add neighbor talk-back heal, vote-to-fix labeled as auto-heal, live
    body sync, a shared 1s/777s/7m77s socket, Softwares-tab products for
    AZ Generator or Node Gate, unmarked hub tunnel hydra, visible 15:20
-   chrome, or invented Zenodo DOIs.
+   chrome, invented Zenodo DOIs, or falsify/ambiguous/misleading verbs
+   (NO-FAN-1.0: No falsification. No ambiguity. No misleading.).
 9. New behavior needs a test that fails without the change.
 10. Author line stays **Aziel Eliab**.
 

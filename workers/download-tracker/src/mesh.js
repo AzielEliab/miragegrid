@@ -75,7 +75,7 @@ export const QNS_CD = Object.freeze({
 });
 
 export const MESH_NOTE =
-  "QNM-BUILD-1.0. QNS-CD-1.0 photon QNS1 packet transfer. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. Suite mesh default off. Live|locked|isolated counts only. No Node Gate. No auto-heal. Not an anonymity network. No public qnsd proxy. Author: Aziel Eliab only.";
+  "QNM-BUILD-1.0. QNS-CD-1.0 photon QNS1 packet transfer. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. NO-LIE. NO-REWRITE. NO-FAN-1.0. No falsification. No ambiguity. No misleading. Suite mesh default off. Live|locked|isolated counts only. No Node Gate. No auto-heal. Not an anonymity network. No public qnsd proxy. Author: Aziel Eliab only.";
 
 export const SPLIT_WIRES_LAW = "SPLIT THE WIRES";
 export const SPLIT_WIRES_SPEC = "STW-1.0";
@@ -89,6 +89,14 @@ export const AZ_GENERATOR_LAW = "AZ GENERATOR";
 export const AZ_GENERATOR_SPEC = "AZ-GENERATOR-1.0";
 export const GRID_SHIFT_LAW = "MIRAGE GRID SHIFT";
 export const GRID_SHIFT_SPEC = "MIRAGE-GRID-SHIFT-1.0";
+export const NO_LIE_LAW = "NO-LIE";
+export const NO_REWRITE_LAW = "NO-REWRITE";
+export const NO_FALSIFY_LAW = "NO-FALSIFY";
+export const NO_AMBIGUITY_LAW = "NO-AMBIGUITY";
+export const NO_MISLEAD_LAW = "NO-MISLEAD";
+export const NO_FAN_LAW = "NO FALSIFICATION NO AMBIGUITY NO MISLEADING";
+export const NO_FAN_SPEC = "NO-FAN-1.0";
+export const NO_FAN_PHRASE = "No falsification. No ambiguity. No misleading.";
 export const ASSIGN_LIVE = true;
 export const HOSTED_STUB_OPS = Object.freeze(["vpn", "hop", "tunnel", "vpn-hop", "mesh-hop"]);
 export const TIP_TICK_SIZE = 33;
@@ -195,6 +203,11 @@ export const AZ_GENERATOR = Object.freeze({
   no_lie: true,
   no_rewrite: true,
   rewrite_key: false,
+  no_falsify: true,
+  no_ambiguity: true,
+  no_mislead: true,
+  no_fan: NO_FAN_SPEC,
+  no_fan_phrase: NO_FAN_PHRASE,
 });
 
 export const GRID_SHIFT = Object.freeze({
@@ -210,6 +223,30 @@ export const GRID_SHIFT = Object.freeze({
   official_hubs_are_node_gate: false,
   hub_tunnels_die_with_pull: true,
   resurrection_of_official_hubs: false,
+  pretend_pulled_hub_still_cell: false,
+  no_lie: true,
+  no_rewrite: true,
+  no_falsify: true,
+  no_ambiguity: true,
+  no_mislead: true,
+  no_fan: NO_FAN_SPEC,
+  no_fan_phrase: NO_FAN_PHRASE,
+});
+
+export const NO_FAN = Object.freeze({
+  law: NO_FAN_LAW,
+  spec: NO_FAN_SPEC,
+  phrase: NO_FAN_PHRASE,
+  author: IDENTITY,
+  identity: IDENTITY,
+  beside: [NO_LIE_LAW, NO_REWRITE_LAW],
+  no_lie: true,
+  no_rewrite: true,
+  no_falsify: true,
+  no_ambiguity: true,
+  no_mislead: true,
+  ambiguous_tip: "isolate",
+  rewrite_key: false,
 });
 
 export const PUBLIC_STACK = Object.freeze({
@@ -236,6 +273,9 @@ export function meshLawFields() {
     az_generator: AZ_GENERATOR,
     grid_shift: GRID_SHIFT,
     public_stack: PUBLIC_STACK,
+    no_lie: true,
+    no_rewrite: true,
+    no_fan: NO_FAN,
   };
 }
 
@@ -306,7 +346,48 @@ export function refuseReheal(body) {
   if (body.live_body_sync || body.fanout || body.sender_fanout) {
     return lawVerdict(false, "STW-NO-FANOUT", "refuse", "payload plane is pull-only; sender fan-out is refused");
   }
+  const fan = refuseNoFan(body);
+  if (fan) return fan;
   return refuseTipContamination(body);
+}
+
+const NO_FAN_FALSIFY = Object.freeze([
+  "falsify", "falsified", "falsification", "fake", "fake-flag", "invent", "invent-continuity",
+  "fabricate", "false-tip", "false-receipt", "false-claim", "false-live-nodes", "false-site-up",
+]);
+const NO_FAN_AMBIGUITY = Object.freeze([
+  "ambiguous", "ambiguity", "dual-tip", "soft-maybe", "maybe", "pretty-copy", "majority-paper-over",
+]);
+const NO_FAN_MISLEAD = Object.freeze([
+  "misleading", "mislead", "pretend", "pretend-hub-cell", "hub-still-cell", "unmarked-hydra",
+  "neighbor-resurrection",
+]);
+
+function normVerb(value) {
+  return String(value == null ? "" : value).trim().toLowerCase().replace(/[_\s]+/g, "-");
+}
+
+export function refuseNoFan(body) {
+  if (body == null) return null;
+  const raw = typeof body === "string" ? body : (body.verb || body.kind || "");
+  const key = normVerb(raw);
+  const obj = body && typeof body === "object" ? body : {};
+  if (obj.falsify || obj.falsified || obj.fake_flag || obj.invent_continuity || obj.false_tip || NO_FAN_FALSIFY.includes(key)) {
+    return lawVerdict(false, "NO-FAN-FALSIFY", "refuse", "no falsified tip, receipt, domain claim, Live Nodes count, or site-up claim", {
+      phrase: NO_FAN_PHRASE, spec: NO_FAN_SPEC, kind: key || "falsify", no_lie: true, no_rewrite: true,
+    });
+  }
+  if (obj.ambiguous || obj.dual_tip || obj.soft_maybe || NO_FAN_AMBIGUITY.includes(key)) {
+    return lawVerdict(false, "NO-FAN-AMBIGUITY", "isolate", "ambiguous tip isolates; do not paper over with majority or pretty copy", {
+      phrase: NO_FAN_PHRASE, spec: NO_FAN_SPEC, kind: key || "ambiguous", quorum_is_truth: false,
+    });
+  }
+  if (obj.misleading || obj.pretend_hub_cell || obj.neighbor_resurrection || NO_FAN_MISLEAD.includes(key)) {
+    return lawVerdict(false, "NO-FAN-MISLEAD", "refuse", "no misleading chrome: pulled hub is not still the cell; auto-heal is not neighbor resurrection", {
+      phrase: NO_FAN_PHRASE, spec: NO_FAN_SPEC, kind: key || "misleading",
+    });
+  }
+  return null;
 }
 
 export function socketsShare(planeA, planeB) {
@@ -376,6 +457,13 @@ function paperCount(papers) {
 
 export function claimAzDomain(body) {
   const b = body && typeof body === "object" ? body : {};
+  const fan = refuseNoFan(b);
+  if (fan) return fan;
+  if (b.tip_verified === false) {
+    return lawVerdict(false, "AZG-UNVERIFIED-TIP", "phoenix-wait", "unverified tip: refuse claim rather than invent continuity; phoenix-WAIT / hold", {
+      false_tip: false, phoenix: "wait", no_lie: true, phrase: NO_FAN_PHRASE,
+    });
+  }
   const origin = String(b.origin_node || b.node || "node-01");
   const claimed = Number(b.claimed || b.claimed_count || 0) || 0;
   const known = Array.isArray(b.known_sites) ? b.known_sites : [];
@@ -426,6 +514,8 @@ export function offlineDownloadStayUp(body) {
 
 export function applyGridShift(body) {
   const b = body && typeof body === "object" ? body : {};
+  const fan = refuseNoFan(b);
+  if (fan) return fan;
   if (b.vote_to_fix || b["vote-to-fix"] || b.neighbor_talk) {
     return lawVerdict(false, "RH-NO-VOTE-TO-FIX", "refuse", "neighbor vote-to-fix labeled as auto-heal is refused");
   }

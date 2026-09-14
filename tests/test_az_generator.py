@@ -30,7 +30,11 @@ from miragegrid.mesh import (
     offline_download_stay_up,
     plant_flag_and_repost,
     public_stack_dict,
+    refuse_ambiguity,
+    refuse_falsify,
     refuse_hub_tunnel_hydra,
+    refuse_misleading,
+    refuse_no_fan,
     restore_chain,
     sockets_share,
 )
@@ -199,3 +203,43 @@ def test_flag_repost_and_public_stack() -> None:
     assert law["reheal"]["mesh_reheal"] == "MESH-REHEAL"
     assert grid_shift_dict()["mesh_vault"]["role"] == "ip-mask-host"
     assert "Aziel Eliab" in law["author"]
+    assert law["no_fan"]["spec"] == "NO-FAN-1.0"
+    assert law["no_fan"]["phrase"] == "No falsification. No ambiguity. No misleading."
+    assert law["no_lie"] is True
+    assert law["no_rewrite"] is True
+
+
+def test_no_fan_refuses_falsify_ambiguous_misleading_verbs() -> None:
+    fake = refuse_no_fan("falsify")
+    assert fake and fake["code"] == "NO-FAN-FALSIFY" and fake["ok"] is False
+    assert fake["phrase"] == "No falsification. No ambiguity. No misleading."
+    assert refuse_falsify(kind="false-tip")["code"] == "NO-FAN-FALSIFY"
+    assert refuse_no_fan("false-receipt")["code"] == "NO-FAN-FALSIFY"
+    assert refuse_no_fan("false-live-nodes")["code"] == "NO-FAN-FALSIFY"
+    assert refuse_no_fan("false-site-up")["code"] == "NO-FAN-FALSIFY"
+    amb = refuse_no_fan("ambiguous")
+    assert amb and amb["code"] == "NO-FAN-AMBIGUITY" and amb["verdict"] == "isolate"
+    assert refuse_ambiguity()["quorum_is_truth"] is False
+    assert refuse_no_fan("dual-tip")["code"] == "NO-FAN-AMBIGUITY"
+    assert refuse_no_fan("pretty-copy")["code"] == "NO-FAN-AMBIGUITY"
+    mis = refuse_misleading(kind="pretend-hub-cell")
+    assert mis["code"] == "NO-FAN-MISLEAD"
+    assert refuse_no_fan("neighbor-resurrection")["code"] == "NO-FAN-MISLEAD"
+    assert refuse_no_fan("clear") is None
+
+
+def test_unverified_tip_and_fake_flag_refuse_continuity() -> None:
+    unverified = claim_az_domain(origin_node="node-01", tip_verified=False)
+    assert unverified["code"] == "AZG-UNVERIFIED-TIP"
+    assert unverified["false_tip"] is False
+    invent = claim_az_domain(origin_node="node-01", invent_continuity=True)
+    assert invent["code"] == "NO-FAN-FALSIFY"
+    resume = claim_az_domain(origin_node="node-01", claimable=False)
+    assert resume["code"] == "AZG-FIRST-CLAIM-RESUME"
+    assert resume["fake_flag"] is False
+    fake = plant_flag_and_repost(sites=["www.survivalnetwork.az"], fake_flag=True)
+    assert fake["code"] == "NO-FAN-FALSIFY"
+    hub = grid_shift(domain_pulled="godlock.uk", az_name="standby.az", pretend_hub_cell=True)
+    assert hub["code"] == "NO-FAN-MISLEAD"
+    risen = grid_shift(domain_pulled="godlock.uk", az_name="standby.az", neighbor_resurrection=True)
+    assert risen["code"] == "NO-FAN-MISLEAD"
