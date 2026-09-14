@@ -394,4 +394,7 @@ labels of the four online hubs, not a fifth product. Each
 `name_may_change:true`. Named sites azcorpus + azlibrary are designs
 inside azielcorpuslibrary.net (hash-absolute `/design-packs/*`). Empty
 Cap-7 **claims** stay SLOT. Growth-ON. CROSS-NETWORK-SURVIVAL +
-NO-LIE. Re-expand is archive, not index.
+NO-LIE. Re-expand is archive, not index. Live Worker is
+`miragegrid-download-tracker.vibelock.workers.dev`. Named
+`miragegrid.vibelock.workers.dev` is Cloudflare 1042 — do not cite.
+`GET /shelves` points at corpus canonical. See [REDLINE-1.0.md](REDLINE-1.0.md).

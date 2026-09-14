@@ -230,6 +230,9 @@ hedidntjump.com) remain named public hosts. They are **not** Node Gate.
 - Claiming `.com` / `.net` / other ICANN TLDs
 - Pretending `.az` or `.aziel` succeeded after an honest pivot
 - Invented radio PHY / turning MirageGrid into a qnm RF/BT/Wi-Fi/photon mesh (local qnm radios are not this product; hub `GET /v1/mesh` never enables)
+- GET enable / GET radio-on / GET claim plant (REDLINE-1.0)
+- Citing `miragegrid.vibelock.workers.dev` as live (CF 1042; live cite is `miragegrid-download-tracker.vibelock.workers.dev`)
+- Inventing a Framagit shelves URL
 - Visible 15:20 identity-lock HTML
 - Invented Zenodo DOIs
 - Merging papers instead of citing them

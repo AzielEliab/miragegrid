@@ -4,7 +4,7 @@
  * /v1 never touches DOWNLOADS KV.
  * /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME (handled in index.js before this catch-all).
  */
-import { meshOpenApiPaths, meshPointer } from "./mesh.js";
+import { meshOpenApiPaths, meshPointer, refuseCallGenerator } from "./mesh.js";
 const PRODUCT = "miragegrid";
 const VERSION = "0.2.0";
 const MOTTO = "You enter the booth. The mesh selects a booth and builds a circuit. You leave with no persistent booth identity.";
@@ -525,6 +525,9 @@ export async function handleRuntimeApi(request, url) {
   const isApi = path === "/v1" || path.startsWith("/v1/") || path === "/openapi.json" || path === "/ai";
   if (!isApi) return null;
   try {
+    if ((path === "/v1/az-generator" || path === "/v1/call-generator" || path === "/v1/run-generator") && (request.method === "GET" || request.method === "POST" || request.method === "HEAD")) {
+      return json(refuseCallGenerator(path), 403); // AZG-NOT-CALLABLE
+    }
     if (path === "/v1/health" && request.method === "GET") {
       return json({ ok: true, product: PRODUCT, version: VERSION, banner: BANNER, kind: "session-assignment", mesh: meshPointer() });
     }

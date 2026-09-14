@@ -31,6 +31,8 @@ SEMANTIC_BRIDGE_SPEC = "SEMANTIC-BRIDGE-1.0"
 CROSS_NETWORK_SURVIVAL = "CROSS-NETWORK-SURVIVAL-1.0"
 PERSON_ID = "https://www.azieleliab.com/#aziel"
 WORKER_HOST = "https://miragegrid-download-tracker.vibelock.workers.dev"
+DEAD_NAMED_WORKER = "https://miragegrid.vibelock.workers.dev"
+CORPUS_SHELVES = "https://www.azielcorpuslibrary.net/shelves"
 AZ_GENERATOR_CITE = WORKER_HOST + "/v1/mesh/az-generator"
 GROWTH = "Growth-ON"
 REEXPAND = "archive-not-index"
@@ -285,6 +287,68 @@ def semantic_bridge_dict() -> dict[str, Any]:
         "plane_a": [WORKER_HOST + "/"] + [row["canonical_hub"] for row in CANONICAL_HUBS],
         "softwares_tab": False,
         "callable": False,
+        "design_of": cap7_design_of_map(),
+        "live_worker": WORKER_HOST,
+        "dead_named_worker": dead_named_worker(),
+        "shelves": CORPUS_SHELVES,
+    }
+
+
+def cap7_design_of_map() -> dict[str, str]:
+    """Preferred public pair inherit corpus design. Provenance only."""
+    return {label: CORPUS_HUB for label in PREFERRED_PUBLIC_PAIR}
+
+
+def cap7_designs() -> list[dict[str, Any]]:
+    return [
+        {
+            "label": site["label"],
+            "design_of": site["design_of"],
+            "canonical_hub": site["canonical_hub"],
+            "resolves_to_hub": False,
+            "public_icann": False,
+            "name_may_change": True,
+            "fifth_product": False,
+        }
+        for site in NAMED_MESH_SITES
+    ]
+
+
+def dead_named_worker() -> dict[str, Any]:
+    """miragegrid.vibelock.workers.dev is CF 1042. Do not cite as live."""
+    return {
+        "url": DEAD_NAMED_WORKER,
+        "host": "miragegrid.vibelock.workers.dev",
+        "status": "cf-1042",
+        "http": 404,
+        "cite": False,
+        "live": WORKER_HOST,
+        "note": "Named worker is not deployed (Cloudflare error 1042). Live cite is miragegrid-download-tracker.vibelock.workers.dev.",
+    }
+
+
+def shelves_cite() -> dict[str, Any]:
+    """Honest /shelves pointer. Corpus is canonical. Framagit URL is not invented."""
+    return {
+        "ok": True,
+        "code": "SHELVES-CITE",
+        "spec": "COLD-MULTI-SHELF-1.0",
+        "kind": "cite-pointer",
+        "this_worker_is_not_a_shelf": True,
+        "canonical": CORPUS_SHELVES,
+        "canonical_hub": CORPUS_HUB,
+        "design_of": CORPUS_HUB,
+        "resolves_to_hub": False,
+        "public_icann": False,
+        "framagit": None,
+        "framagit_url": None,
+        "invented_framagit": False,
+        "plane_b_framagit": "awaiting-tip-pack",
+        "live_worker": WORKER_HOST,
+        "dead_named_worker": dead_named_worker(),
+        "author": MESH_LAW_AUTHOR,
+        "identity": MESH_LAW_AUTHOR,
+        "note": "Corpus shelves live on azielcorpuslibrary.net. This Worker cites that canonical. Framagit URL is not published — do not invent one.",
     }
 
 
@@ -311,10 +375,14 @@ def cap7_bridge_cite() -> dict[str, Any]:
         "name_may_change": True,
         "canonical_hubs": [row["canonical_hub"] for row in CANONICAL_HUBS],
         "named_mesh_sites": list(PREFERRED_PUBLIC_PAIR),
+        "design_of": cap7_design_of_map(),
+        "designs": cap7_designs(),
         "fifth_product": False,
         "growth": GROWTH,
         "cross_network_survival": CROSS_NETWORK_SURVIVAL,
         "no_lie": True,
+        "live_worker": WORKER_HOST,
+        "dead_named_worker": dead_named_worker(),
     }
 
 

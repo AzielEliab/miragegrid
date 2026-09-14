@@ -8,8 +8,10 @@ import {
   hostedBridgeDocument,
   llmsTxt,
   robotsTxt,
+  shelvesCite,
   sitemapXml,
 } from "./bridge.js";
+import { refuseCallGenerator } from "./mesh.js";
 
 /**
  * MirageGrid download tracker (Cloudflare Worker).
@@ -385,6 +387,17 @@ export default {
         status: 200,
         headers: discoveryHeaders("application/xml; charset=utf-8"),
       });
+    }
+    if ((url.pathname === "/shelves" || url.pathname === "/shelves/") && (request.method === "GET" || request.method === "HEAD")) {
+      const body = JSON.stringify(shelvesCite(), null, 2);
+      return new Response(request.method === "HEAD" ? null : body, {
+        status: 200,
+        headers: discoveryHeaders("application/json; charset=utf-8"),
+      });
+    }
+    const deadAlias = url.pathname.replace(/\/+$/, "") || "/";
+    if (deadAlias === "/call-generator" || deadAlias === "/run-generator") {
+      return json(refuseCallGenerator(deadAlias), 403); // AZG-NOT-CALLABLE
     }
 
     const mesh = await handleMeshApi(request, url, env);

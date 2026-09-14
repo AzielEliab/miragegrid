@@ -71,6 +71,10 @@ def test_law_stamp_public_icann_false_and_person() -> None:
     assert law["reexpand"] == "archive-not-index"
     cite = cap7_bridge_cite()
     assert cite["public_icann"] is False
+    assert cite["resolves_to_hub"] is False
+    assert cite["design_of"]["azcorpus"] == CORPUS_HUB
+    assert cite["design_of"]["azlibrary"] == CORPUS_HUB
+    assert all(row["design_of"] and row["resolves_to_hub"] is False for row in cite["designs"])
     assert cite["cite"].endswith("/v1/mesh/az-generator")
     assert cite["access"]["aznet"] is True
     assert cite["access"]["azbrowser"] is True

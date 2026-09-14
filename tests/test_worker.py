@@ -86,6 +86,12 @@ def test_worker_product_homepage() -> None:
     assert "/ai.txt" in toml
     assert "/bridge.json" in toml
     assert "/design-packs" in toml
+    assert "/shelves" in toml
+    assert "/shelves" in js
+    assert "design_of" in js
+    assert "cf-1042" in js or "1042" in js
+    assert "miragegrid-download-tracker.vibelock.workers.dev" in js
+    assert "framagit_url: null" in js or "framagit: null" in js
     assert "/llms.txt" in js
     assert "/v1/bridge" in js
     assert "design-packs" in js
