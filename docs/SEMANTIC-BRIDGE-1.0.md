@@ -19,7 +19,8 @@ Public **Plane-A** ICANN hosts — official hubs as **cite / design**
 surfaces, plus the MirageGrid Worker — are the only hosts AI crawlers
 can resolve on public DNS:
 
-- https://miragegrid-download-tracker.vibelock.workers.dev/
+- https://miragegrid-download-tracker.vibelock.workers.dev/ (live Worker)
+- `https://miragegrid.vibelock.workers.dev` is **not live** (Cloudflare 1042). Do not cite it.
 - https://www.azieleliab.com/
 - https://www.azielcorpuslibrary.net/
 - https://godlock.uk/
@@ -131,13 +132,14 @@ Hosted Worker, Growth-ON:
 | --- | --- |
 | `GET /llms.txt` | Agent discovery (llmstxt). HTTP 200. |
 | `GET /ai.txt` | Compact machine twin of the same law. |
-| `GET /cite.json` | Citation record plus Cap-7 bridge section. |
+| `GET /cite.json` | Citation record plus Cap-7 `design_of` + `resolves_to_hub: false`. |
 | `GET /bridge.json` and `GET /v1/bridge` | Stable JSON map (named sites + empty Cap-7 SLOT). |
 | `GET /design-packs/azcorpus.json` | Hash-absolute Corpus shelf design pack. |
 | `GET /design-packs/azlibrary.json` | Hash-absolute Aziel Library design pack. |
 | `GET /v1/mesh/az-generator` | Cap-7 factory cite (`public_icann: false`). |
+| `GET /shelves` | Cite pointer to https://www.azielcorpuslibrary.net/shelves. Framagit URL is null — not invented. |
 | `GET /robots.txt` | Allow + Content-Signal `ai-input` / `ai-train` / `search` yes; explicit GPTBot / Claude / Perplexity / Google-Extended Allow. |
-| `GET /sitemap.xml` | Includes bridge, llms, az-generator cite. |
+| `GET /sitemap.xml` | Includes bridge, llms, az-generator cite, shelves. |
 
 ### Cap-7 bridge section (`cite.json`)
 
@@ -151,6 +153,8 @@ Locked fields:
 - `named_mesh_sites` — `azcorpus`, `azlibrary`
 - `fifth_product` — `false`
 - `public_icann` — `false`
+- `design_of` — `{azcorpus, azlibrary}` → https://www.azielcorpuslibrary.net/ (provenance)
+- `resolves_to_hub` — `false`
 - AZNet / AZBrowser access (pair, never merge; not naked public DNS)
 - link to `/v1/mesh/az-generator`
 - Person `@id` https://www.azieleliab.com/#aziel

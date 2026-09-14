@@ -1091,6 +1091,102 @@ def refuse_radio_phy(*, kind: str | None = None) -> dict[str, Any]:
     )
 
 
+GET_ENABLE_PLANT_INTENTS: frozenset[str] = frozenset(
+    {
+        "enable",
+        "enabled",
+        "radio",
+        "radios",
+        "bearer-radio",
+        "bearer-radios",
+        "mesh-enable",
+        "claim",
+        "plant",
+        "claim-plant",
+        "run-generator",
+        "call-generator",
+        "fielded",
+        "fielded-100",
+        "radio-on",
+    }
+)
+PUBLIC_MESH_GET_DOORS: tuple[str, ...] = (
+    "/v1/mesh",
+    "/v1/mesh/status",
+    "/v1/mesh/nodes",
+    "/v1/mesh/az-generator",
+    "/v1/mesh/grid-shift",
+)
+GET_MUTATION_PATHS: frozenset[str] = frozenset(
+    {
+        "/v1/mesh/enable",
+        "/v1/mesh/join",
+        "/v1/mesh/heartbeat",
+        "/v1/mesh/leave",
+        "/v1/mesh/broadcast",
+        "/v1/mesh/plant",
+        "/v1/mesh/claim",
+        "/v1/mesh/radio",
+        "/v1/mesh/radios",
+        "/v1/mesh/call-generator",
+        "/v1/mesh/run-generator",
+    }
+)
+
+
+def _query_has_enable_or_plant(search: str | None) -> bool:
+    raw = str(search or "")
+    if raw.startswith("?"):
+        raw = raw[1:]
+    if not raw:
+        return False
+    from urllib.parse import parse_qsl
+
+    for key, val in parse_qsl(raw, keep_blank_values=True):
+        k = _norm_verb(key)
+        v = _norm_verb(val)
+        if k in GET_ENABLE_PLANT_INTENTS or v in GET_ENABLE_PLANT_INTENTS:
+            return True
+        if v in {"1", "true", "on", "yes"} and any(p in k for p in ("enable", "radio", "plant", "claim")):
+            return True
+    return False
+
+
+def refuse_get_enable_or_plant(
+    *,
+    method: str,
+    path: str,
+    search: str | None = None,
+) -> dict[str, Any] | None:
+    """GET/HEAD never enables radios or plants Cap-7 claims."""
+    if str(method or "GET").upper() not in {"GET", "HEAD"}:
+        return None
+    path_only = str(path or "").split("?")[0].rstrip("/") or "/"
+    if not path_only.startswith("/"):
+        path_only = "/" + path_only
+    intent = (
+        _query_has_enable_or_plant(search)
+        or path_only in GET_MUTATION_PATHS
+        or path_only.endswith("/enable")
+    )
+    if not intent:
+        return None
+    return _verdict(
+        False,
+        "MESH-GET-NO-ENABLE",
+        verdict=REFUSE,
+        message="GET never enables radios or plants mesh claims",
+        extra={
+            "enabled": False,
+            "default_off": True,
+            "radio_phy": False,
+            "claim_plant": False,
+            "hub_get_enables_mesh": False,
+            "path": path_only,
+        },
+    )
+
+
 def hosted_stub_refuse(op: str) -> dict[str, Any] | None:
     """Hosted mesh / vpn-hop / tunnel stubs remain refuse. Assign stays live."""
     key = str(op).strip().lower().lstrip("/")
@@ -2376,6 +2472,12 @@ def _semantic_bridge_stamp() -> dict[str, Any]:
     return semantic_bridge_dict()
 
 
+def _redline_stamp() -> dict[str, Any]:
+    from miragegrid.redline import redline_dict
+
+    return redline_dict()
+
+
 def mesh_law_dict() -> dict[str, Any]:
     return {
         "author": MESH_LAW_AUTHOR,
@@ -2394,6 +2496,9 @@ def mesh_law_dict() -> dict[str, Any]:
         "no_fan": no_fan_dict(),
         "radio_phy": False,
         "semantic_bridge": _semantic_bridge_stamp(),
+        "get_never_enables": True,
+        "claim_complete": False,
+        "redline": _redline_stamp(),
     }
 
 
