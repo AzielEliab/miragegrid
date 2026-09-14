@@ -213,3 +213,24 @@ def test_split_wires_cold_copy_reheal_law() -> None:
     assert "NO-FAN-1.0" in README
     assert "No falsification. No ambiguity. No misleading." in HOMEPAGE
     assert "NO-FAN-1.0" in SKILL
+    assert 'AIRGAP_SPEC = "AIRGAP-1.0"' in MESH
+    assert 'PAPER_VAULT_LAW = "PAPER-VAULT-ON-NODE"' in MESH
+    assert "export const AIRGAP" in MESH
+    assert "export const PAPER_VAULT" in MESH
+    assert "airgap: AIRGAP" in MESH
+    assert "paper_vault: PAPER_VAULT" in MESH
+    assert "AZG-INCOMPLETE-VAULT" in MESH
+    assert "STW-TIP-BODY" in MESH
+    assert "vaultMultiply" in MESH
+    assert "airgapMode" in MESH
+    assert "refuseIncompleteVault" in MESH
+    assert '"/v1/mesh/airgap"' in MESH
+    assert '"/v1/mesh/vault"' in MESH
+    assert "AIRGAP-1.0" in README
+    assert "AIRGAP-1.0" in SKILL
+    assert "AIRGAP-1.0" in HOMEPAGE
+    assert "PAPER-VAULT-ON-NODE" in MESH
+    assert "PAPER-VAULT-ON-NODE" in HOMEPAGE
+    assert "no paper bytes on the 1s tick" in MESH
+    assert "official hubs are not airgap Node Gate" in MESH
+    assert "have-49-without-bytes" in MESH

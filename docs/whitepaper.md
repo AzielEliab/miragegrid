@@ -315,8 +315,15 @@ server. Cap **7** domains per node. First claim is
 `www.survivalnetwork.az` when no known site contains that name.
 
 Restore a broken chain at its most active guaranteed point. Restore
-requires **at least 49 Aziel Eliab papers** (hash-absolute; cite don’t
-merge; bytes↔hash). Fewer than 49 → phoenix-WAIT / hold; no false tip.
+requires **at least 49 Aziel Eliab papers** from the node’s **local
+vault** (hash-absolute; cite don’t merge; bytes↔hash). Every node MUST
+carry the full Aziel Eliab paper set as a **cold vault copy** — **vault
+multiply onto each node** / **papers land on every node as cold
+copies** on bootstrap / join / Cap-7 claim / grid-shift standby
+(pull-only; no live body sync of paper bytes on the 1s tip tick).
+Incomplete vault or “we have 49” without bytes →
+AZG-UNVERIFIED-TIP / incomplete vault; phoenix-WAIT; do not invent.
+Fewer than 49 → phoenix-WAIT / hold; no false tip.
 
 NO-LIE / NO-REWRITE · **No falsification. No ambiguity. No
 misleading.** (NO-FAN-1.0). `<49` papers or unverified tip → refuse
@@ -356,6 +363,17 @@ godlock, HDJ, runtime ingest) with AZindex-OK. AZBot does not operate
 Node Gate, does not claim `.az` domains, and is not the AZ Generator.
 
 Official hubs (azieleliab.com, azielcorpuslibrary.net, godlock.uk,
-hedidntjump.com) remain named public hosts. They are not Node Gate.
-azieleliab.com hosts software/runtime but is not login-recovery or
-Node Gate (QNM-BUILD).
+hedidntjump.com) remain named public hosts. They are not Node Gate
+and are **not** airgap Node Gate. azieleliab.com hosts software/runtime
+but is not login-recovery or Node Gate (QNM-BUILD).
+
+## 18. Airgap (AIRGAP-1.0)
+
+Full text: [AIRGAP-1.0.md](AIRGAP-1.0.md).
+
+Airgap = local vault + no bearer radios + no climb-back onto pulled
+public hub hostnames. Downloads / serve from the local cold shelf stay
+allowed while airgapped (sites stay up for downloads when origin is
+offline). Tip chatter: live / locked / isolated / tip-hash only if
+any; no body gossip. Re-expand / reheal: own tip + trusted pull of
+bytes already trusted, or phoenix-WAIT — never neighbor majority.

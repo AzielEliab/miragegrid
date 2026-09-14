@@ -4,10 +4,10 @@
 **Status:** Locked design law  
 **Softwares-tab:** no — Node Gate, cloak burst, and grid shift are MirageGrid
 subsystems / law, not separate products  
-**Cites:** AZ-GENERATOR-1.0 · SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL
-(CCS-1.0) · REHEAL (RH-1.0) / REHEAL-1.0 / MESH-REHEAL · TUN-WP · NODE-OPS ·
-MESH-VAULT · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD
-(NO-FAN-1.0)
+**Cites:** AZ-GENERATOR-1.0 · AIRGAP-1.0 · SPLIT THE WIRES (STW-1.0) ·
+COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0) / REHEAL-1.0 / MESH-REHEAL ·
+TUN-WP · NODE-OPS · MESH-VAULT · NO-LIE · NO-REWRITE · NO-FALSIFY ·
+NO-AMBIGUITY · NO-MISLEAD (NO-FAN-1.0)
 
 This paper locks Cap-7, cloak burst, grid shift, Node Gate, and the
 public-stack wording for **auto-heal**. It does not invent a
@@ -110,6 +110,11 @@ wording: **No falsification. No ambiguity. No misleading.**
 Allowed reheal fields remain `live`, `locked`, `isolated`, `tip-hash`.
 Forbidden: bodies, diffs, vote-to-fix, majority fanfic.
 
+Grid-shift **standby** is a vault-multiply event: the standby node
+**obtains a cold vault copy** of the Aziel paper set (pull-only payload
+plane, or vault-on-transfer). Papers land as cold copies. No paper
+bytes on the 1s tip tick.
+
 ## Split the wires (three strangers)
 
 The 1s tip tick and the 777s dwell never share a socket **with** the
@@ -121,6 +126,18 @@ pull-only.
 If the origin node disconnects or goes offline, **sites stay up for
 downloads** (cold-copy / standby / MESH-VAULT snapshot+standby). Tip
 plane may show isolated/locked; download plane stays pull-only.
+Airgap still allows downloads / serve from the local cold shelf.
+
+## AIRGAP (AIRGAP-1.0)
+
+Airgap = local vault + no bearer radios + no climb-back onto pulled
+public hub hostnames. Official hubs (ae / corpus / godlock / HDJ) are
+**not** airgap Node Gate. Tip chatter when airgapped: live / locked /
+isolated / tip-hash only if any; no body gossip. Re-expand / reheal
+still: own tip + trusted pull of bytes already trusted, or
+phoenix-WAIT — never neighbor majority.
+
+Full text: [AIRGAP-1.0.md](AIRGAP-1.0.md).
 
 ## Hub sites vs MirageGrid
 
@@ -156,5 +173,8 @@ is not the AZ Generator.
 - Auto-heal worded as neighbor resurrection
 - Falsify / ambiguous / misleading verbs (NO-FAN-1.0)
 - Merging GodLock, AZBot, or official hubs into Node Gate
+- Official hubs as airgap Node Gate
+- Bearer radios / climb-back / body gossip while airgapped
+- Paper-body fan-out on the 1s tip tick
 
 Identity: **Aziel Eliab** only.

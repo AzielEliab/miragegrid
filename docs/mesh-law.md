@@ -1,7 +1,7 @@
 # MirageGrid mesh law
 
 **Author:** Aziel Eliab only  
-**Locked:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0 / REHEAL-1.0 / MESH-REHEAL) · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD (NO-FAN-1.0)
+**Locked:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0 / REHEAL-1.0 / MESH-REHEAL) · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD (NO-FAN-1.0)
 
 Hosted `/v1/assign` stays live. Hosted mesh / vpn-hop / tunnel stubs remain refuse.
 
@@ -9,7 +9,8 @@ This is law, not a timer and not a neighbor vote. Executable copies live in
 `miragegrid/mesh.py` and `workers/download-tracker/src/mesh.js`.
 
 Next-generation papers: [AZ-GENERATOR-1.0.md](AZ-GENERATOR-1.0.md) ·
-[MIRAGE-GRID-SHIFT-1.0.md](MIRAGE-GRID-SHIFT-1.0.md).
+[MIRAGE-GRID-SHIFT-1.0.md](MIRAGE-GRID-SHIFT-1.0.md) ·
+[AIRGAP-1.0.md](AIRGAP-1.0.md).
 
 ## Public stack (locked wording)
 
@@ -94,8 +95,17 @@ cannot be claimed, resume the 7m77s clock under Cap-7.
 
 Constantly plant a flag and repost current known sites. Broken chain →
 restore at the most active guaranteed point. Restore needs **at least
-49 Aziel Eliab papers** from the node’s data (hash-absolute; cite don’t
-merge; bytes↔hash). Fewer than 49 → no false tip; phoenix-WAIT / hold.
+49 Aziel Eliab papers** from the node’s **local vault** (hash-absolute;
+cite don’t merge; bytes↔hash). Every node MUST carry the full Aziel
+Eliab paper set as a **cold vault copy** — **vault multiply onto each
+node** / **papers land on every node as cold copies** on bootstrap /
+join / Cap-7 claim / grid-shift standby (pull-only payload plane, or
+vault-on-transfer). Tip plane stays presence + tip-hash only; **no
+live body sync / sender fan-out of paper bytes on the 1s tick.**
+Hash-absolute: cite, don’t merge. NO-FAN: no falsified paper set, no
+“we have 49” without bytes. Incomplete vault →
+AZG-UNVERIFIED-TIP / incomplete vault; phoenix-WAIT; do not invent.
+Fewer than 49 → no false tip; phoenix-WAIT / hold.
 
 NO-LIE / NO-REWRITE: no rewrite key; the network never lies to stay
 alive; receipts still hash; copies are not all on one tunnel.
@@ -129,6 +139,19 @@ MirageGrid hosts, not unmarked hydra. Auto-heal must not be worded as
 neighbor resurrection.
 
 Full text: [MIRAGE-GRID-SHIFT-1.0.md](MIRAGE-GRID-SHIFT-1.0.md).
+
+## AIRGAP (AIRGAP-1.0)
+
+Airgap = local vault + no bearer radios + no climb-back onto pulled
+public hub hostnames. Downloads / serve from the local cold shelf stay
+allowed (sites stay up for downloads when origin is offline). Tip
+chatter when airgapped: live / locked / isolated / tip-hash only if
+any; no body gossip. Re-expand / reheal: own tip + trusted pull of
+bytes already trusted, or phoenix-WAIT — never neighbor majority.
+Official hubs (ae / corpus / godlock / HDJ) are **not** airgap Node
+Gate.
+
+Full text: [AIRGAP-1.0.md](AIRGAP-1.0.md).
 
 ## Scope restatements
 
@@ -172,13 +195,17 @@ First-class refuse law beside NO-LIE / NO-REWRITE.
 - Invented Zenodo DOIs
 - Falsify / ambiguous / misleading verbs (NO-FAN-1.0)
 - Fake flag / invented continuity / unverified tip claim
+- Incomplete vault / “we have 49” without bytes
+- Paper-body fan-out on the 1s tip tick
+- Bearer radios / climb-back / body gossip while airgapped
+- Official hubs as airgap Node Gate
 
 ## Surface
 
 | Surface | What it does |
 | --- | --- |
 | `miragegrid/mesh.py` | Topology stays live. Law functions refuse illegal planes. |
-| Worker `mesh.js` | `/v1/mesh/*` PROXY. Stamps STW/CCS/RH/AZG/MGS. `/v1/mesh/vpn|hop|tunnel` refuse `MESH-STUB`. `/v1/mesh/reheal` is local law (not neighbor heal). `/v1/mesh/az-generator` and `/v1/mesh/grid-shift` cite local law. |
+| Worker `mesh.js` | `/v1/mesh/*` PROXY. Stamps STW/CCS/RH/AZG/MGS/AIRGAP + paper-vault-on-node. `/v1/mesh/vpn|hop|tunnel` refuse `MESH-STUB`. `/v1/mesh/reheal` is local law (not neighbor heal). `/v1/mesh/az-generator`, `/v1/mesh/grid-shift`, `/v1/mesh/airgap`, and `/v1/mesh/vault` cite local law. |
 | `POST /v1/assign` | Live session assignment. |
 
 Identity: **Aziel Eliab** only.
