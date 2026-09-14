@@ -9,6 +9,7 @@ SRC = ROOT / "workers" / "download-tracker" / "src"
 JS = SRC / "index.js"
 HOME = SRC / "homepage.js"
 RUNTIME = SRC / "runtime.js"
+BRIDGE = SRC / "bridge.js"
 TOML = ROOT / "workers" / "download-tracker" / "wrangler.toml"
 SIGIL = ROOT / "workers" / "download-tracker" / "public" / "sigil.png"
 
@@ -19,6 +20,7 @@ def _blob() -> str:
             JS.read_text(encoding="utf-8"),
             HOME.read_text(encoding="utf-8"),
             RUNTIME.read_text(encoding="utf-8"),
+            BRIDGE.read_text(encoding="utf-8"),
         ]
     )
 
@@ -80,3 +82,17 @@ def test_worker_product_homepage() -> None:
     assert "/cite.json" in toml
     assert "/robots.txt" in toml
     assert "/sitemap.xml" in toml
+    assert "/llms.txt" in toml
+    assert "/ai.txt" in toml
+    assert "/bridge.json" in toml
+    assert "/design-packs" in toml
+    assert "/llms.txt" in js
+    assert "/v1/bridge" in js
+    assert "design-packs" in js
+    assert "SEMANTIC-BRIDGE-1.0" in js
+    assert "public_icann" in js
+    assert "resolves_to_hub" in js
+    assert "GPTBot" in js
+    assert "Content-Signal" in js
+    assert "15:20" not in home
+    assert '"@id": "https://www.azieleliab.com/#aziel"' in home or "www.azieleliab.com/#aziel" in js

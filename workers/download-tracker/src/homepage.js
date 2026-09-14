@@ -3,6 +3,7 @@
  * Author: Aziel Eliab only. Apache-2.0. Forks welcome.
  * Hosted surface is session assignment. MirageGrid is not a VPN.
  */
+import { cap7BridgeCite, personId } from "./bridge.js";
 
 const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
 const GITHUB_REPO = "https://github.com/AzielEliab/miragegrid";
@@ -33,6 +34,8 @@ export function citeDocument() {
     catalog: CATALOG,
     doi: null,
     note: "Zenodo software deposit needed (no DOI invented).",
+    person: personId(),
+    cap7_bridge: cap7BridgeCite(),
   };
 }
 
@@ -306,7 +309,7 @@ ${JSON.stringify(jsonLd, null, 2)}
     <h2>How to cite</h2>
     <p>Aziel Eliab. MirageGrid. ${GITHUB_REPO}. ${HOST}. Zenodo software deposit needed (no DOI invented).</p>
     <p>Author: <strong>Aziel Eliab</strong> only · License: Apache-2.0 · Forks are welcome and always allowed.</p>
-    <p><a href="${CATALOG}">Catalog</a> · <a href="${GITHUB_REPO}">GitHub</a> · <a href="${HOST}/download">Download</a> · <a href="${HOST}/cite.json">cite.json</a></p>
+    <p><a href="${CATALOG}">Catalog</a> · <a href="${GITHUB_REPO}">GitHub</a> · <a href="${HOST}/download">Download</a> · <a href="${HOST}/cite.json">cite.json</a> · <a href="${HOST}/llms.txt">llms.txt</a> · <a href="${HOST}/v1/bridge">bridge</a> · <a href="${HOST}/design-packs/azcorpus.json">azcorpus pack</a> · <a href="${HOST}/design-packs/azlibrary.json">azlibrary pack</a></p>
     <pre>${escapeHtml(JSON.stringify(cite, null, 2))}</pre>
   </section>
 

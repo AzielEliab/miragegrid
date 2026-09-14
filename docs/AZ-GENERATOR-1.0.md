@@ -3,7 +3,7 @@
 **Author:** Aziel Eliab only  
 **Status:** Locked design law  
 **Softwares-tab:** no — AZ Generator is a MirageGrid subsystem / law, not a separate product  
-**Cites:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0) / REHEAL-1.0 / MESH-REHEAL · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD (NO-FAN-1.0)
+**Cites:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0) / REHEAL-1.0 / MESH-REHEAL · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · SEMANTIC-BRIDGE-1.0 · CROSS-NETWORK-SURVIVAL-1.0 · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD (NO-FAN-1.0)
 
 This paper is law for the next MirageGrid generation. It does not invent a
 Softwares-tab product. MirageGrid remains the Softwares product. Node Gate
@@ -226,6 +226,7 @@ hedidntjump.com) remain named public hosts. They are **not** Node Gate.
 - Hosting more or fewer than exactly 2 public browser gateways of Cap-7
 - Merging AZNet / AZBrowser / generator into one product
 - Naked public DNS as the access story
+- Mapping a mesh name onto an official hub as resolution / CNAME / redirect (hubs are design provenance only; see [SEMANTIC-BRIDGE-1.0](SEMANTIC-BRIDGE-1.0.md))
 - Claiming `.com` / `.net` / other ICANN TLDs
 - Pretending `.az` or `.aziel` succeeded after an honest pivot
 - Invented radio PHY / turning MirageGrid into a qnm RF/BT/Wi-Fi/photon mesh (local qnm radios are not this product; hub `GET /v1/mesh` never enables)

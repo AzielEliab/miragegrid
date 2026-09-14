@@ -1,6 +1,15 @@
 import { handleMeshApi } from "./mesh.js";
 import { handleRuntimeApi } from "./runtime.js";
 import { citeDocument, renderIndexHtml } from "./homepage.js";
+import {
+  aiTxt,
+  designPackResponse,
+  discoveryHeaders,
+  hostedBridgeDocument,
+  llmsTxt,
+  robotsTxt,
+  sitemapXml,
+} from "./bridge.js";
 
 /**
  * MirageGrid download tracker (Cloudflare Worker).
@@ -24,10 +33,7 @@ const DEFAULT_OWNER = "AzielEliab";
 const DEFAULT_REPO = "miragegrid";
 const DEFAULT_BRANCH = "main";
 const GITHUB_RELEASES = "https://github.com/AzielEliab/miragegrid/releases";
-const GITHUB_LATEST = "https://github.com/AzielEliab/miragegrid/releases/latest";
 const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
-const GITHUB_REPO = "https://github.com/AzielEliab/miragegrid";
-const INSTALL_LINE = "curl -fsSL https://miragegrid-download-tracker.vibelock.workers.dev/install.sh | bash";
 
 
 function corsHeaders() {
@@ -308,19 +314,6 @@ function citeJson() {
   return citeDocument();
 }
 
-function robotsTxt() {
-  return "User-agent: *\nAllow: /\nSitemap: " + HOST + "/sitemap.xml\n";
-}
-
-function sitemapXml() {
-  const locs = [HOST + "/", HOST + "/download", HOST + "/install.sh", HOST + "/v1/skill", HOST + "/v1/mesh", HOST + "/openapi.json", HOST + "/cite.json", GITHUB_REPO];
-  return (
-    '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-    locs.map((u) => "  <url><loc>" + u + "</loc></url>").join("\n") +
-    "\n</urlset>\n"
-  );
-}
-
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -340,6 +333,59 @@ export default {
       });
     }
 
+
+    if ((url.pathname === "/llms.txt" || url.pathname === "/llms.txt/") && (request.method === "GET" || request.method === "HEAD")) {
+      return new Response(request.method === "HEAD" ? null : llmsTxt(), {
+        status: 200,
+        headers: discoveryHeaders("text/plain; charset=utf-8"),
+      });
+    }
+    if ((url.pathname === "/ai.txt" || url.pathname === "/ai.txt/") && (request.method === "GET" || request.method === "HEAD")) {
+      return new Response(request.method === "HEAD" ? null : aiTxt(), {
+        status: 200,
+        headers: discoveryHeaders("text/plain; charset=utf-8"),
+      });
+    }
+    if ((url.pathname === "/bridge.json" || url.pathname === "/bridge.json/" || url.pathname === "/v1/bridge" || url.pathname === "/v1/bridge/") && (request.method === "GET" || request.method === "HEAD")) {
+      const doc = await hostedBridgeDocument();
+      const body = JSON.stringify(doc, null, 2);
+      return new Response(request.method === "HEAD" ? null : body, {
+        status: 200,
+        headers: discoveryHeaders("application/json; charset=utf-8"),
+      });
+    }
+    const packMatch = url.pathname.match(/^\/design-packs\/([a-z0-9-]+)\.json\/?$/);
+    if (packMatch && (request.method === "GET" || request.method === "HEAD")) {
+      const pack = await designPackResponse(packMatch[1], request.method === "HEAD");
+      if (pack) return pack;
+      return json(
+        {
+          ok: false,
+          code: "BRIDGE-PACK-SLOT",
+          message: "unknown design pack; empty claims stay SLOT",
+          public_icann: false,
+        },
+        404,
+      );
+    }
+    if ((url.pathname === "/cite.json" || url.pathname === "/cite.json/") && request.method === "GET") {
+      return new Response(JSON.stringify(citeJson(), null, 2), {
+        status: 200,
+        headers: discoveryHeaders("application/json; charset=utf-8"),
+      });
+    }
+    if ((url.pathname === "/robots.txt" || url.pathname === "/robots.txt/") && request.method === "GET") {
+      return new Response(robotsTxt(), {
+        status: 200,
+        headers: discoveryHeaders("text/plain; charset=utf-8"),
+      });
+    }
+    if ((url.pathname === "/sitemap.xml" || url.pathname === "/sitemap.xml/") && request.method === "GET") {
+      return new Response(sitemapXml(), {
+        status: 200,
+        headers: discoveryHeaders("application/xml; charset=utf-8"),
+      });
+    }
 
     const mesh = await handleMeshApi(request, url, env);
     if (mesh) return mesh;
@@ -362,22 +408,6 @@ export default {
 
     if (url.pathname === "/stats" && request.method === "GET") {
       return json(await collectStats(env));
-    }
-
-    if ((url.pathname === "/cite.json" || url.pathname === "/cite.json/") && request.method === "GET") {
-      return json(citeJson());
-    }
-    if ((url.pathname === "/robots.txt" || url.pathname === "/robots.txt/") && request.method === "GET") {
-      return new Response(robotsTxt(), {
-        status: 200,
-        headers: { "Content-Type": "text/plain; charset=utf-8", ...corsHeaders() },
-      });
-    }
-    if ((url.pathname === "/sitemap.xml" || url.pathname === "/sitemap.xml/") && request.method === "GET") {
-      return new Response(sitemapXml(), {
-        status: 200,
-        headers: { "Content-Type": "application/xml; charset=utf-8", ...corsHeaders() },
-      });
     }
 
     if (url.pathname === "/event" && request.method === "POST") {
