@@ -207,7 +207,7 @@ ${JSON.stringify(jsonLd, null, 2)}
     <div class="live"><b id="meshLiveCount">0</b> Live Nodes</div>
     <div id="meshLine">Suite mesh: off (default). QNM-BUILD-1.0. QNS-CD-1.0. Not an anonymity network.</div>
     <div class="rollup">live <b id="qnmLive">0</b> · locked <b id="qnmLocked">0</b> · isolated <b id="qnmIsolated">0</b></div>
-    <div>No Node Gate · No auto-heal · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · NO-FAN-1.0 · No falsification. No ambiguity. No misleading. · Aziel Eliab only</div>
+    <div>No Node Gate · No auto-heal · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · PAPER-VAULT-ON-NODE · NO-FAN-1.0 · No falsification. No ambiguity. No misleading. · Aziel Eliab only</div>
     <div>
       <input id="meshBearer" type="text" maxlength="80" placeholder="bearer (required to enable)" aria-label="mesh bearer">
       <button id="meshEnable" type="button" title="Enable suite mesh. Declared bearer required. Default off.">Enable</button>
@@ -215,7 +215,7 @@ ${JSON.stringify(jsonLd, null, 2)}
       <button id="meshJoin" type="button" title="Join as miragegrid. Refused while mesh is OFF. No auto-join.">Join</button>
       <button id="meshLeave" type="button" title="Leave this node. No auto-heal.">Leave</button>
     </div>
-    <p id="meshProducts">Catalog MCP mesh_* · FragGate slug=mesh · /v1/mesh/* PROXY · QNS-CD-1.0 cross-map · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · not AnonBroadcast · not AZMail ring · not a Node Gate · no public qnsd</p>
+    <p id="meshProducts">Catalog MCP mesh_* · FragGate slug=mesh · /v1/mesh/* PROXY · QNS-CD-1.0 cross-map · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · PAPER-VAULT-ON-NODE · not AnonBroadcast · not AZMail ring · not a Node Gate · no public qnsd</p>
   </div>
   <nav class="jump">
     <a href="#workspace">Workspace</a>
@@ -515,7 +515,7 @@ ${JSON.stringify(jsonLd, null, 2)}
           var names = Array.isArray(products) ? products.map(function (p) { return typeof p === "string" ? p : (p && (p.product || p.slug)) || ""; }).filter(Boolean) : [];
           var nodes = Array.isArray(j.nodes) ? j.nodes : [];
           var extra = names.length ? " · products " + names.join(", ") : (nodes.length ? " · " + nodes.length + " node labels" : "");
-          $("meshProducts").textContent = "Catalog MCP mesh_* · FragGate slug=mesh · /v1/mesh/* PROXY · QNS-CD-1.0 cross-map · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · not AnonBroadcast · not AZMail ring · not a Node Gate · no public qnsd" + extra;
+          $("meshProducts").textContent = "Catalog MCP mesh_* · FragGate slug=mesh · /v1/mesh/* PROXY · QNS-CD-1.0 cross-map · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · PAPER-VAULT-ON-NODE · not AnonBroadcast · not AZMail ring · not a Node Gate · no public qnsd" + extra;
         }
         async function meshGet(path) {
           var r = await fetch(path, { headers: { "user-agent": "Mozilla/5.0", accept: "application/json" } });
