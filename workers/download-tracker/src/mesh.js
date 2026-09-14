@@ -350,9 +350,83 @@ export const SEMANTIC_BRIDGE = Object.freeze({
   public_host_pair: 2,
   preferred_public_pair: ["azcorpus", "azlibrary"],
   named_mesh_sites: ["azcorpus", "azlibrary"],
+  design_of: { azcorpus: "https://www.azielcorpuslibrary.net/", azlibrary: "https://www.azielcorpuslibrary.net/" },
+  resolves_to_hub: false,
   fifth_product: false,
   access: { aznet: true, azbrowser: true, merge: false, naked_public_dns: false },
   softwares_tab: false,
+});
+
+export const REDLINE_SPEC = "REDLINE-1.0";
+export const PUBLIC_DOOR_CRYPTO = "cloudflare-tls";
+export const GET_ENABLE_PLANT_INTENTS = Object.freeze([
+  "enable", "enabled", "radio", "radios", "bearer-radio", "bearer-radios",
+  "mesh-enable", "claim", "plant", "claim-plant", "run-generator",
+  "call-generator", "fielded", "fielded-100", "radio-on",
+]);
+export const PUBLIC_MESH_GET_DOORS = Object.freeze([
+  "/v1/mesh",
+  "/v1/mesh/status",
+  "/v1/mesh/nodes",
+  "/v1/mesh/az-generator",
+  "/v1/mesh/grid-shift",
+]);
+export const CALLABLE_AZG_ALIASES = Object.freeze([
+  "/v1/az-generator",
+  "/v1/call-generator",
+  "/v1/run-generator",
+  "/call-generator",
+  "/v1/mesh/call-generator",
+  "/v1/mesh/run-generator",
+  "/v1/mesh/plant",
+  "/v1/mesh/claim",
+  "/v1/mesh/radio",
+  "/v1/mesh/radios",
+]);
+export const GET_MUTATION_PATHS = Object.freeze([
+  "/v1/mesh/enable",
+  "/v1/mesh/join",
+  "/v1/mesh/heartbeat",
+  "/v1/mesh/leave",
+  "/v1/mesh/broadcast",
+  "/v1/mesh/plant",
+  "/v1/mesh/claim",
+  "/v1/mesh/radio",
+  "/v1/mesh/radios",
+  "/v1/mesh/call-generator",
+  "/v1/mesh/run-generator",
+]);
+export const FOLDLOCK_CITE = Object.freeze({
+  law: "FOLDLOCK",
+  slug: "foldlock",
+  cite_only: true,
+  kind: "tether-word-suppression",
+  not_zip: true,
+  public_door_crypto: false,
+  theater_crypto: false,
+});
+export const LAMB_LENS = Object.freeze({
+  law: "LAMB LENS",
+  ethical_research: true,
+  harvest: false,
+  node_gate: false,
+  no_fan: "NO-FAN-1.0",
+  fielded_100: false,
+});
+export const REDLINE = Object.freeze({
+  law: "REDLINE",
+  spec: REDLINE_SPEC,
+  get_never_enables: true,
+  get_never_plants: true,
+  hub_get_enables_mesh: false,
+  az_generator_callable: false,
+  public_icann: false,
+  resolves_to_hub: false,
+  public_door_crypto: PUBLIC_DOOR_CRYPTO,
+  foldlock: "cite-only",
+  lamb_lens: true,
+  fielded_100: false,
+  smaller_door: true,
 });
 
 export function meshLawFields() {
@@ -370,6 +444,12 @@ export function meshLawFields() {
     no_rewrite: true,
     no_fan: NO_FAN,
     semantic_bridge: SEMANTIC_BRIDGE,
+    redline: REDLINE,
+    get_never_enables: true,
+    fielded_100: false,
+    foldlock: FOLDLOCK_CITE,
+    lamb_lens: LAMB_LENS,
+    public_door_crypto: PUBLIC_DOOR_CRYPTO,
   };
 }
 
@@ -485,7 +565,50 @@ export function citeAzGenerator() {
     access: { aznet: true, azbrowser: true, merge: false, naked_public_dns: false },
     min_papers: MIN_PAPERS,
     softwares_tab: false,
+    design_of: { azcorpus: "https://www.azielcorpuslibrary.net/", azlibrary: "https://www.azielcorpuslibrary.net/" },
+    resolves_to_hub: false,
   });
+}
+
+export function queryHasEnableOrPlant(search) {
+  const raw = String(search || "");
+  const q = raw.startsWith("?") ? raw.slice(1) : raw;
+  if (!q) return false;
+  let params;
+  try { params = new URLSearchParams(q); } catch { return false; }
+  for (const [k, v] of params.entries()) {
+    const key = normVerb(k);
+    const val = normVerb(v);
+    if (GET_ENABLE_PLANT_INTENTS.includes(key) || GET_ENABLE_PLANT_INTENTS.includes(val)) return true;
+    if ((val === "1" || val === "true" || val === "on" || val === "yes") && (key.includes("enable") || key.includes("radio") || key.includes("plant") || key.includes("claim"))) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function refuseGetEnableOrPlant(method, path, search) {
+  const m = String(method || "GET").toUpperCase();
+  if (m !== "GET" && m !== "HEAD") return null;
+  const pathOnly = normalizeMeshPath(path);
+  const intent = queryHasEnableOrPlant(search) || GET_MUTATION_PATHS.includes(pathOnly) || pathOnly.endsWith("/enable");
+  if (!intent) return null;
+  return lawVerdict(false, "MESH-GET-NO-ENABLE", "refuse", "GET never enables radios or plants mesh claims", {
+    enabled: false,
+    default_off: true,
+    radio_phy: false,
+    claim_plant: false,
+    hub_get_enables_mesh: false,
+    path: pathOnly,
+  });
+}
+
+export function refuseCallableAlias(path) {
+  const key = normalizeMeshPath(path);
+  if (CALLABLE_AZG_ALIASES.includes(key) || key.endsWith("/call-generator") || key.endsWith("/run-generator")) {
+    return refuseCallGenerator(key);
+  }
+  return null;
 }
 
 const NO_FAN_FALSIFY = Object.freeze([
@@ -1246,15 +1369,23 @@ export async function runMeshProxy(env, request, pathAndQuery) {
     return { status: 403, data: stub };
   }
   const method = String((request && request.method) || "GET").toUpperCase();
-  if (pathOnly === "/v1/mesh/enable" && method === "GET") {
-    return {
-      status: 403,
-      data: lawVerdict(false, "MESH-GET-NO-ENABLE", "refuse", "GET never enables suite mesh", {
-        enabled: false,
-        default_off: true,
-        path: pathOnly,
-      }),
-    };
+  let search = "";
+  try {
+    if (pathAndQuery && String(pathAndQuery).includes("?")) {
+      search = "?" + String(pathAndQuery).split("?").slice(1).join("?");
+    } else if (request && request.url) {
+      search = new URL(request.url).search || "";
+    }
+  } catch {
+    search = "";
+  }
+  const getRefuse = refuseGetEnableOrPlant(method, pathOnly, search);
+  if (getRefuse) {
+    return { status: 403, data: getRefuse };
+  }
+  const callable = refuseCallableAlias(pathOnly);
+  if (callable) {
+    return { status: 403, data: callable };
   }
   if (pathOnly === "/v1/mesh/reheal") {
     if (method !== "POST") {

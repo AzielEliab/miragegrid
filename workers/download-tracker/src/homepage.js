@@ -3,7 +3,7 @@
  * Author: Aziel Eliab only. Apache-2.0. Forks welcome.
  * Hosted surface is session assignment. MirageGrid is not a VPN.
  */
-import { cap7BridgeCite, personId } from "./bridge.js";
+import { cap7BridgeCite, deadNamedWorker, personId } from "./bridge.js";
 
 const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
 const GITHUB_REPO = "https://github.com/AzielEliab/miragegrid";
@@ -36,6 +36,12 @@ export function citeDocument() {
     note: "Zenodo software deposit needed (no DOI invented).",
     person: personId(),
     cap7_bridge: cap7BridgeCite(),
+    design_of: cap7BridgeCite().design_of,
+    resolves_to_hub: false,
+    public_icann: false,
+    live_worker: HOST,
+    dead_named_worker: deadNamedWorker(),
+    shelves: "https://www.azielcorpuslibrary.net/shelves",
   };
 }
 
@@ -210,7 +216,7 @@ ${JSON.stringify(jsonLd, null, 2)}
     <div class="live"><b id="meshLiveCount">0</b> Live Nodes</div>
     <div id="meshLine">Suite mesh: off (default). QNM-BUILD-1.0. QNS-CD-1.0. Not an anonymity network.</div>
     <div class="rollup">live <b id="qnmLive">0</b> · locked <b id="qnmLocked">0</b> · isolated <b id="qnmIsolated">0</b></div>
-    <div>No Node Gate · No auto-heal · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 Cap-7 mesh DNS factory (deep-node → front Node Gate; not ICANN; exactly 2 public gateways; AZNet+AZBrowser) · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · PAPER-VAULT-ON-NODE · NO-FAN-1.0 · No falsification. No ambiguity. No misleading. · Aziel Eliab only</div>
+    <div>No Node Gate · No auto-heal · GET never enables radios or plants claims · REDLINE-1.0 · no fielded 100 · Cloudflare TLS only · FoldLock cite-only · Lamb Lens · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 Cap-7 mesh DNS factory (deep-node → front Node Gate; not ICANN; exactly 2 public gateways; AZNet+AZBrowser) · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · PAPER-VAULT-ON-NODE · NO-FAN-1.0 · No falsification. No ambiguity. No misleading. · live cite miragegrid-download-tracker.vibelock.workers.dev · named worker miragegrid.vibelock.workers.dev is CF 1042 dead · Aziel Eliab only</div>
     <div>
       <input id="meshBearer" type="text" maxlength="80" placeholder="bearer (required to enable)" aria-label="mesh bearer">
       <button id="meshEnable" type="button" title="Enable suite mesh. Declared bearer required. Default off.">Enable</button>

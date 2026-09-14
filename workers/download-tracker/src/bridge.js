@@ -10,6 +10,8 @@ export const CROSS_NETWORK_SURVIVAL = "CROSS-NETWORK-SURVIVAL-1.0";
 export const PERSON_ID = "https://www.azieleliab.com/#aziel";
 export const IDENTITY = "Aziel Eliab";
 export const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
+export const DEAD_NAMED_WORKER = "https://miragegrid.vibelock.workers.dev";
+export const CORPUS_SHELVES = "https://www.azielcorpuslibrary.net/shelves";
 export const AZ_GENERATOR_CITE = HOST + "/v1/mesh/az-generator";
 export const FIRST_FLAG = "www.survivalnetwork.az";
 export const SUFFIX_ORDER = Object.freeze([".az", ".aziel", "pivot"]);
@@ -244,6 +246,10 @@ export function semanticBridgeDict() {
     plane_a: [HOST + "/"].concat(CANONICAL_HUBS.map((row) => row.canonical_hub)),
     softwares_tab: false,
     callable: false,
+    design_of: cap7DesignOfMap(),
+    live_worker: HOST,
+    dead_named_worker: deadNamedWorker(),
+    shelves: CORPUS_SHELVES,
   };
 }
 
@@ -264,10 +270,68 @@ export function cap7BridgeCite() {
     name_may_change: true,
     canonical_hubs: CANONICAL_HUBS.map((row) => row.canonical_hub),
     named_mesh_sites: PREFERRED_PUBLIC_PAIR.slice(),
+    design_of: cap7DesignOfMap(),
+    designs: cap7Designs(),
     fifth_product: false,
     growth: GROWTH,
     cross_network_survival: CROSS_NETWORK_SURVIVAL,
     no_lie: true,
+    live_worker: HOST,
+    dead_named_worker: deadNamedWorker(),
+  };
+}
+
+export function cap7DesignOfMap() {
+  const out = {};
+  for (const label of PREFERRED_PUBLIC_PAIR) out[label] = CORPUS_HUB;
+  return out;
+}
+
+export function cap7Designs() {
+  return NAMED_MESH_SITES.map((site) => ({
+    label: site.label,
+    design_of: site.design_of,
+    canonical_hub: site.canonical_hub,
+    resolves_to_hub: false,
+    public_icann: false,
+    name_may_change: true,
+    fifth_product: false,
+  }));
+}
+
+export function deadNamedWorker() {
+  return {
+    url: DEAD_NAMED_WORKER,
+    host: "miragegrid.vibelock.workers.dev",
+    status: "cf-1042",
+    http: 404,
+    cite: false,
+    live: HOST,
+    note: "Named worker is not deployed (Cloudflare error 1042). Live cite is miragegrid-download-tracker.vibelock.workers.dev.",
+  };
+}
+
+export function shelvesCite() {
+  return {
+    ok: true,
+    code: "SHELVES-CITE",
+    spec: "COLD-MULTI-SHELF-1.0",
+    kind: "cite-pointer",
+    this_worker_is_not_a_shelf: true,
+    canonical: CORPUS_SHELVES,
+    canonical_hub: CORPUS_HUB,
+    design_of: CORPUS_HUB,
+    resolves_to_hub: false,
+    public_icann: false,
+    framagit: null,
+    framagit_url: null,
+    invented_framagit: false,
+    plane_b_framagit: "awaiting-tip-pack",
+    live_worker: HOST,
+    dead_named_worker: deadNamedWorker(),
+    author: IDENTITY,
+    identity: IDENTITY,
+    note: "Corpus shelves live on azielcorpuslibrary.net. This Worker cites that canonical. Framagit URL is not published — do not invent one.",
   };
 }
 
@@ -595,6 +659,7 @@ export function sitemapXml() {
     HOST + "/bridge.json",
     HOST + "/design-packs/azcorpus.json",
     HOST + "/design-packs/azlibrary.json",
+    HOST + "/shelves",
     "https://github.com/AzielEliab/miragegrid",
   ];
   return (
@@ -615,7 +680,7 @@ export function llmsTxt() {
     "## SEMANTIC-BRIDGE-1.0",
     "Public Plane-A ICANN hosts + this Worker are the AI-facing bridge.",
     "Cap-7 mesh names are relocatable labels (mesh_name ≠ new product).",
-    "public_icann:false. name_may_change:true. Each /bridge.json entry: canonical_hub + tip.",
+    "public_icann:false. resolves_to_hub:false. design_of on cite+bridge. name_may_change:true.",
     "Ultimately the original 4 websites. Not a fifth public product.",
     "Do not resolve .az on public DNS. Crawlers pull from the URLs below.",
     "Re-expand is archive, not index. CROSS-NETWORK-SURVIVAL + NO-LIE.",
@@ -685,6 +750,11 @@ export function aiTxt() {
     "pack_azlibrary:" + HOST + "/design-packs/azlibrary.json",
     "do_not_invent_survivalnetwork_https:true",
     "do_not_resolve_mesh_to_hub:true",
+    "design_of:azcorpus=" + CORPUS_HUB,
+    "design_of:azlibrary=" + CORPUS_HUB,
+    "live_worker:" + HOST,
+    "dead_named_worker:miragegrid.vibelock.workers.dev=cf-1042",
+    "shelves:" + CORPUS_SHELVES,
     "",
   ].join("\n");
 }

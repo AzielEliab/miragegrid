@@ -46,7 +46,13 @@ pytest is the dev extra.
    no auto-heal; not anonymity. Product topology stays at `/v1/topology`.
    Mesh law is SPLIT THE WIRES + COLD-COPY SURVIVAL + REHEAL +
    AZ-GENERATOR-1.0 + MIRAGE-GRID-SHIFT-1.0 + AIRGAP-1.0
-   (`docs/mesh-law.md`). Assign stays live. Hosted vpn/hop/tunnel stubs
+   (`docs/mesh-law.md`). REDLINE-1.0 (`docs/REDLINE-1.0.md`): GET never
+   enables radios or plants claims; AZ Generator is not callable;
+   `public_icann:false`; `resolves_to_hub:false`; Cloudflare TLS only;
+   FoldLock cite-only. Cite only
+   `miragegrid-download-tracker.vibelock.workers.dev` (named
+   `miragegrid.vibelock.workers.dev` is CF 1042). `/shelves` cites
+   corpus canonical; do not invent a Framagit URL. Assign stays live. Hosted vpn/hop/tunnel stubs
    remain refuse. Do not add neighbor talk-back heal, vote-to-fix
    labeled as auto-heal, live body sync, paper-body fan-out on the 1s
    tip tick, a shared 1s/777s/7m77s socket, a public “call generator”

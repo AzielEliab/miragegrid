@@ -82,6 +82,8 @@ def test_attack_surface_refuses_call_generator_vpn_and_neighbor_heal() -> None:
     assert "cap-7-mesh-authoritative" in gen
     assert "AZG-NO-RADIO-PHY" in mesh_py
     assert "radio_phy" in gen or "RADIO_PHY" in mesh_py
+    assert "refuse_get_enable_or_plant" in mesh_py
+    assert "GET never enables radios or plants mesh claims" in js
     from miragegrid.mesh import hosted_stub_refuse, reheal
 
     assert hosted_stub_refuse("vpn")["code"] == "MESH-STUB"
