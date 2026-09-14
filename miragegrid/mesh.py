@@ -361,6 +361,7 @@ NO_FAN_SPEC = "NO-FAN-1.0"
 NO_FAN_PHRASE = "No falsification. No ambiguity. No misleading."
 
 ASSIGN_LIVE = True
+RADIO_PHY = False
 HOSTED_STUB_OPS: frozenset[str] = frozenset(
     {"vpn", "hop", "tunnel", "vpn-hop", "mesh-hop"}
 )
@@ -1070,6 +1071,23 @@ def reheal(
         "RH-FAIL-CLOSED",
         verdict=REFUSE,
         message="reheal fail-closed without own tip+trusted pull or phoenix-WAIT",
+    )
+
+
+def refuse_radio_phy(*, kind: str | None = None) -> dict[str, Any]:
+    """MirageGrid is not a qnm radio mesh. Invented PHY is NO-FAN refuse."""
+    return _verdict(
+        False,
+        "AZG-NO-RADIO-PHY",
+        verdict=REFUSE,
+        message="MirageGrid is not RF/BT/Wi-Fi/photon radio PHY; local qnm radios are not this product",
+        extra={
+            "radio_phy": False,
+            "kind": kind or "radio",
+            "hub_get_enables_mesh": False,
+            "bitmesh": False,
+            "invented_phy": False,
+        },
     )
 
 
@@ -2298,6 +2316,7 @@ def az_generator_dict() -> dict[str, Any]:
         "aziel_tld": AZIEL_TLD,
         "access": {"aznet": True, "azbrowser": True, "merge": False, "naked_public_dns": False},
         "cctld_takeover": False,
+        "radio_phy": False,
         "no_lie": True,
         "no_rewrite": True,
         "rewrite_key": False,
@@ -2367,6 +2386,7 @@ def mesh_law_dict() -> dict[str, Any]:
         "no_lie": True,
         "no_rewrite": True,
         "no_fan": no_fan_dict(),
+        "radio_phy": False,
     }
 
 
@@ -2412,6 +2432,7 @@ def airgap_dict() -> dict[str, Any]:
         "no_lie": True,
         "no_rewrite": True,
         "no_fan": NO_FAN_SPEC,
+        "radio_phy": False,
     }
 
 

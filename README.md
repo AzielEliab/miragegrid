@@ -149,7 +149,8 @@ browser gateways; the rest stay mesh/AZNet. Access via AZNet +
 AZBrowser. Restore needs ≥49 local vault papers (vault multiply onto
 each node as cold copies; no paper-body fan-out on the 1s tip tick).
 Incomplete vault refuses (AZG-UNVERIFIED-TIP / AZG-INCOMPLETE-VAULT).
-Not ICANN.
+Not ICANN. Not a qnm radio mesh (RF/BT/Wi-Fi/photon PHY is local qnm,
+not this product). Hub `GET /v1/mesh` never enables.
 
 **MIRAGE GRID SHIFT** — MESH-VAULT is snapshot + official standby
 (IP-mask host). Grid shift keeps the `.az` answerable and cloaks the

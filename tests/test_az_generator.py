@@ -489,3 +489,10 @@ def test_incomplete_vault_cap8_first_claim_clocks_no_fan_and_factory() -> None:
     assert law["dns_factory"] == "cap-7-mesh-authoritative"
     assert law["public_host_pair"] == 2
     assert law["suffix_order"][0] == ".az"
+    assert law["radio_phy"] is False
+    from miragegrid.mesh import refuse_radio_phy
+
+    phy = refuse_radio_phy(kind="rf")
+    assert phy["code"] == "AZG-NO-RADIO-PHY"
+    assert phy["radio_phy"] is False
+    assert phy["hub_get_enables_mesh"] is False

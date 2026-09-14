@@ -209,6 +209,7 @@ export const AZ_GENERATOR = Object.freeze({
   registrar: false,
   unbounded_public_dns: false,
   cctld_takeover: false,
+  radio_phy: false,
   airgap: "AIRGAP-1.0",
   clock: {
     minutes: CLAIM_MINUTES,
@@ -418,6 +419,11 @@ export function refuseReheal(body) {
   if (body.poison || body.poison_marker || body["poison-marker"] || body.rewrite_key || body["rewrite-key"]) {
     return lawVerdict(false, "CCS-POISON-MARKER", "refuse", "poison marker is hash-absolute refuse");
   }
+  if (body.radio_phy || body.rf || body.bluetooth || body.wifi || body.bitmesh || body.photon_phy) {
+    return lawVerdict(false, "AZG-NO-RADIO-PHY", "refuse", "MirageGrid is not RF/BT/Wi-Fi/photon radio PHY; local qnm radios are not this product", {
+      radio_phy: false, hub_get_enables_mesh: false, invented_phy: false,
+    });
+  }
   const fan = refuseNoFan(body);
   if (fan) return fan;
   return refuseTipContamination(body);
@@ -444,6 +450,7 @@ export function citeAzGenerator() {
     registrar: false,
     unbounded_public_dns: false,
     cctld_takeover: false,
+    radio_phy: false,
     airgap: "AIRGAP-1.0",
     period_s: CLAIM_CLOCK_S,
     cap: CAP_7,
