@@ -66,7 +66,7 @@ def _check_json_roundtrip() -> Check:
 
 
 def _check_mesh() -> Check:
-    from miragegrid.mesh import NodeMesh
+    from miragegrid.mesh import NodeMesh, mesh_law_dict, reheal
 
     mesh = NodeMesh()
     if not mesh.connected():
@@ -74,7 +74,15 @@ def _check_mesh() -> Check:
     path = mesh.path(0, 12)
     if path[0] != 0 or path[-1] != 12:
         return _fail("mesh path", str(path))
-    return _ok("mesh", f"circulant-25 connected path={len(path)}")
+    law = mesh_law_dict()
+    if law["split_wires"]["spec"] != "STW-1.0" or law["cold_copy"]["spec"] != "CCS-1.0":
+        return _fail("mesh law", "missing split-wires / cold-copy")
+    if law["reheal"]["spec"] != "RH-1.0" or law["reheal"]["auto_heal"]:
+        return _fail("mesh law", "reheal")
+    talk = reheal(source="neighbor", neighbor_talk=True)
+    if talk["ok"] or talk["code"] != "RH-NO-NEIGHBOR-TALK":
+        return _fail("reheal", str(talk))
+    return _ok("mesh", f"circulant-25 connected path={len(path)} STW+CCS+RH")
 
 
 def _check_circuit() -> Check:

@@ -37,7 +37,7 @@ Host: \`https://miragegrid-download-tracker.vibelock.workers.dev\`
 | GET | \`/v1/skill\` | This markdown. Does not increment downloads. |
 | GET | \`/v1/nodes\` | List the 25 mesh nodes. |
 | GET | \`/v1/topology\` | Persistent 25-node circulant topology (local op). |
-| GET | \`/v1/mesh\` | PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 cross-map (photon QNS1). Never enables. No public qnsd. |
+| GET | \`/v1/mesh\` | PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 cross-map (photon QNS1). SPLIT THE WIRES + COLD-COPY SURVIVAL + REHEAL. Never enables. No public qnsd. |
 | GET | \`/v1/mesh/nodes\` | PROXY Live Nodes roster (5-minute presence). Same QNS-CD-1.0 cross-map. |
 | POST | \`/v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}\` | PROXY. Bearer required to enable. No auto-heal. |
 | POST | \`/v1/route\` | Shortest peer path between two nodes. |

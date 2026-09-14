@@ -20,7 +20,12 @@ from miragegrid.errors import (
     MirageGridError,
     ReceiptError,
 )
-from miragegrid.mesh import NodeMesh, RoutingError
+from miragegrid.mesh import (
+    MeshLawError,
+    NodeMesh,
+    RoutingError,
+    mesh_law_dict,
+)
 from miragegrid.pool import Node, NodePool, POOL_SIZE
 from miragegrid.receipt import Receipt
 from miragegrid.rng import select_index
@@ -35,6 +40,7 @@ __all__ = [
     "MappingDestroyedError",
     "MirageGridError",
     "Node",
+    "MeshLawError",
     "NodeMesh",
     "NodePool",
     "POOL_SIZE",
@@ -42,6 +48,7 @@ __all__ = [
     "ReceiptError",
     "RoutingError",
     "MirageSession",
+    "mesh_law_dict",
     "select_index",
     "__version__",
 ]
