@@ -1,13 +1,13 @@
 ---
 name: MirageGrid
-description: Use when calling MirageGrid hosted /v1 or installing the local package. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime catalog). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
+description: Use when calling MirageGrid hosted /v1 or installing the local package. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime catalog). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. NO-FAN-1.0. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
 ---
 
 # MirageGrid
 
 Ephemeral session node assignment. 25 named peers. Receipts. Author: **Aziel Eliab**.
 
-**THIS IS:** a session assignment engine (mesh maps, circuit hops, internal receipts). Assign stays live. Mesh law is SPLIT THE WIRES + COLD-COPY SURVIVAL + REHEAL + AZ-GENERATOR-1.0 + MIRAGE-GRID-SHIFT-1.0. Public-stack auto-heal means lawful REHEAL-1.0 / MESH-REHEAL, not neighbor vote-to-fix. AZ Generator and Node Gate are MirageGrid subsystems — not Softwares-tab products.
+**THIS IS:** a session assignment engine (mesh maps, circuit hops, internal receipts). Assign stays live. Mesh law is SPLIT THE WIRES + COLD-COPY SURVIVAL + REHEAL + AZ-GENERATOR-1.0 + MIRAGE-GRID-SHIFT-1.0 + NO-LIE + NO-REWRITE + NO-FAN-1.0 (**No falsification. No ambiguity. No misleading.**). Public-stack auto-heal means lawful REHEAL-1.0 / MESH-REHEAL, not neighbor vote-to-fix. AZ Generator and Node Gate are MirageGrid subsystems — not Softwares-tab products.
 
 **THIS IS NOT:** a VPN, an anonymity network, a hosted hop, a crime tool, a log-wipe, or a guarantee against global surveillance. Hosted `/v1` does not increment downloads or views.
 

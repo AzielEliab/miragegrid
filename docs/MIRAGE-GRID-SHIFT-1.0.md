@@ -6,7 +6,8 @@
 subsystems / law, not separate products  
 **Cites:** AZ-GENERATOR-1.0 · SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL
 (CCS-1.0) · REHEAL (RH-1.0) / REHEAL-1.0 / MESH-REHEAL · TUN-WP · NODE-OPS ·
-MESH-VAULT
+MESH-VAULT · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD
+(NO-FAN-1.0)
 
 This paper locks Cap-7, cloak burst, grid shift, Node Gate, and the
 public-stack wording for **auto-heal**. It does not invent a
@@ -81,6 +82,22 @@ hosted. See [AZ-GENERATOR-1.0](AZ-GENERATOR-1.0.md).
 An eighth name is refuse. Cloak is not a rewrite key. Cloak does not
 lie about the tip.
 
+## No falsification. No ambiguity. No misleading.
+
+First-class refuse law beside NO-LIE / NO-REWRITE (NO-FAN-1.0). Locked
+wording: **No falsification. No ambiguity. No misleading.**
+
+- No falsified tip, receipt, domain claim, Live Nodes count, or
+  “site up” claim.
+- No ambiguous tip / dual tip / soft maybe — ambiguous tip = isolate
+  (already STW-1.0). Do not paper over with majority or pretty copy.
+- No misleading chrome: cloak/grid-shift must not pretend a pulled
+  official hub hostname is still the cell; `.az` names are named
+  MirageGrid hosts, not unmarked hydra; auto-heal must not be worded
+  as neighbor resurrection.
+- Pair with NO-LIE: the network never lies to stay alive; no rewrite
+  key; receipts still hash.
+
 ## Auto-heal wording (locked)
 
 | Phrase | Means |
@@ -135,6 +152,9 @@ is not the AZ Generator.
 - Visible 15:20 identity-lock HTML
 - Invented Zenodo DOIs
 - Resurrection of godlock.uk / corpus hostnames via grid shift
+- Pretending a pulled official hub hostname is still the cell
+- Auto-heal worded as neighbor resurrection
+- Falsify / ambiguous / misleading verbs (NO-FAN-1.0)
 - Merging GodLock, AZBot, or official hubs into Node Gate
 
 Identity: **Aziel Eliab** only.

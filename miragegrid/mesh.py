@@ -213,6 +213,7 @@ class NodeMesh:
             "az_generator": az_generator_dict(),
             "grid_shift": grid_shift_dict(),
             "public_stack": public_stack_dict(),
+            "no_fan": no_fan_dict(),
         }
 
 
@@ -330,6 +331,14 @@ AZ_GENERATOR_LAW = "AZ GENERATOR"
 AZ_GENERATOR_SPEC = "AZ-GENERATOR-1.0"
 GRID_SHIFT_LAW = "MIRAGE GRID SHIFT"
 GRID_SHIFT_SPEC = "MIRAGE-GRID-SHIFT-1.0"
+NO_LIE_LAW = "NO-LIE"
+NO_REWRITE_LAW = "NO-REWRITE"
+NO_FALSIFY_LAW = "NO-FALSIFY"
+NO_AMBIGUITY_LAW = "NO-AMBIGUITY"
+NO_MISLEAD_LAW = "NO-MISLEAD"
+NO_FAN_LAW = "NO FALSIFICATION NO AMBIGUITY NO MISLEADING"
+NO_FAN_SPEC = "NO-FAN-1.0"
+NO_FAN_PHRASE = "No falsification. No ambiguity. No misleading."
 
 ASSIGN_LIVE = True
 HOSTED_STUB_OPS: frozenset[str] = frozenset(
@@ -413,6 +422,55 @@ OFFICIAL_HUBS: frozenset[str] = frozenset(
 )
 HUB_NOT_NODE_GATE: frozenset[str] = frozenset(
     {"azieleliab.com", "godlock.uk", "corpus", "azielcorpuslibrary.net", "hedidntjump.com"}
+)
+
+NO_FAN_FALSIFY_VERBS: frozenset[str] = frozenset(
+    {
+        "falsify",
+        "falsified",
+        "falsification",
+        "fake",
+        "fake-flag",
+        "fake_flag",
+        "invent",
+        "invent-continuity",
+        "fabricate",
+        "false-tip",
+        "false_tip",
+        "false-receipt",
+        "false-claim",
+        "false-live-nodes",
+        "false-site-up",
+        "site-up-lie",
+    }
+)
+NO_FAN_AMBIGUITY_VERBS: frozenset[str] = frozenset(
+    {
+        "ambiguous",
+        "ambiguity",
+        "dual-tip",
+        "dual_tip",
+        "soft-maybe",
+        "soft_maybe",
+        "maybe",
+        "pretty-copy",
+        "pretty_copy",
+        "majority-paper-over",
+        "majority_paper_over",
+    }
+)
+NO_FAN_MISLEAD_VERBS: frozenset[str] = frozenset(
+    {
+        "misleading",
+        "mislead",
+        "pretend",
+        "pretend-hub-cell",
+        "pretend_hub_cell",
+        "hub-still-cell",
+        "unmarked-hydra",
+        "neighbor-resurrection",
+        "neighbor_resurrection",
+    }
 )
 
 
@@ -993,6 +1051,83 @@ def claim_clock_period_s() -> int:
     return CLAIM_CLOCK_S
 
 
+def _norm_verb(value: Any) -> str:
+    return str(value or "").strip().lower().replace(" ", "-").replace("_", "-")
+
+
+def refuse_no_fan(
+    verb: str | None = None,
+    *,
+    falsify: bool = False,
+    ambiguous: bool = False,
+    misleading: bool = False,
+    kind: str | None = None,
+) -> dict[str, Any] | None:
+    """NO-FAN-1.0: No falsification. No ambiguity. No misleading."""
+    key = _norm_verb(verb)
+    if falsify or key in NO_FAN_FALSIFY_VERBS:
+        return _verdict(
+            False,
+            "NO-FAN-FALSIFY",
+            verdict=REFUSE,
+            message="no falsified tip, receipt, domain claim, Live Nodes count, or site-up claim",
+            extra={
+                "law": NO_FAN_LAW,
+                "spec": NO_FAN_SPEC,
+                "phrase": NO_FAN_PHRASE,
+                "kind": kind or key or "falsify",
+                "no_lie": True,
+                "no_rewrite": True,
+            },
+        )
+    if ambiguous or key in NO_FAN_AMBIGUITY_VERBS:
+        return _verdict(
+            False,
+            "NO-FAN-AMBIGUITY",
+            verdict=ISOLATE,
+            message="ambiguous tip isolates; do not paper over with majority or pretty copy",
+            extra={
+                "law": NO_FAN_LAW,
+                "spec": NO_FAN_SPEC,
+                "phrase": NO_FAN_PHRASE,
+                "kind": kind or key or "ambiguous",
+                "quorum_is_truth": False,
+            },
+        )
+    if misleading or key in NO_FAN_MISLEAD_VERBS:
+        return _verdict(
+            False,
+            "NO-FAN-MISLEAD",
+            verdict=REFUSE,
+            message="no misleading chrome: pulled hub is not still the cell; auto-heal is not neighbor resurrection",
+            extra={
+                "law": NO_FAN_LAW,
+                "spec": NO_FAN_SPEC,
+                "phrase": NO_FAN_PHRASE,
+                "kind": kind or key or "misleading",
+            },
+        )
+    return None
+
+
+def refuse_falsify(*, kind: str) -> dict[str, Any]:
+    out = refuse_no_fan("falsify", falsify=True, kind=kind)
+    assert out is not None
+    return out
+
+
+def refuse_ambiguity(*, kind: str = "ambiguous-tip") -> dict[str, Any]:
+    out = refuse_no_fan("ambiguous", ambiguous=True, kind=kind)
+    assert out is not None
+    return out
+
+
+def refuse_misleading(*, kind: str) -> dict[str, Any]:
+    out = refuse_no_fan("misleading", misleading=True, kind=kind)
+    assert out is not None
+    return out
+
+
 def _site_text(site: Any) -> str:
     if isinstance(site, Mapping):
         parts = [
@@ -1126,8 +1261,21 @@ def claim_az_domain(
     name: str | None = None,
     claimable: bool = True,
     papers: Iterable[Any] | None = None,
+    tip_verified: bool = True,
+    invent_continuity: bool = False,
+    fake_flag: bool = False,
 ) -> dict[str, Any]:
     """7m77s claim. First claim www.survivalnetwork.az. Cap-7. Origin hosts."""
+    if invent_continuity or fake_flag:
+        return refuse_falsify(kind="invent-continuity" if invent_continuity else "fake-flag")
+    if not tip_verified:
+        return _verdict(
+            False,
+            "AZG-UNVERIFIED-TIP",
+            verdict=WAIT,
+            message="unverified tip: refuse claim rather than invent continuity; phoenix-WAIT / hold",
+            extra={"false_tip": False, "phoenix": "wait", "no_lie": True, "phrase": NO_FAN_PHRASE},
+        )
     known = list(known_sites or ())
     if int(claimed) >= CAP_7:
         return _verdict(
@@ -1150,9 +1298,11 @@ def claim_az_domain(
                 extra={
                     "first_claim": FIRST_CLAIM_NAME,
                     "resume": True,
+                    "fake_flag": False,
                     "period_s": CLAIM_CLOCK_S,
                     "origin_node": origin_node,
                     "hosted_by": origin_node,
+                    "phrase": NO_FAN_PHRASE,
                 },
             )
         return _verdict(
@@ -1216,8 +1366,11 @@ def plant_flag_and_repost(
     *,
     sites: Iterable[Any] | None = None,
     node_data: Mapping[str, Any] | None = None,
+    fake_flag: bool = False,
 ) -> dict[str, Any]:
     """Constantly plant a flag and repost current known sites from node data."""
+    if fake_flag:
+        return refuse_falsify(kind="fake-flag")
     listed = list(sites or ())
     if node_data and isinstance(node_data.get("sites"), list):
         listed.extend(node_data["sites"])
@@ -1336,8 +1489,14 @@ def grid_shift(
     az_name: str,
     cloak: bool = True,
     resurrect_hub: bool = False,
+    pretend_hub_cell: bool = False,
+    neighbor_resurrection: bool = False,
 ) -> dict[str, Any]:
     """Grid shift: .az stays answerable; node cloaked. Official hub tunnels die."""
+    if pretend_hub_cell or neighbor_resurrection:
+        return refuse_misleading(
+            kind="pretend-hub-cell" if pretend_hub_cell else "neighbor-resurrection"
+        )
     if resurrect_hub or _is_official_hub(domain_pulled) and not _is_az_name(az_name):
         return _verdict(
             False,
@@ -1556,6 +1715,11 @@ def az_generator_dict() -> dict[str, Any]:
         "no_lie": True,
         "no_rewrite": True,
         "rewrite_key": False,
+        "no_falsify": True,
+        "no_ambiguity": True,
+        "no_mislead": True,
+        "no_fan": NO_FAN_SPEC,
+        "no_fan_phrase": NO_FAN_PHRASE,
     }
 
 
@@ -1573,6 +1737,14 @@ def grid_shift_dict() -> dict[str, Any]:
         "official_hubs_are_node_gate": False,
         "hub_tunnels_die_with_pull": True,
         "resurrection_of_official_hubs": False,
+        "pretend_pulled_hub_still_cell": False,
+        "no_lie": True,
+        "no_rewrite": True,
+        "no_falsify": True,
+        "no_ambiguity": True,
+        "no_mislead": True,
+        "no_fan": NO_FAN_SPEC,
+        "no_fan_phrase": NO_FAN_PHRASE,
     }
 
 
@@ -1604,4 +1776,30 @@ def mesh_law_dict() -> dict[str, Any]:
         "reheal": reheal_dict(),
         "az_generator": az_generator_dict(),
         "grid_shift": grid_shift_dict(),
+        "no_lie": True,
+        "no_rewrite": True,
+        "no_fan": no_fan_dict(),
+    }
+
+
+def no_fan_dict() -> dict[str, Any]:
+    return {
+        "law": NO_FAN_LAW,
+        "spec": NO_FAN_SPEC,
+        "phrase": NO_FAN_PHRASE,
+        "author": MESH_LAW_AUTHOR,
+        "identity": MESH_LAW_AUTHOR,
+        "beside": [NO_LIE_LAW, NO_REWRITE_LAW],
+        "no_lie": True,
+        "no_rewrite": True,
+        "no_falsify": True,
+        "no_ambiguity": True,
+        "no_mislead": True,
+        "verbs": {
+            "falsify": sorted(NO_FAN_FALSIFY_VERBS),
+            "ambiguous": sorted(NO_FAN_AMBIGUITY_VERBS),
+            "misleading": sorted(NO_FAN_MISLEAD_VERBS),
+        },
+        "ambiguous_tip": ISOLATE,
+        "rewrite_key": False,
     }

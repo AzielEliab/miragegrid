@@ -1,7 +1,7 @@
 # MirageGrid mesh law
 
 **Author:** Aziel Eliab only  
-**Locked:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0 / REHEAL-1.0 / MESH-REHEAL) · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0
+**Locked:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0 / REHEAL-1.0 / MESH-REHEAL) · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD (NO-FAN-1.0)
 
 Hosted `/v1/assign` stays live. Hosted mesh / vpn-hop / tunnel stubs remain refuse.
 
@@ -100,6 +100,13 @@ merge; bytes↔hash). Fewer than 49 → no false tip; phoenix-WAIT / hold.
 NO-LIE / NO-REWRITE: no rewrite key; the network never lies to stay
 alive; receipts still hash; copies are not all on one tunnel.
 
+**No falsification. No ambiguity. No misleading.** (NO-FAN-1.0,
+first-class beside NO-LIE / NO-REWRITE.) `<49` papers or unverified
+tip → refuse the claim; do not invent continuity. If
+`www.survivalnetwork.az` cannot be claimed, resume normal — do not
+fake the flag. Ambiguous tip isolates (STW-1.0); do not paper over
+with majority or pretty copy.
+
 Offline origin: sites stay up for downloads (cold-copy / standby /
 MESH-VAULT). Tip plane may show isolated/locked; download plane stays
 pull-only.
@@ -116,7 +123,10 @@ NODE-OPS). Not resurrection of godlock.uk / corpus hostnames.
 
 When lawful auto-heal fires, a cloak burst may plant up to Cap-7 spare
 `.az` names with a cloak on top (hide originating node IP behind the
-grid / Node Gate plane).
+grid / Node Gate plane). Cloak/grid-shift must not pretend a pulled
+official hub hostname is still the cell. `.az` names are named
+MirageGrid hosts, not unmarked hydra. Auto-heal must not be worded as
+neighbor resurrection.
 
 Full text: [MIRAGE-GRID-SHIFT-1.0.md](MIRAGE-GRID-SHIFT-1.0.md).
 
@@ -140,6 +150,19 @@ hedidntjump.com) remain named public hosts. They are not Node Gate.
 azieleliab.com hosts software/runtime but is not login-recovery or
 Node Gate (QNM-BUILD).
 
+## No falsification. No ambiguity. No misleading. (NO-FAN-1.0)
+
+First-class refuse law beside NO-LIE / NO-REWRITE.
+
+- No falsified tip, receipt, domain claim, Live Nodes count, or
+  “site up” claim.
+- No ambiguous tip / dual tip / soft maybe — isolate; do not paper
+  over with majority or pretty copy.
+- No misleading chrome (pulled hub still the cell; unmarked hydra;
+  auto-heal as neighbor resurrection).
+- Pair with NO-LIE: network never lies to stay alive; no rewrite key;
+  receipts still hash.
+
 ## Refuse
 
 - Unmarked Cloudflare tunnel hydra on official hubs
@@ -147,6 +170,8 @@ Node Gate (QNM-BUILD).
 - Softwares-tab listing for AZ Generator / Node Gate as separate products
 - Visible 15:20 identity-lock HTML
 - Invented Zenodo DOIs
+- Falsify / ambiguous / misleading verbs (NO-FAN-1.0)
+- Fake flag / invented continuity / unverified tip claim
 
 ## Surface
 

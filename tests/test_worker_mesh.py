@@ -204,3 +204,12 @@ def test_split_wires_cold_copy_reheal_law() -> None:
     assert "www.survivalnetwork.az" in MESH
     assert "15:20" not in HOMEPAGE
     assert "10.5281/zenodo" not in HOMEPAGE
+    assert 'NO_FAN_SPEC = "NO-FAN-1.0"' in MESH
+    assert "No falsification. No ambiguity. No misleading." in MESH
+    assert "NO-FAN-FALSIFY" in MESH
+    assert "NO-FAN-AMBIGUITY" in MESH
+    assert "NO-FAN-MISLEAD" in MESH
+    assert "refuseNoFan" in MESH
+    assert "NO-FAN-1.0" in README
+    assert "No falsification. No ambiguity. No misleading." in HOMEPAGE
+    assert "NO-FAN-1.0" in SKILL

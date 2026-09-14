@@ -3,7 +3,7 @@
 **Author:** Aziel Eliab only  
 **Status:** Locked design law  
 **Softwares-tab:** no — AZ Generator is a MirageGrid subsystem / law, not a separate product  
-**Cites:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0) / REHEAL-1.0 / MESH-REHEAL · MIRAGE-GRID-SHIFT-1.0 · NO-LIE · NO-REWRITE
+**Cites:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0) / REHEAL-1.0 / MESH-REHEAL · MIRAGE-GRID-SHIFT-1.0 · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD (NO-FAN-1.0)
 
 This paper is law for the next MirageGrid generation. It does not invent a
 Softwares-tab product. MirageGrid remains the Softwares product. Node Gate
@@ -73,13 +73,34 @@ than 49 → do not claim a false tip; phoenix-WAIT / hold.
 Obey **NO-LIE / NO-REWRITE**: no rewrite key; the network never lies to
 stay alive; receipts still hash; copies are not all on one tunnel.
 
+Obey **NO-FALSIFY / NO-AMBIGUITY / NO-MISLEAD** (NO-FAN-1.0), first-class
+beside NO-LIE / NO-REWRITE: **No falsification. No ambiguity. No
+misleading.** If fewer than 49 papers or the tip is unverified, **refuse
+the claim** rather than invent continuity. Do not claim a false tip. Do
+not fake the flag.
+
 ## First claim
 
 If **no site** in the known set contains the name
 **`www.survivalnetwork.az`**, that is the **first** domain it claims.
 
 If that cannot be claimed, resume normal operation (continue the 7m77s
-clock for other `.az` names under Cap-7).
+clock for other `.az` names under Cap-7). **Do not fake the flag.**
+
+## No falsification. No ambiguity. No misleading.
+
+First-class refuse law beside NO-LIE / NO-REWRITE (NO-FAN-1.0).
+
+- No falsified tip, receipt, domain claim, Live Nodes count, or
+  “site up” claim.
+- No ambiguous tip / dual tip / soft maybe — ambiguous tip = isolate
+  (STW-1.0). Do not paper over with majority or pretty copy.
+- No misleading chrome: do not invent continuity to stay alive.
+- `<49` papers or unverified tip → refuse claim; phoenix-WAIT / hold.
+- `www.survivalnetwork.az` cannot be claimed → resume normal; do not
+  fake the flag.
+- Pair with NO-LIE: the network never lies to stay alive; no rewrite
+  key; receipts still hash.
 
 ## Offline node
 
@@ -114,6 +135,9 @@ hedidntjump.com) remain named public hosts. They are **not** Node Gate.
 - Neighbor vote-to-fix labeled as auto-heal
 - Unmarked Cloudflare tunnel hydra on official hubs
 - Claiming a false tip with fewer than 49 papers
+- Unverified tip used to invent continuity
+- Faking the flag when `www.survivalnetwork.az` cannot be claimed
+- Falsify / ambiguous / misleading verbs (NO-FAN-1.0)
 - Sharing the 7m77s claim socket with the 1s tip tick or the 777s dwell
 - Visible 15:20 identity-lock HTML
 - Invented Zenodo DOIs
