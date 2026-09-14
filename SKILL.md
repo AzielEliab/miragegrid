@@ -1,13 +1,13 @@
 ---
 name: MirageGrid
-description: Use when calling MirageGrid hosted /v1 or installing the local package. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime catalog). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. NO-FAN-1.0. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
+description: Use when calling MirageGrid hosted /v1 or installing the local package. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime catalog). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. NO-FAN-1.0. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
 ---
 
 # MirageGrid
 
 Ephemeral session node assignment. 25 named peers. Receipts. Author: **Aziel Eliab**.
 
-**THIS IS:** a session assignment engine (mesh maps, circuit hops, internal receipts). Assign stays live. Mesh law is SPLIT THE WIRES + COLD-COPY SURVIVAL + REHEAL + AZ-GENERATOR-1.0 + MIRAGE-GRID-SHIFT-1.0 + NO-LIE + NO-REWRITE + NO-FAN-1.0 (**No falsification. No ambiguity. No misleading.**). Public-stack auto-heal means lawful REHEAL-1.0 / MESH-REHEAL, not neighbor vote-to-fix. AZ Generator and Node Gate are MirageGrid subsystems — not Softwares-tab products.
+**THIS IS:** a session assignment engine (mesh maps, circuit hops, internal receipts). Assign stays live. Mesh law is SPLIT THE WIRES + COLD-COPY SURVIVAL + REHEAL + AZ-GENERATOR-1.0 + MIRAGE-GRID-SHIFT-1.0 + AIRGAP-1.0 + NO-LIE + NO-REWRITE + NO-FAN-1.0 (**No falsification. No ambiguity. No misleading.**). Paper vault multiplies onto each node as cold copies (no paper-body fan-out on the 1s tip tick). Public-stack auto-heal means lawful REHEAL-1.0 / MESH-REHEAL, not neighbor vote-to-fix. AZ Generator and Node Gate are MirageGrid subsystems — not Softwares-tab products.
 
 **THIS IS NOT:** a VPN, an anonymity network, a hosted hop, a crime tool, a log-wipe, or a guarantee against global surveillance. Hosted `/v1` does not increment downloads or views.
 
@@ -25,10 +25,12 @@ Ops (do **not** increment downloads or views):
 - `GET /v1/health` — liveness
 - `GET /v1/skill` — this file
 - `GET /v1/topology` — persistent 25-node circulant topology (local op)
-- `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 cross-map (photon QNS1 packet transfer) is stamped for peers. Never enables. No public qnsd proxy. Stamps **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0**.
+- `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 cross-map (photon QNS1 packet transfer) is stamped for peers. Never enables. No public qnsd proxy. Stamps **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0**, **AIRGAP-1.0**, paper-vault-on-node.
 - `POST /v1/mesh/reheal` — local REHEAL law. Own tip+trusted pull or phoenix-WAIT. Neighbor talk-dirty-back-to-health, bodies, diffs, and vote-to-fix refuse. Public-stack auto-heal means this lawful reheal, not vote-to-fix. Suite strip stays No auto-heal.
-- `POST /v1/mesh/az-generator` — local AZ-GENERATOR-1.0 law (7m77s = 497s, Cap-7, first claim `www.survivalnetwork.az`, ≥49 papers). Not a Softwares-tab product.
+- `POST /v1/mesh/az-generator` — local AZ-GENERATOR-1.0 law (7m77s = 497s, Cap-7, first claim `www.survivalnetwork.az`, ≥49 papers in the local vault). Not a Softwares-tab product.
 - `POST /v1/mesh/grid-shift` — local MIRAGE-GRID-SHIFT-1.0 law (MESH-VAULT snapshot+standby, cloak burst, Node Gate for `.az` only). Not a Softwares-tab product.
+- `POST /v1/mesh/airgap` — local AIRGAP-1.0 law (local vault; no bearer radios; no climb-back; no body gossip). Official hubs are not airgap Node Gate.
+- `POST /v1/mesh/vault` — paper-vault-on-node multiply (cold copies on bootstrap / join / Cap-7 claim / grid-shift standby; pull-only; no tip-tick bodies).
 - `GET /v1/mesh/nodes` — PROXY Live Nodes roster (5-minute presence). Same QNS-CD-1.0 cross-map.
 - `POST /v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}` — PROXY. Bearer required to enable. No auto-heal. Anon-broadcast is not a publish path.
 - `POST /v1/route` — peer path

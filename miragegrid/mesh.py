@@ -27,11 +27,23 @@ Public-stack auto-heal means this lawful reheal + archive re-expand.
 
 AZ GENERATOR (AZ-GENERATOR-1.0) claims `.az` names on a 7m77s (497s)
 clock, Cap-7 per origin node, first claim `www.survivalnetwork.az`.
-Restore needs ≥49 Aziel Eliab papers (hash-absolute; cite don't merge).
+Restore needs ≥49 Aziel Eliab papers from the local vault
+(hash-absolute; cite don't merge). Every node MUST carry the full
+paper set as a cold vault copy — vault multiply onto each node /
+papers land as cold copies on bootstrap / join / Cap-7 claim /
+grid-shift standby. No live body sync of paper bytes on the 1s tip
+tick. Incomplete vault → AZG-UNVERIFIED-TIP / AZG-INCOMPLETE-VAULT;
+phoenix-WAIT; do not invent.
 
 MIRAGE GRID SHIFT (MIRAGE-GRID-SHIFT-1.0) restates MESH-VAULT as
 snapshot plus official standby (IP-mask host). Grid shift keeps the
-`.az` answerable and cloaks the node after a domain pull.
+`.az` answerable and cloaks the node after a domain pull. Grid-shift
+standby is a vault-multiply event.
+
+AIRGAP (AIRGAP-1.0) is local vault + no bearer radios + no climb-back
+onto pulled public hub hostnames. Downloads from the local cold shelf
+stay allowed. Tip chatter is live / locked / isolated / tip-hash only.
+Official hubs are not airgap Node Gate.
 
 The 1s tip tick, 777s dwell, and 7m77s claim clock never share a socket.
 Assign stays live. Hosted mesh / vpn-hop / tunnel stubs remain refuse.
@@ -212,6 +224,8 @@ class NodeMesh:
             "reheal": reheal_dict(),
             "az_generator": az_generator_dict(),
             "grid_shift": grid_shift_dict(),
+            "airgap": airgap_dict(),
+            "paper_vault": paper_vault_dict(),
             "public_stack": public_stack_dict(),
             "no_fan": no_fan_dict(),
         }
@@ -331,6 +345,9 @@ AZ_GENERATOR_LAW = "AZ GENERATOR"
 AZ_GENERATOR_SPEC = "AZ-GENERATOR-1.0"
 GRID_SHIFT_LAW = "MIRAGE GRID SHIFT"
 GRID_SHIFT_SPEC = "MIRAGE-GRID-SHIFT-1.0"
+AIRGAP_LAW = "AIRGAP"
+AIRGAP_SPEC = "AIRGAP-1.0"
+PAPER_VAULT_LAW = "PAPER-VAULT-ON-NODE"
 NO_LIE_LAW = "NO-LIE"
 NO_REWRITE_LAW = "NO-REWRITE"
 NO_FALSIFY_LAW = "NO-FALSIFY"
@@ -365,7 +382,7 @@ PRESENCE_LEN = 1
 TIP_TICK_SIZE = PRESENCE_LEN + TIP_HASH_LEN
 TIP_TICK_FIELDS: frozenset[str] = frozenset({"presence", "tip_hash"})
 TIP_TICK_FORBIDDEN: frozenset[str] = frozenset(
-    {"body", "diff", "file", "payload", "bytes"}
+    {"body", "diff", "file", "payload", "bytes", "papers", "paper", "vault"}
 )
 
 PRESENCE_LIVE = 1
@@ -442,7 +459,27 @@ NO_FAN_FALSIFY_VERBS: frozenset[str] = frozenset(
         "false-live-nodes",
         "false-site-up",
         "site-up-lie",
+        "false-paper-set",
+        "false_paper_set",
+        "we-have-49",
+        "have-49-without-bytes",
+        "have_49_without_bytes",
     }
+)
+
+VAULT_MULTIPLY_EVENTS: frozenset[str] = frozenset(
+    {
+        "bootstrap",
+        "join",
+        "cap-7-claim",
+        "cap7-claim",
+        "cap_7_claim",
+        "grid-shift-standby",
+        "grid_shift_standby",
+    }
+)
+AIRGAP_TIP_FIELDS: frozenset[str] = frozenset(
+    {"live", "locked", "isolated", "tip-hash", "tip_hash"}
 )
 NO_FAN_AMBIGUITY_VERBS: frozenset[str] = frozenset(
     {
@@ -1194,6 +1231,28 @@ def _paper_ok(paper: Any) -> bool:
     return True
 
 
+def _paper_bytes(paper: Mapping[str, Any]) -> bytes | None:
+    body = paper.get("bytes") or paper.get("body") or paper.get("data")
+    if body is None:
+        return None
+    if isinstance(body, (bytes, bytearray)):
+        return bytes(body)
+    return str(body).encode("utf-8")
+
+
+def _paper_vault_ok(paper: Any) -> bool:
+    """Vault paper: hash-absolute AND bytes present. No 'we have 49' without bytes."""
+    if not _paper_ok(paper):
+        return False
+    if not isinstance(paper, Mapping):
+        return False
+    raw = _paper_bytes(paper)
+    if raw is None:
+        return False
+    digest = _hex32(paper.get("hash") or paper.get("sha256") or paper.get("tip_hash"))
+    return hashlib.sha256(raw).hexdigest() == digest
+
+
 def count_aziel_papers(papers: Iterable[Any] | None) -> int:
     seen: set[str] = set()
     count = 0
@@ -1210,14 +1269,76 @@ def count_aziel_papers(papers: Iterable[Any] | None) -> int:
     return count
 
 
+def count_vault_papers(papers: Iterable[Any] | None) -> int:
+    """Unique hash-absolute papers that carry matching bytes."""
+    seen: set[str] = set()
+    count = 0
+    for paper in papers or ():
+        if not _paper_vault_ok(paper):
+            continue
+        digest = _hex32(
+            paper.get("hash") or paper.get("sha256") or paper.get("tip_hash")  # type: ignore[union-attr]
+        )
+        if digest in seen:
+            continue
+        seen.add(digest)
+        count += 1
+    return count
+
+
+def vault_complete(papers: Iterable[Any] | None) -> bool:
+    """Full verified Aziel paper set (≥49 with bytes)."""
+    return count_vault_papers(papers) >= MIN_PAPERS
+
+
+def refuse_incomplete_vault(
+    *,
+    papers: Iterable[Any] | None = None,
+    have_49: bool = False,
+    claimed_count: int | None = None,
+) -> dict[str, Any] | None:
+    """Incomplete vault or 'we have 49' without bytes. phoenix-WAIT; do not invent."""
+    n_vault = count_vault_papers(papers)
+    n_cite = count_aziel_papers(papers)
+    if have_49 or claimed_count == MIN_PAPERS:
+        if n_vault < MIN_PAPERS:
+            return refuse_falsify(kind="false-paper-set")
+    if n_vault >= MIN_PAPERS:
+        return None
+    if n_cite < MIN_PAPERS:
+        return None
+    return _verdict(
+        False,
+        "AZG-INCOMPLETE-VAULT",
+        verdict=WAIT,
+        message="incomplete vault: no full verified paper set; AZG-UNVERIFIED-TIP; phoenix-WAIT / hold; do not invent",
+        extra={
+            "papers": n_vault,
+            "cites": n_cite,
+            "min_papers": MIN_PAPERS,
+            "false_tip": False,
+            "phoenix": "wait",
+            "unverified_tip": True,
+            "azg_unverified_tip": True,
+            "code_alias": "AZG-UNVERIFIED-TIP",
+            "have_49_without_bytes": n_cite >= MIN_PAPERS,
+        },
+    )
+
+
 def restore_chain(
     *,
     papers: Iterable[Any] | None = None,
     broken: bool = True,
     most_active_point: str | None = None,
+    have_49: bool = False,
 ) -> dict[str, Any]:
-    """Restore at the most active guaranteed point. <49 papers → phoenix-WAIT."""
+    """Restore at the most active guaranteed point. Incomplete vault → phoenix-WAIT."""
+    fake = refuse_incomplete_vault(papers=papers, have_49=have_49)
+    if fake and fake.get("code") == "NO-FAN-FALSIFY":
+        return fake
     n = count_aziel_papers(papers)
+    n_vault = count_vault_papers(papers)
     if n < MIN_PAPERS:
         return _verdict(
             False,
@@ -1231,13 +1352,31 @@ def restore_chain(
                 "phoenix": "wait",
             },
         )
+    if fake:
+        return fake
+    if n_vault < MIN_PAPERS:
+        return _verdict(
+            False,
+            "AZG-INCOMPLETE-VAULT",
+            verdict=WAIT,
+            message="incomplete vault: AZG-UNVERIFIED-TIP; phoenix-WAIT / hold; do not invent",
+            extra={
+                "papers": n_vault,
+                "min_papers": MIN_PAPERS,
+                "false_tip": False,
+                "phoenix": "wait",
+                "unverified_tip": True,
+                "azg_unverified_tip": True,
+                "code_alias": "AZG-UNVERIFIED-TIP",
+            },
+        )
     if not broken:
         return _verdict(
             True,
             "AZG-RESTORE-INTACT",
             verdict=YES,
             message="chain intact; no restore claimed",
-            extra={"papers": n, "min_papers": MIN_PAPERS},
+            extra={"papers": n_vault, "min_papers": MIN_PAPERS, "cite_dont_merge": True},
         )
     return _verdict(
         True,
@@ -1245,10 +1384,11 @@ def restore_chain(
         verdict=YES,
         message="restore at most active guaranteed point",
         extra={
-            "papers": n,
+            "papers": n_vault,
             "min_papers": MIN_PAPERS,
             "point": most_active_point or "most-active-guaranteed",
             "cite_dont_merge": True,
+            "vault_complete": True,
         },
     )
 
@@ -1261,13 +1401,21 @@ def claim_az_domain(
     name: str | None = None,
     claimable: bool = True,
     papers: Iterable[Any] | None = None,
+    vault: Iterable[Any] | None = None,
     tip_verified: bool = True,
     invent_continuity: bool = False,
     fake_flag: bool = False,
+    have_49: bool = False,
+    needs_papers: bool = False,
 ) -> dict[str, Any]:
     """7m77s claim. First claim www.survivalnetwork.az. Cap-7. Origin hosts."""
     if invent_continuity or fake_flag:
         return refuse_falsify(kind="invent-continuity" if invent_continuity else "fake-flag")
+    vault_papers = list(vault if vault is not None else (papers or ()))
+    if papers is None and vault is not None:
+        papers = vault
+    if have_49 and count_vault_papers(vault_papers) < MIN_PAPERS:
+        return refuse_falsify(kind="false-paper-set")
     if not tip_verified:
         return _verdict(
             False,
@@ -1342,11 +1490,11 @@ def claim_az_domain(
             message="AZ Generator claims domains ending in .az only",
             extra={"name": target, "origin_node": origin_node},
         )
-    if papers is not None and count_aziel_papers(papers) < MIN_PAPERS and first_needed is False:
-        # restore-adjacent claim with a broken paper set still holds
-        held = restore_chain(papers=papers, broken=True)
-        if not held["ok"]:
-            return held
+    if (papers is not None or vault is not None or needs_papers) and first_needed is False:
+        if needs_papers or not vault_complete(vault_papers if vault_papers else papers):
+            held = restore_chain(papers=papers if papers is not None else vault_papers, broken=True, have_49=have_49)
+            if not held["ok"]:
+                return held
     return _verdict(
         True,
         "AZG-CLAIM-OK",
@@ -1359,6 +1507,256 @@ def claim_az_domain(
             "period_s": CLAIM_CLOCK_S,
             "cap": CAP_7,
         },
+    )
+
+
+def vault_multiply(
+    *,
+    event: str,
+    papers: Iterable[Any] | None = None,
+    live_body_sync: bool = False,
+    tip_tick: bool = False,
+    fanout: bool = False,
+    sender_fanout: bool = False,
+) -> dict[str, Any]:
+    """Vault multiply onto each node. Papers land as cold copies. Pull-only."""
+    if live_body_sync or fanout or sender_fanout:
+        return _verdict(
+            False,
+            "STW-NO-FANOUT",
+            verdict=REFUSE,
+            message="no live body sync / sender fan-out of paper bytes; payload plane is pull-only",
+            extra={"live_body_sync": False, "plane": PAYLOAD_PLANE},
+        )
+    if tip_tick:
+        return _verdict(
+            False,
+            "STW-TIP-BODY",
+            verdict=REFUSE,
+            message="tip tick is presence+tip hash only; no paper bytes on the 1s tick",
+            extra={"tip_tick_bodies": False},
+        )
+    key = str(event or "").strip().lower().replace("_", "-").replace(" ", "-")
+    if key not in VAULT_MULTIPLY_EVENTS:
+        return _verdict(
+            False,
+            "AZG-VAULT-EVENT",
+            verdict=REFUSE,
+            message="vault multiply is bootstrap / join / Cap-7 claim / grid-shift standby only",
+            extra={"event": key, "events": sorted(VAULT_MULTIPLY_EVENTS)},
+        )
+    incomplete = refuse_incomplete_vault(papers=papers)
+    if incomplete:
+        return incomplete
+    if not vault_complete(papers):
+        return _verdict(
+            False,
+            "AZG-INCOMPLETE-VAULT",
+            verdict=WAIT,
+            message="incomplete vault: AZG-UNVERIFIED-TIP; phoenix-WAIT / hold; do not invent",
+            extra={
+                "papers": count_vault_papers(papers),
+                "min_papers": MIN_PAPERS,
+                "false_tip": False,
+                "phoenix": "wait",
+                "unverified_tip": True,
+                "azg_unverified_tip": True,
+                "code_alias": "AZG-UNVERIFIED-TIP",
+            },
+        )
+    return _verdict(
+        True,
+        "AZG-VAULT-MULTIPLY",
+        verdict=YES,
+        message="vault multiply onto each node; papers land as cold copies",
+        extra={
+            "event": key,
+            "papers": count_vault_papers(papers),
+            "min_papers": MIN_PAPERS,
+            "plane": PAYLOAD_PLANE,
+            "live_body_sync": False,
+            "tip_tick_bodies": False,
+            "cite_dont_merge": True,
+            "cold_copy": True,
+        },
+    )
+
+
+def refuse_paper_body_on_tip(
+    extra: Mapping[str, Any] | None = None,
+    *,
+    papers: Iterable[Any] | None = None,
+) -> dict[str, Any] | None:
+    """No paper bytes on the 1s tip tick."""
+    payload = dict(extra or {})
+    if papers is not None:
+        payload["papers"] = list(papers)
+    forbidden = sorted(k for k in payload if str(k).lower() in TIP_TICK_FORBIDDEN)
+    if forbidden:
+        return _verdict(
+            False,
+            "STW-TIP-BODY",
+            verdict=REFUSE,
+            message="tip tick is presence+tip hash only; no paper bytes on the 1s tick",
+            extra={"forbid": forbidden, "tip_tick_bodies": False},
+        )
+    return None
+
+
+def airgap_mode(
+    *,
+    enabled: bool = True,
+    bearer_radios: bool = False,
+    climb_back: bool = False,
+    body_gossip: bool = False,
+    hub_as_gate: str | bool | None = None,
+    vault_papers: Iterable[Any] | None = None,
+    neighbor_majority: bool = False,
+    serve_local: bool = True,
+) -> dict[str, Any]:
+    """AIRGAP-1.0: local vault + no bearer radios + no climb-back."""
+    if not enabled:
+        return _verdict(
+            True,
+            "AIRGAP-OFF",
+            verdict=YES,
+            message="airgap mode off",
+            extra={"airgap": False, "spec": AIRGAP_SPEC},
+        )
+    if bearer_radios:
+        return _verdict(
+            False,
+            "AIRGAP-NO-BEARER",
+            verdict=REFUSE,
+            message="airgap forbids bearer radios",
+            extra={"airgap": True, "bearer_radios": False, "spec": AIRGAP_SPEC},
+        )
+    if climb_back:
+        return _verdict(
+            False,
+            "AIRGAP-NO-CLIMB-BACK",
+            verdict=REFUSE,
+            message="airgap forbids climb-back onto pulled public hub hostnames",
+            extra={"airgap": True, "climb_back": False, "spec": AIRGAP_SPEC},
+        )
+    if body_gossip:
+        return _verdict(
+            False,
+            "AIRGAP-NO-BODY-GOSSIP",
+            verdict=REFUSE,
+            message="airgap tip chatter is live/locked/isolated/tip-hash only; no body gossip",
+            extra={"airgap": True, "tip_chatter": sorted(AIRGAP_TIP_FIELDS), "spec": AIRGAP_SPEC},
+        )
+    if neighbor_majority:
+        return _verdict(
+            False,
+            "RH-NO-VOTE-TO-FIX",
+            verdict=REFUSE,
+            message="airgap reheal never uses neighbor majority",
+            extra={"airgap": True, "neighbor_majority": False, "spec": AIRGAP_SPEC},
+        )
+    if hub_as_gate:
+        host = "" if hub_as_gate is True else str(hub_as_gate)
+        if hub_as_gate is True or _is_official_hub(host) or host in HUB_NOT_NODE_GATE:
+            return _verdict(
+                False,
+                "MGS-NOT-NODE-GATE",
+                verdict=REFUSE,
+                message="official hubs are not airgap Node Gate",
+                extra={"airgap": True, "official_hubs_are_airgap_node_gate": False, "spec": AIRGAP_SPEC},
+            )
+    if vault_papers is not None and not vault_complete(vault_papers):
+        incomplete = refuse_incomplete_vault(papers=vault_papers)
+        if incomplete:
+            return incomplete
+        return _verdict(
+            False,
+            "AZG-INCOMPLETE-VAULT",
+            verdict=WAIT,
+            message="airgap requires the full verified local vault; AZG-UNVERIFIED-TIP; phoenix-WAIT",
+            extra={
+                "airgap": True,
+                "papers": count_vault_papers(vault_papers),
+                "min_papers": MIN_PAPERS,
+                "phoenix": "wait",
+                "unverified_tip": True,
+                "azg_unverified_tip": True,
+                "code_alias": "AZG-UNVERIFIED-TIP",
+            },
+        )
+    return _verdict(
+        True,
+        "AIRGAP-OK",
+        verdict=YES,
+        message="airgap: local vault; no bearer radios; no climb-back; local cold shelf may serve",
+        extra={
+            "airgap": True,
+            "spec": AIRGAP_SPEC,
+            "local_vault": True,
+            "bearer_radios": False,
+            "climb_back": False,
+            "body_gossip": False,
+            "downloads_from_local_cold_shelf": bool(serve_local),
+            "tip_chatter": ["live", "locked", "isolated", "tip-hash"],
+            "official_hubs_are_airgap_node_gate": False,
+        },
+    )
+
+
+def airgap_reheal(
+    *,
+    own_tip: bytes | str | None = None,
+    trusted_pull: bool = False,
+    already_trusted: bool = False,
+    phoenix_wait: bool = False,
+    neighbor_majority: bool = False,
+    body_gossip: bool = False,
+) -> dict[str, Any]:
+    """Airgap re-expand / reheal: own tip + trusted already-trusted bytes, or phoenix-WAIT."""
+    if neighbor_majority:
+        return _verdict(
+            False,
+            "RH-NO-VOTE-TO-FIX",
+            verdict=REFUSE,
+            message="airgap reheal never uses neighbor majority",
+            extra={"airgap": True, "spec": AIRGAP_SPEC},
+        )
+    if body_gossip:
+        return _verdict(
+            False,
+            "AIRGAP-NO-BODY-GOSSIP",
+            verdict=REFUSE,
+            message="airgap tip chatter is live/locked/isolated/tip-hash only; no body gossip",
+            extra={"airgap": True, "spec": AIRGAP_SPEC},
+        )
+    if phoenix_wait:
+        return _verdict(
+            True,
+            "RH-PHOENIX-WAIT",
+            verdict=WAIT,
+            message="airgap reheal phoenix-WAIT",
+            extra={"airgap": True, "source": "phoenix-wait", "auto_heal": False, "spec": AIRGAP_SPEC},
+        )
+    if own_tip and trusted_pull and already_trusted:
+        return _verdict(
+            True,
+            "RH-OWN-TIP",
+            verdict=YES,
+            message="airgap reheal from own tip plus trusted pull of bytes already trusted",
+            extra={
+                "airgap": True,
+                "source": "own-tip+trusted-pull",
+                "already_trusted": True,
+                "auto_heal": False,
+                "spec": AIRGAP_SPEC,
+            },
+        )
+    return _verdict(
+        False,
+        "RH-FAIL-CLOSED",
+        verdict=WAIT,
+        message="airgap reheal fail-closed without own tip + already-trusted pull or phoenix-WAIT",
+        extra={"airgap": True, "phoenix": "wait", "spec": AIRGAP_SPEC},
     )
 
 
@@ -1711,6 +2109,7 @@ def az_generator_dict() -> dict[str, Any]:
         "cap": CAP_7,
         "first_claim": FIRST_CLAIM_NAME,
         "min_papers": MIN_PAPERS,
+        "paper_vault": paper_vault_dict(),
         "tld": AZ_TLD,
         "no_lie": True,
         "no_rewrite": True,
@@ -1776,9 +2175,56 @@ def mesh_law_dict() -> dict[str, Any]:
         "reheal": reheal_dict(),
         "az_generator": az_generator_dict(),
         "grid_shift": grid_shift_dict(),
+        "airgap": airgap_dict(),
+        "paper_vault": paper_vault_dict(),
         "no_lie": True,
         "no_rewrite": True,
         "no_fan": no_fan_dict(),
+    }
+
+
+def paper_vault_dict() -> dict[str, Any]:
+    return {
+        "law": PAPER_VAULT_LAW,
+        "author": MESH_LAW_AUTHOR,
+        "identity": MESH_LAW_AUTHOR,
+        "on_every_node": True,
+        "full_set": True,
+        "min_papers": MIN_PAPERS,
+        "multiply": "cold-copy",
+        "wording": "vault multiply onto each node / papers land on every node as cold copies",
+        "events": ["bootstrap", "join", "cap-7-claim", "grid-shift-standby"],
+        "plane": PAYLOAD_PLANE,
+        "live_body_sync": False,
+        "tip_tick_bodies": False,
+        "cite_dont_merge": True,
+        "hash_absolute": True,
+        "no_have_49_without_bytes": True,
+        "incomplete": "AZG-INCOMPLETE-VAULT / AZG-UNVERIFIED-TIP / phoenix-WAIT",
+    }
+
+
+def airgap_dict() -> dict[str, Any]:
+    return {
+        "law": AIRGAP_LAW,
+        "spec": AIRGAP_SPEC,
+        "author": MESH_LAW_AUTHOR,
+        "identity": MESH_LAW_AUTHOR,
+        "softwares_tab": False,
+        "local_vault": True,
+        "bearer_radios": False,
+        "climb_back_pulled_hubs": False,
+        "downloads_from_local_cold_shelf": True,
+        "origin_offline_downloads_stay_up": True,
+        "tip_chatter": ["live", "locked", "isolated", "tip-hash"],
+        "body_gossip": False,
+        "reheal": "own-tip+trusted-pull-already-trusted-or-phoenix-wait",
+        "neighbor_majority": False,
+        "official_hubs_are_node_gate": False,
+        "official_hubs_are_airgap_node_gate": False,
+        "no_lie": True,
+        "no_rewrite": True,
+        "no_fan": NO_FAN_SPEC,
     }
 
 

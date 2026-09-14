@@ -38,8 +38,9 @@ three named pieces:
    that lawful reheal + archive re-expand, not peer talk-back-to-health.
 
 AZ Generator and Node Gate are MirageGrid subsystems / law — not
-Softwares-tab products. See [docs/AZ-GENERATOR-1.0.md](docs/AZ-GENERATOR-1.0.md)
-and [docs/MIRAGE-GRID-SHIFT-1.0.md](docs/MIRAGE-GRID-SHIFT-1.0.md).
+Softwares-tab products. See [docs/AZ-GENERATOR-1.0.md](docs/AZ-GENERATOR-1.0.md),
+[docs/MIRAGE-GRID-SHIFT-1.0.md](docs/MIRAGE-GRID-SHIFT-1.0.md), and
+[docs/AIRGAP-1.0.md](docs/AIRGAP-1.0.md).
 
 ## Quick start
 
@@ -79,7 +80,7 @@ The Worker serves the gzip itself (HTTP 200, no 302 to GitHub).
 - Direct tarball: [miragegrid-0.2.0.tar.gz](https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.2.0.tar.gz)
 - One-click install: [https://miragegrid-download-tracker.vibelock.workers.dev/install.sh](https://miragegrid-download-tracker.vibelock.workers.dev/install.sh)
 - Skill: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill](https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill)
-- Suite mesh proxy: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh](https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated; QNS-CD-1.0 photon QNS1 cross-map (no public qnsd). Locked law: **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0** ([docs/mesh-law.md](docs/mesh-law.md))
+- Suite mesh proxy: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh](https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated; QNS-CD-1.0 photon QNS1 cross-map (no public qnsd). Locked law: **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0**, **AIRGAP-1.0** ([docs/mesh-law.md](docs/mesh-law.md))
 - OpenAPI: [https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json](https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json)
 - GitHub: [https://github.com/AzielEliab/miragegrid](https://github.com/AzielEliab/miragegrid)
 
@@ -135,11 +136,21 @@ MESH-REHEAL), not neighbor vote-to-fix.
 
 **AZ GENERATOR** — every 7 minutes and 77 seconds (497s) claim a `.az`
 name; Cap-7 per node; first claim `www.survivalnetwork.az`; restore
-needs ≥49 Aziel Eliab papers; offline origin keeps downloads up.
+needs ≥49 Aziel Eliab papers from the node’s local vault; **vault
+multiply onto each node** / papers land as cold copies (no paper-body
+fan-out on the 1s tip tick); incomplete vault refuses
+(AZG-UNVERIFIED-TIP / incomplete vault); offline origin keeps downloads
+up.
 
 **MIRAGE GRID SHIFT** — MESH-VAULT is snapshot + official standby
 (IP-mask host). Grid shift keeps the `.az` answerable and cloaks the
 node after a domain pull. Official-hub tunnels die with the pull.
+Grid-shift standby is a vault-multiply event.
+
+**AIRGAP** — local vault + no bearer radios + no climb-back onto pulled
+public hub hostnames. Downloads from the local cold shelf stay allowed.
+Tip chatter: live / locked / isolated / tip-hash only; no body gossip.
+Official hubs are not airgap Node Gate.
 
 **NO-LIE / NO-REWRITE / NO-FAN-1.0** — no rewrite key; the network
 never lies to stay alive; receipts still hash. **No falsification. No
@@ -279,10 +290,11 @@ Offline. Stdlib runtime. Mesh/VPN tests use loopback only.
 ```
 miragegrid/            library (pool, mesh, circuit, crypto, vpn, session, cli, ui)
 tests/                 pytest
-docs/whitepaper.md     architecture (sections 1–17)
-docs/mesh-law.md       SPLIT THE WIRES · COLD-COPY · REHEAL · AZ-GENERATOR · GRID-SHIFT
-docs/AZ-GENERATOR-1.0.md  7m77s claim clock · Cap-7 · 49 papers · first claim
+docs/whitepaper.md     architecture (sections 1–18)
+docs/mesh-law.md       SPLIT THE WIRES · COLD-COPY · REHEAL · AZ-GENERATOR · GRID-SHIFT · AIRGAP
+docs/AZ-GENERATOR-1.0.md  7m77s claim clock · Cap-7 · 49 papers · paper vault on node
 docs/MIRAGE-GRID-SHIFT-1.0.md  Node Gate · cloak burst · MESH-VAULT grid shift
+docs/AIRGAP-1.0.md     local vault · no bearer radios · no climb-back
 examples/              assign a circuit
 workers/download-tracker/   Cloudflare Worker + wrangler.toml (undeployed)
 CONTRIBUTING.md        forks first-class; lawful privacy mesh VPN

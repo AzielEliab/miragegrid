@@ -45,13 +45,15 @@ pytest is the dev extra.
    Suite mesh default OFF; QNM rollup live|locked|isolated; no Node Gate;
    no auto-heal; not anonymity. Product topology stays at `/v1/topology`.
    Mesh law is SPLIT THE WIRES + COLD-COPY SURVIVAL + REHEAL +
-   AZ-GENERATOR-1.0 + MIRAGE-GRID-SHIFT-1.0 (`docs/mesh-law.md`).
-   Assign stays live. Hosted vpn/hop/tunnel stubs remain refuse. Do not
-   add neighbor talk-back heal, vote-to-fix labeled as auto-heal, live
-   body sync, a shared 1s/777s/7m77s socket, Softwares-tab products for
-   AZ Generator or Node Gate, unmarked hub tunnel hydra, visible 15:20
-   chrome, invented Zenodo DOIs, or falsify/ambiguous/misleading verbs
-   (NO-FAN-1.0: No falsification. No ambiguity. No misleading.).
+   AZ-GENERATOR-1.0 + MIRAGE-GRID-SHIFT-1.0 + AIRGAP-1.0
+   (`docs/mesh-law.md`). Assign stays live. Hosted vpn/hop/tunnel stubs
+   remain refuse. Do not add neighbor talk-back heal, vote-to-fix
+   labeled as auto-heal, live body sync, paper-body fan-out on the 1s
+   tip tick, a shared 1s/777s/7m77s socket, Softwares-tab products for
+   AZ Generator or Node Gate, unmarked hub tunnel hydra, official hubs
+   as airgap Node Gate, visible 15:20 chrome, invented Zenodo DOIs, or
+   falsify/ambiguous/misleading verbs (NO-FAN-1.0: No falsification. No
+   ambiguity. No misleading.).
 9. New behavior needs a test that fails without the change.
 10. Author line stays **Aziel Eliab**.
 
