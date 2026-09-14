@@ -379,3 +379,15 @@ allowed while airgapped (sites stay up for downloads when origin is
 offline). Tip chatter: live / locked / isolated / tip-hash only if
 any; no body gossip. Re-expand / reheal: own tip + trusted pull of
 bytes already trusted, or phoenix-WAIT — never neighbor majority.
+
+## 19. Semantic bridge (SEMANTIC-BRIDGE-1.0)
+
+Full text: [SEMANTIC-BRIDGE-1.0.md](SEMANTIC-BRIDGE-1.0.md).
+
+Public Plane-A hosts + the MirageGrid Worker are the AI-facing
+bridge. Cap-7 mesh names are not public ICANN DNS
+(`public_icann: false`). They inherit hub **design** only; they do
+not resolve, redirect, or CNAME to official hubs. `design_of` is
+provenance. `resolves_to_hub` is false. Empty Cap-7 is an empty SLOT
+list. Growth-ON. CROSS-NETWORK-SURVIVAL + NO-LIE. Re-expand is
+archive, not index.

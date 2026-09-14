@@ -475,7 +475,16 @@ class MeshDnsZone:
             extra={"name": host, "public_icann": False, "dns_factory": DNS_FACTORY_KIND},
         )
 
-    def publish(self, *, name: str, tip_hash: str | None = None, claim: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    def publish(
+        self,
+        *,
+        name: str,
+        tip_hash: str | None = None,
+        claim: Mapping[str, Any] | None = None,
+        design_of: str | None = None,
+        design_pack_sha256: str | None = None,
+        public_gateway_url: str | None = None,
+    ) -> dict[str, Any]:
         host = str(name or "").strip().lower()
         tld = refuse_icann_tld(host, active_suffix=self.active_suffix)
         if tld:
@@ -534,7 +543,15 @@ class MeshDnsZone:
             "access": sorted(ACCESS_CLIENTS),
             "public_icann": False,
             "registrar": False,
+            "resolves_to_hub": False,
+            "name_may_change": True,
         }
+        if design_of:
+            rec["design_of"] = design_of
+        if design_pack_sha256:
+            rec["design_pack_sha256"] = design_pack_sha256
+        if public_gateway_url:
+            rec["public_gateway_url"] = public_gateway_url
         self.records.append(rec)
         vault_multiply(reason="cap-7-claim", copies=2)
         return _verdict(
@@ -609,6 +626,12 @@ class MeshDnsZone:
                 "cctld_takeover": False,
             },
         )
+
+    def bridge_registry(self) -> dict[str, Any]:
+        """Honest SEMANTIC-BRIDGE map of this zone. Never invents hub resolution."""
+        from miragegrid.semantic_bridge import build_bridge_registry
+
+        return build_bridge_registry(zone=self)
 
     def zone_file(self) -> str:
         lines = [

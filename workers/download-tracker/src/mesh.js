@@ -332,6 +332,26 @@ export function qnsCdFields() {
   return { qns_cd_spec: QNS_CD_SPEC, qns_cd: QNS_CD };
 }
 
+export const SEMANTIC_BRIDGE = Object.freeze({
+  law: "SEMANTIC BRIDGE",
+  spec: "SEMANTIC-BRIDGE-1.0",
+  author: IDENTITY,
+  identity: IDENTITY,
+  person: { "@id": "https://www.azieleliab.com/#aziel", name: IDENTITY },
+  growth: "Growth-ON",
+  public_icann: false,
+  resolves_to_hub: false,
+  name_may_change: true,
+  reexpand: "archive-not-index",
+  cross_network_survival: "CROSS-NETWORK-SURVIVAL-1.0",
+  no_lie: true,
+  first_flag: FIRST_CLAIM_NAME,
+  suffix_order: [".az", ".aziel", "pivot"],
+  public_host_pair: 2,
+  access: { aznet: true, azbrowser: true, merge: false, naked_public_dns: false },
+  softwares_tab: false,
+});
+
 export function meshLawFields() {
   return {
     assign_live: ASSIGN_LIVE,
@@ -346,6 +366,7 @@ export function meshLawFields() {
     no_lie: true,
     no_rewrite: true,
     no_fan: NO_FAN,
+    semantic_bridge: SEMANTIC_BRIDGE,
   };
 }
 

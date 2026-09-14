@@ -89,6 +89,7 @@ The Worker serves the gzip itself (HTTP 200, no 302 to GitHub).
 - Skill: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill](https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill)
 - Suite mesh proxy: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh](https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated; QNS-CD-1.0 photon QNS1 cross-map (no public qnsd). Locked law: **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0**, **AIRGAP-1.0** ([docs/mesh-law.md](docs/mesh-law.md))
 - OpenAPI: [https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json](https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json)
+- Semantic bridge (Growth-ON): [llms.txt](https://miragegrid-download-tracker.vibelock.workers.dev/llms.txt) · [bridge.json](https://miragegrid-download-tracker.vibelock.workers.dev/v1/bridge) · [cite.json](https://miragegrid-download-tracker.vibelock.workers.dev/cite.json) — Cap-7 names are not public ICANN DNS; `design_of` is hub design provenance only (`resolves_to_hub: false`)
 - GitHub: [https://github.com/AzielEliab/miragegrid](https://github.com/AzielEliab/miragegrid)
 
 Isolated counter: Worker `miragegrid-download-tracker`, KV `MIRAGEGRID_DOWNLOADS`. `/v1` does not increment downloads.
@@ -300,11 +301,12 @@ Offline. Stdlib runtime. Mesh/VPN tests use loopback only.
 ```
 miragegrid/            library (pool, mesh, circuit, crypto, vpn, session, cli, ui)
 tests/                 pytest
-docs/whitepaper.md     architecture (sections 1–18)
+docs/whitepaper.md     architecture (sections 1–19)
 docs/mesh-law.md       SPLIT THE WIRES · COLD-COPY · REHEAL · AZ-GENERATOR · GRID-SHIFT · AIRGAP
 docs/AZ-GENERATOR-1.0.md  Cap-7 mesh DNS factory · deep-node → Node Gate · paper vault on node
 docs/MIRAGE-GRID-SHIFT-1.0.md  Node Gate · cloak burst · MESH-VAULT grid shift
 docs/AIRGAP-1.0.md     local vault · no bearer radios · no climb-back
+docs/SEMANTIC-BRIDGE-1.0.md  AI discovery of Cap-7 names · not ICANN · design_of only
 examples/              assign a circuit
 workers/download-tracker/   Cloudflare Worker + wrangler.toml (undeployed)
 CONTRIBUTING.md        forks first-class; lawful privacy mesh VPN

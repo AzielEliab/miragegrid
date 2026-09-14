@@ -1,6 +1,6 @@
 ---
 name: MirageGrid
-description: Use when calling MirageGrid hosted /v1 or installing the local package. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime catalog). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. NO-FAN-1.0. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
+description: Use when calling MirageGrid hosted /v1 or installing the local package. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime catalog). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. SEMANTIC-BRIDGE-1.0. NO-FAN-1.0. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
 ---
 
 # MirageGrid
@@ -28,6 +28,7 @@ Ops (do **not** increment downloads or views):
 - `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 cross-map (photon QNS1 packet transfer) is stamped for peers. Never enables. No public qnsd proxy. Stamps **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0**, **AIRGAP-1.0**, paper-vault-on-node.
 - `POST /v1/mesh/reheal` — local REHEAL law. Own tip+trusted pull or phoenix-WAIT. Neighbor talk-dirty-back-to-health, bodies, diffs, and vote-to-fix refuse. Public-stack auto-heal means this lawful reheal, not vote-to-fix. Suite strip stays No auto-heal.
 - `GET /v1/mesh/az-generator` — cite-only AZ-GENERATOR-1.0 stamps (Cap-7 mesh DNS factory; deep-node → FRONT Node Gate; not callable; `.az` → `.aziel` → pivot; exactly 2 public gateways; AZNet+AZBrowser; ≥49 vault; not ICANN). `POST` refuses `AZG-NOT-CALLABLE`.
+- `GET /llms.txt` `/ai.txt` `/cite.json` `/bridge.json` `/v1/bridge` — SEMANTIC-BRIDGE-1.0 Growth-ON maps. `public_icann:false`. Mesh names do not resolve to hubs (`design_of` is design provenance; `resolves_to_hub:false`). Empty Cap-7 is an empty SLOT list.
 - `GET /v1/mesh/grid-shift` — cite-only MIRAGE-GRID-SHIFT-1.0. `POST` remains local law apply (not a generator call).
 - `POST /v1/mesh/airgap` — local AIRGAP-1.0 law (local vault; no bearer radios; no climb-back; no body gossip). Official hubs are not airgap Node Gate.
 - `POST /v1/mesh/vault` — paper-vault-on-node multiply (cold copies on bootstrap / join / Cap-7 claim / grid-shift standby; pull-only; no tip-tick bodies).

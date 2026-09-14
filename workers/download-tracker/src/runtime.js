@@ -472,6 +472,13 @@ function openapiSpec() {
           responses: { "200": { description: "verify", content: { "application/json": { schema: { type: "object" } } } } },
         },
       },
+      "/v1/bridge": {
+        get: {
+          operationId: "semanticBridge",
+          summary: "SEMANTIC-BRIDGE-1.0 honest Cap-7 map. public_icann:false. design_of is hub design provenance only; resolves_to_hub is false. Empty Cap-7 is an empty SLOT list.",
+          responses: { "200": { description: "bridge", content: { "application/json": { schema: { type: "object" } } } } },
+        },
+      },
     },
   };
 }
