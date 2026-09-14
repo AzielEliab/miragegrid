@@ -9,34 +9,48 @@ from __future__ import annotations
 
 import hashlib
 
+import pytest
+
 from miragegrid.mesh import (
+    AIRGAP_SPEC,
     CAP_7,
     CLAIM_CLOCK_S,
     CLAIM_EXTRA_S,
     CLAIM_MINUTES,
     FIRST_CLAIM_NAME,
     MIN_PAPERS,
+    TIP_TICK_FORBIDDEN,
+    airgap_dict,
+    airgap_mode,
+    airgap_reheal,
     auto_heal,
     az_generator_dict,
     claim_az_domain,
     claim_clock_period_s,
     cloak_burst,
     count_aziel_papers,
+    count_vault_papers,
+    encode_tip_tick,
     grid_shift,
     grid_shift_dict,
     known_contains_first_claim,
     mesh_law_dict,
     node_gate_admit,
     offline_download_stay_up,
+    paper_vault_dict,
     plant_flag_and_repost,
     public_stack_dict,
     refuse_ambiguity,
     refuse_falsify,
     refuse_hub_tunnel_hydra,
+    refuse_incomplete_vault,
     refuse_misleading,
     refuse_no_fan,
+    refuse_paper_body_on_tip,
     restore_chain,
     sockets_share,
+    vault_complete,
+    vault_multiply,
 )
 
 
@@ -53,6 +67,19 @@ def _papers(n: int) -> list[dict]:
                 "author": "Aziel Eliab",
                 "hash": hashlib.sha256(body).hexdigest(),
                 "bytes": body,
+            }
+        )
+    return out
+
+
+def _hash_only(n: int) -> list[dict]:
+    out = []
+    for i in range(n):
+        body = f"aziel-eliab-paper-{i}".encode("utf-8")
+        out.append(
+            {
+                "author": "Aziel Eliab",
+                "hash": hashlib.sha256(body).hexdigest(),
             }
         )
     return out
@@ -243,3 +270,105 @@ def test_unverified_tip_and_fake_flag_refuse_continuity() -> None:
     assert hub["code"] == "NO-FAN-MISLEAD"
     risen = grid_shift(domain_pulled="godlock.uk", az_name="standby.az", neighbor_resurrection=True)
     assert risen["code"] == "NO-FAN-MISLEAD"
+
+
+def test_incomplete_vault_refuses_restore_and_claim() -> None:
+    hashes = _hash_only(49)
+    assert count_aziel_papers(hashes) == 49
+    assert count_vault_papers(hashes) == 0
+    assert vault_complete(hashes) is False
+    held = restore_chain(papers=hashes, broken=True)
+    assert held["ok"] is False
+    assert held["code"] == "AZG-INCOMPLETE-VAULT"
+    assert held["verdict"] == "phoenix-wait"
+    assert held["unverified_tip"] is True
+    assert held["code_alias"] == "AZG-UNVERIFIED-TIP"
+    fake = restore_chain(papers=hashes, broken=True, have_49=True)
+    assert fake["code"] == "NO-FAN-FALSIFY"
+    claim = claim_az_domain(
+        origin_node="node-04",
+        known_sites=["https://www.survivalnetwork.az/"],
+        name="spare.az",
+        papers=hashes,
+        needs_papers=True,
+    )
+    assert claim["ok"] is False
+    assert claim["code"] in {"AZG-INCOMPLETE-VAULT", "AZG-UNVERIFIED-TIP", "NO-FAN-FALSIFY", "AZG-PAPERS"}
+    lied = claim_az_domain(
+        origin_node="node-04",
+        known_sites=["https://www.survivalnetwork.az/"],
+        name="spare.az",
+        papers=hashes,
+        have_49=True,
+        needs_papers=True,
+    )
+    assert lied["code"] == "NO-FAN-FALSIFY"
+    empty = refuse_incomplete_vault(papers=_hash_only(49))
+    assert empty and empty["code"] == "AZG-INCOMPLETE-VAULT"
+    ok = restore_chain(papers=_papers(49), broken=True, most_active_point="tip-9")
+    assert ok["yes"] is True
+    assert ok["vault_complete"] is True
+
+
+def test_vault_multiply_cold_copies_not_tip_tick() -> None:
+    papers = _papers(49)
+    for event in ("bootstrap", "join", "cap-7-claim", "grid-shift-standby"):
+        landed = vault_multiply(event=event, papers=papers)
+        assert landed["yes"] is True
+        assert landed["code"] == "AZG-VAULT-MULTIPLY"
+        assert landed["live_body_sync"] is False
+        assert landed["tip_tick_bodies"] is False
+        assert landed["plane"] == "pull-only"
+        assert landed["cold_copy"] is True
+    fan = vault_multiply(event="join", papers=papers, live_body_sync=True)
+    assert fan["code"] == "STW-NO-FANOUT"
+    tick = vault_multiply(event="bootstrap", papers=papers, tip_tick=True)
+    assert tick["code"] == "STW-TIP-BODY"
+    short = vault_multiply(event="join", papers=_papers(12))
+    assert short["code"] == "AZG-INCOMPLETE-VAULT"
+    assert short["verdict"] == "phoenix-wait"
+    body = refuse_paper_body_on_tip(extra={"papers": papers})
+    assert body and body["code"] == "STW-TIP-BODY"
+    assert "papers" in TIP_TICK_FORBIDDEN
+    with pytest.raises(Exception) as exc:
+        encode_tip_tick("live", hashlib.sha256(b"t").digest(), extra={"papers": papers})
+    assert exc.value.code == "STW-TIP-BODY"
+
+
+def test_airgap_mode_constants_and_refuses() -> None:
+    law = airgap_dict()
+    assert law["spec"] == AIRGAP_SPEC
+    assert law["local_vault"] is True
+    assert law["bearer_radios"] is False
+    assert law["climb_back_pulled_hubs"] is False
+    assert law["downloads_from_local_cold_shelf"] is True
+    assert law["body_gossip"] is False
+    assert law["official_hubs_are_airgap_node_gate"] is False
+    assert law["neighbor_majority"] is False
+    ok = airgap_mode(enabled=True, vault_papers=_papers(49))
+    assert ok["yes"] is True
+    assert ok["code"] == "AIRGAP-OK"
+    assert ok["downloads_from_local_cold_shelf"] is True
+    assert airgap_mode(bearer_radios=True)["code"] == "AIRGAP-NO-BEARER"
+    assert airgap_mode(climb_back=True)["code"] == "AIRGAP-NO-CLIMB-BACK"
+    assert airgap_mode(body_gossip=True)["code"] == "AIRGAP-NO-BODY-GOSSIP"
+    assert airgap_mode(neighbor_majority=True)["code"] == "RH-NO-VOTE-TO-FIX"
+    assert airgap_mode(hub_as_gate="godlock.uk")["code"] == "MGS-NOT-NODE-GATE"
+    assert airgap_mode(hub_as_gate="azieleliab.com")["code"] == "MGS-NOT-NODE-GATE"
+    assert airgap_mode(hub_as_gate="azielcorpuslibrary.net")["code"] == "MGS-NOT-NODE-GATE"
+    assert airgap_mode(hub_as_gate="hedidntjump.com")["code"] == "MGS-NOT-NODE-GATE"
+    incomplete = airgap_mode(vault_papers=_hash_only(49))
+    assert incomplete["code"] == "AZG-INCOMPLETE-VAULT"
+    wait = airgap_reheal(phoenix_wait=True)
+    assert wait["verdict"] == "phoenix-wait"
+    own = airgap_reheal(own_tip=hashlib.sha256(b"own").digest(), trusted_pull=True, already_trusted=True)
+    assert own["yes"] is True
+    untrusted = airgap_reheal(own_tip=hashlib.sha256(b"own").digest(), trusted_pull=True, already_trusted=False)
+    assert untrusted["ok"] is False
+    mesh = mesh_law_dict()
+    assert mesh["airgap"]["spec"] == "AIRGAP-1.0"
+    assert mesh["paper_vault"]["on_every_node"] is True
+    assert mesh["paper_vault"]["no_have_49_without_bytes"] is True
+    assert paper_vault_dict()["multiply"] == "cold-copy"
+    assert az_generator_dict()["paper_vault"]["on_every_node"] is True
+    assert grid_shift_dict()["official_hubs_are_node_gate"] is False

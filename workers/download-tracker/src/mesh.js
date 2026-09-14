@@ -12,8 +12,12 @@
  * no bodies/diffs/vote-to-fix. Public-stack auto-heal means that lawful
  * reheal + archive re-expand, not vote-to-fix.
  * AZ-GENERATOR-1.0: 7m77s (497s) claim clock, Cap-7, first claim
- * www.survivalnetwork.az, ≥49 papers. MIRAGE-GRID-SHIFT-1.0: MESH-VAULT
- * snapshot+standby, cloak burst, Node Gate is MirageGrid .az only.
+ * www.survivalnetwork.az, ≥49 papers in the local vault. Vault multiply
+ * onto each node / papers land as cold copies (bootstrap / join /
+ * Cap-7 claim / grid-shift standby). No paper bytes on the 1s tip tick.
+ * MIRAGE-GRID-SHIFT-1.0: MESH-VAULT snapshot+standby, cloak burst,
+ * Node Gate is MirageGrid .az only. AIRGAP-1.0: local vault + no bearer
+ * radios + no climb-back. Official hubs are not airgap Node Gate.
  * AZ Generator and Node Gate are not Softwares-tab products.
  * Assign live. Hosted vpn/hop/tunnel stubs remain refuse.
  * Not a Softwares-tab product. Author: Aziel Eliab only.
@@ -75,7 +79,7 @@ export const QNS_CD = Object.freeze({
 });
 
 export const MESH_NOTE =
-  "QNM-BUILD-1.0. QNS-CD-1.0 photon QNS1 packet transfer. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. NO-LIE. NO-REWRITE. NO-FAN-1.0. No falsification. No ambiguity. No misleading. Suite mesh default off. Live|locked|isolated counts only. No Node Gate. No auto-heal. Not an anonymity network. No public qnsd proxy. Author: Aziel Eliab only.";
+  "QNM-BUILD-1.0. QNS-CD-1.0 photon QNS1 packet transfer. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. NO-LIE. NO-REWRITE. NO-FAN-1.0. No falsification. No ambiguity. No misleading. Suite mesh default off. Live|locked|isolated counts only. No Node Gate. No auto-heal. Not an anonymity network. No public qnsd proxy. Author: Aziel Eliab only.";
 
 export const SPLIT_WIRES_LAW = "SPLIT THE WIRES";
 export const SPLIT_WIRES_SPEC = "STW-1.0";
@@ -89,6 +93,9 @@ export const AZ_GENERATOR_LAW = "AZ GENERATOR";
 export const AZ_GENERATOR_SPEC = "AZ-GENERATOR-1.0";
 export const GRID_SHIFT_LAW = "MIRAGE GRID SHIFT";
 export const GRID_SHIFT_SPEC = "MIRAGE-GRID-SHIFT-1.0";
+export const AIRGAP_LAW = "AIRGAP";
+export const AIRGAP_SPEC = "AIRGAP-1.0";
+export const PAPER_VAULT_LAW = "PAPER-VAULT-ON-NODE";
 export const NO_LIE_LAW = "NO-LIE";
 export const NO_REWRITE_LAW = "NO-REWRITE";
 export const NO_FALSIFY_LAW = "NO-FALSIFY";
@@ -112,7 +119,10 @@ export const CLAIM_SOCKET = "claim-7m77s";
 export const CAP_7 = 7;
 export const MIN_PAPERS = 49;
 export const FIRST_CLAIM_NAME = "www.survivalnetwork.az";
-export const TIP_TICK_FORBIDDEN = Object.freeze(["body", "diff", "file", "payload", "bytes"]);
+export const TIP_TICK_FORBIDDEN = Object.freeze(["body", "diff", "file", "payload", "bytes", "papers", "paper", "vault"]);
+export const VAULT_MULTIPLY_EVENTS = Object.freeze([
+  "bootstrap", "join", "cap-7-claim", "cap7-claim", "cap_7_claim", "grid-shift-standby", "grid_shift_standby",
+]);
 export const REHEAL_FORBIDDEN = Object.freeze([
   "body", "bodies", "diff", "diffs", "file", "payload", "vote", "vote-to-fix", "vote_to_fix", "quorum_fix",
 ]);
@@ -199,6 +209,7 @@ export const AZ_GENERATOR = Object.freeze({
   cap: CAP_7,
   first_claim: FIRST_CLAIM_NAME,
   min_papers: MIN_PAPERS,
+  paper_vault: true,
   tld: ".az",
   no_lie: true,
   no_rewrite: true,
@@ -231,6 +242,47 @@ export const GRID_SHIFT = Object.freeze({
   no_mislead: true,
   no_fan: NO_FAN_SPEC,
   no_fan_phrase: NO_FAN_PHRASE,
+});
+
+export const PAPER_VAULT = Object.freeze({
+  law: PAPER_VAULT_LAW,
+  author: IDENTITY,
+  identity: IDENTITY,
+  on_every_node: true,
+  full_set: true,
+  min_papers: MIN_PAPERS,
+  multiply: "cold-copy",
+  wording: "vault multiply onto each node / papers land on every node as cold copies",
+  events: ["bootstrap", "join", "cap-7-claim", "grid-shift-standby"],
+  plane: "pull-only",
+  live_body_sync: false,
+  tip_tick_bodies: false,
+  cite_dont_merge: true,
+  hash_absolute: true,
+  no_have_49_without_bytes: true,
+  incomplete: "AZG-INCOMPLETE-VAULT / AZG-UNVERIFIED-TIP / phoenix-WAIT",
+});
+
+export const AIRGAP = Object.freeze({
+  law: AIRGAP_LAW,
+  spec: AIRGAP_SPEC,
+  author: IDENTITY,
+  identity: IDENTITY,
+  softwares_tab: false,
+  local_vault: true,
+  bearer_radios: false,
+  climb_back_pulled_hubs: false,
+  downloads_from_local_cold_shelf: true,
+  origin_offline_downloads_stay_up: true,
+  tip_chatter: ["live", "locked", "isolated", "tip-hash"],
+  body_gossip: false,
+  reheal: "own-tip+trusted-pull-already-trusted-or-phoenix-wait",
+  neighbor_majority: false,
+  official_hubs_are_node_gate: false,
+  official_hubs_are_airgap_node_gate: false,
+  no_lie: true,
+  no_rewrite: true,
+  no_fan: NO_FAN_SPEC,
 });
 
 export const NO_FAN = Object.freeze({
@@ -272,6 +324,8 @@ export function meshLawFields() {
     reheal: REHEAL,
     az_generator: AZ_GENERATOR,
     grid_shift: GRID_SHIFT,
+    airgap: AIRGAP,
+    paper_vault: PAPER_VAULT,
     public_stack: PUBLIC_STACK,
     no_lie: true,
     no_rewrite: true,
@@ -353,7 +407,7 @@ export function refuseReheal(body) {
 
 const NO_FAN_FALSIFY = Object.freeze([
   "falsify", "falsified", "falsification", "fake", "fake-flag", "invent", "invent-continuity",
-  "fabricate", "false-tip", "false-receipt", "false-claim", "false-live-nodes", "false-site-up",
+  "fabricate", "false-tip", "false-receipt", "false-claim",   "false-live-nodes", "false-site-up", "false-paper-set", "we-have-49", "have-49-without-bytes",
 ]);
 const NO_FAN_AMBIGUITY = Object.freeze([
   "ambiguous", "ambiguity", "dual-tip", "soft-maybe", "maybe", "pretty-copy", "majority-paper-over",
@@ -438,7 +492,13 @@ function knownContainsFirstClaim(sites) {
   return list.some((site) => String(site == null ? "" : (site.name || site.host || site.url || site)).toLowerCase().includes(FIRST_CLAIM_NAME));
 }
 
-function paperCount(papers) {
+function paperBytes(paper) {
+  const body = paper && (paper.bytes || paper.body || paper.data);
+  if (body == null) return null;
+  return typeof body === "string" ? body : String(body);
+}
+
+function paperCount(papers, requireBytes) {
   const list = Array.isArray(papers) ? papers : [];
   const seen = new Set();
   let n = 0;
@@ -448,11 +508,115 @@ function paperCount(papers) {
     if (author !== IDENTITY) continue;
     const digest = String(paper.hash || paper.sha256 || paper.tip_hash || "").trim().toLowerCase();
     if (digest.length !== 64) continue;
+    if (requireBytes && paperBytes(paper) == null) continue;
     if (seen.has(digest)) continue;
     seen.add(digest);
     n += 1;
   }
   return n;
+}
+
+function vaultComplete(papers) {
+  return paperCount(papers, true) >= MIN_PAPERS;
+}
+
+export function refuseIncompleteVault(body) {
+  const b = body && typeof body === "object" ? body : {};
+  const papers = b.papers || b.vault;
+  const nVault = paperCount(papers, true);
+  const nCite = paperCount(papers, false);
+  if (b.have_49 || b.have49 || b.claimed_count === MIN_PAPERS) {
+    if (nVault < MIN_PAPERS) {
+      return refuseNoFan("false-paper-set");
+    }
+  }
+  if (nVault >= MIN_PAPERS) return null;
+  if (nCite < MIN_PAPERS) return null;
+  return lawVerdict(false, "AZG-INCOMPLETE-VAULT", "phoenix-wait", "incomplete vault: no full verified paper set; AZG-UNVERIFIED-TIP; phoenix-WAIT / hold; do not invent", {
+    papers: nVault, cites: nCite, min_papers: MIN_PAPERS, false_tip: false, phoenix: "wait",
+    unverified_tip: true, azg_unverified_tip: true, code_alias: "AZG-UNVERIFIED-TIP",
+    have_49_without_bytes: nCite >= MIN_PAPERS,
+  });
+}
+
+export function vaultMultiply(body) {
+  const b = body && typeof body === "object" ? body : {};
+  if (b.live_body_sync || b.fanout || b.sender_fanout) {
+    return lawVerdict(false, "STW-NO-FANOUT", "refuse", "no live body sync / sender fan-out of paper bytes; payload plane is pull-only", {
+      live_body_sync: false, plane: "pull-only",
+    });
+  }
+  if (b.tip_tick || b.tip_tick_bodies) {
+    return lawVerdict(false, "STW-TIP-BODY", "refuse", "tip tick is presence+tip hash only; no paper bytes on the 1s tick", {
+      tip_tick_bodies: false,
+    });
+  }
+  const event = String(b.event || "").trim().toLowerCase().replace(/[_\s]+/g, "-");
+  if (!VAULT_MULTIPLY_EVENTS.includes(event) && !VAULT_MULTIPLY_EVENTS.includes(String(b.event || ""))) {
+    return lawVerdict(false, "AZG-VAULT-EVENT", "refuse", "vault multiply is bootstrap / join / Cap-7 claim / grid-shift standby only", {
+      event, events: ["bootstrap", "join", "cap-7-claim", "grid-shift-standby"],
+    });
+  }
+  const incomplete = refuseIncompleteVault(b);
+  if (incomplete) return incomplete;
+  if (!vaultComplete(b.papers || b.vault)) {
+    return lawVerdict(false, "AZG-INCOMPLETE-VAULT", "phoenix-wait", "incomplete vault: AZG-UNVERIFIED-TIP; phoenix-WAIT / hold; do not invent", {
+      papers: paperCount(b.papers || b.vault, true), min_papers: MIN_PAPERS, false_tip: false,
+      phoenix: "wait", unverified_tip: true, azg_unverified_tip: true, code_alias: "AZG-UNVERIFIED-TIP",
+    });
+  }
+  return lawVerdict(true, "AZG-VAULT-MULTIPLY", "yes", "vault multiply onto each node; papers land as cold copies", {
+    event, papers: paperCount(b.papers || b.vault, true), min_papers: MIN_PAPERS, plane: "pull-only",
+    live_body_sync: false, tip_tick_bodies: false, cite_dont_merge: true, cold_copy: true,
+  });
+}
+
+export function airgapMode(body) {
+  const b = body && typeof body === "object" ? body : {};
+  if (b.enabled === false) {
+    return lawVerdict(true, "AIRGAP-OFF", "yes", "airgap mode off", { airgap: false, spec: AIRGAP_SPEC });
+  }
+  if (b.bearer_radios) {
+    return lawVerdict(false, "AIRGAP-NO-BEARER", "refuse", "airgap forbids bearer radios", {
+      airgap: true, bearer_radios: false, spec: AIRGAP_SPEC,
+    });
+  }
+  if (b.climb_back) {
+    return lawVerdict(false, "AIRGAP-NO-CLIMB-BACK", "refuse", "airgap forbids climb-back onto pulled public hub hostnames", {
+      airgap: true, climb_back: false, spec: AIRGAP_SPEC,
+    });
+  }
+  if (b.body_gossip) {
+    return lawVerdict(false, "AIRGAP-NO-BODY-GOSSIP", "refuse", "airgap tip chatter is live/locked/isolated/tip-hash only; no body gossip", {
+      airgap: true, spec: AIRGAP_SPEC,
+    });
+  }
+  if (b.neighbor_majority || b.vote_to_fix) {
+    return lawVerdict(false, "RH-NO-VOTE-TO-FIX", "refuse", "airgap reheal never uses neighbor majority", {
+      airgap: true, neighbor_majority: false, spec: AIRGAP_SPEC,
+    });
+  }
+  if (b.hub_as_gate) {
+    const host = b.hub_as_gate === true ? "godlock.uk" : String(b.hub_as_gate);
+    if (isOfficialHub(host)) {
+      return lawVerdict(false, "MGS-NOT-NODE-GATE", "refuse", "official hubs are not airgap Node Gate", {
+        airgap: true, official_hubs_are_airgap_node_gate: false, spec: AIRGAP_SPEC,
+      });
+    }
+  }
+  if ((b.papers || b.vault) && !vaultComplete(b.papers || b.vault)) {
+    const incomplete = refuseIncompleteVault(b);
+    if (incomplete) return incomplete;
+    return lawVerdict(false, "AZG-INCOMPLETE-VAULT", "phoenix-wait", "airgap requires the full verified local vault; AZG-UNVERIFIED-TIP; phoenix-WAIT", {
+      airgap: true, papers: paperCount(b.papers || b.vault, true), min_papers: MIN_PAPERS,
+      phoenix: "wait", unverified_tip: true, azg_unverified_tip: true, code_alias: "AZG-UNVERIFIED-TIP",
+    });
+  }
+  return lawVerdict(true, "AIRGAP-OK", "yes", "airgap: local vault; no bearer radios; no climb-back; local cold shelf may serve", {
+    airgap: true, spec: AIRGAP_SPEC, local_vault: true, bearer_radios: false, climb_back: false,
+    body_gossip: false, downloads_from_local_cold_shelf: b.serve_local !== false,
+    tip_chatter: ["live", "locked", "isolated", "tip-hash"], official_hubs_are_airgap_node_gate: false,
+  });
 }
 
 export function claimAzDomain(body) {
@@ -484,10 +648,18 @@ export function claimAzDomain(body) {
       name: FIRST_CLAIM_NAME, origin_node: origin, hosted_by: origin, period_s: CLAIM_CLOCK_S, cap: CAP_7,
     });
   }
-  if (b.papers != null && paperCount(b.papers) < MIN_PAPERS) {
-    return lawVerdict(false, "AZG-PAPERS", "phoenix-wait", "fewer than 49 Aziel Eliab papers; do not claim a false tip; phoenix-WAIT / hold", {
-      papers: paperCount(b.papers), min_papers: MIN_PAPERS, false_tip: false, phoenix: "wait",
-    });
+  if (b.have_49 && paperCount(b.papers || b.vault, true) < MIN_PAPERS) {
+    return refuseNoFan("false-paper-set");
+  }
+  if (b.papers != null || b.vault != null || b.needs_papers) {
+    const pile = b.papers || b.vault;
+    const incomplete = refuseIncompleteVault(b);
+    if (incomplete) return incomplete;
+    if (paperCount(pile, true) < MIN_PAPERS) {
+      return lawVerdict(false, "AZG-PAPERS", "phoenix-wait", "fewer than 49 Aziel Eliab papers; do not claim a false tip; phoenix-WAIT / hold", {
+        papers: paperCount(pile, true), min_papers: MIN_PAPERS, false_tip: false, phoenix: "wait",
+      });
+    }
   }
   if (named && isOfficialHub(named)) {
     return lawVerdict(false, "AZG-NOT-HUB", "refuse", "official hubs are not Node Gate and are not claimed .az names");
@@ -828,7 +1000,7 @@ export function meshPointer() {
     catalog_mcp: FRAGGATE_MCP,
     fraggate_slug: MESH_SLUG,
     origin: RUNTIME + MESH_PATH,
-    note: "PROXY to aziel-runtime /v1/mesh/* via AZIEL_RUNTIME. Not a local op. Not AnonBroadcast. Not AZMail's product-local ring. MirageGrid hosted /v1 remains session assignment (not a hosted hop). Full node process is local qnm-node/. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (no public qnsd proxy). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. " + MESH_NOTE,
+    note: "PROXY to aziel-runtime /v1/mesh/* via AZIEL_RUNTIME. Not a local op. Not AnonBroadcast. Not AZMail's product-local ring. MirageGrid hosted /v1 remains session assignment (not a hosted hop). Full node process is local qnm-node/. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (no public qnsd proxy). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. " + MESH_NOTE,
     anon_broadcast: ANON_BROADCAST,
     anon_broadcast_publish_path: false,
     ...qnsCdFields(),
@@ -1071,6 +1243,48 @@ export async function runMeshProxy(env, request, pathAndQuery) {
     const dirty = refuseReheal(shiftBody);
     if (dirty) return { status: 403, data: dirty };
     return { status: 200, data: applyGridShift(shiftBody) };
+  }
+  if (pathOnly === "/v1/mesh/airgap") {
+    const method = String((request && request.method) || "GET").toUpperCase();
+    if (method !== "POST") {
+      return {
+        status: 405,
+        data: meshErrFields({
+          message: "AIRGAP-1.0 is POST-only. Local vault. No bearer radios. No climb-back.",
+          extra: { code: "MESH-METHOD", path: pathOnly, method },
+        }),
+      };
+    }
+    let airBody = {};
+    try {
+      airBody = await request.json();
+    } catch {
+      airBody = {};
+    }
+    const dirty = refuseReheal(airBody);
+    if (dirty) return { status: 403, data: dirty };
+    return { status: 200, data: airgapMode(airBody) };
+  }
+  if (pathOnly === "/v1/mesh/vault") {
+    const method = String((request && request.method) || "GET").toUpperCase();
+    if (method !== "POST") {
+      return {
+        status: 405,
+        data: meshErrFields({
+          message: "PAPER-VAULT-ON-NODE is POST-only. Vault multiply. Cold copies. No tip-tick bodies.",
+          extra: { code: "MESH-METHOD", path: pathOnly, method },
+        }),
+      };
+    }
+    let vaultBody = {};
+    try {
+      vaultBody = await request.json();
+    } catch {
+      vaultBody = {};
+    }
+    const dirty = refuseReheal(vaultBody);
+    if (dirty) return { status: 403, data: dirty };
+    return { status: 200, data: vaultMultiply(vaultBody) };
   }
   const allowed = MESH_ROUTE_METHODS[pathOnly];
   if (!allowed) {

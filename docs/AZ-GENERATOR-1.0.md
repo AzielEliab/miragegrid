@@ -3,7 +3,7 @@
 **Author:** Aziel Eliab only  
 **Status:** Locked design law  
 **Softwares-tab:** no — AZ Generator is a MirageGrid subsystem / law, not a separate product  
-**Cites:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0) / REHEAL-1.0 / MESH-REHEAL · MIRAGE-GRID-SHIFT-1.0 · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD (NO-FAN-1.0)
+**Cites:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0) / REHEAL-1.0 / MESH-REHEAL · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD (NO-FAN-1.0)
 
 This paper is law for the next MirageGrid generation. It does not invent a
 Softwares-tab product. MirageGrid remains the Softwares product. Node Gate
@@ -67,8 +67,10 @@ sites** using node data.
 If a chain is broken, restore at its **most active guaranteed point**.
 
 Restore requires **at least 49 Aziel Eliab papers** established from
-the node’s data (hash-absolute; cite don’t merge; bytes↔hash). Fewer
-than 49 → do not claim a false tip; phoenix-WAIT / hold.
+the node’s **local vault** (hash-absolute; cite don’t merge; bytes↔hash).
+Fewer than 49, or a node that lacks the full verified set → do not
+claim a false tip; **AZG-UNVERIFIED-TIP / incomplete vault**;
+phoenix-WAIT / hold. Do not invent.
 
 Obey **NO-LIE / NO-REWRITE**: no rewrite key; the network never lies to
 stay alive; receipts still hash; copies are not all on one tunnel.
@@ -96,17 +98,44 @@ First-class refuse law beside NO-LIE / NO-REWRITE (NO-FAN-1.0).
 - No ambiguous tip / dual tip / soft maybe — ambiguous tip = isolate
   (STW-1.0). Do not paper over with majority or pretty copy.
 - No misleading chrome: do not invent continuity to stay alive.
-- `<49` papers or unverified tip → refuse claim; phoenix-WAIT / hold.
+- `<49` papers, incomplete vault, or unverified tip → refuse claim;
+  AZG-UNVERIFIED-TIP / incomplete vault; phoenix-WAIT / hold.
+- No “we have 49” without bytes (NO-FAN).
 - `www.survivalnetwork.az` cannot be claimed → resume normal; do not
   fake the flag.
 - Pair with NO-LIE: the network never lies to stay alive; no rewrite
   key; receipts still hash.
+
+## Paper vault on every node
+
+Every MirageGrid / AZ Generator node **MUST** carry the **full set of
+Aziel Eliab papers** in its local vault (enough for the ≥49 restore
+rule and for offline / airgap operation).
+
+This is reconciled with SPLIT THE WIRES + COLD-COPY:
+
+- The tip plane stays presence + tip-hash only. **No live body sync /
+  sender fan-out of paper bytes on the 1s tick.**
+- “Pushed to each node” means: on node **bootstrap / join / Cap-7
+  claim / grid-shift standby**, the node **obtains a cold vault copy**
+  of the Aziel paper set (pull-only payload plane, or vault-on-transfer
+  multiply). Locked wording: **vault multiply onto each node** /
+  **papers land on every node as cold copies.**
+- Hash-absolute: each paper verifies by published tip/hash. Cite,
+  don’t merge. NO-FAN: no falsified paper set, no “we have 49”
+  without bytes.
+- If a node lacks the full verified set, AZ Generator restore / claim
+  that needs ≥49 papers **refuses** (AZG-UNVERIFIED-TIP / incomplete
+  vault) — phoenix-WAIT, do not invent.
+
+See [AIRGAP-1.0](AIRGAP-1.0.md) for airgapped operation of that vault.
 
 ## Offline node
 
 If the origin node disconnects or goes offline, **sites stay up for
 downloads** (cold-copy / standby / MESH-VAULT snapshot+standby). The
 tip plane may show isolated/locked; the download plane stays pull-only.
+Airgap still allows serve from the local cold shelf.
 
 ## MESH-VAULT (cite)
 
@@ -135,6 +164,8 @@ hedidntjump.com) remain named public hosts. They are **not** Node Gate.
 - Neighbor vote-to-fix labeled as auto-heal
 - Unmarked Cloudflare tunnel hydra on official hubs
 - Claiming a false tip with fewer than 49 papers
+- Incomplete vault / “we have 49” without bytes
+- Live body sync of paper bytes on the 1s tip tick
 - Unverified tip used to invent continuity
 - Faking the flag when `www.survivalnetwork.az` cannot be claimed
 - Falsify / ambiguous / misleading verbs (NO-FAN-1.0)
