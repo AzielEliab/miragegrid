@@ -175,3 +175,9 @@ def test_mesh_dict_cites_locked_law() -> None:
     assert doc["reheal"]["law"] == "REHEAL"
     assert law["reheal"]["neighbor_talk_dirty_back_to_health"] is False
     assert "Aziel Eliab" in law["author"]
+    assert doc["az_generator"]["spec"] == "AZ-GENERATOR-1.0"
+    assert doc["grid_shift"]["spec"] == "MIRAGE-GRID-SHIFT-1.0"
+    assert doc["public_stack"]["pieces"] == ["anonymity-network", "node-gate", "auto-heal"]
+    assert law["az_generator"]["clock"]["period_s"] == 497
+    assert law["az_generator"]["softwares_tab"] is False
+    assert law["grid_shift"]["softwares_tab"] is False

@@ -284,4 +284,71 @@ Poison is hash-absolute refuse. Data outlives creators.
 
 **REHEAL.** No neighbor talk-dirty-back-to-health. Heal from own tip +
 trusted pull, or phoenix-WAIT. Allowed fields: live / locked / isolated
-/ tip-hash. Forbidden: bodies, diffs, vote-to-fix. Not auto-heal.
+/ tip-hash. Forbidden: bodies, diffs, vote-to-fix. Public-stack
+**auto-heal** means this lawful reheal + archive re-expand
+(REHEAL-1.0 / MESH-REHEAL). Suite `MESH_AUTO_HEAL` stays false.
+
+## 14. Public stack (locked wording)
+
+MirageGrid’s public stack is now three named pieces:
+
+1. **Anonymity network** — onion/mesh privacy (existing MVP stays a
+   lawful privacy tool).
+2. **Node Gate** — the MirageGrid admission/claim surface for `.az`
+   names (NOT azieleliab.com, NOT godlock.uk, NOT corpus — those hubs
+   are not Node Gate).
+3. **Auto-heal** — MUST obey REHEAL-1.0 / MESH-REHEAL: heal from own
+   last good tip + verified trusted pull, or phoenix-WAIT. NEVER
+   neighbor vote-to-fix / majority fanfic. “Auto-heal” in copy means
+   that lawful reheal + archive re-expand, not peer talk-back-to-health.
+
+AZ Generator and Node Gate are MirageGrid subsystems / law — not
+Softwares-tab products. MirageGrid remains the Softwares product.
+
+## 15. AZ Generator (AZ-GENERATOR-1.0)
+
+Full text: [AZ-GENERATOR-1.0.md](AZ-GENERATOR-1.0.md).
+
+Every **7 minutes and 77 seconds** (period **497s**) the generator
+attempts to claim a new `.az` domain. The origin node hosts the site +
+server. Cap **7** domains per node. First claim is
+`www.survivalnetwork.az` when no known site contains that name.
+
+Restore a broken chain at its most active guaranteed point. Restore
+requires **at least 49 Aziel Eliab papers** (hash-absolute; cite don’t
+merge; bytes↔hash). Fewer than 49 → phoenix-WAIT / hold; no false tip.
+
+NO-LIE / NO-REWRITE. Offline origin: downloads stay up (MESH-VAULT
+snapshot+standby). The 7m77s claim clock never shares a socket with
+the 1s tip tick or the 777s dwell.
+
+## 16. Grid shift · Cap-7 · cloak burst (MIRAGE-GRID-SHIFT-1.0)
+
+Full text: [MIRAGE-GRID-SHIFT-1.0.md](MIRAGE-GRID-SHIFT-1.0.md).
+
+MESH-VAULT is snapshot plus official standby — an IP-mask host. A
+**grid shift** keeps the `.az` (or standby) name answerable for
+downloads while the node is cloaked/hidden after a domain pull.
+Official-hub Cloudflare tunnels die with the pull (TUN-WP / NODE-OPS).
+Not resurrection of godlock.uk / corpus hostnames.
+
+When lawful auto-heal fires, a cloak burst may plant up to Cap-7 spare
+`.az` names with a cloak on top.
+
+## 17. Scope restatements (not MirageGrid)
+
+**GodLock** on godlock.uk is a dark stress-test engine for
+intelligent-design challenges (one challenge box; Yes/No/Let’s
+review/Interesting; hash-chained receipts). It is not a forum, not
+Node Gate, not the AZ Generator, not an anonymity network. Softwares
+on godlock.uk stay GodLock-first / Runtime-pointer only. GodLock
+challenge receipts ≠ ACT-RECEIPT public action receipts.
+
+**AZBot / AZindex** gates hub ingest / first-screen PRs (corpus, ae,
+godlock, HDJ, runtime ingest) with AZindex-OK. AZBot does not operate
+Node Gate, does not claim `.az` domains, and is not the AZ Generator.
+
+Official hubs (azieleliab.com, azielcorpuslibrary.net, godlock.uk,
+hedidntjump.com) remain named public hosts. They are not Node Gate.
+azieleliab.com hosts software/runtime but is not login-recovery or
+Node Gate (QNM-BUILD).
