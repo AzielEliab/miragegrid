@@ -7,8 +7,14 @@
  * /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME binding).
  * SPLIT THE WIRES (STW-1.0): 0.5–1s tip tick = presence+tip hash only.
  * Payload pull-only. Update=proof (cite prev+lockset; 777s dwell).
- * COLD-COPY SURVIVAL (CCS-1.0). REHEAL (RH-1.0): no neighbor talk-back;
- * own tip+trusted pull or phoenix-WAIT; no bodies/diffs/vote-to-fix.
+ * COLD-COPY SURVIVAL (CCS-1.0). REHEAL (RH-1.0 / REHEAL-1.0 / MESH-REHEAL):
+ * no neighbor talk-back; own tip+trusted pull or phoenix-WAIT;
+ * no bodies/diffs/vote-to-fix. Public-stack auto-heal means that lawful
+ * reheal + archive re-expand, not vote-to-fix.
+ * AZ-GENERATOR-1.0: 7m77s (497s) claim clock, Cap-7, first claim
+ * www.survivalnetwork.az, ≥49 papers. MIRAGE-GRID-SHIFT-1.0: MESH-VAULT
+ * snapshot+standby, cloak burst, Node Gate is MirageGrid .az only.
+ * AZ Generator and Node Gate are not Softwares-tab products.
  * Assign live. Hosted vpn/hop/tunnel stubs remain refuse.
  * Not a Softwares-tab product. Author: Aziel Eliab only.
  */
@@ -69,7 +75,7 @@ export const QNS_CD = Object.freeze({
 });
 
 export const MESH_NOTE =
-  "QNM-BUILD-1.0. QNS-CD-1.0 photon QNS1 packet transfer. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. Suite mesh default off. Live|locked|isolated counts only. No Node Gate. No auto-heal. Not an anonymity network. No public qnsd proxy. Author: Aziel Eliab only.";
+  "QNM-BUILD-1.0. QNS-CD-1.0 photon QNS1 packet transfer. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. NO-LIE. NO-REWRITE. NO-FAN-1.0. No falsification. No ambiguity. No misleading. Suite mesh default off. Live|locked|isolated counts only. No Node Gate. No auto-heal. Not an anonymity network. No public qnsd proxy. Author: Aziel Eliab only.";
 
 export const SPLIT_WIRES_LAW = "SPLIT THE WIRES";
 export const SPLIT_WIRES_SPEC = "STW-1.0";
@@ -77,6 +83,20 @@ export const COLD_COPY_LAW = "COLD-COPY SURVIVAL";
 export const COLD_COPY_SPEC = "CCS-1.0";
 export const REHEAL_LAW = "REHEAL";
 export const REHEAL_SPEC = "RH-1.0";
+export const REHEAL_1_0 = "REHEAL-1.0";
+export const MESH_REHEAL_SPEC = "MESH-REHEAL";
+export const AZ_GENERATOR_LAW = "AZ GENERATOR";
+export const AZ_GENERATOR_SPEC = "AZ-GENERATOR-1.0";
+export const GRID_SHIFT_LAW = "MIRAGE GRID SHIFT";
+export const GRID_SHIFT_SPEC = "MIRAGE-GRID-SHIFT-1.0";
+export const NO_LIE_LAW = "NO-LIE";
+export const NO_REWRITE_LAW = "NO-REWRITE";
+export const NO_FALSIFY_LAW = "NO-FALSIFY";
+export const NO_AMBIGUITY_LAW = "NO-AMBIGUITY";
+export const NO_MISLEAD_LAW = "NO-MISLEAD";
+export const NO_FAN_LAW = "NO FALSIFICATION NO AMBIGUITY NO MISLEADING";
+export const NO_FAN_SPEC = "NO-FAN-1.0";
+export const NO_FAN_PHRASE = "No falsification. No ambiguity. No misleading.";
 export const ASSIGN_LIVE = true;
 export const HOSTED_STUB_OPS = Object.freeze(["vpn", "hop", "tunnel", "vpn-hop", "mesh-hop"]);
 export const TIP_TICK_SIZE = 33;
@@ -85,6 +105,13 @@ export const TIP_TICK_MAX_MS = 1000;
 export const DWELL_S = 777;
 export const TIP_TICK_SOCKET = "tip-1s";
 export const DWELL_SOCKET = "dwell-777s";
+export const CLAIM_MINUTES = 7;
+export const CLAIM_EXTRA_S = 77;
+export const CLAIM_CLOCK_S = CLAIM_MINUTES * 60 + CLAIM_EXTRA_S;
+export const CLAIM_SOCKET = "claim-7m77s";
+export const CAP_7 = 7;
+export const MIN_PAPERS = 49;
+export const FIRST_CLAIM_NAME = "www.survivalnetwork.az";
 export const TIP_TICK_FORBIDDEN = Object.freeze(["body", "diff", "file", "payload", "bytes"]);
 export const REHEAL_FORBIDDEN = Object.freeze([
   "body", "bodies", "diff", "diffs", "file", "payload", "vote", "vote-to-fix", "vote_to_fix", "quorum_fix",
@@ -121,7 +148,7 @@ export const SPLIT_WIRES = Object.freeze({
     heartbeat_loss_is_poison: false,
     heartbeat_loss_applies_last: false,
   },
-  sockets: { tip: TIP_TICK_SOCKET, dwell: DWELL_SOCKET, shared: false },
+  sockets: { tip: TIP_TICK_SOCKET, dwell: DWELL_SOCKET, claim: CLAIM_SOCKET, shared: false },
   assign_live: ASSIGN_LIVE,
   hosted_stubs: HOSTED_STUB_OPS.slice(),
 });
@@ -150,7 +177,87 @@ export const REHEAL = Object.freeze({
   allowed: ["live", "locked", "isolated", "tip-hash"],
   forbid: ["bodies", "diffs", "vote-to-fix"],
   auto_heal: false,
+  public_stack_auto_heal: "REHEAL-1.0 / MESH-REHEAL",
+  reheal_1_0: REHEAL_1_0,
+  mesh_reheal: MESH_REHEAL_SPEC,
   phoenix: "wait",
+});
+
+export const AZ_GENERATOR = Object.freeze({
+  law: AZ_GENERATOR_LAW,
+  spec: AZ_GENERATOR_SPEC,
+  author: IDENTITY,
+  identity: IDENTITY,
+  softwares_tab: false,
+  clock: {
+    minutes: CLAIM_MINUTES,
+    extra_s: CLAIM_EXTRA_S,
+    period_s: CLAIM_CLOCK_S,
+    socket: CLAIM_SOCKET,
+    alias: "7m77s",
+  },
+  cap: CAP_7,
+  first_claim: FIRST_CLAIM_NAME,
+  min_papers: MIN_PAPERS,
+  tld: ".az",
+  no_lie: true,
+  no_rewrite: true,
+  rewrite_key: false,
+  no_falsify: true,
+  no_ambiguity: true,
+  no_mislead: true,
+  no_fan: NO_FAN_SPEC,
+  no_fan_phrase: NO_FAN_PHRASE,
+});
+
+export const GRID_SHIFT = Object.freeze({
+  law: GRID_SHIFT_LAW,
+  spec: GRID_SHIFT_SPEC,
+  author: IDENTITY,
+  identity: IDENTITY,
+  softwares_tab: false,
+  mesh_vault: { kind: "snapshot+official-standby", role: "ip-mask-host" },
+  cap: CAP_7,
+  cloak_burst: true,
+  node_gate: "miragegrid-.az-only",
+  official_hubs_are_node_gate: false,
+  hub_tunnels_die_with_pull: true,
+  resurrection_of_official_hubs: false,
+  pretend_pulled_hub_still_cell: false,
+  no_lie: true,
+  no_rewrite: true,
+  no_falsify: true,
+  no_ambiguity: true,
+  no_mislead: true,
+  no_fan: NO_FAN_SPEC,
+  no_fan_phrase: NO_FAN_PHRASE,
+});
+
+export const NO_FAN = Object.freeze({
+  law: NO_FAN_LAW,
+  spec: NO_FAN_SPEC,
+  phrase: NO_FAN_PHRASE,
+  author: IDENTITY,
+  identity: IDENTITY,
+  beside: [NO_LIE_LAW, NO_REWRITE_LAW],
+  no_lie: true,
+  no_rewrite: true,
+  no_falsify: true,
+  no_ambiguity: true,
+  no_mislead: true,
+  ambiguous_tip: "isolate",
+  rewrite_key: false,
+});
+
+export const PUBLIC_STACK = Object.freeze({
+  author: IDENTITY,
+  pieces: ["anonymity-network", "node-gate", "auto-heal"],
+  anonymity_network: "onion/mesh privacy (existing MVP; lawful privacy tool)",
+  node_gate: "MirageGrid admission/claim surface for .az names (not official hubs)",
+  auto_heal: "REHEAL-1.0 / MESH-REHEAL: own last good tip + verified trusted pull, or phoenix-WAIT",
+  softwares_tab_products: ["miragegrid"],
+  az_generator_softwares_tab: false,
+  node_gate_softwares_tab: false,
 });
 
 export function qnsCdFields() {
@@ -163,6 +270,12 @@ export function meshLawFields() {
     split_wires: SPLIT_WIRES,
     cold_copy: COLD_COPY,
     reheal: REHEAL,
+    az_generator: AZ_GENERATOR,
+    grid_shift: GRID_SHIFT,
+    public_stack: PUBLIC_STACK,
+    no_lie: true,
+    no_rewrite: true,
+    no_fan: NO_FAN,
   };
 }
 
@@ -233,19 +346,208 @@ export function refuseReheal(body) {
   if (body.live_body_sync || body.fanout || body.sender_fanout) {
     return lawVerdict(false, "STW-NO-FANOUT", "refuse", "payload plane is pull-only; sender fan-out is refused");
   }
+  const fan = refuseNoFan(body);
+  if (fan) return fan;
   return refuseTipContamination(body);
+}
+
+const NO_FAN_FALSIFY = Object.freeze([
+  "falsify", "falsified", "falsification", "fake", "fake-flag", "invent", "invent-continuity",
+  "fabricate", "false-tip", "false-receipt", "false-claim", "false-live-nodes", "false-site-up",
+]);
+const NO_FAN_AMBIGUITY = Object.freeze([
+  "ambiguous", "ambiguity", "dual-tip", "soft-maybe", "maybe", "pretty-copy", "majority-paper-over",
+]);
+const NO_FAN_MISLEAD = Object.freeze([
+  "misleading", "mislead", "pretend", "pretend-hub-cell", "hub-still-cell", "unmarked-hydra",
+  "neighbor-resurrection",
+]);
+
+function normVerb(value) {
+  return String(value == null ? "" : value).trim().toLowerCase().replace(/[_\s]+/g, "-");
+}
+
+export function refuseNoFan(body) {
+  if (body == null) return null;
+  const raw = typeof body === "string" ? body : (body.verb || body.kind || "");
+  const key = normVerb(raw);
+  const obj = body && typeof body === "object" ? body : {};
+  if (obj.falsify || obj.falsified || obj.fake_flag || obj.invent_continuity || obj.false_tip || NO_FAN_FALSIFY.includes(key)) {
+    return lawVerdict(false, "NO-FAN-FALSIFY", "refuse", "no falsified tip, receipt, domain claim, Live Nodes count, or site-up claim", {
+      phrase: NO_FAN_PHRASE, spec: NO_FAN_SPEC, kind: key || "falsify", no_lie: true, no_rewrite: true,
+    });
+  }
+  if (obj.ambiguous || obj.dual_tip || obj.soft_maybe || NO_FAN_AMBIGUITY.includes(key)) {
+    return lawVerdict(false, "NO-FAN-AMBIGUITY", "isolate", "ambiguous tip isolates; do not paper over with majority or pretty copy", {
+      phrase: NO_FAN_PHRASE, spec: NO_FAN_SPEC, kind: key || "ambiguous", quorum_is_truth: false,
+    });
+  }
+  if (obj.misleading || obj.pretend_hub_cell || obj.neighbor_resurrection || NO_FAN_MISLEAD.includes(key)) {
+    return lawVerdict(false, "NO-FAN-MISLEAD", "refuse", "no misleading chrome: pulled hub is not still the cell; auto-heal is not neighbor resurrection", {
+      phrase: NO_FAN_PHRASE, spec: NO_FAN_SPEC, kind: key || "misleading",
+    });
+  }
+  return null;
 }
 
 export function socketsShare(planeA, planeB) {
   const planes = new Set([String(planeA), String(planeB)]);
-  const tip = new Set([TIP_TICK_SOCKET, "1s", "tip", "tip-tick"]);
-  const dwell = new Set([DWELL_SOCKET, "777s", "dwell", "update"]);
-  const hasTip = [...planes].some((p) => tip.has(p));
-  const hasDwell = [...planes].some((p) => dwell.has(p));
-  if (hasTip && hasDwell) {
-    return lawVerdict(false, "STW-SOCKET-SPLIT", "refuse", "1s tip tick and 777s dwell never share a socket");
+  const families = [
+    new Set([TIP_TICK_SOCKET, "1s", "tip", "tip-tick"]),
+    new Set([DWELL_SOCKET, "777s", "dwell", "update"]),
+    new Set([CLAIM_SOCKET, "7m77s", "497s", "claim", "az-generator"]),
+  ];
+  const hits = families.filter((fam) => [...planes].some((p) => fam.has(p))).length;
+  if (hits >= 2) {
+    return lawVerdict(false, "STW-SOCKET-SPLIT", "refuse", "1s tip tick, 777s dwell, and 7m77s claim clock never share a socket");
   }
   return lawVerdict(true, "STW-SOCKET-OK", "yes", "planes stay on separate sockets");
+}
+
+function normalizeAzName(name) {
+  let text = String(name == null ? "" : name).trim().toLowerCase();
+  if (text.startsWith("https://")) text = text.slice(8);
+  if (text.startsWith("http://")) text = text.slice(7);
+  text = text.split("/")[0].split(":")[0].replace(/^\.+|\.+$/g, "");
+  return text;
+}
+
+function isAzName(name) {
+  const host = normalizeAzName(name);
+  return !!host && host.endsWith(".az") && host !== "az";
+}
+
+const OFFICIAL_HUBS = Object.freeze([
+  "azieleliab.com",
+  "www.azieleliab.com",
+  "godlock.uk",
+  "www.godlock.uk",
+  "azielcorpuslibrary.net",
+  "www.azielcorpuslibrary.net",
+  "hedidntjump.com",
+  "www.hedidntjump.com",
+]);
+
+function isOfficialHub(name) {
+  const host = normalizeAzName(name);
+  return OFFICIAL_HUBS.some((h) => host === h || host.endsWith("." + h)) || host.includes("corpus");
+}
+
+function knownContainsFirstClaim(sites) {
+  const list = Array.isArray(sites) ? sites : [];
+  return list.some((site) => String(site == null ? "" : (site.name || site.host || site.url || site)).toLowerCase().includes(FIRST_CLAIM_NAME));
+}
+
+function paperCount(papers) {
+  const list = Array.isArray(papers) ? papers : [];
+  const seen = new Set();
+  let n = 0;
+  for (const paper of list) {
+    if (!paper || typeof paper !== "object") continue;
+    const author = String(paper.author || paper.identity || "").trim();
+    if (author !== IDENTITY) continue;
+    const digest = String(paper.hash || paper.sha256 || paper.tip_hash || "").trim().toLowerCase();
+    if (digest.length !== 64) continue;
+    if (seen.has(digest)) continue;
+    seen.add(digest);
+    n += 1;
+  }
+  return n;
+}
+
+export function claimAzDomain(body) {
+  const b = body && typeof body === "object" ? body : {};
+  const fan = refuseNoFan(b);
+  if (fan) return fan;
+  if (b.tip_verified === false) {
+    return lawVerdict(false, "AZG-UNVERIFIED-TIP", "phoenix-wait", "unverified tip: refuse claim rather than invent continuity; phoenix-WAIT / hold", {
+      false_tip: false, phoenix: "wait", no_lie: true, phrase: NO_FAN_PHRASE,
+    });
+  }
+  const origin = String(b.origin_node || b.node || "node-01");
+  const claimed = Number(b.claimed || b.claimed_count || 0) || 0;
+  const known = Array.isArray(b.known_sites) ? b.known_sites : [];
+  if (claimed >= CAP_7) {
+    return lawVerdict(false, "AZG-CAP-7", "refuse", "Cap-7: at most 7 .az names per covered node", {
+      claimed, cap: CAP_7, origin_node: origin,
+    });
+  }
+  const firstNeeded = !knownContainsFirstClaim(known);
+  const named = normalizeAzName(b.name);
+  if (firstNeeded && (!named || named === FIRST_CLAIM_NAME)) {
+    if (b.claimable === false) {
+      return lawVerdict(true, "AZG-FIRST-CLAIM-RESUME", "yes", "www.survivalnetwork.az cannot be claimed; resume 7m77s clock under Cap-7", {
+        first_claim: FIRST_CLAIM_NAME, resume: true, period_s: CLAIM_CLOCK_S, origin_node: origin, hosted_by: origin,
+      });
+    }
+    return lawVerdict(true, "AZG-FIRST-CLAIM", "yes", "first claim is www.survivalnetwork.az", {
+      name: FIRST_CLAIM_NAME, origin_node: origin, hosted_by: origin, period_s: CLAIM_CLOCK_S, cap: CAP_7,
+    });
+  }
+  if (b.papers != null && paperCount(b.papers) < MIN_PAPERS) {
+    return lawVerdict(false, "AZG-PAPERS", "phoenix-wait", "fewer than 49 Aziel Eliab papers; do not claim a false tip; phoenix-WAIT / hold", {
+      papers: paperCount(b.papers), min_papers: MIN_PAPERS, false_tip: false, phoenix: "wait",
+    });
+  }
+  if (named && isOfficialHub(named)) {
+    return lawVerdict(false, "AZG-NOT-HUB", "refuse", "official hubs are not Node Gate and are not claimed .az names");
+  }
+  if (named && !isAzName(named)) {
+    return lawVerdict(false, "AZG-TLD", "refuse", "AZ Generator claims domains ending in .az only");
+  }
+  return lawVerdict(true, named ? "AZG-CLAIM-OK" : "AZG-CLOCK-TICK", "yes", named ? "domain claimed; site + server hosted by origin node" : "7m77s clock continues under Cap-7", {
+    name: named || "", origin_node: origin, hosted_by: origin, period_s: CLAIM_CLOCK_S, cap: CAP_7,
+  });
+}
+
+export function offlineDownloadStayUp(body) {
+  const b = body && typeof body === "object" ? body : {};
+  const offline = !!(b.origin_offline || b.offline);
+  return lawVerdict(true, "AZG-OFFLINE-STAY-UP", "yes", "origin offline: sites stay up for downloads (cold-copy / standby / MESH-VAULT)", {
+    origin_offline: offline,
+    downloads_stay_up: true,
+    download_plane: "pull-only",
+    tip_plane: offline ? (b.tip_presence || "isolated") : "live",
+    mesh_vault: "snapshot+official-standby",
+  });
+}
+
+export function applyGridShift(body) {
+  const b = body && typeof body === "object" ? body : {};
+  const fan = refuseNoFan(b);
+  if (fan) return fan;
+  if (b.vote_to_fix || b["vote-to-fix"] || b.neighbor_talk) {
+    return lawVerdict(false, "RH-NO-VOTE-TO-FIX", "refuse", "neighbor vote-to-fix labeled as auto-heal is refused");
+  }
+  if (b.resurrect_hub) {
+    return lawVerdict(false, "MGS-NO-HUB-RESURRECT", "refuse", "grid shift is not resurrection of godlock.uk / corpus hostnames");
+  }
+  const az = normalizeAzName(b.az_name || b.name);
+  if (az && isOfficialHub(az)) {
+    return lawVerdict(false, "MGS-NOT-NODE-GATE", "refuse", "official hubs are not Node Gate");
+  }
+  if (az && !isAzName(az)) {
+    return lawVerdict(false, "MGS-AZ-ONLY", "refuse", "grid shift keeps a .az (or standby) name answerable");
+  }
+  const names = Array.isArray(b.names) ? b.names.map(normalizeAzName) : [];
+  if (b.cloak_burst) {
+    const already = Number(b.already_claimed || 0) || 0;
+    if (already + names.length > CAP_7 || names.length > CAP_7) {
+      return lawVerdict(false, "AZG-CAP-7", "refuse", "cloak burst cannot exceed Cap-7 spare/claimed .az names", { cap: CAP_7 });
+    }
+    return lawVerdict(true, "MGS-CLOAK-BURST", "yes", "cloak burst planted spare .az names; originating node IP hidden", {
+      names, cap: CAP_7, cloak: true, softwares_tab: false,
+    });
+  }
+  return lawVerdict(true, "MGS-SHIFT-OK", "yes", "grid shift: .az stays answerable; node cloaked/hidden after domain pull", {
+    az_name: az || FIRST_CLAIM_NAME,
+    answerable: true,
+    node_cloaked: b.cloak !== false,
+    mesh_vault: "snapshot+official-standby",
+    hub_tunnels_die_with_pull: true,
+    resurrection: false,
+    downloads_stay_up: true,
+  });
 }
 
 export const MESH_OPS = Object.freeze([
@@ -526,7 +828,7 @@ export function meshPointer() {
     catalog_mcp: FRAGGATE_MCP,
     fraggate_slug: MESH_SLUG,
     origin: RUNTIME + MESH_PATH,
-    note: "PROXY to aziel-runtime /v1/mesh/* via AZIEL_RUNTIME. Not a local op. Not AnonBroadcast. Not AZMail's product-local ring. MirageGrid hosted /v1 remains session assignment (not a hosted hop). Full node process is local qnm-node/. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (no public qnsd proxy). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. " + MESH_NOTE,
+    note: "PROXY to aziel-runtime /v1/mesh/* via AZIEL_RUNTIME. Not a local op. Not AnonBroadcast. Not AZMail's product-local ring. MirageGrid hosted /v1 remains session assignment (not a hosted hop). Full node process is local qnm-node/. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (no public qnsd proxy). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. " + MESH_NOTE,
     anon_broadcast: ANON_BROADCAST,
     anon_broadcast_publish_path: false,
     ...qnsCdFields(),
@@ -724,6 +1026,51 @@ export async function runMeshProxy(env, request, pathAndQuery) {
       status: 403,
       data: lawVerdict(false, "RH-FAIL-CLOSED", "refuse", "reheal fail-closed without own tip+trusted pull or phoenix-WAIT"),
     };
+  }
+  if (pathOnly === "/v1/mesh/az-generator") {
+    const method = String((request && request.method) || "GET").toUpperCase();
+    if (method !== "POST") {
+      return {
+        status: 405,
+        data: meshErrFields({
+          message: "AZ-GENERATOR-1.0 is POST-only. 7m77s=497s. Cap-7. First claim www.survivalnetwork.az.",
+          extra: { code: "MESH-METHOD", path: pathOnly, method },
+        }),
+      };
+    }
+    let genBody = {};
+    try {
+      genBody = await request.json();
+    } catch {
+      genBody = {};
+    }
+    const dirty = refuseReheal(genBody);
+    if (dirty) return { status: 403, data: dirty };
+    if (genBody && (genBody.origin_offline || genBody.offline)) {
+      return { status: 200, data: offlineDownloadStayUp(genBody) };
+    }
+    return { status: 200, data: claimAzDomain(genBody) };
+  }
+  if (pathOnly === "/v1/mesh/grid-shift") {
+    const method = String((request && request.method) || "GET").toUpperCase();
+    if (method !== "POST") {
+      return {
+        status: 405,
+        data: meshErrFields({
+          message: "MIRAGE-GRID-SHIFT-1.0 is POST-only. MESH-VAULT snapshot+standby. Cap-7 cloak burst.",
+          extra: { code: "MESH-METHOD", path: pathOnly, method },
+        }),
+      };
+    }
+    let shiftBody = {};
+    try {
+      shiftBody = await request.json();
+    } catch {
+      shiftBody = {};
+    }
+    const dirty = refuseReheal(shiftBody);
+    if (dirty) return { status: 403, data: dirty };
+    return { status: 200, data: applyGridShift(shiftBody) };
   }
   const allowed = MESH_ROUTE_METHODS[pathOnly];
   if (!allowed) {

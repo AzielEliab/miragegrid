@@ -187,3 +187,29 @@ def test_split_wires_cold_copy_reheal_law() -> None:
     assert "COLD-COPY SURVIVAL" in HOMEPAGE
     assert "REHEAL" in HOMEPAGE
     assert "Aziel Eliab" in MESH
+    assert 'AZ_GENERATOR_SPEC = "AZ-GENERATOR-1.0"' in MESH
+    assert 'GRID_SHIFT_SPEC = "MIRAGE-GRID-SHIFT-1.0"' in MESH
+    assert "CLAIM_CLOCK_S = CLAIM_MINUTES * 60 + CLAIM_EXTRA_S" in MESH
+    assert "CAP_7 = 7" in MESH
+    assert "MIN_PAPERS = 49" in MESH
+    assert 'FIRST_CLAIM_NAME = "www.survivalnetwork.az"' in MESH
+    assert "az_generator: AZ_GENERATOR" in MESH
+    assert "grid_shift: GRID_SHIFT" in MESH
+    assert "public_stack: PUBLIC_STACK" in MESH
+    assert "softwares_tab: false" in MESH
+    assert "AZ-GENERATOR-1.0" in README
+    assert "MIRAGE-GRID-SHIFT-1.0" in README
+    assert "AZ-GENERATOR-1.0" in SKILL
+    assert "MIRAGE-GRID-SHIFT-1.0" in HOMEPAGE
+    assert "www.survivalnetwork.az" in MESH
+    assert "15:20" not in HOMEPAGE
+    assert "10.5281/zenodo" not in HOMEPAGE
+    assert 'NO_FAN_SPEC = "NO-FAN-1.0"' in MESH
+    assert "No falsification. No ambiguity. No misleading." in MESH
+    assert "NO-FAN-FALSIFY" in MESH
+    assert "NO-FAN-AMBIGUITY" in MESH
+    assert "NO-FAN-MISLEAD" in MESH
+    assert "refuseNoFan" in MESH
+    assert "NO-FAN-1.0" in README
+    assert "No falsification. No ambiguity. No misleading." in HOMEPAGE
+    assert "NO-FAN-1.0" in SKILL

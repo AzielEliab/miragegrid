@@ -19,11 +19,21 @@ sync, makes the tip expensive to erase, and keeps data after creators
 are gone. A server pull cannot wipe cold replicas. Poison is
 hash-absolute refuse.
 
-REHEAL (RH-1.0) forbids neighbor talk-dirty-back-to-health. A node
-heals from its own tip plus a trusted pull, or it phoenix-WAITs.
-Allowed reheal fields are live / locked / isolated / tip-hash. Bodies,
-diffs, and vote-to-fix are forbidden.
+REHEAL (RH-1.0 / REHEAL-1.0 / MESH-REHEAL) forbids neighbor
+talk-dirty-back-to-health. A node heals from its own tip plus a trusted
+pull, or it phoenix-WAITs. Allowed reheal fields are live / locked /
+isolated / tip-hash. Bodies, diffs, and vote-to-fix are forbidden.
+Public-stack auto-heal means this lawful reheal + archive re-expand.
 
+AZ GENERATOR (AZ-GENERATOR-1.0) claims `.az` names on a 7m77s (497s)
+clock, Cap-7 per origin node, first claim `www.survivalnetwork.az`.
+Restore needs ≥49 Aziel Eliab papers (hash-absolute; cite don't merge).
+
+MIRAGE GRID SHIFT (MIRAGE-GRID-SHIFT-1.0) restates MESH-VAULT as
+snapshot plus official standby (IP-mask host). Grid shift keeps the
+`.az` answerable and cloaks the node after a domain pull.
+
+The 1s tip tick, 777s dwell, and 7m77s claim clock never share a socket.
 Assign stays live. Hosted mesh / vpn-hop / tunnel stubs remain refuse.
 Author: Aziel Eliab only.
 """
@@ -200,6 +210,10 @@ class NodeMesh:
             "split_wires": split_wires_dict(),
             "cold_copy": cold_copy_dict(),
             "reheal": reheal_dict(),
+            "az_generator": az_generator_dict(),
+            "grid_shift": grid_shift_dict(),
+            "public_stack": public_stack_dict(),
+            "no_fan": no_fan_dict(),
         }
 
 
@@ -311,6 +325,20 @@ COLD_COPY_LAW = "COLD-COPY SURVIVAL"
 COLD_COPY_SPEC = "CCS-1.0"
 REHEAL_LAW = "REHEAL"
 REHEAL_SPEC = "RH-1.0"
+REHEAL_1_0 = "REHEAL-1.0"
+MESH_REHEAL_SPEC = "MESH-REHEAL"
+AZ_GENERATOR_LAW = "AZ GENERATOR"
+AZ_GENERATOR_SPEC = "AZ-GENERATOR-1.0"
+GRID_SHIFT_LAW = "MIRAGE GRID SHIFT"
+GRID_SHIFT_SPEC = "MIRAGE-GRID-SHIFT-1.0"
+NO_LIE_LAW = "NO-LIE"
+NO_REWRITE_LAW = "NO-REWRITE"
+NO_FALSIFY_LAW = "NO-FALSIFY"
+NO_AMBIGUITY_LAW = "NO-AMBIGUITY"
+NO_MISLEAD_LAW = "NO-MISLEAD"
+NO_FAN_LAW = "NO FALSIFICATION NO AMBIGUITY NO MISLEADING"
+NO_FAN_SPEC = "NO-FAN-1.0"
+NO_FAN_PHRASE = "No falsification. No ambiguity. No misleading."
 
 ASSIGN_LIVE = True
 HOSTED_STUB_OPS: frozenset[str] = frozenset(
@@ -322,6 +350,16 @@ TIP_TICK_MAX_MS = 1000
 DWELL_S = 777
 TIP_TICK_SOCKET = "tip-1s"
 DWELL_SOCKET = "dwell-777s"
+CLAIM_MINUTES = 7
+CLAIM_EXTRA_S = 77
+CLAIM_CLOCK_S = CLAIM_MINUTES * 60 + CLAIM_EXTRA_S  # 420 + 77 = 497
+CLAIM_SOCKET = "claim-7m77s"
+CAP_7 = 7
+MIN_PAPERS = 49
+FIRST_CLAIM_NAME = "www.survivalnetwork.az"
+AZ_TLD = ".az"
+MESH_VAULT_KIND = "snapshot+official-standby"
+MESH_VAULT_ROLE = "ip-mask-host"
 TIP_HASH_LEN = 32
 PRESENCE_LEN = 1
 TIP_TICK_SIZE = PRESENCE_LEN + TIP_HASH_LEN
@@ -368,6 +406,71 @@ REHEAL_FORBIDDEN: frozenset[str] = frozenset(
 )
 REHEAL_SOURCES: frozenset[str] = frozenset(
     {"own-tip+trusted-pull", "phoenix-wait"}
+)
+
+OFFICIAL_HUBS: frozenset[str] = frozenset(
+    {
+        "azieleliab.com",
+        "www.azieleliab.com",
+        "godlock.uk",
+        "www.godlock.uk",
+        "azielcorpuslibrary.net",
+        "www.azielcorpuslibrary.net",
+        "hedidntjump.com",
+        "www.hedidntjump.com",
+    }
+)
+HUB_NOT_NODE_GATE: frozenset[str] = frozenset(
+    {"azieleliab.com", "godlock.uk", "corpus", "azielcorpuslibrary.net", "hedidntjump.com"}
+)
+
+NO_FAN_FALSIFY_VERBS: frozenset[str] = frozenset(
+    {
+        "falsify",
+        "falsified",
+        "falsification",
+        "fake",
+        "fake-flag",
+        "fake_flag",
+        "invent",
+        "invent-continuity",
+        "fabricate",
+        "false-tip",
+        "false_tip",
+        "false-receipt",
+        "false-claim",
+        "false-live-nodes",
+        "false-site-up",
+        "site-up-lie",
+    }
+)
+NO_FAN_AMBIGUITY_VERBS: frozenset[str] = frozenset(
+    {
+        "ambiguous",
+        "ambiguity",
+        "dual-tip",
+        "dual_tip",
+        "soft-maybe",
+        "soft_maybe",
+        "maybe",
+        "pretty-copy",
+        "pretty_copy",
+        "majority-paper-over",
+        "majority_paper_over",
+    }
+)
+NO_FAN_MISLEAD_VERBS: frozenset[str] = frozenset(
+    {
+        "misleading",
+        "mislead",
+        "pretend",
+        "pretend-hub-cell",
+        "pretend_hub_cell",
+        "hub-still-cell",
+        "unmarked-hydra",
+        "neighbor-resurrection",
+        "neighbor_resurrection",
+    }
 )
 
 
@@ -737,17 +840,26 @@ def heartbeat_loss(*, apply_last: bool = False, mark_poison: bool = False) -> di
 
 
 def sockets_share(plane_a: str, plane_b: str) -> dict[str, Any]:
-    """The 1s tip socket and the 777s dwell socket never share."""
+    """1s tip, 777s dwell, and 7m77s claim clocks never share a socket."""
     planes = {str(plane_a), str(plane_b)}
-    tip_aliases = {TIP_TICK_SOCKET, "1s", "tip", "tip-tick"}
-    dwell_aliases = {DWELL_SOCKET, "777s", "dwell", "update"}
-    if planes & tip_aliases and planes & dwell_aliases:
+    families = (
+        {TIP_TICK_SOCKET, "1s", "tip", "tip-tick"},
+        {DWELL_SOCKET, "777s", "dwell", "update"},
+        {CLAIM_SOCKET, "7m77s", "497s", "claim", "az-generator"},
+    )
+    hits = sum(1 for fam in families if planes & fam)
+    if hits >= 2:
         return _verdict(
             False,
             "STW-SOCKET-SPLIT",
             verdict=REFUSE,
-            message="1s tip tick and 777s dwell never share a socket",
-            extra={"tip_socket": TIP_TICK_SOCKET, "dwell_socket": DWELL_SOCKET},
+            message="1s tip tick, 777s dwell, and 7m77s claim clock never share a socket",
+            extra={
+                "tip_socket": TIP_TICK_SOCKET,
+                "dwell_socket": DWELL_SOCKET,
+                "claim_socket": CLAIM_SOCKET,
+                "period_s": CLAIM_CLOCK_S,
+            },
         )
     return _verdict(
         True,
@@ -934,6 +1046,571 @@ def hosted_stub_refuse(op: str) -> dict[str, Any] | None:
     return None
 
 
+def claim_clock_period_s() -> int:
+    """7 minutes + 77 seconds = 420 + 77 = 497."""
+    return CLAIM_CLOCK_S
+
+
+def _norm_verb(value: Any) -> str:
+    return str(value or "").strip().lower().replace(" ", "-").replace("_", "-")
+
+
+def refuse_no_fan(
+    verb: str | None = None,
+    *,
+    falsify: bool = False,
+    ambiguous: bool = False,
+    misleading: bool = False,
+    kind: str | None = None,
+) -> dict[str, Any] | None:
+    """NO-FAN-1.0: No falsification. No ambiguity. No misleading."""
+    key = _norm_verb(verb)
+    if falsify or key in NO_FAN_FALSIFY_VERBS:
+        return _verdict(
+            False,
+            "NO-FAN-FALSIFY",
+            verdict=REFUSE,
+            message="no falsified tip, receipt, domain claim, Live Nodes count, or site-up claim",
+            extra={
+                "law": NO_FAN_LAW,
+                "spec": NO_FAN_SPEC,
+                "phrase": NO_FAN_PHRASE,
+                "kind": kind or key or "falsify",
+                "no_lie": True,
+                "no_rewrite": True,
+            },
+        )
+    if ambiguous or key in NO_FAN_AMBIGUITY_VERBS:
+        return _verdict(
+            False,
+            "NO-FAN-AMBIGUITY",
+            verdict=ISOLATE,
+            message="ambiguous tip isolates; do not paper over with majority or pretty copy",
+            extra={
+                "law": NO_FAN_LAW,
+                "spec": NO_FAN_SPEC,
+                "phrase": NO_FAN_PHRASE,
+                "kind": kind or key or "ambiguous",
+                "quorum_is_truth": False,
+            },
+        )
+    if misleading or key in NO_FAN_MISLEAD_VERBS:
+        return _verdict(
+            False,
+            "NO-FAN-MISLEAD",
+            verdict=REFUSE,
+            message="no misleading chrome: pulled hub is not still the cell; auto-heal is not neighbor resurrection",
+            extra={
+                "law": NO_FAN_LAW,
+                "spec": NO_FAN_SPEC,
+                "phrase": NO_FAN_PHRASE,
+                "kind": kind or key or "misleading",
+            },
+        )
+    return None
+
+
+def refuse_falsify(*, kind: str) -> dict[str, Any]:
+    out = refuse_no_fan("falsify", falsify=True, kind=kind)
+    assert out is not None
+    return out
+
+
+def refuse_ambiguity(*, kind: str = "ambiguous-tip") -> dict[str, Any]:
+    out = refuse_no_fan("ambiguous", ambiguous=True, kind=kind)
+    assert out is not None
+    return out
+
+
+def refuse_misleading(*, kind: str) -> dict[str, Any]:
+    out = refuse_no_fan("misleading", misleading=True, kind=kind)
+    assert out is not None
+    return out
+
+
+def _site_text(site: Any) -> str:
+    if isinstance(site, Mapping):
+        parts = [
+            site.get("name"),
+            site.get("host"),
+            site.get("domain"),
+            site.get("url"),
+            site.get("site"),
+        ]
+        return " ".join(str(p) for p in parts if p)
+    return str(site or "")
+
+
+def known_contains_first_claim(known_sites: Iterable[Any]) -> bool:
+    """True when any known site contains the name www.survivalnetwork.az."""
+    needle = FIRST_CLAIM_NAME
+    for site in known_sites:
+        if needle in _site_text(site).lower():
+            return True
+    return False
+
+
+def _normalize_az_name(name: str | None) -> str:
+    text = str(name or "").strip().lower()
+    if text.startswith("https://"):
+        text = text[len("https://") :]
+    if text.startswith("http://"):
+        text = text[len("http://") :]
+    text = text.split("/")[0].split(":")[0].strip(".")
+    return text
+
+
+def _is_az_name(name: str) -> bool:
+    host = _normalize_az_name(name)
+    return bool(host) and host.endswith(AZ_TLD) and host != AZ_TLD.lstrip(".")
+
+
+def _is_official_hub(name: str) -> bool:
+    host = _normalize_az_name(name)
+    if host in OFFICIAL_HUBS:
+        return True
+    return any(host == h or host.endswith("." + h) for h in OFFICIAL_HUBS)
+
+
+def _paper_ok(paper: Any) -> bool:
+    """Hash-absolute Aziel Eliab paper. Cite don't merge. bytes↔hash."""
+    if not isinstance(paper, Mapping):
+        return False
+    author = str(paper.get("author") or paper.get("identity") or "").strip()
+    if author != MESH_LAW_AUTHOR:
+        return False
+    digest = paper.get("hash") or paper.get("sha256") or paper.get("tip_hash")
+    body = paper.get("bytes") or paper.get("body") or paper.get("data")
+    if digest is None:
+        return False
+    try:
+        claimed = _hex32(digest)
+    except MeshLawError:
+        return False
+    if body is not None:
+        raw = body if isinstance(body, (bytes, bytearray)) else str(body).encode("utf-8")
+        if hashlib.sha256(raw).hexdigest() != claimed:
+            return False
+    return True
+
+
+def count_aziel_papers(papers: Iterable[Any] | None) -> int:
+    seen: set[str] = set()
+    count = 0
+    for paper in papers or ():
+        if not _paper_ok(paper):
+            continue
+        digest = _hex32(
+            paper.get("hash") or paper.get("sha256") or paper.get("tip_hash")  # type: ignore[union-attr]
+        )
+        if digest in seen:
+            continue
+        seen.add(digest)
+        count += 1
+    return count
+
+
+def restore_chain(
+    *,
+    papers: Iterable[Any] | None = None,
+    broken: bool = True,
+    most_active_point: str | None = None,
+) -> dict[str, Any]:
+    """Restore at the most active guaranteed point. <49 papers → phoenix-WAIT."""
+    n = count_aziel_papers(papers)
+    if n < MIN_PAPERS:
+        return _verdict(
+            False,
+            "AZG-PAPERS",
+            verdict=WAIT,
+            message="fewer than 49 Aziel Eliab papers; do not claim a false tip; phoenix-WAIT / hold",
+            extra={
+                "papers": n,
+                "min_papers": MIN_PAPERS,
+                "false_tip": False,
+                "phoenix": "wait",
+            },
+        )
+    if not broken:
+        return _verdict(
+            True,
+            "AZG-RESTORE-INTACT",
+            verdict=YES,
+            message="chain intact; no restore claimed",
+            extra={"papers": n, "min_papers": MIN_PAPERS},
+        )
+    return _verdict(
+        True,
+        "AZG-RESTORE-OK",
+        verdict=YES,
+        message="restore at most active guaranteed point",
+        extra={
+            "papers": n,
+            "min_papers": MIN_PAPERS,
+            "point": most_active_point or "most-active-guaranteed",
+            "cite_dont_merge": True,
+        },
+    )
+
+
+def claim_az_domain(
+    *,
+    origin_node: str,
+    known_sites: Iterable[Any] | None = None,
+    claimed: int = 0,
+    name: str | None = None,
+    claimable: bool = True,
+    papers: Iterable[Any] | None = None,
+    tip_verified: bool = True,
+    invent_continuity: bool = False,
+    fake_flag: bool = False,
+) -> dict[str, Any]:
+    """7m77s claim. First claim www.survivalnetwork.az. Cap-7. Origin hosts."""
+    if invent_continuity or fake_flag:
+        return refuse_falsify(kind="invent-continuity" if invent_continuity else "fake-flag")
+    if not tip_verified:
+        return _verdict(
+            False,
+            "AZG-UNVERIFIED-TIP",
+            verdict=WAIT,
+            message="unverified tip: refuse claim rather than invent continuity; phoenix-WAIT / hold",
+            extra={"false_tip": False, "phoenix": "wait", "no_lie": True, "phrase": NO_FAN_PHRASE},
+        )
+    known = list(known_sites or ())
+    if int(claimed) >= CAP_7:
+        return _verdict(
+            False,
+            "AZG-CAP-7",
+            verdict=REFUSE,
+            message="Cap-7: at most 7 .az names per covered node",
+            extra={"claimed": int(claimed), "cap": CAP_7, "origin_node": origin_node},
+        )
+    first_needed = not known_contains_first_claim(known)
+    target = _normalize_az_name(name) if name else ""
+    if first_needed:
+        target = FIRST_CLAIM_NAME
+        if not claimable:
+            return _verdict(
+                True,
+                "AZG-FIRST-CLAIM-RESUME",
+                verdict=YES,
+                message="www.survivalnetwork.az cannot be claimed; resume 7m77s clock under Cap-7",
+                extra={
+                    "first_claim": FIRST_CLAIM_NAME,
+                    "resume": True,
+                    "fake_flag": False,
+                    "period_s": CLAIM_CLOCK_S,
+                    "origin_node": origin_node,
+                    "hosted_by": origin_node,
+                    "phrase": NO_FAN_PHRASE,
+                },
+            )
+        return _verdict(
+            True,
+            "AZG-FIRST-CLAIM",
+            verdict=YES,
+            message="first claim is www.survivalnetwork.az",
+            extra={
+                "name": FIRST_CLAIM_NAME,
+                "origin_node": origin_node,
+                "hosted_by": origin_node,
+                "period_s": CLAIM_CLOCK_S,
+                "cap": CAP_7,
+            },
+        )
+    if not target:
+        return _verdict(
+            True,
+            "AZG-CLOCK-TICK",
+            verdict=YES,
+            message="7m77s clock continues under Cap-7",
+            extra={"period_s": CLAIM_CLOCK_S, "origin_node": origin_node, "cap": CAP_7},
+        )
+    if _is_official_hub(target):
+        return _verdict(
+            False,
+            "AZG-NOT-HUB",
+            verdict=REFUSE,
+            message="official hubs are not Node Gate and are not claimed .az names",
+            extra={"name": target, "origin_node": origin_node},
+        )
+    if not _is_az_name(target):
+        return _verdict(
+            False,
+            "AZG-TLD",
+            verdict=REFUSE,
+            message="AZ Generator claims domains ending in .az only",
+            extra={"name": target, "origin_node": origin_node},
+        )
+    if papers is not None and count_aziel_papers(papers) < MIN_PAPERS and first_needed is False:
+        # restore-adjacent claim with a broken paper set still holds
+        held = restore_chain(papers=papers, broken=True)
+        if not held["ok"]:
+            return held
+    return _verdict(
+        True,
+        "AZG-CLAIM-OK",
+        verdict=YES,
+        message="domain claimed; site + server hosted by origin node",
+        extra={
+            "name": target,
+            "origin_node": origin_node,
+            "hosted_by": origin_node,
+            "period_s": CLAIM_CLOCK_S,
+            "cap": CAP_7,
+        },
+    )
+
+
+def plant_flag_and_repost(
+    *,
+    sites: Iterable[Any] | None = None,
+    node_data: Mapping[str, Any] | None = None,
+    fake_flag: bool = False,
+) -> dict[str, Any]:
+    """Constantly plant a flag and repost current known sites from node data."""
+    if fake_flag:
+        return refuse_falsify(kind="fake-flag")
+    listed = list(sites or ())
+    if node_data and isinstance(node_data.get("sites"), list):
+        listed.extend(node_data["sites"])
+    names = []
+    for site in listed:
+        text = _site_text(site)
+        if text and text not in names:
+            names.append(text)
+    return _verdict(
+        True,
+        "AZG-FLAG-REPOST",
+        verdict=YES,
+        message="flag planted; current known sites reposted from node data",
+        extra={"sites": names, "flag": True, "rewrite": False},
+    )
+
+
+def offline_download_stay_up(
+    *,
+    origin_offline: bool,
+    download_plane: str = "pull-only",
+    tip_presence: str = "isolated",
+) -> dict[str, Any]:
+    """Origin offline: sites stay up for downloads. Tip may isolate/lock."""
+    if str(download_plane).lower() not in {"pull-only", "pull", PAYLOAD_PLANE}:
+        return _verdict(
+            False,
+            "AZG-DOWNLOAD-PULL-ONLY",
+            verdict=REFUSE,
+            message="download plane stays pull-only when origin is offline",
+        )
+    presence = str(tip_presence).lower()
+    if origin_offline and presence not in {"isolated", "locked"}:
+        presence = "isolated"
+    return _verdict(
+        True,
+        "AZG-OFFLINE-STAY-UP",
+        verdict=YES,
+        message="origin offline: sites stay up for downloads (cold-copy / standby / MESH-VAULT)",
+        extra={
+            "origin_offline": bool(origin_offline),
+            "downloads_stay_up": True,
+            "download_plane": PAYLOAD_PLANE,
+            "tip_plane": presence if origin_offline else "live",
+            "mesh_vault": MESH_VAULT_KIND,
+        },
+    )
+
+
+def auto_heal(
+    *,
+    source: str = "own-tip+trusted-pull",
+    own_tip: bytes | str | None = None,
+    trusted_pull: bool = False,
+    phoenix_wait: bool = False,
+    neighbor_talk: bool = False,
+    vote_to_fix: bool = False,
+    labeled_auto_heal: bool = True,
+    fields: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Public-stack auto-heal = lawful REHEAL. Vote-to-fix labeled auto-heal refuses."""
+    if vote_to_fix or neighbor_talk:
+        return _verdict(
+            False,
+            "RH-NO-VOTE-TO-FIX" if vote_to_fix else "RH-NO-NEIGHBOR-TALK",
+            verdict=REFUSE,
+            message="neighbor vote-to-fix labeled as auto-heal is refused",
+            extra={"labeled_auto_heal": labeled_auto_heal, "public_stack_auto_heal": False},
+        )
+    out = reheal(
+        source=source,
+        own_tip=own_tip,
+        trusted_pull=trusted_pull,
+        phoenix_wait=phoenix_wait,
+        neighbor_talk=False,
+        vote_to_fix=False,
+        fields=fields,
+    )
+    out["public_stack_auto_heal"] = bool(out.get("ok"))
+    out["means"] = "lawful reheal + archive re-expand (REHEAL-1.0 / MESH-REHEAL)"
+    out["suite_mesh_auto_heal"] = False
+    return out
+
+
+def node_gate_admit(*, name: str) -> dict[str, Any]:
+    """Node Gate admits .az names only. Official hubs are not Node Gate."""
+    host = _normalize_az_name(name)
+    if _is_official_hub(host) or host in HUB_NOT_NODE_GATE or "corpus" in host:
+        return _verdict(
+            False,
+            "MGS-NOT-NODE-GATE",
+            verdict=REFUSE,
+            message="official hubs are not Node Gate",
+            extra={"name": host, "node_gate": False, "softwares_tab": False},
+        )
+    if not _is_az_name(host):
+        return _verdict(
+            False,
+            "MGS-AZ-ONLY",
+            verdict=REFUSE,
+            message="Node Gate is the MirageGrid admission/claim surface for .az names",
+            extra={"name": host, "softwares_tab": False},
+        )
+    return _verdict(
+        True,
+        "MGS-NODE-GATE-OK",
+        verdict=YES,
+        message="admitted on MirageGrid Node Gate (.az)",
+        extra={"name": host, "softwares_tab": False, "product": "miragegrid"},
+    )
+
+
+def grid_shift(
+    *,
+    domain_pulled: str,
+    az_name: str,
+    cloak: bool = True,
+    resurrect_hub: bool = False,
+    pretend_hub_cell: bool = False,
+    neighbor_resurrection: bool = False,
+) -> dict[str, Any]:
+    """Grid shift: .az stays answerable; node cloaked. Official hub tunnels die."""
+    if pretend_hub_cell or neighbor_resurrection:
+        return refuse_misleading(
+            kind="pretend-hub-cell" if pretend_hub_cell else "neighbor-resurrection"
+        )
+    if resurrect_hub or _is_official_hub(domain_pulled) and not _is_az_name(az_name):
+        return _verdict(
+            False,
+            "MGS-NO-HUB-RESURRECT",
+            verdict=REFUSE,
+            message="grid shift is not resurrection of godlock.uk / corpus hostnames",
+            extra={"domain_pulled": domain_pulled, "az_name": az_name},
+        )
+    if not _is_az_name(az_name):
+        return _verdict(
+            False,
+            "MGS-AZ-ONLY",
+            verdict=REFUSE,
+            message="grid shift keeps a .az (or standby) name answerable",
+            extra={"az_name": az_name},
+        )
+    hub_pull = _is_official_hub(domain_pulled)
+    return _verdict(
+        True,
+        "MGS-SHIFT-OK",
+        verdict=YES,
+        message="grid shift: .az stays answerable; node cloaked/hidden after domain pull",
+        extra={
+            "domain_pulled": domain_pulled,
+            "az_name": _normalize_az_name(az_name),
+            "answerable": True,
+            "node_cloaked": bool(cloak),
+            "mesh_vault": MESH_VAULT_KIND,
+            "ip_mask_host": True,
+            "hub_tunnels_die_with_pull": True,
+            "official_hub_pull": hub_pull,
+            "resurrection": False,
+        },
+    )
+
+
+def cloak_burst(
+    *,
+    origin_node: str,
+    names: Iterable[str] | None = None,
+    heal_fired: bool = True,
+    already_claimed: int = 0,
+) -> dict[str, Any]:
+    """When lawful auto-heal fires, plant up to Cap-7 spare .az names with a cloak."""
+    if not heal_fired:
+        return _verdict(
+            False,
+            "MGS-CLOAK-NEED-HEAL",
+            verdict=REFUSE,
+            message="cloak burst only when lawful auto-heal fires",
+            extra={"origin_node": origin_node},
+        )
+    listed = [_normalize_az_name(n) for n in (names or ())]
+    listed = [n for n in listed if n]
+    if any(_is_official_hub(n) for n in listed):
+        return _verdict(
+            False,
+            "MGS-NOT-NODE-GATE",
+            verdict=REFUSE,
+            message="cloak burst does not plant official hub hostnames",
+            extra={"origin_node": origin_node},
+        )
+    if any(not _is_az_name(n) for n in listed):
+        return _verdict(
+            False,
+            "MGS-AZ-ONLY",
+            verdict=REFUSE,
+            message="cloak burst plants .az names only",
+            extra={"origin_node": origin_node},
+        )
+    room = CAP_7 - int(already_claimed)
+    if room <= 0 or len(listed) > max(room, 0) or len(listed) > CAP_7:
+        return _verdict(
+            False,
+            "AZG-CAP-7",
+            verdict=REFUSE,
+            message="cloak burst cannot exceed Cap-7 spare/claimed .az names",
+            extra={"origin_node": origin_node, "cap": CAP_7, "names": listed},
+        )
+    return _verdict(
+        True,
+        "MGS-CLOAK-BURST",
+        verdict=YES,
+        message="cloak burst planted spare .az names; originating node IP hidden",
+        extra={
+            "origin_node": origin_node,
+            "names": listed,
+            "count": len(listed),
+            "cap": CAP_7,
+            "cloak": True,
+            "softwares_tab": False,
+        },
+    )
+
+
+def refuse_hub_tunnel_hydra(*, host: str, unmarked: bool = True) -> dict[str, Any]:
+    """Unmarked Cloudflare tunnel hydra on official hubs is refuse."""
+    if _is_official_hub(host) and unmarked:
+        return _verdict(
+            False,
+            "MGS-HUB-TUNNEL-HYDRA",
+            verdict=REFUSE,
+            message="unmarked Cloudflare tunnel hydra on official hubs is refused",
+            extra={"host": _normalize_az_name(host), "tun_wp": True, "node_ops": True},
+        )
+    return _verdict(
+        True,
+        "MGS-HUB-TUNNEL-CLEAR",
+        verdict=YES,
+        message="not an unmarked official-hub tunnel hydra",
+        extra={"host": _normalize_az_name(host)},
+    )
+
+
 def split_wires_dict() -> dict[str, Any]:
     return {
         "law": SPLIT_WIRES_LAW,
@@ -975,6 +1652,7 @@ def split_wires_dict() -> dict[str, Any]:
         "sockets": {
             "tip": TIP_TICK_SOCKET,
             "dwell": DWELL_SOCKET,
+            "claim": CLAIM_SOCKET,
             "shared": False,
         },
         "assign_live": ASSIGN_LIVE,
@@ -1009,7 +1687,81 @@ def reheal_dict() -> dict[str, Any]:
         "allowed": ["live", "locked", "isolated", "tip-hash"],
         "forbid": ["bodies", "diffs", "vote-to-fix"],
         "auto_heal": False,
+        "public_stack_auto_heal": "REHEAL-1.0 / MESH-REHEAL",
+        "reheal_1_0": REHEAL_1_0,
+        "mesh_reheal": MESH_REHEAL_SPEC,
         "phoenix": "wait",
+    }
+
+
+def az_generator_dict() -> dict[str, Any]:
+    return {
+        "law": AZ_GENERATOR_LAW,
+        "spec": AZ_GENERATOR_SPEC,
+        "author": MESH_LAW_AUTHOR,
+        "identity": MESH_LAW_AUTHOR,
+        "softwares_tab": False,
+        "clock": {
+            "minutes": CLAIM_MINUTES,
+            "extra_s": CLAIM_EXTRA_S,
+            "period_s": CLAIM_CLOCK_S,
+            "socket": CLAIM_SOCKET,
+            "alias": "7m77s",
+        },
+        "cap": CAP_7,
+        "first_claim": FIRST_CLAIM_NAME,
+        "min_papers": MIN_PAPERS,
+        "tld": AZ_TLD,
+        "no_lie": True,
+        "no_rewrite": True,
+        "rewrite_key": False,
+        "no_falsify": True,
+        "no_ambiguity": True,
+        "no_mislead": True,
+        "no_fan": NO_FAN_SPEC,
+        "no_fan_phrase": NO_FAN_PHRASE,
+    }
+
+
+def grid_shift_dict() -> dict[str, Any]:
+    return {
+        "law": GRID_SHIFT_LAW,
+        "spec": GRID_SHIFT_SPEC,
+        "author": MESH_LAW_AUTHOR,
+        "identity": MESH_LAW_AUTHOR,
+        "softwares_tab": False,
+        "mesh_vault": {"kind": MESH_VAULT_KIND, "role": MESH_VAULT_ROLE},
+        "cap": CAP_7,
+        "cloak_burst": True,
+        "node_gate": "miragegrid-.az-only",
+        "official_hubs_are_node_gate": False,
+        "hub_tunnels_die_with_pull": True,
+        "resurrection_of_official_hubs": False,
+        "pretend_pulled_hub_still_cell": False,
+        "no_lie": True,
+        "no_rewrite": True,
+        "no_falsify": True,
+        "no_ambiguity": True,
+        "no_mislead": True,
+        "no_fan": NO_FAN_SPEC,
+        "no_fan_phrase": NO_FAN_PHRASE,
+    }
+
+
+def public_stack_dict() -> dict[str, Any]:
+    return {
+        "author": MESH_LAW_AUTHOR,
+        "pieces": [
+            "anonymity-network",
+            "node-gate",
+            "auto-heal",
+        ],
+        "anonymity_network": "onion/mesh privacy (existing MVP; lawful privacy tool)",
+        "node_gate": "MirageGrid admission/claim surface for .az names (not official hubs)",
+        "auto_heal": "REHEAL-1.0 / MESH-REHEAL: own last good tip + verified trusted pull, or phoenix-WAIT",
+        "softwares_tab_products": ["miragegrid"],
+        "az_generator_softwares_tab": False,
+        "node_gate_softwares_tab": False,
     }
 
 
@@ -1018,7 +1770,36 @@ def mesh_law_dict() -> dict[str, Any]:
         "author": MESH_LAW_AUTHOR,
         "identity": MESH_LAW_AUTHOR,
         "assign_live": ASSIGN_LIVE,
+        "public_stack": public_stack_dict(),
         "split_wires": split_wires_dict(),
         "cold_copy": cold_copy_dict(),
         "reheal": reheal_dict(),
+        "az_generator": az_generator_dict(),
+        "grid_shift": grid_shift_dict(),
+        "no_lie": True,
+        "no_rewrite": True,
+        "no_fan": no_fan_dict(),
+    }
+
+
+def no_fan_dict() -> dict[str, Any]:
+    return {
+        "law": NO_FAN_LAW,
+        "spec": NO_FAN_SPEC,
+        "phrase": NO_FAN_PHRASE,
+        "author": MESH_LAW_AUTHOR,
+        "identity": MESH_LAW_AUTHOR,
+        "beside": [NO_LIE_LAW, NO_REWRITE_LAW],
+        "no_lie": True,
+        "no_rewrite": True,
+        "no_falsify": True,
+        "no_ambiguity": True,
+        "no_mislead": True,
+        "verbs": {
+            "falsify": sorted(NO_FAN_FALSIFY_VERBS),
+            "ambiguous": sorted(NO_FAN_AMBIGUITY_VERBS),
+            "misleading": sorted(NO_FAN_MISLEAD_VERBS),
+        },
+        "ambiguous_tip": ISOLATE,
+        "rewrite_key": False,
     }

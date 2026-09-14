@@ -24,6 +24,23 @@ This is a **lawful privacy tool**. Use it only where you have the right
 to do so (personal privacy, journalism, research). It does not authorize
 crime, and it does not claim to defeat a global adversary.
 
+**Public stack (locked wording).** MirageGrid’s public stack is now
+three named pieces:
+
+1. **Anonymity network** — onion/mesh privacy (existing MVP stays a
+   lawful privacy tool).
+2. **Node Gate** — the MirageGrid admission/claim surface for `.az`
+   names (NOT azieleliab.com, NOT godlock.uk, NOT corpus — those hubs
+   are not Node Gate).
+3. **Auto-heal** — MUST obey REHEAL-1.0 / MESH-REHEAL: heal from own
+   last good tip + verified trusted pull, or phoenix-WAIT. NEVER
+   neighbor vote-to-fix / majority fanfic. “Auto-heal” in copy means
+   that lawful reheal + archive re-expand, not peer talk-back-to-health.
+
+AZ Generator and Node Gate are MirageGrid subsystems / law — not
+Softwares-tab products. See [docs/AZ-GENERATOR-1.0.md](docs/AZ-GENERATOR-1.0.md)
+and [docs/MIRAGE-GRID-SHIFT-1.0.md](docs/MIRAGE-GRID-SHIFT-1.0.md).
+
 ## Quick start
 
 ```bash
@@ -62,7 +79,7 @@ The Worker serves the gzip itself (HTTP 200, no 302 to GitHub).
 - Direct tarball: [miragegrid-0.2.0.tar.gz](https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.2.0.tar.gz)
 - One-click install: [https://miragegrid-download-tracker.vibelock.workers.dev/install.sh](https://miragegrid-download-tracker.vibelock.workers.dev/install.sh)
 - Skill: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill](https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill)
-- Suite mesh proxy: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh](https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated; QNS-CD-1.0 photon QNS1 cross-map (no public qnsd). Locked law: **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL** ([docs/mesh-law.md](docs/mesh-law.md))
+- Suite mesh proxy: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh](https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated; QNS-CD-1.0 photon QNS1 cross-map (no public qnsd). Locked law: **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0** ([docs/mesh-law.md](docs/mesh-law.md))
 - OpenAPI: [https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json](https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json)
 - GitHub: [https://github.com/AzielEliab/miragegrid](https://github.com/AzielEliab/miragegrid)
 
@@ -103,7 +120,8 @@ fan-out). Update is proof, not a timer (cite prev + lockset, fail-closed;
 777s dwell after a valid cite; clock desync is not yes; ambiguous tip
 isolates). Equivocation ends the peer. Emit last locally after verify.
 Phoenix is local to the failed node. Partition does not auto-splice.
-The 1s tip socket and the 777s dwell socket never share.
+The 1s tip socket, the 777s dwell socket, and the 7m77s claim socket
+never share.
 
 **COLD-COPY SURVIVAL** — multiply cold copies; refuse live body sync;
 the tip is expensive to erase; a server pull cannot wipe cold replicas;
@@ -112,6 +130,22 @@ poison is hash-absolute refuse; data outlives creators.
 **REHEAL** — a neighbor cannot talk a node dirty-back-to-health. Heal
 from own tip + trusted pull, or phoenix-WAIT. Allowed: live / locked /
 isolated / tip-hash. Forbidden: bodies, diffs, vote-to-fix.
+Public-stack auto-heal means this lawful reheal (REHEAL-1.0 /
+MESH-REHEAL), not neighbor vote-to-fix.
+
+**AZ GENERATOR** — every 7 minutes and 77 seconds (497s) claim a `.az`
+name; Cap-7 per node; first claim `www.survivalnetwork.az`; restore
+needs ≥49 Aziel Eliab papers; offline origin keeps downloads up.
+
+**MIRAGE GRID SHIFT** — MESH-VAULT is snapshot + official standby
+(IP-mask host). Grid shift keeps the `.az` answerable and cloaks the
+node after a domain pull. Official-hub tunnels die with the pull.
+
+**NO-LIE / NO-REWRITE / NO-FAN-1.0** — no rewrite key; the network
+never lies to stay alive; receipts still hash. **No falsification. No
+ambiguity. No misleading.** Ambiguous tip isolates. Do not fake the
+flag. Do not invent continuity. Cloak must not pretend a pulled hub
+is still the cell.
 
 MirageGrid does **not** guarantee anonymity against global surveillance
 or endpoint compromise.
@@ -245,8 +279,10 @@ Offline. Stdlib runtime. Mesh/VPN tests use loopback only.
 ```
 miragegrid/            library (pool, mesh, circuit, crypto, vpn, session, cli, ui)
 tests/                 pytest
-docs/whitepaper.md     architecture (sections 1–13)
-docs/mesh-law.md       SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL
+docs/whitepaper.md     architecture (sections 1–17)
+docs/mesh-law.md       SPLIT THE WIRES · COLD-COPY · REHEAL · AZ-GENERATOR · GRID-SHIFT
+docs/AZ-GENERATOR-1.0.md  7m77s claim clock · Cap-7 · 49 papers · first claim
+docs/MIRAGE-GRID-SHIFT-1.0.md  Node Gate · cloak burst · MESH-VAULT grid shift
 examples/              assign a circuit
 workers/download-tracker/   Cloudflare Worker + wrangler.toml (undeployed)
 CONTRIBUTING.md        forks first-class; lawful privacy mesh VPN
