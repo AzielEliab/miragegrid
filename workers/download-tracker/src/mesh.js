@@ -11,13 +11,15 @@
  * no neighbor talk-back; own tip+trusted pull or phoenix-WAIT;
  * no bodies/diffs/vote-to-fix. Public-stack auto-heal means that lawful
  * reheal + archive re-expand, not vote-to-fix.
- * AZ-GENERATOR-1.0: 7m77s (497s) claim clock, Cap-7, first claim
- * www.survivalnetwork.az, ≥49 papers in the local vault. Vault multiply
- * onto each node / papers land as cold copies (bootstrap / join /
- * Cap-7 claim / grid-shift standby). No paper bytes on the 1s tip tick.
- * MIRAGE-GRID-SHIFT-1.0: MESH-VAULT snapshot+standby, cloak burst,
- * Node Gate is MirageGrid .az only. AIRGAP-1.0: local vault + no bearer
- * radios + no climb-back. Official hubs are not airgap Node Gate.
+ * AZ-GENERATOR-1.0: Cap-7 mesh DNS factory living deep in the node.
+ * Not callable from outside. 7m77s (497s) tick exits FRONT Node Gate
+ * only (claim/plant/flag/restore). First claim www.survivalnetwork.az.
+ * ≥49 local vault papers. Vault multiply onto each node as cold copies
+ * (bootstrap / join / Cap-7 claim / grid-shift standby).
+ * no paper bytes on the 1s tip tick. Mesh-authoritative zone + receipts — not
+ * public ICANN. MIRAGE-GRID-SHIFT-1.0: MESH-VAULT snapshot+standby,
+ * cloak burst. AIRGAP-1.0: local vault + no bearer radios + no
+ * climb-back. Official hubs are not airgap Node Gate.
  * AZ Generator and Node Gate are not Softwares-tab products.
  * Assign live. Hosted vpn/hop/tunnel stubs remain refuse.
  * Not a Softwares-tab product. Author: Aziel Eliab only.
@@ -199,6 +201,16 @@ export const AZ_GENERATOR = Object.freeze({
   author: IDENTITY,
   identity: IDENTITY,
   softwares_tab: false,
+  callable: false,
+  lives: "deep-node",
+  exit: "node-gate-front",
+  dns_factory: "cap-7-mesh-authoritative",
+  public_icann: false,
+  registrar: false,
+  unbounded_public_dns: false,
+  cctld_takeover: false,
+  radio_phy: false,
+  airgap: "AIRGAP-1.0",
   clock: {
     minutes: CLAIM_MINUTES,
     extra_s: CLAIM_EXTRA_S,
@@ -207,7 +219,11 @@ export const AZ_GENERATOR = Object.freeze({
     alias: "7m77s",
   },
   cap: CAP_7,
+  public_host_pair: 2,
   first_claim: FIRST_CLAIM_NAME,
+  suffix_order: [".az", ".aziel", "pivot"],
+  aziel_tld: ".aziel",
+  access: { aznet: true, azbrowser: true, merge: false, naked_public_dns: false },
   min_papers: MIN_PAPERS,
   paper_vault: true,
   tld: ".az",
@@ -400,9 +416,52 @@ export function refuseReheal(body) {
   if (body.live_body_sync || body.fanout || body.sender_fanout) {
     return lawVerdict(false, "STW-NO-FANOUT", "refuse", "payload plane is pull-only; sender fan-out is refused");
   }
+  if (body.poison || body.poison_marker || body["poison-marker"] || body.rewrite_key || body["rewrite-key"]) {
+    return lawVerdict(false, "CCS-POISON-MARKER", "refuse", "poison marker is hash-absolute refuse");
+  }
+  if (body.radio_phy || body.rf || body.bluetooth || body.wifi || body.bitmesh || body.photon_phy) {
+    return lawVerdict(false, "AZG-NO-RADIO-PHY", "refuse", "MirageGrid is not RF/BT/Wi-Fi/photon radio PHY; local qnm radios are not this product", {
+      radio_phy: false, hub_get_enables_mesh: false, invented_phy: false,
+    });
+  }
   const fan = refuseNoFan(body);
   if (fan) return fan;
   return refuseTipContamination(body);
+}
+
+export function refuseCallGenerator(path) {
+  return lawVerdict(false, "AZG-NOT-CALLABLE", "refuse", "AZ Generator lives deep in the node; it is not called from outside", {
+    callable: false,
+    lives: "deep-node",
+    exit: "node-gate-front",
+    path: path || "",
+    public_icann: false,
+    dns_factory: "cap-7-mesh-authoritative",
+  });
+}
+
+export function citeAzGenerator() {
+  return lawVerdict(true, "AZG-CITE", "yes", "AZ-GENERATOR-1.0 cite only. Cap-7 mesh DNS factory. Deep-node → front Node Gate. Not callable. Not public ICANN.", {
+    callable: false,
+    lives: "deep-node",
+    exit: "node-gate-front",
+    dns_factory: "cap-7-mesh-authoritative",
+    public_icann: false,
+    registrar: false,
+    unbounded_public_dns: false,
+    cctld_takeover: false,
+    radio_phy: false,
+    airgap: "AIRGAP-1.0",
+    period_s: CLAIM_CLOCK_S,
+    cap: CAP_7,
+    public_host_pair: 2,
+    first_claim: FIRST_CLAIM_NAME,
+    suffix_order: [".az", ".aziel", "pivot"],
+    aziel_tld: ".aziel",
+    access: { aznet: true, azbrowser: true, merge: false, naked_public_dns: false },
+    min_papers: MIN_PAPERS,
+    softwares_tab: false,
+  });
 }
 
 const NO_FAN_FALSIFY = Object.freeze([
@@ -547,7 +606,7 @@ export function vaultMultiply(body) {
     });
   }
   if (b.tip_tick || b.tip_tick_bodies) {
-    return lawVerdict(false, "STW-TIP-BODY", "refuse", "tip tick is presence+tip hash only; no paper bytes on the 1s tick", {
+    return lawVerdict(false, "STW-TIP-BODY", "refuse", "tip tick is presence+tip hash only; no paper bytes on the 1s tip tick", {
       tip_tick_bodies: false,
     });
   }
@@ -621,6 +680,14 @@ export function airgapMode(body) {
 
 export function claimAzDomain(body) {
   const b = body && typeof body === "object" ? body : {};
+  if (b.inbound_call || b.call_generator || b.run_generator) {
+    return refuseCallGenerator("claimAzDomain");
+  }
+  if (b.public_registrar || b.icann || b.cloudflare_dns) {
+    return lawVerdict(false, "AZG-NOT-PUBLIC-REGISTRAR", "refuse", "mesh DNS factory is not a public ICANN/Cloudflare registrar; do not fake registration success", {
+      public_icann: false, registrar: false, unbounded_public_dns: false, dns_factory: "cap-7-mesh-authoritative",
+    });
+  }
   const fan = refuseNoFan(b);
   if (fan) return fan;
   if (b.tip_verified === false) {
@@ -656,7 +723,7 @@ export function claimAzDomain(body) {
     const incomplete = refuseIncompleteVault(b);
     if (incomplete) return incomplete;
     if (paperCount(pile, true) < MIN_PAPERS) {
-      return lawVerdict(false, "AZG-PAPERS", "phoenix-wait", "fewer than 49 Aziel Eliab papers; do not claim a false tip; phoenix-WAIT / hold", {
+      return lawVerdict(false, "AZG-INCOMPLETE-VAULT", "phoenix-wait", "incomplete local vault; refuse claim rather than invent continuity; phoenix-WAIT / hold", {
         papers: paperCount(pile, true), min_papers: MIN_PAPERS, false_tip: false, phoenix: "wait",
       });
     }
@@ -1154,8 +1221,18 @@ export async function runMeshProxy(env, request, pathAndQuery) {
   if (stub) {
     return { status: 403, data: stub };
   }
+  const method = String((request && request.method) || "GET").toUpperCase();
+  if (pathOnly === "/v1/mesh/enable" && method === "GET") {
+    return {
+      status: 403,
+      data: lawVerdict(false, "MESH-GET-NO-ENABLE", "refuse", "GET never enables suite mesh", {
+        enabled: false,
+        default_off: true,
+        path: pathOnly,
+      }),
+    };
+  }
   if (pathOnly === "/v1/mesh/reheal") {
-    const method = String((request && request.method) || "GET").toUpperCase();
     if (method !== "POST") {
       return {
         status: 405,
@@ -1200,31 +1277,22 @@ export async function runMeshProxy(env, request, pathAndQuery) {
     };
   }
   if (pathOnly === "/v1/mesh/az-generator") {
-    const method = String((request && request.method) || "GET").toUpperCase();
-    if (method !== "POST") {
+    if (method === "GET" || method === "HEAD") {
+      return { status: 200, data: citeAzGenerator() };
+    }
+    return { status: 403, data: refuseCallGenerator(pathOnly) };
+  }
+  if (pathOnly === "/v1/mesh/grid-shift") {
+    if (method === "GET" || method === "HEAD") {
       return {
-        status: 405,
-        data: meshErrFields({
-          message: "AZ-GENERATOR-1.0 is POST-only. 7m77s=497s. Cap-7. First claim www.survivalnetwork.az.",
-          extra: { code: "MESH-METHOD", path: pathOnly, method },
+        status: 200,
+        data: lawVerdict(true, "MGS-CITE", "yes", "MIRAGE-GRID-SHIFT-1.0 cite only. MESH-VAULT snapshot+standby. Cap-7 cloak burst. Not a generator call.", {
+          softwares_tab: false,
+          public_icann: false,
+          cap: CAP_7,
         }),
       };
     }
-    let genBody = {};
-    try {
-      genBody = await request.json();
-    } catch {
-      genBody = {};
-    }
-    const dirty = refuseReheal(genBody);
-    if (dirty) return { status: 403, data: dirty };
-    if (genBody && (genBody.origin_offline || genBody.offline)) {
-      return { status: 200, data: offlineDownloadStayUp(genBody) };
-    }
-    return { status: 200, data: claimAzDomain(genBody) };
-  }
-  if (pathOnly === "/v1/mesh/grid-shift") {
-    const method = String((request && request.method) || "GET").toUpperCase();
     if (method !== "POST") {
       return {
         status: 405,
@@ -1296,7 +1364,6 @@ export async function runMeshProxy(env, request, pathAndQuery) {
       }),
     };
   }
-  const method = String((request && request.method) || "GET").toUpperCase();
   if (!allowed.includes(method)) {
     return {
       status: 405,

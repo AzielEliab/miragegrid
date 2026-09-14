@@ -231,6 +231,20 @@ def test_split_wires_cold_copy_reheal_law() -> None:
     assert "AIRGAP-1.0" in HOMEPAGE
     assert "PAPER-VAULT-ON-NODE" in MESH
     assert "PAPER-VAULT-ON-NODE" in HOMEPAGE
-    assert "no paper bytes on the 1s tick" in MESH
+    assert "no paper bytes on the 1s tip tick" in MESH
     assert "official hubs are not airgap Node Gate" in MESH
     assert "have-49-without-bytes" in MESH
+    assert "AZG-NOT-CALLABLE" in MESH
+    assert "citeAzGenerator" in MESH
+    assert "refuseCallGenerator" in MESH
+    assert "lives: \"deep-node\"" in MESH
+    assert "cap-7-mesh-authoritative" in MESH
+    assert "public_icann: false" in MESH
+    assert "public_host_pair: 2" in MESH
+    assert '".aziel"' in MESH
+    assert "MESH-GET-NO-ENABLE" in MESH
+    assert "AZG-NOT-CALLABLE" in SKILL
+    assert "Cap-7 mesh DNS factory" in README
+    assert "radio_phy: false" in MESH
+    assert "AZG-NO-RADIO-PHY" in MESH
+    assert "MESH-GET-NO-ENABLE" in MESH

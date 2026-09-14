@@ -82,7 +82,10 @@ def _check_mesh() -> Check:
     talk = reheal(source="neighbor", neighbor_talk=True)
     if talk["ok"] or talk["code"] != "RH-NO-NEIGHBOR-TALK":
         return _fail("reheal", str(talk))
-    return _ok("mesh", f"circulant-25 connected path={len(path)} STW+CCS+RH")
+    gen = law.get("az_generator") or {}
+    if gen.get("callable") is not False or gen.get("dns_factory") != "cap-7-mesh-authoritative":
+        return _fail("az generator", str(gen.get("dns_factory")))
+    return _ok("mesh", f"circulant-25 connected path={len(path)} STW+CCS+RH+AZG")
 
 
 def _check_circuit() -> Check:

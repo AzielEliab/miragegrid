@@ -20,6 +20,7 @@ from miragegrid.errors import (
     MirageGridError,
     ReceiptError,
 )
+from miragegrid.az_generator import AzGenerator, DeepNode, MeshDnsZone, PaperVault
 from miragegrid.mesh import (
     MeshLawError,
     NodeMesh,
@@ -48,6 +49,10 @@ __all__ = [
     "ReceiptError",
     "RoutingError",
     "MirageSession",
+    "AzGenerator",
+    "DeepNode",
+    "MeshDnsZone",
+    "PaperVault",
     "mesh_law_dict",
     "select_index",
     "__version__",

@@ -372,3 +372,127 @@ def test_airgap_mode_constants_and_refuses() -> None:
     assert paper_vault_dict()["multiply"] == "cold-copy"
     assert az_generator_dict()["paper_vault"]["on_every_node"] is True
     assert grid_shift_dict()["official_hubs_are_node_gate"] is False
+
+
+def test_incomplete_vault_cap8_first_claim_clocks_no_fan_and_factory() -> None:
+    from miragegrid.az_generator import (
+        PUBLIC_HOST_PAIR,
+        AzGenerator,
+        DeepNode,
+        MeshDnsZone,
+        PaperVault,
+        access_name,
+        attempt_claim,
+        claim_clock_ready,
+        refuse_call_generator,
+        refuse_icann_tld,
+        refuse_naked_dns,
+        refuse_product_merge,
+        refuse_public_registrar,
+        synthetic_papers,
+        vault_live_sync_on_tip,
+        vault_multiply,
+    )
+    from miragegrid.mesh import first_claim_for_suffix, select_claim_suffix
+
+    vault48 = PaperVault(synthetic_papers(48))
+    assert vault48.complete() is False
+    held = attempt_claim(origin_node="node-01", vault=vault48)
+    assert held["code"] == "AZG-INCOMPLETE-VAULT"
+    assert held["verdict"] == "phoenix-wait"
+    assert held["false_tip"] is False
+    papers = claim_az_domain(origin_node="node-01", papers=_papers(48), known_sites=["https://www.survivalnetwork.az/"])
+    assert papers["code"] == "AZG-INCOMPLETE-VAULT"
+
+    vault = PaperVault()
+    boot = vault.bootstrap(synthetic_papers(49))
+    assert boot["yes"] is True
+    assert vault.complete() is True
+    assert vault_multiply(reason="tip-tick")["code"] == "AZG-VAULT-MULTIPLY"
+    assert vault_live_sync_on_tip(live_body_sync=True)["code"] == "AZG-AIRGAP"
+
+    node = DeepNode("node-03", vault=vault)
+    assert node.call_generator()["code"] == "AZG-NOT-CALLABLE"
+    assert node.generator.call()["code"] == "AZG-NOT-CALLABLE"
+    assert refuse_call_generator()["lives"] == "deep-node"
+
+    first = node.tick(now_s=0)
+    assert first["code"] == "AZG-FIRST-CLAIM"
+    assert first["name"] == "www.survivalnetwork.az"
+    assert first["exit"] == "node-gate-front"
+    assert first["public_icann"] is False
+    assert first["receipt"]["hash"]
+    hold = node.tick(now_s=100)
+    assert hold["code"] == "AZG-CLOCK-HOLD"
+    second = node.tick(now_s=497, name="spare-two.az")
+    assert second["ok"] is True
+    assert len(node.generator.zone.public_hosts()) == PUBLIC_HOST_PAIR
+    third = node.tick(now_s=994, name="mesh-only-three.az")
+    assert third["ok"] is True
+    assert third["public_host"] is False
+    assert "mesh-only-three.az" in node.generator.zone.mesh_only()
+    assert access_name(name="www.survivalnetwork.az", client="aznet", zone=node.generator.zone)["code"] == "AZG-ACCESS-MESH"
+    assert access_name(name="www.survivalnetwork.az", client="browser", zone=node.generator.zone)["code"] == "AZG-ACCESS-PUBLIC-GATEWAY"
+    assert access_name(name="mesh-only-three.az", client="browser", zone=node.generator.zone)["code"] == "AZG-PUBLIC-PAIR"
+    assert access_name(name="www.survivalnetwork.az", client="aznet", zone=node.generator.zone, merge_products=True)["code"] == "AZG-NO-MERGE-PRODUCTS"
+    assert refuse_naked_dns()["code"] == "AZG-NO-NAKED-DNS"
+    assert refuse_product_merge()["merge"] is False
+
+    for i, extra in enumerate(("d.az", "e.az", "f.az", "g.az")):
+        filled = node.tick(now_s=497 * (3 + i), name=extra)
+        assert filled["ok"] is True
+    eighth = node.tick(now_s=497 * 8, name="spare-eight.az")
+    assert eighth["code"] == "AZG-CAP-7"
+
+    assert refuse_icann_tld("spare.com")["code"] == "AZG-TLD"
+    assert refuse_public_registrar()["cctld_takeover"] is False
+    assert claim_az_domain(origin_node="node-01", public_registrar=True)["code"] == "AZG-NOT-PUBLIC-REGISTRAR"
+    assert claim_az_domain(origin_node="node-01", inbound_call=True)["code"] == "AZG-NOT-CALLABLE"
+
+    az = select_claim_suffix(az_usable=True)
+    assert az["suffix"] == ".az" and first_claim_for_suffix(".az") == "www.survivalnetwork.az"
+    aziel = select_claim_suffix(az_usable=False, aziel_usable=True)
+    assert aziel["suffix"] == ".aziel" and aziel["first_claim"] == "www.survivalnetwork.aziel"
+    assert aziel["pretended_az"] is False
+    pivot = select_claim_suffix(az_usable=False, aziel_usable=False, pivot_suffix=".mesh")
+    assert pivot["code"] == "AZG-SUFFIX-PIVOT"
+    assert pivot["first_claim"] == "www.survivalnetwork.mesh"
+    assert pivot["pretended_aziel"] is False
+    none = select_claim_suffix(az_usable=False, aziel_usable=False)
+    assert none["code"] == "AZG-SUFFIX-NONE"
+    icann_pivot = select_claim_suffix(az_usable=False, aziel_usable=False, pivot_suffix=".com")
+    assert icann_pivot["code"] == "AZG-SUFFIX-NONE"
+
+    gen = AzGenerator("node-04", vault=PaperVault(synthetic_papers(49)))
+    gen.set_suffix_availability(az_usable=False, aziel_usable=True)
+    flag = gen.tick(now_s=0)
+    assert flag["name"] == "www.survivalnetwork.aziel"
+    assert flag["suffix"] == ".aziel"
+    dead = claim_az_domain(origin_node="node-04", az_usable=False, aziel_usable=True, claimable=False)
+    assert dead["code"] == "AZG-FIRST-CLAIM-RESUME"
+    assert dead["fake_flag"] is False
+    assert dead["first_claim"] == "www.survivalnetwork.aziel"
+
+    zone = MeshDnsZone("node-05")
+    zone.publish(name="a.az")
+    zone.publish(name="b.az")
+    zone.publish(name="c.az")
+    assert zone.designate_public_pair(["a.az"])["code"] == "AZG-PUBLIC-PAIR"
+    assert zone.designate_public_pair(["a.az", "b.az", "c.az"])["code"] == "AZG-PUBLIC-PAIR"
+    ok_pair = zone.designate_public_pair(["a.az", "b.az"])
+    assert ok_pair["yes"] is True
+    assert zone.public_hosts() == ["a.az", "b.az"]
+    assert "NOT ICANN" in zone.zone_file()
+    assert claim_clock_ready(now_s=10, last_tick_s=0)["code"] == "AZG-CLOCK-HOLD"
+    law = az_generator_dict()
+    assert law["callable"] is False
+    assert law["dns_factory"] == "cap-7-mesh-authoritative"
+    assert law["public_host_pair"] == 2
+    assert law["suffix_order"][0] == ".az"
+    assert law["radio_phy"] is False
+    from miragegrid.mesh import refuse_radio_phy
+
+    phy = refuse_radio_phy(kind="rf")
+    assert phy["code"] == "AZG-NO-RADIO-PHY"
+    assert phy["radio_phy"] is False
+    assert phy["hub_get_enables_mesh"] is False
