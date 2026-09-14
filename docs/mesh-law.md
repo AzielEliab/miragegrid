@@ -150,14 +150,16 @@ Full text: [MIRAGE-GRID-SHIFT-1.0.md](MIRAGE-GRID-SHIFT-1.0.md).
 Public Plane-A hosts + the MirageGrid Worker are the AI-facing
 bridge. Cap-7 mesh names stay mesh-authoritative
 (`public_icann: false`). Crawlers pull `/llms.txt`, `/ai.txt`,
-`/cite.json`, `/bridge.json`, `/v1/bridge`, and
+`/cite.json`, `/bridge.json`, `/v1/bridge`,
+`/design-packs/azcorpus.json`, `/design-packs/azlibrary.json`, and
 `GET /v1/mesh/az-generator`. Re-expand is archive, not index.
 
-Mesh sites inherit hub **design** only (azieleliab.com,
-azielcorpuslibrary.net azcorpus+azlibrary, godlock.uk,
-hedidntjump.com). They do **not** resolve, redirect, or CNAME to
-those hubs. `design_of` is provenance. `resolves_to_hub` is false.
-`name_may_change` is true. Empty Cap-7 → SLOT empty list — do not
+Mesh names are relocatable labels, not a fifth public product.
+`azcorpus` + `azlibrary` are designs inside azielcorpuslibrary.net
+(download open; azlibrary upload is Plane-A token). They do **not**
+resolve, redirect, or CNAME to those hubs. `canonical_hub` /
+`design_of` is provenance. `resolves_to_hub` is false.
+`name_may_change` is true. Empty Cap-7 **claims** → SLOT — do not
 invent `www.survivalnetwork.az` as live HTTPS. Growth-ON.
 CROSS-NETWORK-SURVIVAL + NO-LIE.
 
@@ -230,7 +232,7 @@ First-class refuse law beside NO-LIE / NO-REWRITE.
 | `miragegrid/mesh.py` | Topology stays live. Law functions refuse illegal planes. |
 | `miragegrid/az_generator.py` | Deep-node Cap-7 mesh DNS factory, local vault, FRONT Node Gate exit. Not callable. |
 | Worker `mesh.js` | `/v1/mesh/*` PROXY. Stamps STW/CCS/RH/AZG/MGS/AIRGAP + paper-vault-on-node + SEMANTIC-BRIDGE. `/v1/mesh/vpn|hop|tunnel` refuse `MESH-STUB`. `/v1/mesh/reheal` is local law (not neighbor heal). `GET /v1/mesh/az-generator` cites law; `POST` refuses `AZG-NOT-CALLABLE`. `/v1/mesh/airgap` and `/v1/mesh/vault` cite local law. `GET` never enables mesh. |
-| Worker `bridge.js` | Growth-ON SEMANTIC-BRIDGE-1.0. `/llms.txt` `/ai.txt` `/bridge.json` `/v1/bridge`. Honest empty SLOT list when Cap-7 is empty. `design_of` is hub design provenance only. `resolves_to_hub` is false. Not ICANN. |
+| Worker `bridge.js` | Growth-ON SEMANTIC-BRIDGE-1.0. `/llms.txt` `/ai.txt` `/bridge.json` `/v1/bridge` `/design-packs/*`. Named mesh sites azcorpus+azlibrary listed as designs. Empty Cap-7 claims stay SLOT. `canonical_hub` / `design_of` is hub design provenance only. `resolves_to_hub` is false. Not ICANN. Not a fifth product. |
 | `POST /v1/assign` | Live session assignment. |
 
 Identity: **Aziel Eliab** only.

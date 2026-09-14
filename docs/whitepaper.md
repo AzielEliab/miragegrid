@@ -388,6 +388,8 @@ Public Plane-A hosts + the MirageGrid Worker are the AI-facing
 bridge. Cap-7 mesh names are not public ICANN DNS
 (`public_icann: false`). They inherit hub **design** only; they do
 not resolve, redirect, or CNAME to official hubs. `design_of` is
-provenance. `resolves_to_hub` is false. Empty Cap-7 is an empty SLOT
-list. Growth-ON. CROSS-NETWORK-SURVIVAL + NO-LIE. Re-expand is
-archive, not index.
+provenance. `resolves_to_hub` is false. Mesh names are not a fifth
+product. Named sites azcorpus + azlibrary are designs inside
+azielcorpuslibrary.net (hash-absolute `/design-packs/*`). Empty Cap-7
+**claims** stay SLOT. Growth-ON. CROSS-NETWORK-SURVIVAL + NO-LIE.
+Re-expand is archive, not index.

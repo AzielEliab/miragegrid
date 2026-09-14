@@ -3,6 +3,7 @@ import { handleRuntimeApi } from "./runtime.js";
 import { citeDocument, renderIndexHtml } from "./homepage.js";
 import {
   aiTxt,
+  designPackResponse,
   discoveryHeaders,
   hostedBridgeDocument,
   llmsTxt,
@@ -346,11 +347,26 @@ export default {
       });
     }
     if ((url.pathname === "/bridge.json" || url.pathname === "/bridge.json/" || url.pathname === "/v1/bridge" || url.pathname === "/v1/bridge/") && (request.method === "GET" || request.method === "HEAD")) {
-      const body = JSON.stringify(hostedBridgeDocument(), null, 2);
+      const doc = await hostedBridgeDocument();
+      const body = JSON.stringify(doc, null, 2);
       return new Response(request.method === "HEAD" ? null : body, {
         status: 200,
         headers: discoveryHeaders("application/json; charset=utf-8"),
       });
+    }
+    const packMatch = url.pathname.match(/^\/design-packs\/([a-z0-9-]+)\.json\/?$/);
+    if (packMatch && (request.method === "GET" || request.method === "HEAD")) {
+      const pack = await designPackResponse(packMatch[1], request.method === "HEAD");
+      if (pack) return pack;
+      return json(
+        {
+          ok: false,
+          code: "BRIDGE-PACK-SLOT",
+          message: "unknown design pack; empty claims stay SLOT",
+          public_icann: false,
+        },
+        404,
+      );
     }
     if ((url.pathname === "/cite.json" || url.pathname === "/cite.json/") && request.method === "GET") {
       return new Response(JSON.stringify(citeJson(), null, 2), {

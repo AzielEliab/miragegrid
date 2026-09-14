@@ -11,13 +11,16 @@ from pathlib import Path
 from miragegrid.az_generator import MeshDnsZone, PUBLIC_HOST_PAIR
 from miragegrid.mesh import mesh_law_dict
 from miragegrid.semantic_bridge import (
+    CORPUS_HUB,
     CROSS_NETWORK_SURVIVAL,
     DESIGN_HUBS,
     FIRST_CLAIM_NAME,
     PERSON_ID,
+    PREFERRED_PUBLIC_PAIR,
     SEMANTIC_BRIDGE_SPEC,
     build_bridge_registry,
     cap7_bridge_cite,
+    design_pack_sha256,
     hosted_bridge_document,
     refuse_azg_icann_publish,
     refuse_hub_resolution,
@@ -41,6 +44,8 @@ def test_law_stamp_public_icann_false_and_person() -> None:
     assert law["first_flag"] == FIRST_CLAIM_NAME
     assert law["suffix_order"] == [".az", ".aziel", "pivot"]
     assert law["public_host_pair"] == PUBLIC_HOST_PAIR
+    assert law["preferred_public_pair"] == list(PREFERRED_PUBLIC_PAIR)
+    assert law["fifth_product"] is False
     assert law["person"]["@id"] == PERSON_ID
     assert law["cross_network_survival"] == CROSS_NETWORK_SURVIVAL
     assert law["growth"] == "Growth-ON"
@@ -60,17 +65,40 @@ def test_empty_cap7_is_slot_empty_list() -> None:
     assert empty["ok"] is True
     assert empty["code"] == "BRIDGE-EMPTY"
     assert empty["honesty"] == "empty-cap-7"
-    assert empty["names"] == {}
     assert empty["slots"] == []
     assert empty["claimed"] == 0
     assert empty["invented_first_flag_https"] is False
     assert empty["public_icann"] is False
     assert FIRST_CLAIM_NAME not in empty["names"]
+    assert "azcorpus.az" in empty["names"]
+    assert "azlibrary.az" in empty["names"]
+    corpus = empty["names"]["azcorpus.az"]
+    library = empty["names"]["azlibrary.az"]
+    assert corpus["status"] == "named-mesh-site"
+    assert corpus["public_icann"] is False
+    assert corpus["download_open"] is True
+    assert corpus["upload_auth"] == "none"
+    assert corpus["canonical_hub"] == CORPUS_HUB
+    assert corpus["design_of"] == CORPUS_HUB
+    assert corpus["resolves_to_hub"] is False
+    assert corpus["fifth_product"] is False
+    assert corpus["name_may_change"] is True
+    assert corpus["design_pack"]["url"].endswith("/design-packs/azcorpus.json")
+    assert corpus["design_pack"]["sha256"] == design_pack_sha256("azcorpus")
+    assert library["upload_auth"] == "token"
+    assert library["upload_plane"] == "plane-a"
+    assert library["download_open"] is True
+    assert library["canonical_hub"] == CORPUS_HUB
+    assert library["fifth_product"] is False
+    assert "https-gateway" not in {corpus["status"], library["status"]}
     hosted = hosted_bridge_document()
-    assert hosted["names"] == {}
-    assert hosted["slots"] == []
     assert hosted["claimed"] == 0
-    assert "https-gateway" not in str(hosted["names"])
+    assert hosted["slots"] == []
+    assert hosted["code"] == "BRIDGE-EMPTY"
+    assert set(hosted["names"]) == {"azcorpus.az", "azlibrary.az"}
+    assert FIRST_CLAIM_NAME not in hosted["names"]
+    assert hosted["design_packs"]["azcorpus"]["sha256"] == design_pack_sha256("azcorpus")
+    assert hosted["design_packs"]["azlibrary"]["sha256"] == design_pack_sha256("azlibrary")
 
 
 def test_inventing_first_flag_https_refuses() -> None:
@@ -185,6 +213,40 @@ def test_zone_bridge_registry_does_not_map_to_hubs() -> None:
     assert first["public_gateway_url"] != "https://www.azielcorpuslibrary.net/"
     labels = {row["label"] for row in DESIGN_HUBS}
     assert labels == {"azieleliab", "azielcorpuslibrary", "godlock", "hedidntjump"}
+    assert "azcorpus.az" in doc["names"]
+    assert doc["names"]["azcorpus.az"]["fifth_product"] is False
+    assert doc["fifth_product"] is False
+
+
+def test_preferred_pair_bumps_generic_public_hosts() -> None:
+    zone = MeshDnsZone("node-pref")
+    zone.publish(name="a.az")
+    zone.publish(name="b.az")
+    assert zone.public_hosts() == ["a.az", "b.az"]
+    zone.publish(
+        name="azcorpus.az",
+        tip_hash=TIP,
+        design_of=CORPUS_HUB,
+        public_gateway_url="https://pair.example.workers.dev/corpus",
+    )
+    assert "azcorpus.az" in zone.public_hosts()
+    assert len(zone.public_hosts()) == PUBLIC_HOST_PAIR
+    zone.publish(
+        name="azlibrary.az",
+        tip_hash=PACK,
+        design_of=CORPUS_HUB,
+        public_gateway_url="https://pair.example.workers.dev/library",
+    )
+    assert set(zone.public_hosts()) == {"azcorpus.az", "azlibrary.az"}
+    preferred = MeshDnsZone("node-pref-first")
+    preferred.publish(name="azcorpus.az")
+    preferred.publish(name="azlibrary.az")
+    assert preferred.public_hosts() == ["azcorpus.az", "azlibrary.az"]
+    doc = preferred.bridge_registry()
+    assert doc["claimed"] == 2
+    assert doc["names"]["azcorpus.az"]["upload_auth"] == "none"
+    assert doc["names"]["azlibrary.az"]["upload_auth"] == "token"
+    assert doc["names"]["azcorpus.az"]["canonical_hub"] == CORPUS_HUB
 
 
 def test_docs_and_worker_surfaces_exist() -> None:
@@ -193,6 +255,11 @@ def test_docs_and_worker_surfaces_exist() -> None:
     assert "public_icann" in law
     assert "resolves_to_hub" in law
     assert "design_of" in law
+    assert "canonical_hub" in law
+    assert "azcorpus" in law
+    assert "azlibrary" in law
+    assert "design-packs" in law
+    assert "fifth public product" in law or "fifth product" in law
     assert "Growth-ON" in law
     assert "CROSS-NETWORK-SURVIVAL" in law
     assert "Visible 15:20 identity-lock HTML" in law
@@ -206,6 +273,8 @@ def test_docs_and_worker_surfaces_exist() -> None:
     assert "/llms.txt" in index
     assert "/ai.txt" in index
     assert "/v1/bridge" in index
+    assert "design-packs" in index
     toml = (ROOT / "workers" / "download-tracker" / "wrangler.toml").read_text(encoding="utf-8")
     assert "/llms.txt" in toml
     assert "/bridge.json" in toml
+    assert "/design-packs" in toml

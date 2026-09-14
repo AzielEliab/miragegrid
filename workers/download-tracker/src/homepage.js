@@ -309,7 +309,7 @@ ${JSON.stringify(jsonLd, null, 2)}
     <h2>How to cite</h2>
     <p>Aziel Eliab. MirageGrid. ${GITHUB_REPO}. ${HOST}. Zenodo software deposit needed (no DOI invented).</p>
     <p>Author: <strong>Aziel Eliab</strong> only · License: Apache-2.0 · Forks are welcome and always allowed.</p>
-    <p><a href="${CATALOG}">Catalog</a> · <a href="${GITHUB_REPO}">GitHub</a> · <a href="${HOST}/download">Download</a> · <a href="${HOST}/cite.json">cite.json</a> · <a href="${HOST}/llms.txt">llms.txt</a> · <a href="${HOST}/v1/bridge">bridge</a></p>
+    <p><a href="${CATALOG}">Catalog</a> · <a href="${GITHUB_REPO}">GitHub</a> · <a href="${HOST}/download">Download</a> · <a href="${HOST}/cite.json">cite.json</a> · <a href="${HOST}/llms.txt">llms.txt</a> · <a href="${HOST}/v1/bridge">bridge</a> · <a href="${HOST}/design-packs/azcorpus.json">azcorpus pack</a> · <a href="${HOST}/design-packs/azlibrary.json">azlibrary pack</a></p>
     <pre>${escapeHtml(JSON.stringify(cite, null, 2))}</pre>
   </section>
 

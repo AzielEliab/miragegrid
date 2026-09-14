@@ -348,6 +348,9 @@ export const SEMANTIC_BRIDGE = Object.freeze({
   first_flag: FIRST_CLAIM_NAME,
   suffix_order: [".az", ".aziel", "pivot"],
   public_host_pair: 2,
+  preferred_public_pair: ["azcorpus", "azlibrary"],
+  named_mesh_sites: ["azcorpus", "azlibrary"],
+  fifth_product: false,
   access: { aznet: true, azbrowser: true, merge: false, naked_public_dns: false },
   softwares_tab: false,
 });

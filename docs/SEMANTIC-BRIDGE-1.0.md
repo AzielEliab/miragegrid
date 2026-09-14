@@ -29,9 +29,11 @@ Crawlers (GPTBot and peers) **pull machine maps from these bridge
 URLs**. They do **not** resolve mesh-only `.az` on public ICANN DNS.
 `public_icann` stays **false**.
 
-Mesh names are **cited** with SHA-256 tips (and optional design-pack
-hashes). The bridge is a map, not a registrar write and not a living
-network.
+Mesh names are **cited** with SHA-256 tips and hash-absolute design
+packs. A mesh name is a relocatable claim label (`name_may_change`),
+not a fifth public product. The four online hubs stay canonical.
+`canonical_hub` + Person `@id` + tip / pack SHA-256 stay those hubs.
+The bridge is a map, not a registrar write and not a living network.
 
 ## What this is not
 
@@ -49,8 +51,10 @@ network.
 The Cap-7 mesh DNS factory lives **deep-node → FRONT Node Gate**. It
 is not callable. Suffix honesty: **`.az` → `.aziel` → pivot**. Exactly
 **2** of Cap-7 are public HTTPS gateways; the rest stay mesh / AZNet.
-Browsing mesh names is **AZNet + AZBrowser pairing** or those two
-gateways — never “opens azieleliab.com”.
+Prefer **azcorpus + azlibrary** as that public host pair when claiming,
+or map them as mesh names mirrored by the two gateways. Browsing mesh
+names is **AZNet + AZBrowser pairing** or those two gateways — never
+“opens azieleliab.com”. Do **not** invent live ICANN success.
 
 Cap-7 mesh sites do **not** resolve, redirect, or CNAME to the four
 ICANN hubs. They only inherit the **design** (website design / UX /
@@ -63,11 +67,21 @@ product shape) of:
 | https://godlock.uk/ | godlock |
 | https://hedidntjump.com/ | hedidntjump |
 
-`design_of` is that canonical hub URL — **design provenance only**.
-`resolves_to_hub` is always **false**. `name_may_change` is **true**
-(suffix pivot, cloak burst, Cap-7 slot reuse). Tip and design-pack
-SHA-256 are for **download-to-node** (pull-only; hash-absolute). Do
-**not** map `mesh_name` → hub hostname as resolution.
+`design_of` / `canonical_hub` is that hub URL — **design provenance
+only**. `resolves_to_hub` is always **false**. `name_may_change` is
+**true** (`.az` → `.aziel` → pivot, cloak burst, Cap-7 slot reuse).
+Tip and design-pack SHA-256 are for **download-to-node** (pull-only;
+hash-absolute). Website designs ship as Worker packs:
+
+| Mesh label | Design | `upload_auth` | Pack |
+| --- | --- | --- | --- |
+| `azcorpus` (`azcorpus.az`) | public Corpus shelf | `none` | `/design-packs/azcorpus.json` |
+| `azlibrary` (`azlibrary.az`) | Aziel Library (Plane-A token upload) | `token` | `/design-packs/azlibrary.json` |
+
+Both have `download_open: true`, `public_icann: false`, access
+AZNet + AZBrowser. They live **inside**
+https://www.azielcorpuslibrary.net/ — not separate ICANN sites.
+Do **not** map `mesh_name` → hub hostname as resolution.
 
 ## Honesty (NO-LIE / NO-FAN / CROSS-NETWORK-SURVIVAL)
 
@@ -75,7 +89,9 @@ CROSS-NETWORK-SURVIVAL is matching bytes, not a living network. The
 bridge publishes maps so copies and tips can be found. Receipts still
 hash. No rewrite key. The network never lies to stay alive.
 
-- Empty Cap-7 → **SLOT empty list**. `names` is `{}`. Do **not** invent
+- Empty Cap-7 **claims** → **SLOT** (`claimed: 0`, `slots: []`). Named
+  mesh sites `azcorpus.az` + `azlibrary.az` stay listed as designs
+  (status `named-mesh-site`), not live ICANN hosts. Do **not** invent
   `www.survivalnetwork.az` as live HTTPS if it is not hosted.
 - When local claims exist, list them honestly (status, tip, access,
   design provenance). Missing tip / missing pack → omit the hash; do
@@ -97,7 +113,9 @@ Hosted Worker, Growth-ON:
 | `GET /llms.txt` | Agent discovery (llmstxt). HTTP 200. |
 | `GET /ai.txt` | Compact machine twin of the same law. |
 | `GET /cite.json` | Citation record plus Cap-7 bridge section. |
-| `GET /bridge.json` and `GET /v1/bridge` | Stable JSON map. |
+| `GET /bridge.json` and `GET /v1/bridge` | Stable JSON map (named sites + empty Cap-7 SLOT). |
+| `GET /design-packs/azcorpus.json` | Hash-absolute Corpus shelf design pack. |
+| `GET /design-packs/azlibrary.json` | Hash-absolute Aziel Library design pack. |
 | `GET /v1/mesh/az-generator` | Cap-7 factory cite (`public_icann: false`). |
 | `GET /robots.txt` | Allow + Content-Signal `ai-input` / `ai-train` / `search` yes; explicit GPTBot / Claude / Perplexity / Google-Extended Allow. |
 | `GET /sitemap.xml` | Includes bridge, llms, az-generator cite. |
@@ -109,6 +127,10 @@ Locked fields:
 - `first_flag` — first-claim label (`www.survivalnetwork.az` on `.az`)
 - `suffix_order` — `[".az", ".aziel", "pivot"]`
 - `public_host_pair` — `2`
+- `preferred_public_pair` — `["azcorpus", "azlibrary"]`
+- `canonical_hubs` — the four online hubs
+- `named_mesh_sites` — `azcorpus`, `azlibrary`
+- `fifth_product` — `false`
 - `public_icann` — `false`
 - AZNet / AZBrowser access (pair, never merge; not naked public DNS)
 - link to `/v1/mesh/az-generator`
@@ -120,18 +142,22 @@ Locked fields:
 
 | Field | Law |
 | --- | --- |
-| `status` | `slot-empty` / `mesh-only` / `https-gateway` / `claimed-unhosted` |
-| `tip_sha256` | present only when a real tip exists |
-| `design_pack_sha256` | present only when a real pack exists (download-to-node) |
+| `status` | `named-mesh-site` / `mesh-only` / `https-gateway` / `claimed-unhosted` |
+| `tip_sha256` | present only when a real tip exists (named sites use pack sha256) |
+| `design_pack` / `design_pack_sha256` | hash-absolute pack URL + sha256 when real |
 | `public_gateway_url` | present only when that name is a hosted public gateway |
-| `access` | `aznet` \| `azbrowser` \| `https-gateway` |
-| `icann` | `false` |
-| `design_of` | canonical hub URL, design provenance only (or omitted) |
+| `access` | AZNet + AZBrowser (named sites) or `aznet` \| `azbrowser` \| `https-gateway` |
+| `icann` / `public_icann` | `false` |
+| `canonical_hub` / `design_of` | hub URL, design provenance only |
+| `download_open` | `true` for azcorpus / azlibrary |
+| `upload_auth` | `none` (azcorpus public rules) / `token` (azlibrary Plane-A) |
 | `resolves_to_hub` | `false` |
 | `name_may_change` | `true` |
+| `fifth_product` | `false` |
 
-Empty Cap-7 uses `slots: []` and `names: {}`. First-flag is cited as
-law, not as a live HTTPS row.
+Empty Cap-7 **claims** use `slots: []` and `claimed: 0`. `names` lists
+the named mesh sites. First-flag is cited as law, not as a live HTTPS
+row.
 
 ## Access
 
@@ -154,8 +180,9 @@ does not operate Node Gate and does not claim `.az` names.
 - AZG live ICANN / Cloudflare registrar publish
 - Mapping `mesh_name` → hub hostname as resolution, CNAME, or redirect
 - `resolves_to_hub: true`
-- Inventing `www.survivalnetwork.az` as live HTTPS when Cap-7 is empty
-  or that name is not hosted
+- Inventing live ICANN success or a fifth public product
+- Inventing `www.survivalnetwork.az` as live HTTPS when Cap-7 claims
+  are empty or that name is not hosted
 - Invented tip / design-pack SHA-256
 - Naked public DNS as the access story
 - Calling the generator from the Worker
