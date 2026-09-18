@@ -5,6 +5,8 @@
  * Author: Aziel Eliab only.
  */
 
+import { outlastHonesty } from "../../download-tracker/src/mesh.js";
+
 export const CAP7_SHUFFLE_SPEC = "CAP7-SHUFFLE-1.0";
 export const SEMANTIC_BRIDGE_SPEC = "SEMANTIC-BRIDGE-1.0";
 export const IDENTITY = "Aziel Eliab";
@@ -154,6 +156,11 @@ export function siteRecord(site) {
     worker_path: APP_HOST + path,
     aznet_endpoint: "aznet://cap7/" + label,
     update_path: publicPair ? APP_HOST + path + "/update" : "aznet://cap7/" + label + "/update",
+    hosted_status: "SLOT",
+    hosted_update: "SLOT",
+    is_live_door: false,
+    aznet_payload_host: false,
+    channel_plane_is_vpn: false,
     person: personId(),
     author: IDENTITY,
   };
@@ -202,7 +209,8 @@ export function cap7ShuffleDict() {
     invented_first_flag_https: false,
     canonical_hubs: [HUB_AE, HUB_CORPUS, HUB_GODLOCK, HUB_HDJ],
     named_mesh_designs: ["azcorpus", "azlibrary"],
-    note: "Nodes ping the app Worker until they land on one Cap-7 site. That land is the update endpoint for the round. No single hard-coded Cap-7 host.",
+    ...outlastHonesty(),
+    note: "Nodes ping the app Worker until they land on one Cap-7 site. That land is the update endpoint for the round. No single hard-coded Cap-7 host. Public land/update is cite/coordination (SLOT exec). FragGate stays THE door.",
   };
 }
 
@@ -250,7 +258,13 @@ export function hostedBridgeDoors() {
       aznet_side_https: "SLOT",
       mesh_az_icann: "SLOT",
       first_flag_https: "SLOT",
+      hosted_endpoints: "SLOT",
+      hosted_update: "SLOT",
+      public_shuffle_land_exec: "SLOT",
+      channel_plane_is_vpn: false,
+      second_door: false,
     },
+    ...outlastHonesty(),
     az_generator: law.az_generator,
     note: law.note,
   };
@@ -283,6 +297,11 @@ export function publicGateway(label) {
       aznet: true,
       aznet_endpoint: row.aznet_endpoint,
       public_icann: false,
+      resolves_to_hub: false,
+      radio_phy: false,
+      hosted_endpoints: "SLOT",
+      aznet_payload_host: false,
+      is_live_door: false,
       spec: CAP7_SHUFFLE_SPEC,
       author: IDENTITY,
     };
@@ -325,6 +344,9 @@ export function aznetCite(label) {
     honesty_public: row.honesty_public,
     public_https: row.browser_reachable,
     aznet_plane: true,
+    hosted_endpoints: "SLOT",
+    aznet_payload_host: false,
+    is_live_door: false,
     spec: CAP7_SHUFFLE_SPEC,
   };
 }

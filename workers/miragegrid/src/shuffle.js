@@ -16,7 +16,7 @@ import {
   cap7ShuffleDict,
   siteRecord,
 } from "./cap7.js";
-import { refuseCallGenerator, refuseGetEnableOrPlant } from "../../download-tracker/src/mesh.js";
+import { outlastHonesty, refuseCallGenerator, refuseGetEnableOrPlant } from "../../download-tracker/src/mesh.js";
 
 function verdict(ok, code, v, message, extra) {
   return {
@@ -124,6 +124,11 @@ export async function applyUpdate(body, { method } = {}) {
     resolves_to_hub: false,
     public_icann: false,
     radio_phy: false,
+    hosted_update: "SLOT",
+    public_shuffle_land_exec: "SLOT",
+    is_live_door: false,
+    channel_plane_is_vpn: false,
+    second_door: false,
     spec: CAP7_SHUFFLE_SPEC,
     author: IDENTITY,
     identity: IDENTITY,
@@ -181,6 +186,11 @@ export async function ping(body, { method } = {}) {
   if (b.hardcoded_host) {
     return verdict(false, "CAP7-NO-HARDCODED-HOST", "refuse", "update shuffle has no single hard-coded Cap-7 host; land comes from the ping seed", {
       hardcoded_host: false,
+    });
+  }
+  if (b.channel_plane_is_vpn || b.hosted_vpn || b.pairing_is_tunnel || b.second_door || b.open_proxy) {
+    return verdict(false, "CAP7-NO-VPN-LIE", "refuse", "hosted Cap-7 is a communication/cite plane; not a VPN, tunnel, second FragGate door, or open proxy", {
+      ...outlastHonesty(),
     });
   }
 
@@ -241,6 +251,11 @@ export async function ping(body, { method } = {}) {
       radio_phy: false,
       public_icann: false,
       resolves_to_hub: false,
+      hosted_update: "SLOT",
+      public_shuffle_land_exec: "SLOT",
+      is_live_door: false,
+      channel_plane_is_vpn: false,
+      second_door: false,
       app_worker: appWorker(),
     },
   );
