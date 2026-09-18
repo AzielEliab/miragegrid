@@ -1130,6 +1130,7 @@ GET_MUTATION_PATHS: frozenset[str] = frozenset(
         "/v1/mesh/radios",
         "/v1/mesh/call-generator",
         "/v1/mesh/run-generator",
+        "/v1/shuffle/update",
     }
 )
 
@@ -1142,7 +1143,10 @@ def _query_has_enable_or_plant(search: str | None) -> bool:
         return False
     from urllib.parse import parse_qsl
 
-    for key, val in parse_qsl(raw, keep_blank_values=True):
+    pairs = dict(parse_qsl(raw, keep_blank_values=True))
+    if str(pairs.get("prev") or "").strip() and str(pairs.get("lockset") or "").strip():
+        return True
+    for key, val in pairs.items():
         k = _norm_verb(key)
         v = _norm_verb(val)
         if k in GET_ENABLE_PLANT_INTENTS or v in GET_ENABLE_PLANT_INTENTS:
@@ -1164,10 +1168,12 @@ def refuse_get_enable_or_plant(
     path_only = str(path or "").split("?")[0].rstrip("/") or "/"
     if not path_only.startswith("/"):
         path_only = "/" + path_only
+    shuffle_update = path_only.endswith("/update") and ("/shuffle" in path_only or "/cap7/" in path_only)
     intent = (
         _query_has_enable_or_plant(search)
         or path_only in GET_MUTATION_PATHS
         or path_only.endswith("/enable")
+        or shuffle_update
     )
     if not intent:
         return None

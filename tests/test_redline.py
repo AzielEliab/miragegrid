@@ -178,6 +178,10 @@ def test_smaller_door_surface_in_worker_and_docs() -> None:
         assert f'"{door}"' in MESH_JS
     assert "/v1/mesh/call-generator" in MESH_JS
     assert "queryHasEnableOrPlant" in MESH_JS
+    planted = refuse_get_enable_or_plant(method="GET", path="/v1/shuffle/ping", search="prev=p&lockset=l")
+    assert planted is not None and planted["code"] == "MESH-GET-NO-ENABLE"
+    upd = refuse_get_enable_or_plant(method="GET", path="/v1/shuffle/update")
+    assert upd is not None and upd["code"] == "MESH-GET-NO-ENABLE"
 
 
 def test_g6_live_host_cite_design_of_and_shelves() -> None:

@@ -309,6 +309,7 @@ docs/MIRAGE-GRID-SHIFT-1.0.md  Node Gate · cloak burst · MESH-VAULT grid shift
 docs/AIRGAP-1.0.md     local vault · no bearer radios · no climb-back
 docs/SEMANTIC-BRIDGE-1.0.md  AI discovery of Cap-7 names · not ICANN · design_of only
 docs/REDLINE-1.0.md        attack-surface law · GET never enables · sims REFUSE
+docs/audit/                Cap-7 LIVE Worker security findings + follow-on
 examples/              assign a circuit
 workers/download-tracker/   Cloudflare Worker + wrangler.toml (undeployed)
 CONTRIBUTING.md        forks first-class; lawful privacy mesh VPN

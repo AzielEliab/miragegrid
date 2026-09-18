@@ -1,6 +1,7 @@
 import worker from "./src/index.js";
 import { CAP7_FACTORY_SITES, FACTORY_LABELS, PUBLIC_PAIR, hostedBridgeDoors, publicGateway } from "./src/cap7.js";
 import { applyUpdate, landIndex, ping, shuffleCite, shuffleSeed } from "./src/shuffle.js";
+import { applyGridShift, attachQnsCd } from "../download-tracker/src/mesh.js";
 
 function assert(cond, label) {
   if (!cond) throw new Error(label);
@@ -115,5 +116,34 @@ assert(updBody.resolves_to_hub === false, "worker update resolves_to_hub false")
 const getUpd = await call("/v1/shuffle/update");
 const getUpdBody = await getUpd.json();
 assert(getUpd.status === 403 && getUpdBody.code === "MESH-GET-NO-ENABLE", "GET update refuses");
+
+assert(landIndex("f".repeat(64)) === Number(BigInt("0x" + "f".repeat(16)) % 7n), "bigint land");
+assert(landIndex("f".repeat(64)) === 1, "land f*64 is 1");
+
+const getPlant = await call("/v1/shuffle/ping?prev=p&lockset=l&node_id=node-01");
+const getPlantBody = await getPlant.json();
+assert(getPlant.status === 403 && getPlantBody.code === "MESH-GET-NO-ENABLE", "GET ping prev+lockset plants not");
+
+const getCapUpd = await call("/cap7/azgrid/update");
+const getCapUpdBody = await getCapUpd.json();
+assert(getCapUpd.status === 403 && getCapUpdBody.code === "MESH-GET-NO-ENABLE", "GET cap7 update refuses");
+
+const burst = applyGridShift({ cloak_burst: true, names: ["evil.az", "takeover.az"] });
+assert(burst.ok === false && burst.code === "MGS-NO-HOSTED-PLANT", "hosted cloak burst refuses " + burst.code);
+
+const stamped = attachQnsCd({ ok: true, node_gate: true, auto_heal: true, anonymity_network: true, enabled: true });
+assert(stamped.node_gate === false, "overlay node_gate");
+assert(stamped.auto_heal === false, "overlay auto_heal");
+assert(stamped.anonymity_network === false, "overlay anonymity");
+assert(stamped.this_worker_is_node_gate === false, "overlay this worker");
+assert(stamped.enabled === true, "enabled status preserved");
+
+const badNode = await call("/v1/shuffle/ping", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ node_id: "A".repeat(200), round_id: "r" }),
+});
+const badNodeBody = await badNode.json();
+assert(badNodeBody.code === "CAP7-BAD-NODE-ID", "bad node id " + badNodeBody.code);
 
 console.log("cap7 shuffle worker smoke ok land=" + pingBody.land.label);

@@ -395,6 +395,7 @@ export const GET_MUTATION_PATHS = Object.freeze([
   "/v1/mesh/radios",
   "/v1/mesh/call-generator",
   "/v1/mesh/run-generator",
+  "/v1/shuffle/update",
 ]);
 export const FOLDLOCK_CITE = Object.freeze({
   law: "FOLDLOCK",
@@ -455,7 +456,23 @@ export function meshLawFields() {
 
 export function attachQnsCd(data) {
   if (!data || typeof data !== "object" || Array.isArray(data)) return data;
-  return { ...data, ...qnsCdFields(), ...meshLawFields() };
+  // Worker honesty last. Suite mesh envelopes must not paint this Worker as
+  // Node Gate, auto-heal, or an anonymity network. enabled stays status.
+  return {
+    ...data,
+    ...qnsCdFields(),
+    ...meshLawFields(),
+    node_gate: false,
+    auto_heal: false,
+    anonymity_network: false,
+    radio_phy: false,
+    public_icann: false,
+    resolves_to_hub: false,
+    hub_get_enables_mesh: false,
+    this_worker_is_node_gate: false,
+    hosted_hop: false,
+    fraggate_single_door: true,
+  };
 }
 
 export function attachMeshLaw(data) {
@@ -576,6 +593,9 @@ export function queryHasEnableOrPlant(search) {
   if (!q) return false;
   let params;
   try { params = new URLSearchParams(q); } catch { return false; }
+  const prev = String(params.get("prev") || "").trim();
+  const lockset = String(params.get("lockset") || "").trim();
+  if (prev && lockset) return true;
   for (const [k, v] of params.entries()) {
     const key = normVerb(k);
     const val = normVerb(v);
@@ -591,7 +611,8 @@ export function refuseGetEnableOrPlant(method, path, search) {
   const m = String(method || "GET").toUpperCase();
   if (m !== "GET" && m !== "HEAD") return null;
   const pathOnly = normalizeMeshPath(path);
-  const intent = queryHasEnableOrPlant(search) || GET_MUTATION_PATHS.includes(pathOnly) || pathOnly.endsWith("/enable");
+  const shuffleUpdate = pathOnly.endsWith("/update") && (pathOnly.includes("/shuffle") || pathOnly.includes("/cap7/"));
+  const intent = queryHasEnableOrPlant(search) || GET_MUTATION_PATHS.includes(pathOnly) || pathOnly.endsWith("/enable") || shuffleUpdate;
   if (!intent) return null;
   return lawVerdict(false, "MESH-GET-NO-ENABLE", "refuse", "GET never enables radios or plants mesh claims", {
     enabled: false,
@@ -917,12 +938,14 @@ export function applyGridShift(body) {
   }
   const names = Array.isArray(b.names) ? b.names.map(normalizeAzName) : [];
   if (b.cloak_burst) {
-    const already = Number(b.already_claimed || 0) || 0;
-    if (already + names.length > CAP_7 || names.length > CAP_7) {
-      return lawVerdict(false, "AZG-CAP-7", "refuse", "cloak burst cannot exceed Cap-7 spare/claimed .az names", { cap: CAP_7 });
-    }
-    return lawVerdict(true, "MGS-CLOAK-BURST", "yes", "cloak burst planted spare .az names; originating node IP hidden", {
-      names, cap: CAP_7, cloak: true, softwares_tab: false,
+    return lawVerdict(false, "MGS-NO-HOSTED-PLANT", "refuse", "cloak burst is FRONT Node Gate / local node only; hosted Worker does not plant .az names", {
+      names: [],
+      cap: CAP_7,
+      cloak: false,
+      hosted_plant: false,
+      public_icann: false,
+      this_worker_is_node_gate: false,
+      spec: GRID_SHIFT_SPEC,
     });
   }
   return lawVerdict(true, "MGS-SHIFT-OK", "yes", "grid shift: .az stays answerable; node cloaked/hidden after domain pull", {
@@ -1320,7 +1343,8 @@ async function originFetch(env, pathAndQuery, init, request) {
   const headers = new Headers((init && init.headers) || {});
   if (!headers.has("User-Agent") && !headers.has("user-agent")) headers.set("User-Agent", "Mozilla/5.0");
   if (!headers.has("Accept") && !headers.has("accept")) headers.set("Accept", "application/json");
-  headers.set("X-Aziel-Runtime-Via", "miragegrid-download-tracker");
+  const viaName = (env && (env.WORKER_ROLE || env.PRODUCT)) || "miragegrid-download-tracker";
+  headers.set("X-Aziel-Runtime-Via", String(viaName));
   const next = { ...(init || {}), headers };
   if (!next.signal && typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
     next.signal = AbortSignal.timeout(20000);
@@ -1328,6 +1352,9 @@ async function originFetch(env, pathAndQuery, init, request) {
 
   const raw = String(pathAndQuery == null ? "" : pathAndQuery);
   const path = raw.startsWith("/") ? raw : `/${raw}`;
+  if (path.includes("..")) {
+    throw new Error("Mesh path traversal refused.");
+  }
   const door_url = joinOriginUrl(runtimeOrigin(env), path);
   const bind = runtimeService(env);
   if (bind) {
@@ -1533,10 +1560,21 @@ export async function runMeshProxy(env, request, pathAndQuery) {
 
   let body;
   if (method === "POST") {
+    const clen = Number(request && request.headers ? request.headers.get("Content-Length") || "0" : "0");
+    if (Number.isFinite(clen) && clen > 65536) {
+      return { status: 413, data: meshErrFields({ message: "Mesh request too large.", extra: { code: "MESH-BODY-TOO-LARGE" } }) };
+    }
     try {
       body = await request.json();
     } catch {
       body = {};
+    }
+    try {
+      if (JSON.stringify(body).length > 65536) {
+        return { status: 413, data: meshErrFields({ message: "Mesh request too large.", extra: { code: "MESH-BODY-TOO-LARGE" } }) };
+      }
+    } catch {
+      /* ignore stringify */
     }
     const dirty = refuseReheal(body);
     if (dirty) return { status: 403, data: dirty };
@@ -1584,8 +1622,9 @@ export async function runMeshProxy(env, request, pathAndQuery) {
 
   const res = fetched.res;
   const via = fetched.via;
+  const MAX_MESH_BYTES = 2 * 1024 * 1024;
   const len = Number(res.headers.get("Content-Length") || "0");
-  if (Number.isFinite(len) && len > 2 * 1024 * 1024) {
+  if (Number.isFinite(len) && len > MAX_MESH_BYTES) {
     return {
       status: 502,
       data: meshErrFields({
@@ -1602,7 +1641,20 @@ export async function runMeshProxy(env, request, pathAndQuery) {
     return { status: res.status, data: attachQnsCd({ ok: res.ok, code: res.ok ? "MESH-OK" : "MESH-ERR", door: "mesh", via, enabled: false }) };
   }
 
-  const text = await res.text();
+  const buf = await res.arrayBuffer();
+  if (buf.byteLength > MAX_MESH_BYTES) {
+    return {
+      status: 502,
+      data: meshErrFields({
+        message: "Mesh response too large for this Worker proxy.",
+        door_url: fetched.door_url || door_url,
+        http_status: res.status,
+        content_type: res.headers.get("Content-Type") || "",
+        via,
+      }),
+    };
+  }
+  const text = new TextDecoder().decode(buf);
   let data;
   try {
     data = text ? JSON.parse(text) : null;
