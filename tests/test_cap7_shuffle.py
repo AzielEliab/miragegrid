@@ -178,6 +178,27 @@ def test_bridge_doors_and_app_worker_live() -> None:
     assert dead_named_worker()["status"] == "live-app"
 
 
+def test_land_index_uses_full_width_int() -> None:
+    seed = "f" * 64
+    assert land_index(seed) == int(seed[:16], 16) % 7
+    assert land_index(seed) == 1
+
+
+def test_get_prev_lockset_does_not_plant_update() -> None:
+    planted = ping(node_id="node-01", prev="p", lockset="l", method="GET")
+    assert planted["ok"] is False
+    assert planted["code"] == "MESH-GET-NO-ENABLE"
+    cite = ping(node_id="node-01", round_id="audit-round", method="GET")
+    assert cite["code"] == "CAP7-LAND"
+    assert cite["update"] is False
+
+
+def test_bad_node_id_refused() -> None:
+    bad = ping(node_id="A" * 200, round_id="r")
+    assert bad["ok"] is False
+    assert bad["code"] == "CAP7-BAD-NODE-ID"
+
+
 def test_app_worker_wrangler_named_miragegrid() -> None:
     assert '"name": "miragegrid"' in APP_CFG
     assert "ac575a9b822bea2bed97d0ab73aed238" in APP_CFG

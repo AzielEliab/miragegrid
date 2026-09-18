@@ -49,10 +49,32 @@ export async function shuffleSeed({ prev, lockset, round_id } = {}) {
 
 export function landIndex(seedHex) {
   const hex = String(seedHex || "").replace(/[^0-9a-f]/gi, "").toLowerCase();
-  const slice = (hex || "0").slice(0, 16);
-  const n = Number.parseInt(slice, 16);
-  if (!Number.isFinite(n)) return 0;
-  return n % CAP_7;
+  const slice = (hex || "0").padStart(1, "0").slice(0, 16);
+  // 16 hex digits are 64 bits — Number.parseInt loses precision above 2^53-1.
+  try {
+    return Number(BigInt("0x" + slice) % BigInt(CAP_7));
+  } catch {
+    return 0;
+  }
+}
+
+const NODE_ID_RE = /^[A-Za-z0-9._-]{1,80}$/;
+
+export function sanitizeNodeId(raw) {
+  const node = String(raw || "").trim();
+  if (!node) return { ok: true, node_id: "anonymous" };
+  if (!NODE_ID_RE.test(node)) {
+    return {
+      ok: false,
+      code: "CAP7-BAD-NODE-ID",
+      verdict: "refuse",
+      yes: false,
+      message: "node_id must be 1–80 [A-Za-z0-9._-]",
+      spec: CAP7_SHUFFLE_SPEC,
+      author: IDENTITY,
+    };
+  }
+  return { ok: true, node_id: node };
 }
 
 export function landSite(seedHex) {
@@ -162,12 +184,29 @@ export async function ping(body, { method } = {}) {
     });
   }
 
+  const prev = String(b.prev || "").trim();
+  const lock = String(b.lockset || "").trim();
+  if ((m === "GET" || m === "HEAD") && prev && lock) {
+    return {
+      ok: false,
+      code: "MESH-GET-NO-ENABLE",
+      verdict: "refuse",
+      yes: false,
+      message: "GET never plants an update; POST /v1/shuffle/update after ping→land",
+      get_never_plants: true,
+      spec: CAP7_SHUFFLE_SPEC,
+      author: IDENTITY,
+    };
+  }
+
   const seed = await shuffleSeed({
     prev: b.prev,
     lockset: b.lockset,
     round_id: b.round_id || b.round,
   });
-  const node = String(b.node_id || b.node || "").trim() || "anonymous";
+  const nodeRow = sanitizeNodeId(b.node_id || b.node);
+  if (!nodeRow.ok) return nodeRow;
+  const node = nodeRow.node_id;
   if (!seed) {
     return verdict(true, "CAP7-PING", "yes", "ping accepted; supply prev+lockset (update proof) or round_id to land", {
       phase: "ping",
@@ -182,7 +221,7 @@ export async function ping(body, { method } = {}) {
   }
 
   const site = landSite(seed);
-  const update = !!(String(b.prev || "").trim() && String(b.lockset || "").trim());
+  const update = m !== "GET" && m !== "HEAD" && !!(prev && lock);
   return verdict(
     true,
     "CAP7-LAND",
