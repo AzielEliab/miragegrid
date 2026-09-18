@@ -28,7 +28,7 @@ import {
   hostedBridgeDoors,
   publicGateway,
 } from "./cap7.js";
-import { ping, shuffleCite } from "./shuffle.js";
+import { applyUpdate, ping, shuffleCite } from "./shuffle.js";
 import { citeDocument, renderIndexHtml } from "./homepage.js";
 
 const SKILL = `---
@@ -51,6 +51,7 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | GET | \`/bridge\` | LIVE door for aziel-runtime. Cap-7 shuffle + honesty. |
 | GET | \`/v1/shuffle\` | CAP7-SHUFFLE-1.0 cite. |
 | POST | \`/v1/shuffle/ping\` | Ping until land. |
+| POST | \`/v1/shuffle/update\` | Update via the landed Cap-7 site. |
 | GET | \`/v1/cap7\` | Seven factory sites. SLOT vs LIVE. |
 | GET | \`/v1/health\` | Liveness. |
 | GET | \`/v1/skill\` | This markdown. |
@@ -96,6 +97,7 @@ function openapiSpec() {
       "/bridge": { get: { operationId: "miragegrid_bridge", summary: "Cap-7 shuffle + SEMANTIC-BRIDGE doors." } },
       "/v1/shuffle": { get: { operationId: "miragegrid_shuffle_cite", summary: "CAP7-SHUFFLE-1.0 cite." } },
       "/v1/shuffle/ping": { post: { operationId: "miragegrid_shuffle_ping", summary: "Ping until land." } },
+      "/v1/shuffle/update": { post: { operationId: "miragegrid_shuffle_update", summary: "Update via the landed Cap-7 site. No hard-coded host." } },
       "/v1/cap7": { get: { operationId: "miragegrid_cap7", summary: "Factory roster. Honest SLOT vs LIVE." } },
       "/v1/health": { get: { operationId: "health", summary: "Liveness." } },
       "/v1/skill": { get: { operationId: "skill", summary: "Skill markdown." } },
@@ -216,6 +218,20 @@ export default {
         { method },
       );
       return json(landed);
+    }
+
+    if (path === "/v1/shuffle/update") {
+      if (method !== "POST") {
+        return json(await applyUpdate({}, { method }), method === "GET" || method === "HEAD" ? 403 : 405);
+      }
+      let body = {};
+      try {
+        body = await request.json();
+      } catch {
+        body = {};
+      }
+      const out = await applyUpdate(body, { method });
+      return json(out, out.ok ? 200 : 403);
     }
 
     if (path === "/v1/cap7" && (method === "GET" || method === "HEAD")) {

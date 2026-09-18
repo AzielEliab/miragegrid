@@ -231,6 +231,74 @@ def land_site(seed_hex: str) -> dict[str, Any]:
     return site_record(CAP7_FACTORY_SITES[land_index(seed_hex)])
 
 
+def apply_update(
+    *,
+    node_id: str | None = None,
+    prev: str | None = None,
+    lockset: str | None = None,
+    round_id: str | None = None,
+    radio_phy: bool = False,
+    inbound_call: bool = False,
+    public_icann: bool = False,
+    resolves_to_hub: bool = False,
+    hardcoded_host: str | None = None,
+    invent_first_flag: bool = False,
+) -> dict[str, Any]:
+    """Third hop: ping must already be able to land; land is this round's update door."""
+    landed = ping(
+        node_id=node_id,
+        prev=prev,
+        lockset=lockset,
+        round_id=round_id,
+        radio_phy=radio_phy,
+        inbound_call=inbound_call,
+        public_icann=public_icann,
+        resolves_to_hub=resolves_to_hub,
+        hardcoded_host=hardcoded_host,
+        invent_first_flag=invent_first_flag,
+        method="POST",
+    )
+    if not landed.get("ok"):
+        return landed
+    if landed.get("phase") != "land" or not landed.get("land"):
+        return _verdict(
+            True,
+            "CAP7-PING",
+            verdict=YES,
+            message="update waits on land; ping MirageGrid with prev+lockset or round_id",
+            extra={
+                "phase": "ping",
+                "continue": True,
+                "land": None,
+                "update": False,
+                "hardcoded_host": False,
+                "spec": CAP7_SHUFFLE_SPEC,
+            },
+        )
+    site = landed["land"]
+    return _verdict(
+        True,
+        "CAP7-UPDATE",
+        verdict=YES,
+        message="update endpoint is the landed Cap-7 site for this round; no hard-coded host",
+        extra={
+            "phase": "update",
+            "continue": False,
+            "land": site,
+            "update": True,
+            "update_endpoint": site["update_path"],
+            "round_seed": landed.get("round_seed"),
+            "node_id": landed.get("node_id"),
+            "hardcoded_host": False,
+            "resolves_to_hub": False,
+            "public_icann": False,
+            "radio_phy": False,
+            "spec": CAP7_SHUFFLE_SPEC,
+            "app_worker": app_worker(),
+        },
+    )
+
+
 def refuse_hardcoded_host() -> dict[str, Any]:
     return _verdict(
         False,
@@ -337,6 +405,7 @@ def shuffle_cite() -> dict[str, Any]:
                 "shuffle": APP_WORKER_HOST + "/v1/shuffle",
                 "ping": APP_WORKER_HOST + "/v1/shuffle/ping",
                 "land": APP_WORKER_HOST + "/v1/shuffle/land",
+                "update": APP_WORKER_HOST + "/v1/shuffle/update",
                 "cap7": APP_WORKER_HOST + "/v1/cap7",
             },
             "phase": "cite",

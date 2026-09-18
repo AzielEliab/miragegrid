@@ -238,6 +238,7 @@ export function hostedBridgeDoors() {
       shuffle: APP_HOST + "/v1/shuffle",
       ping: APP_HOST + "/v1/shuffle/ping",
       land: APP_HOST + "/v1/shuffle/land",
+      update: APP_HOST + "/v1/shuffle/update",
       cap7: APP_HOST + "/v1/cap7",
     },
     first_flag: FIRST_FLAG,

@@ -129,6 +129,7 @@ export function renderIndexHtml() {
     <input id="lockset" placeholder="lockset cite">
     <div class="ops">
       <button type="button" id="op-ping">Ping</button>
+      <button type="button" id="op-update">Update</button>
       <button type="button" id="op-assign">Assign</button>
       <button type="button" id="op-health">Health</button>
       <button type="button" id="op-bridge">Bridge</button>
@@ -157,14 +158,19 @@ export function renderIndexHtml() {
     status.textContent = path + " → " + res.status + (data.code ? " " + data.code : "");
     return data;
   }
-  document.getElementById("op-ping").onclick = function () {
-    const body = {
+  function shuffleBody() {
+    return {
       node_id: document.getElementById("node-id").value,
       round_id: document.getElementById("round-id").value,
       prev: document.getElementById("prev").value,
       lockset: document.getElementById("lockset").value
     };
-    call("/v1/shuffle/ping", { method: "POST", body: JSON.stringify(body) });
+  }
+  document.getElementById("op-ping").onclick = function () {
+    call("/v1/shuffle/ping", { method: "POST", body: JSON.stringify(shuffleBody()) });
+  };
+  document.getElementById("op-update").onclick = function () {
+    call("/v1/shuffle/update", { method: "POST", body: JSON.stringify(shuffleBody()) });
   };
   document.getElementById("op-assign").onclick = function () {
     call("/v1/assign", { method: "POST", body: "{}" });

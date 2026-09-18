@@ -59,6 +59,56 @@ export function landSite(seedHex) {
   return siteRecord(CAP7_FACTORY_SITES[landIndex(seedHex)]);
 }
 
+export async function applyUpdate(body, { method } = {}) {
+  const m = String(method || "POST").toUpperCase();
+  if (m !== "POST") {
+    return {
+      ok: false,
+      code: "MESH-GET-NO-ENABLE",
+      verdict: "refuse",
+      yes: false,
+      message: "GET never plants an update; POST /v1/shuffle/update after ping→land",
+      get_never_plants: true,
+      spec: CAP7_SHUFFLE_SPEC,
+      author: IDENTITY,
+    };
+  }
+  const landed = await ping(body, { method: "POST" });
+  if (!landed.ok) return landed;
+  if (landed.phase !== "land" || !landed.land) {
+    return {
+      ...landed,
+      code: "CAP7-PING",
+      phase: "ping",
+      continue: true,
+      update: false,
+      message: "update waits on land; ping MirageGrid with prev+lockset or round_id",
+    };
+  }
+  return {
+    ok: true,
+    code: "CAP7-UPDATE",
+    verdict: "yes",
+    yes: true,
+    message: "update endpoint is the landed Cap-7 site for this round; no hard-coded host",
+    phase: "update",
+    continue: false,
+    land: landed.land,
+    update: true,
+    update_endpoint: landed.land.update_path,
+    round_seed: landed.round_seed,
+    node_id: landed.node_id,
+    hardcoded_host: false,
+    resolves_to_hub: false,
+    public_icann: false,
+    radio_phy: false,
+    spec: CAP7_SHUFFLE_SPEC,
+    author: IDENTITY,
+    identity: IDENTITY,
+    app_worker: appWorker(),
+  };
+}
+
 export function shuffleCite() {
   const law = cap7ShuffleDict();
   return verdict(true, "CAP7-SHUFFLE-CITE", "yes", "CAP7-SHUFFLE-1.0 cite. Ping the app Worker until land. No hard-coded Cap-7 host. Empty ICANN claims stay SLOT.", {
@@ -70,6 +120,7 @@ export function shuffleCite() {
       shuffle: APP_HOST + "/v1/shuffle",
       ping: APP_HOST + "/v1/shuffle/ping",
       land: APP_HOST + "/v1/shuffle/land",
+      update: APP_HOST + "/v1/shuffle/update",
       cap7: APP_HOST + "/v1/cap7",
     },
     phase: "cite",

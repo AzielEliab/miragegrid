@@ -1,0 +1,32 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: pytest + worker smoke + wrangler dry-run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Python tests
+        run: |
+          python -m pip install -U pip
+          python -m pip install -e ".[dev]"
+          python -m pytest -q
+      - name: App Worker shuffle smoke
+        run: node workers/miragegrid/test-shuffle.mjs
+      - name: Download-tracker bridge smoke
+        run: node workers/download-tracker/test-bridge.mjs
+      - name: Wrangler dry-run Worker name miragegrid
+        working-directory: workers/miragegrid
+        run: |
+          npm ci
+          npx wrangler deploy --name miragegrid --dry-run

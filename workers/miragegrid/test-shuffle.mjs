@@ -1,6 +1,6 @@
 import worker from "./src/index.js";
 import { CAP7_FACTORY_SITES, FACTORY_LABELS, PUBLIC_PAIR, hostedBridgeDoors, publicGateway } from "./src/cap7.js";
-import { landIndex, ping, shuffleCite, shuffleSeed } from "./src/shuffle.js";
+import { applyUpdate, landIndex, ping, shuffleCite, shuffleSeed } from "./src/shuffle.js";
 
 function assert(cond, label) {
   if (!cond) throw new Error(label);
@@ -41,15 +41,30 @@ const landB = await ping({ node_id: "node-25", round_id: "r1" });
 assert(landA.code === "CAP7-LAND", "land");
 assert(landA.land.label === landB.land.label, "same seed same land");
 assert(landA.hardcoded_host === false, "no hardcoded host");
+assert(landA.resolves_to_hub === false, "land no hub resolve");
+const seen = new Set();
+for (let i = 0; i < 32; i++) {
+  const s = await shuffleSeed({ round_id: "round-" + i });
+  seen.add(FACTORY_LABELS[landIndex(s)]);
+}
+assert(seen.size >= 2, "distinct Cap-7 names across seeds");
 const update = await ping({ node_id: "node-07", prev: "p", lockset: "l" });
 assert(update.update === true && update.update_endpoint, "update land");
 assert(shuffleCite().code === "CAP7-SHUFFLE-CITE", "cite");
+const upd = await applyUpdate({ node_id: "node-07", prev: "p", lockset: "l" });
+assert(upd.code === "CAP7-UPDATE" && upd.phase === "update", "update hop");
+assert(upd.update_endpoint === update.update_endpoint, "same land update");
+assert(upd.resolves_to_hub === false, "update no hub resolve");
+const wait = await applyUpdate({ node_id: "node-07" });
+assert(wait.continue === true && wait.phase === "ping", "update waits on land");
 
 const home = await call("/");
 assert(home.status === 200, "home " + home.status);
 const html = await home.text();
 assert(html.includes("Cap-7"), "home cap7");
 assert(html.includes("azgrid"), "home azgrid");
+assert(html.includes("/v1/shuffle/update"), "home update hop");
+assert(html.includes("resolves_to_hub"), "home no hub resolve");
 
 const health = await call("/v1/health");
 assert(health.status === 200, "health");
@@ -88,5 +103,17 @@ const assign = await call("/v1/assign", { method: "POST", headers: { "content-ty
 assert(assign.status === 200, "assign");
 const assignBody = await assign.json();
 assert(assignBody.receipt && assignBody.node_id, "assign receipt");
+
+const updRes = await call("/v1/shuffle/update", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ node_id: "node-01", prev: "p", lockset: "l" }),
+});
+const updBody = await updRes.json();
+assert(updRes.status === 200 && updBody.code === "CAP7-UPDATE", "worker update " + updBody.code);
+assert(updBody.resolves_to_hub === false, "worker update resolves_to_hub false");
+const getUpd = await call("/v1/shuffle/update");
+const getUpdBody = await getUpd.json();
+assert(getUpd.status === 403 && getUpdBody.code === "MESH-GET-NO-ENABLE", "GET update refuses");
 
 console.log("cap7 shuffle worker smoke ok land=" + pingBody.land.label);

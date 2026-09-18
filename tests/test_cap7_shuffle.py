@@ -13,6 +13,7 @@ from miragegrid.cap7_shuffle import (
     CAP7_FACTORY_SITES,
     FACTORY_LABELS,
     PUBLIC_PAIR_LABELS,
+    apply_update,
     cap7_roster,
     cap7_shuffle_dict,
     hosted_bridge_doors,
@@ -112,6 +113,10 @@ def test_same_seed_same_land_no_hardcoded_host() -> None:
     assert a["hardcoded_host"] is False
     lands = {a["land"]["label"], c["land"]["label"]}
     assert lands <= set(FACTORY_LABELS)
+    # Distinct seeds must be able to pick different Cap-7 names.
+    seen = {land_site(shuffle_seed(round_id=f"round-{i}"))["label"] for i in range(32)}
+    assert seen <= set(FACTORY_LABELS)
+    assert len(seen) >= 2
     seed = shuffle_seed(round_id="round-alpha")
     assert seed and len(seed) == 64
     assert land_site(seed)["label"] == a["land"]["label"]
@@ -126,6 +131,16 @@ def test_update_proof_land_is_update_endpoint() -> None:
     assert out["land"]["label"] in FACTORY_LABELS
     other = ping(node_id="node-08", prev="prev-tip", lockset="lock-1")
     assert other["land"]["label"] == out["land"]["label"]
+    upd = apply_update(node_id="node-07", prev="prev-tip", lockset="lock-1")
+    assert upd["code"] == "CAP7-UPDATE"
+    assert upd["phase"] == "update"
+    assert upd["land"]["label"] == out["land"]["label"]
+    assert upd["update_endpoint"] == out["update_endpoint"]
+    assert upd["hardcoded_host"] is False
+    assert upd["resolves_to_hub"] is False
+    waiting = apply_update(node_id="node-07")
+    assert waiting["phase"] == "ping"
+    assert waiting["continue"] is True
 
 
 def test_refuses_icann_hub_resolve_radio_callable() -> None:
@@ -147,6 +162,7 @@ def test_bridge_doors_and_app_worker_live() -> None:
     assert doors["honesty"]["aznet_side_https"] == "SLOT"
     assert doors["honesty"]["mesh_az_icann"] == "SLOT"
     assert doors["doors"]["bridge"].endswith("/bridge")
+    assert doors["doors"]["update"].endswith("/v1/shuffle/update")
     assert doors["radio_phy"] is False
     assert doors["resolves_to_hub"] is False
     cite = shuffle_cite()
@@ -176,3 +192,11 @@ def test_app_worker_wrangler_named_miragegrid() -> None:
     assert "azgrid" in APP_CAP7 and "azstandby" in APP_CAP7
     assert "radio_phy: false" in APP_CAP7
     assert "resolves_to_hub: false" in APP_CAP7
+    deploy = (ROOT / "workers/miragegrid/deploy.sh").read_text(encoding="utf-8")
+    assert "--name miragegrid" in deploy
+    pkg = (ROOT / "workers/miragegrid/package.json").read_text(encoding="utf-8")
+    assert '"name": "miragegrid"' in pkg
+    assert "wrangler deploy --name miragegrid --config wrangler.jsonc" in pkg
+    ci = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    assert "npx wrangler deploy --name miragegrid --dry-run" in ci
+    assert "/v1/shuffle/update" in APP_INDEX
