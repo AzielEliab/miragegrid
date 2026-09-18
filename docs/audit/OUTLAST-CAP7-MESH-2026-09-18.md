@@ -9,27 +9,28 @@
 
 Goal: the Cap-7 / mesh path **outlasts bans and hostname death** without inventing ICANN `.az` or a second FragGate door. One banned workers.dev host is not last tip gone. Landing on another factory name is not a new `/mcp`.
 
-Live probe (User-Agent `Mozilla/5.0`, 2026-09-18):
+Live probe of the **deployed** Worker (User-Agent `Mozilla/5.0`, 2026-09-18, pre-this-PR). Stamps added in this PR are marked **PR**.
 
 | Check | Result |
 | --- | --- |
-| `GET /v1/health` | `ok:true`, `resolves_to_hub:false`, `radio_phy:false`, `channel_plane_is_vpn:false`, `second_door:false`, `hosted_endpoints:SLOT` |
-| `GET /bridge` | `BRIDGE-CAP7-SHUFFLE`; public-pair HTTPS LIVE; AZNet-side HTTPS SLOT; mesh `.az` SLOT; first-flag HTTPS SLOT; `hosted_update:SLOT` |
-| `GET /v1/shuffle` | `CAP7-SHUFFLE-CITE`, `hardcoded_host:false`, `public_shuffle_land_exec:SLOT` |
+| `GET /v1/health` | `ok:true`, `resolves_to_hub:false`, `radio_phy:false`, `public_icann:false`. **PR:** `channel_plane_is_vpn:false`, `second_door:false`, `hosted_endpoints:SLOT`, `hash_receipt` |
+| `GET /bridge` | `BRIDGE-CAP7-SHUFFLE`; public-pair HTTPS LIVE; AZNet-side HTTPS SLOT; mesh `.az` SLOT; first-flag HTTPS SLOT. **PR:** `hosted_update:SLOT`, `channel_plane_is_vpn:false` |
+| `GET /v1/shuffle` | `CAP7-SHUFFLE-CITE`, `hardcoded_host:false`. **PR:** `public_shuffle_land_exec:SLOT` |
 | `POST /v1/shuffle/ping` `{}` | `CAP7-PING` `continue:true` (no invented land) |
-| `POST /v1/shuffle/ping` `{round_id}` | `CAP7-LAND` (coordination cite). Land exec stays SLOT. |
-| `POST /v1/shuffle/update` `{prev,lockset}` | `CAP7-UPDATE`. `hosted_update:SLOT`. Same seed → same land. |
+| `POST /v1/shuffle/ping` `{round_id}` | `CAP7-LAND` (coordination cite; landed `azcloak` → `aznet://…` on this probe). **PR:** land exec SLOT stamps |
+| `POST /v1/shuffle/update` `{prev,lockset}` | `CAP7-UPDATE` (landed `azgrid` Worker path). **PR:** `hosted_update:SLOT` — path is cite, not `/mcp` |
 | `GET /v1/shuffle/ping?prev=p&lockset=l` | `403 MESH-GET-NO-ENABLE` |
-| `GET /cap7/azgrid` | `CAP7-GATEWAY-LIVE` (Worker path cite, not ICANN, `is_live_door:false`) |
-| `GET /cap7/azcloak` | `403 CAP7-SLOT-NOT-LIVE`, `resolves_to_hub:false`, `radio_phy:false` |
-| `GET /aznet/cap7/azcloak` | `CAP7-AZNET-SLOT` (cite only; `aznet_payload_host:false`) |
-| `GET /v1/mesh` | allowlisted PROXY. `node_gate:false`, `this_worker_is_node_gate:false`, `fraggate_single_door:true`, `open_proxy:false` |
-| `POST /v1/mesh/grid-shift` `{name:foo.az}` | `403 MGS-NO-HOSTED-APPLY` (hosted Worker does not apply a shift) |
-| `POST /v1/mesh/grid-shift` cloak_burst | `403 MGS-NO-HOSTED-PLANT` |
+| `GET /cap7/azgrid` | `CAP7-GATEWAY-LIVE` (Worker path, not ICANN) |
+| `GET /cap7/azcloak` | `403 CAP7-SLOT-NOT-LIVE`. Live omit `resolves_to_hub`/`radio_phy`. **PR:** both false + `aznet_payload_host:false` |
+| `GET /aznet/cap7/azcloak` | `CAP7-AZNET-SLOT` (cite only) |
+| `GET /v1/mesh` | allowlisted PROXY. `node_gate:false`, `this_worker_is_node_gate:false`, `fraggate_single_door:true`, `hosted_hop:false` |
+| `POST /v1/mesh/grid-shift` `{name:foo.az}` | **LIVE lie:** `200 MGS-SHIFT-OK` / `answerable:true`. **PR:** `403 MGS-NO-HOSTED-APPLY` |
+| `POST /v1/mesh/grid-shift` cloak_burst | `403 MGS-NO-HOSTED-PLANT` (already #16) |
 | `GET /v1/mesh/vpn` `/hop` `/tunnel` | `403 MESH-STUB` |
+| `POST /v1/assign` | banner “not a VPN” + `kind: mesh-vpn-circuit`. **PR:** `hosted_kind: session-assignment` + VPN-lie stamps |
 | FragGate `fraggate_verify { slug: miragegrid }` | matched. Stub ops stay stub. |
 
-No fake ICANN `.az` publish. No open node proxy. No second `/mcp`.
+No fake ICANN `.az` publish was observed. Mesh PROXY stayed allowlisted (not an open node proxy). FragGate stayed the only exec door. The hosted grid-shift apply lie and the VPN-kind overlay are the honesty gaps this PR closes.
 
 ---
 
