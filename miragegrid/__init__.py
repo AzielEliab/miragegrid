@@ -21,6 +21,8 @@ from miragegrid.errors import (
     ReceiptError,
 )
 from miragegrid.az_generator import AzGenerator, DeepNode, MeshDnsZone, PaperVault
+from miragegrid.cap7_shuffle import apply_update as cap7_apply_update
+from miragegrid.cap7_shuffle import cap7_shuffle_dict, hosted_bridge_doors, ping as cap7_ping
 from miragegrid.semantic_bridge import build_bridge_registry, hosted_bridge_document, semantic_bridge_dict
 from miragegrid.mesh import (
     MeshLawError,
@@ -58,6 +60,10 @@ __all__ = [
     "semantic_bridge_dict",
     "build_bridge_registry",
     "hosted_bridge_document",
+    "cap7_shuffle_dict",
+    "hosted_bridge_doors",
+    "cap7_ping",
+    "cap7_apply_update",
     "select_index",
     "__version__",
 ]

@@ -10,7 +10,8 @@ export const CROSS_NETWORK_SURVIVAL = "CROSS-NETWORK-SURVIVAL-1.0";
 export const PERSON_ID = "https://www.azieleliab.com/#aziel";
 export const IDENTITY = "Aziel Eliab";
 export const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
-export const DEAD_NAMED_WORKER = "https://miragegrid.vibelock.workers.dev";
+export const APP_WORKER = "https://miragegrid.vibelock.workers.dev";
+export const DEAD_NAMED_WORKER = APP_WORKER; // historical alias; Worker is LIVE after deploy
 export const CORPUS_SHELVES = "https://www.azielcorpuslibrary.net/shelves";
 export const AZ_GENERATOR_CITE = HOST + "/v1/mesh/az-generator";
 export const FIRST_FLAG = "www.survivalnetwork.az";
@@ -248,6 +249,8 @@ export function semanticBridgeDict() {
     callable: false,
     design_of: cap7DesignOfMap(),
     live_worker: HOST,
+    app_worker: appWorker(),
+    download_worker: downloadWorker(),
     dead_named_worker: deadNamedWorker(),
     shelves: CORPUS_SHELVES,
   };
@@ -277,6 +280,8 @@ export function cap7BridgeCite() {
     cross_network_survival: CROSS_NETWORK_SURVIVAL,
     no_lie: true,
     live_worker: HOST,
+    app_worker: appWorker(),
+    download_worker: downloadWorker(),
     dead_named_worker: deadNamedWorker(),
   };
 }
@@ -299,16 +304,36 @@ export function cap7Designs() {
   }));
 }
 
-export function deadNamedWorker() {
+export function appWorker() {
   return {
-    url: DEAD_NAMED_WORKER,
+    url: APP_WORKER,
     host: "miragegrid.vibelock.workers.dev",
-    status: "cf-1042",
-    http: 404,
-    cite: false,
-    live: HOST,
-    note: "Named worker is not deployed (Cloudflare error 1042). Live cite is miragegrid-download-tracker.vibelock.workers.dev.",
+    worker_name: "miragegrid",
+    status: "live-app",
+    http: 200,
+    cite: true,
+    role: "cap-7-shuffle-app",
+    download_plane: HOST,
+    historical_cf_1042: "closed-by-creating-worker-miragegrid",
+    note: "Named app Worker (Cap-7 LIVE shuffle). Download-tracker stays the counted download plane. Historical CF 1042 is closed by this Worker.",
   };
+}
+
+export function downloadWorker() {
+  return {
+    url: HOST,
+    host: "miragegrid-download-tracker.vibelock.workers.dev",
+    worker_name: "miragegrid-download-tracker",
+    status: "live-download",
+    cite: true,
+    role: "counted-download",
+    app_plane: APP_WORKER,
+    note: "Counted download plane. Isolated from the named app Worker.",
+  };
+}
+
+export function deadNamedWorker() {
+  return appWorker();
 }
 
 export function shelvesCite() {
@@ -328,6 +353,8 @@ export function shelvesCite() {
     invented_framagit: false,
     plane_b_framagit: "awaiting-tip-pack",
     live_worker: HOST,
+    app_worker: appWorker(),
+    download_worker: downloadWorker(),
     dead_named_worker: deadNamedWorker(),
     author: IDENTITY,
     identity: IDENTITY,
@@ -753,7 +780,8 @@ export function aiTxt() {
     "design_of:azcorpus=" + CORPUS_HUB,
     "design_of:azlibrary=" + CORPUS_HUB,
     "live_worker:" + HOST,
-    "dead_named_worker:miragegrid.vibelock.workers.dev=cf-1042",
+    "app_worker:" + APP_WORKER,
+    "dead_named_worker:miragegrid.vibelock.workers.dev=live-app",
     "shelves:" + CORPUS_SHELVES,
     "",
   ].join("\n");

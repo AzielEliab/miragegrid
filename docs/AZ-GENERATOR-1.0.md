@@ -231,7 +231,7 @@ hedidntjump.com) remain named public hosts. They are **not** Node Gate.
 - Pretending `.az` or `.aziel` succeeded after an honest pivot
 - Invented radio PHY / turning MirageGrid into a qnm RF/BT/Wi-Fi/photon mesh (local qnm radios are not this product; hub `GET /v1/mesh` never enables)
 - GET enable / GET radio-on / GET claim plant (REDLINE-1.0)
-- Citing `miragegrid.vibelock.workers.dev` as live (CF 1042; live cite is `miragegrid-download-tracker.vibelock.workers.dev`)
+- Citing the named app Worker as CF 1042 dead after Worker `miragegrid` exists (historical 1042 is closed; download-tracker stays the download plane)
 - Inventing a Framagit shelves URL
 - Visible 15:20 identity-lock HTML
 - Invented Zenodo DOIs

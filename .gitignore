@@ -11,3 +11,5 @@ node_modules/
 examples/_out
 workers/download-tracker/node_modules/
 workers/download-tracker/.wrangler/
+workers/miragegrid/node_modules/
+workers/miragegrid/.wrangler/
