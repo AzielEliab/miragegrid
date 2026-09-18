@@ -4,7 +4,7 @@
  * Author: Aziel Eliab only.
  */
 
-import { handleMeshApi, refuseCallGenerator, refuseGetEnableOrPlant } from "../../download-tracker/src/mesh.js";
+import { handleMeshApi, outlastHonesty, refuseCallGenerator, refuseGetEnableOrPlant } from "../../download-tracker/src/mesh.js";
 import {
   BANNER,
   MOTTO,
@@ -61,7 +61,7 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | POST | \`/v1/verify-receipt\` | Verify receipt. |
 | GET | \`/v1/mesh\` | PROXY. Default OFF. GET never enables. |
 
-AZ Generator is not callable. \`radio_phy: false\`. \`public_icann: false\`. \`resolves_to_hub: false\`.
+AZ Generator is not callable. \`radio_phy: false\`. \`public_icann: false\`. \`resolves_to_hub: false\`. Communication plane, not a VPN. FragGate is THE exec door. Hosted update / AZNet endpoints stay SLOT.
 `;
 
 function corsHeaders() {
@@ -156,6 +156,7 @@ function doctor() {
     hardcoded_host: false,
     az_generator: { callable: false, exit: "node-gate-front" },
     cap7: cap7ShuffleDict(),
+    ...outlastHonesty(),
     author: IDENTITY,
     identity: IDENTITY,
   };
@@ -319,6 +320,7 @@ export default {
         resolves_to_hub: false,
         app_worker: APP_HOST,
         download_worker: DOWNLOAD_HOST,
+        ...outlastHonesty(),
       });
     }
 
@@ -340,16 +342,18 @@ export default {
     if (path === "/v1/assign" && method === "POST") {
       const parsed = await readJsonBody(request);
       if (parsed.error) return json(parsed.error, parsed.status);
-      return json(await assign(parsed.body && typeof parsed.body === "object" ? parsed.body : {}));
+      const assigned = await assign(parsed.body && typeof parsed.body === "object" ? parsed.body : {});
+      return json({
+        ...assigned,
+        hosted_kind: "session-assignment",
+        ...outlastHonesty(),
+      });
     }
 
     if (path === "/v1/verify-receipt" && method === "POST") {
-      let body;
-      try {
-        body = await request.json();
-      } catch {
-        return json({ error: "JSON body required" }, 400);
-      }
+      const parsed = await readJsonBody(request, { required: true });
+      if (parsed.error) return json(parsed.error, parsed.status);
+      const body = parsed.body;
       const recBody = body.receipt && typeof body.receipt === "object" ? body.receipt : body;
       const rec = await receiptFromDict(recBody);
       const pool = makePool();
@@ -363,6 +367,7 @@ export default {
         mirage_node: rec.mirage_node,
         timestamp: rec.timestamp,
         hash_ok: await hashOk(rec),
+        ...outlastHonesty(),
       });
     }
 
