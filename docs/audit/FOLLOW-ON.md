@@ -15,5 +15,7 @@ FragGate stays THE door. Do not add a second exec path, an unmarked hydra, or a 
 | F6 | Shared Python/JS land helper published as one golden vector file (all 7 labels hit). | Nice-to-have after BigInt fix. |
 | F7 | CORS allowlist for mesh enable if a browser credential flow is added. | None today. |
 | F8 | Live-node API remains SLOT until a node publishes named origin + FragGate-only exec + digest + same hop strip (`BAN-NO-OPEN-NODE-PROXY`). | Runtime follow-on, not this repo. |
+| F9 | Hosted `assign.kind` still says `mesh-vpn-circuit` (local VPN vocabulary). `hosted_kind` + `channel_plane_is_vpn:false` are the honesty overlay. Rename hosted kind only after clients stop keying on it. | Compatibility. |
+| F10 | Runtime BAN-SURVIVAL `/survival` shuffle still marks public Worker shuffle land SLOT. Keep land **exec** SLOT here; cite/land coordination stays LIVE. Sync papers, do not invent public land `/mcp`. | Cross-repo wording. |
 
 Identity: **Aziel Eliab** only.

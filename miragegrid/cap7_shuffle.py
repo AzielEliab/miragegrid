@@ -47,6 +47,52 @@ AZIEL_RUNTIME = "https://aziel-runtime.vibelock.workers.dev"
 AZNET_PRODUCT = "aznet"
 AZBROWSER_PRODUCT = "azbrowser"
 
+
+def outlast_honesty() -> dict[str, Any]:
+    """BAN-SURVIVAL / OUTLAST companion stamps. Hosted path is cite, not VPN."""
+    return {
+        "communication_plane": True,
+        "channel_plane_is_vpn": False,
+        "pairing_is_tunnel": False,
+        "hosted_vpn": False,
+        "packet_forwarding": False,
+        "second_door": False,
+        "open_proxy": False,
+        "fraggate_single_door": True,
+        "this_worker_is_node_gate": False,
+        "node_gate_exit": "node-gate-front",
+        "radio_phy": False,
+        "resolves_to_hub": False,
+        "public_icann": False,
+        "hosted_endpoints": "SLOT",
+        "hosted_update": "SLOT",
+        "public_shuffle_land_exec": "SLOT",
+        "live_node_api": "SLOT",
+        "aznet_payload_host": False,
+        "payload_host": "stub",
+        "is_live_door": False,
+        "public_hostname_resurrection": False,
+        "hash_receipt": {
+            "worker_session_hash": True,
+            "second_receipt_door": False,
+            "fraggate_slug": "miragegrid",
+            "fraggate_ops": ["verify-receipt"],
+            "aznet_verify": ["stamp", "verify_hash", "receipt_verify"],
+            "door": "fraggate_call",
+            "continuity": "aznet-verify-via-fraggate",
+        },
+    }
+
+
+def refuse_vpn_lie() -> dict[str, Any]:
+    return _verdict(
+        False,
+        "CAP7-NO-VPN-LIE",
+        verdict=REFUSE,
+        message="hosted Cap-7 is a communication/cite plane; not a VPN, tunnel, second FragGate door, or open proxy",
+        extra=outlast_honesty(),
+    )
+
 HUB_AE = "https://www.azieleliab.com/"
 HUB_CORPUS = "https://www.azielcorpuslibrary.net/"
 HUB_GODLOCK = "https://godlock.uk/"
@@ -164,6 +210,11 @@ def site_record(site: Mapping[str, Any]) -> dict[str, Any]:
         "worker_path": APP_WORKER_HOST + path,
         "aznet_endpoint": f"aznet://cap7/{label}",
         "update_path": (APP_WORKER_HOST + path + "/update") if public else f"aznet://cap7/{label}/update",
+        "hosted_status": "SLOT",
+        "hosted_update": "SLOT",
+        "is_live_door": False,
+        "aznet_payload_host": False,
+        "channel_plane_is_vpn": False,
         "person": person_id(),
         "author": MESH_LAW_AUTHOR,
     }
@@ -207,7 +258,8 @@ def cap7_shuffle_dict() -> dict[str, Any]:
         "invented_first_flag_https": False,
         "canonical_hubs": [row["canonical_hub"] for row in CANONICAL_HUBS],
         "named_mesh_designs": ["azcorpus", "azlibrary"],
-        "note": "Nodes ping the app Worker until they land on one Cap-7 site. That land is the update endpoint for the round. No single hard-coded Cap-7 host.",
+        **outlast_honesty(),
+        "note": "Nodes ping the app Worker until they land on one Cap-7 site. That land is the update endpoint for the round. No single hard-coded Cap-7 host. Public land/update is cite/coordination (SLOT exec). FragGate stays THE door.",
     }
 
 
@@ -245,6 +297,11 @@ def apply_update(
     resolves_to_hub: bool = False,
     hardcoded_host: str | None = None,
     invent_first_flag: bool = False,
+    channel_plane_is_vpn: bool = False,
+    hosted_vpn: bool = False,
+    pairing_is_tunnel: bool = False,
+    second_door: bool = False,
+    open_proxy: bool = False,
 ) -> dict[str, Any]:
     """Third hop: ping must already be able to land; land is this round's update door."""
     landed = ping(
@@ -258,6 +315,11 @@ def apply_update(
         resolves_to_hub=resolves_to_hub,
         hardcoded_host=hardcoded_host,
         invent_first_flag=invent_first_flag,
+        channel_plane_is_vpn=channel_plane_is_vpn,
+        hosted_vpn=hosted_vpn,
+        pairing_is_tunnel=pairing_is_tunnel,
+        second_door=second_door,
+        open_proxy=open_proxy,
         method="POST",
     )
     if not landed.get("ok"):
@@ -295,6 +357,11 @@ def apply_update(
             "resolves_to_hub": False,
             "public_icann": False,
             "radio_phy": False,
+            "hosted_update": "SLOT",
+            "public_shuffle_land_exec": "SLOT",
+            "is_live_door": False,
+            "channel_plane_is_vpn": False,
+            "second_door": False,
             "spec": CAP7_SHUFFLE_SPEC,
             "app_worker": app_worker(),
         },
@@ -323,6 +390,11 @@ def ping(
     resolves_to_hub: bool = False,
     hardcoded_host: str | None = None,
     invent_first_flag: bool = False,
+    channel_plane_is_vpn: bool = False,
+    hosted_vpn: bool = False,
+    pairing_is_tunnel: bool = False,
+    second_door: bool = False,
+    open_proxy: bool = False,
     method: str = "POST",
 ) -> dict[str, Any]:
     """Node pings MirageGrid. Lands on one Cap-7 site when a seed is present."""
@@ -347,6 +419,8 @@ def ping(
         return refuse_invent_first_flag_https()
     if hardcoded_host:
         return refuse_hardcoded_host()
+    if channel_plane_is_vpn or hosted_vpn or pairing_is_tunnel or second_door or open_proxy:
+        return refuse_vpn_lie()
     fan = refuse_no_fan(None)
     if fan and fan.get("ok") is False:
         return fan
@@ -401,6 +475,11 @@ def ping(
             "radio_phy": False,
             "public_icann": False,
             "resolves_to_hub": False,
+            "hosted_update": "SLOT",
+            "public_shuffle_land_exec": "SLOT",
+            "is_live_door": False,
+            "channel_plane_is_vpn": False,
+            "second_door": False,
             "app_worker": app_worker(),
         },
     )
@@ -468,7 +547,13 @@ def hosted_bridge_doors() -> dict[str, Any]:
             "aznet_side_https": "SLOT",
             "mesh_az_icann": "SLOT",
             "first_flag_https": "SLOT",
+            "hosted_endpoints": "SLOT",
+            "hosted_update": "SLOT",
+            "public_shuffle_land_exec": "SLOT",
+            "channel_plane_is_vpn": False,
+            "second_door": False,
         },
+        **outlast_honesty(),
         "az_generator": cite["az_generator"],
         "note": cite["note"],
     }
@@ -486,6 +571,11 @@ def refuse_slot_as_live(label: str) -> dict[str, Any]:
             "browser_reachable": False,
             "aznet": True,
             "public_icann": False,
+            "resolves_to_hub": False,
+            "radio_phy": False,
+            "hosted_endpoints": "SLOT",
+            "aznet_payload_host": False,
+            "is_live_door": False,
             "spec": CAP7_SHUFFLE_SPEC,
         },
     )
