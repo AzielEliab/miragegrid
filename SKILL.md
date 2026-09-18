@@ -15,10 +15,13 @@ Always send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 an empty agent
 
 ## Call these URLs
 
-- Worker OpenAPI: https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json
+- App Worker (Cap-7 shuffle): https://miragegrid.vibelock.workers.dev/
+- App OpenAPI: https://miragegrid.vibelock.workers.dev/openapi.json
+- Worker OpenAPI (download plane): https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json
 - Catalog OpenAPI: https://aziel-runtime.vibelock.workers.dev/openapi.json
 - MCP: `POST https://aziel-runtime.vibelock.workers.dev/mcp`
-- Live skill (this markdown): `GET https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill`
+- Live skill (app Worker): `GET https://miragegrid.vibelock.workers.dev/v1/skill`
+- Live skill (download plane): `GET https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill`
 
 Ops (do **not** increment downloads or views):
 
@@ -28,7 +31,8 @@ Ops (do **not** increment downloads or views):
 - `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 cross-map (photon QNS1 packet transfer) is stamped for peers. Never enables. No public qnsd proxy. Stamps **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0**, **AIRGAP-1.0**, paper-vault-on-node.
 - `POST /v1/mesh/reheal` — local REHEAL law. Own tip+trusted pull or phoenix-WAIT. Neighbor talk-dirty-back-to-health, bodies, diffs, and vote-to-fix refuse. Public-stack auto-heal means this lawful reheal, not vote-to-fix. Suite strip stays No auto-heal.
 - `GET /v1/mesh/az-generator` — cite-only AZ-GENERATOR-1.0 stamps (Cap-7 mesh DNS factory; deep-node → FRONT Node Gate; not callable; `.az` → `.aziel` → pivot; exactly 2 public gateways; AZNet+AZBrowser; ≥49 vault; not ICANN). `POST` refuses `AZG-NOT-CALLABLE`.
-- `GET /llms.txt` `/ai.txt` `/cite.json` `/bridge.json` `/v1/bridge` `/design-packs/azcorpus.json` `/design-packs/azlibrary.json` `/shelves` — SEMANTIC-BRIDGE-1.0 Growth-ON maps. `public_icann:false`. `design_of` + `resolves_to_hub:false` on cite and bridge. Mesh name ≠ new product: labels of the four online hubs. Each `/bridge.json` entry has `canonical_hub`, `tip`, `public_icann:false`, `name_may_change:true`. Named mesh sites azcorpus (download open, upload none) and azlibrary (download open, Plane-A token upload) are designs inside azielcorpuslibrary.net. Mesh names do not resolve to hubs (`canonical_hub` / `design_of` is design provenance; `resolves_to_hub:false`). Empty Cap-7 claims stay SLOT. Live host is `miragegrid-download-tracker.vibelock.workers.dev`. Named `miragegrid.vibelock.workers.dev` is CF 1042 dead. `/shelves` cites https://www.azielcorpuslibrary.net/shelves (Framagit URL null — not invented). REDLINE-1.0: GET never enables. AZG not callable.
+- `GET /bridge` `/v1/shuffle` `POST /v1/shuffle/ping` `GET /v1/cap7` on the named app Worker `miragegrid.vibelock.workers.dev` — CAP7-SHUFFLE-1.0. Ping until land. No hard-coded Cap-7 host. Historical CF 1042 is closed.
+- `GET /llms.txt` `/ai.txt` `/cite.json` `/bridge.json` `/v1/bridge` `/design-packs/azcorpus.json` `/design-packs/azlibrary.json` `/shelves` — SEMANTIC-BRIDGE-1.0 Growth-ON maps. `public_icann:false`. `design_of` + `resolves_to_hub:false` on cite and bridge. Mesh name ≠ new product: labels of the four online hubs. Each `/bridge.json` entry has `canonical_hub`, `tip`, `public_icann:false`, `name_may_change:true`. Named mesh sites azcorpus (download open, upload none) and azlibrary (download open, Plane-A token upload) are designs inside azielcorpuslibrary.net. Mesh names do not resolve to hubs (`canonical_hub` / `design_of` is design provenance; `resolves_to_hub:false`). Empty Cap-7 ICANN claims stay SLOT. App Worker is `miragegrid.vibelock.workers.dev`. Download plane is `miragegrid-download-tracker.vibelock.workers.dev`. `/shelves` cites https://www.azielcorpuslibrary.net/shelves (Framagit URL null — not invented). REDLINE-1.0: GET never enables. AZG not callable.
 - `GET /v1/mesh/grid-shift` — cite-only MIRAGE-GRID-SHIFT-1.0. `POST` remains local law apply (not a generator call).
 - `POST /v1/mesh/airgap` — local AIRGAP-1.0 law (local vault; no bearer radios; no climb-back; no body gossip). Official hubs are not airgap Node Gate.
 - `POST /v1/mesh/vault` — paper-vault-on-node multiply (cold copies on bootstrap / join / Cap-7 claim / grid-shift standby; pull-only; no tip-tick bodies).
@@ -45,10 +49,14 @@ Import notes: ChatGPT — GPT Actions (OpenAPI URL). Grok — custom tool from O
 ## Example
 
 ```bash
+curl -s -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/v1/health
+curl -s -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/bridge
+curl -s -A 'Mozilla/5.0' -X POST https://miragegrid.vibelock.workers.dev/v1/shuffle/ping \
+  -H 'content-type: application/json' -d '{"node_id":"node-01","round_id":"r1"}'
 curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/health
 curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill
 curl -s -A 'Mozilla/5.0' https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh
-curl -s -A 'Mozilla/5.0' -X POST https://miragegrid-download-tracker.vibelock.workers.dev/v1/assign \
+curl -s -A 'Mozilla/5.0' -X POST https://miragegrid.vibelock.workers.dev/v1/assign \
   -H 'content-type: application/json' -d '{}'
 ```
 

@@ -2478,6 +2478,12 @@ def _redline_stamp() -> dict[str, Any]:
     return redline_dict()
 
 
+def _cap7_shuffle_stamp() -> dict[str, Any]:
+    from miragegrid.cap7_shuffle import cap7_shuffle_dict
+
+    return cap7_shuffle_dict()
+
+
 def mesh_law_dict() -> dict[str, Any]:
     return {
         "author": MESH_LAW_AUTHOR,
@@ -2499,6 +2505,7 @@ def mesh_law_dict() -> dict[str, Any]:
         "get_never_enables": True,
         "fielded_100": False,
         "redline": _redline_stamp(),
+        "cap7_shuffle": _cap7_shuffle_stamp(),
     }
 
 

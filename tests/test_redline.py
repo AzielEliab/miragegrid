@@ -181,12 +181,15 @@ def test_smaller_door_surface_in_worker_and_docs() -> None:
 
 
 def test_g6_live_host_cite_design_of_and_shelves() -> None:
-    dead = dead_named_worker()
-    assert dead["cite"] is False
-    assert dead["status"] == "cf-1042"
-    assert dead["live"] == WORKER_HOST
-    assert "miragegrid-download-tracker" in dead["live"]
-    assert "download-tracker" not in dead["host"]
+    from miragegrid.semantic_bridge import app_worker
+
+    live = dead_named_worker()
+    assert live["cite"] is True
+    assert live["status"] == "live-app"
+    assert live["url"] == "https://miragegrid.vibelock.workers.dev"
+    assert live["download_plane"] == WORKER_HOST
+    assert "download-tracker" not in live["host"]
+    assert app_worker()["historical_cf_1042"] == "closed-by-creating-worker-miragegrid"
     cite = cap7_bridge_cite()
     assert cite["design_of"]["azcorpus"] == CORPUS_HUB
     assert cite["design_of"]["azlibrary"] == CORPUS_HUB
@@ -201,15 +204,7 @@ def test_g6_live_host_cite_design_of_and_shelves() -> None:
     assert shelves["resolves_to_hub"] is False
     assert "shelvesCite" in BRIDGE
     assert "/shelves" in INDEX
-    assert "cf-1042" in BRIDGE
-    live_cites = [
-        line
-        for line in (README + SKILL + HOME + BRIDGE + INDEX + RUNTIME).splitlines()
-        if "https://miragegrid.vibelock.workers.dev" in line
-        and "1042" not in line
-        and "dead" not in line.lower()
-        and "not deploy" not in line.lower()
-        and "do not cite" not in line.lower()
-        and "DEAD" not in line
-    ]
-    assert live_cites == []
+    assert "live-app" in BRIDGE
+    assert "closed-by-creating-worker-miragegrid" in BRIDGE
+    assert "https://miragegrid.vibelock.workers.dev" in README
+    assert "https://miragegrid.vibelock.workers.dev" in SKILL
