@@ -31,7 +31,8 @@ SEMANTIC_BRIDGE_SPEC = "SEMANTIC-BRIDGE-1.0"
 CROSS_NETWORK_SURVIVAL = "CROSS-NETWORK-SURVIVAL-1.0"
 PERSON_ID = "https://www.azieleliab.com/#aziel"
 WORKER_HOST = "https://miragegrid-download-tracker.vibelock.workers.dev"
-DEAD_NAMED_WORKER = "https://miragegrid.vibelock.workers.dev"
+APP_WORKER_HOST = "https://miragegrid.vibelock.workers.dev"
+DEAD_NAMED_WORKER = APP_WORKER_HOST  # historical alias; Worker is LIVE after deploy
 CORPUS_SHELVES = "https://www.azielcorpuslibrary.net/shelves"
 AZ_GENERATOR_CITE = WORKER_HOST + "/v1/mesh/az-generator"
 GROWTH = "Growth-ON"
@@ -289,6 +290,8 @@ def semantic_bridge_dict() -> dict[str, Any]:
         "callable": False,
         "design_of": cap7_design_of_map(),
         "live_worker": WORKER_HOST,
+        "app_worker": app_worker(),
+        "download_worker": download_worker(),
         "dead_named_worker": dead_named_worker(),
         "shelves": CORPUS_SHELVES,
     }
@@ -314,17 +317,42 @@ def cap7_designs() -> list[dict[str, Any]]:
     ]
 
 
-def dead_named_worker() -> dict[str, Any]:
-    """miragegrid.vibelock.workers.dev is CF 1042. Do not cite as live."""
+def app_worker() -> dict[str, Any]:
+    """Named app Worker. LIVE after deploy. Historical CF 1042 is closed."""
     return {
-        "url": DEAD_NAMED_WORKER,
+        "url": APP_WORKER_HOST,
         "host": "miragegrid.vibelock.workers.dev",
-        "status": "cf-1042",
-        "http": 404,
-        "cite": False,
-        "live": WORKER_HOST,
-        "note": "Named worker is not deployed (Cloudflare error 1042). Live cite is miragegrid-download-tracker.vibelock.workers.dev.",
+        "worker_name": "miragegrid",
+        "status": "live-app",
+        "http": 200,
+        "cite": True,
+        "role": "cap-7-shuffle-app",
+        "download_plane": WORKER_HOST,
+        "historical_cf_1042": "closed-by-creating-worker-miragegrid",
+        "note": "Named app Worker (Cap-7 LIVE shuffle). Download-tracker stays the counted download plane. Historical CF 1042 is closed by this Worker.",
+        "author": MESH_LAW_AUTHOR,
+        "identity": MESH_LAW_AUTHOR,
     }
+
+
+def download_worker() -> dict[str, Any]:
+    return {
+        "url": WORKER_HOST,
+        "host": "miragegrid-download-tracker.vibelock.workers.dev",
+        "worker_name": "miragegrid-download-tracker",
+        "status": "live-download",
+        "cite": True,
+        "role": "counted-download",
+        "app_plane": APP_WORKER_HOST,
+        "note": "Counted download plane. Isolated from the named app Worker.",
+        "author": MESH_LAW_AUTHOR,
+        "identity": MESH_LAW_AUTHOR,
+    }
+
+
+def dead_named_worker() -> dict[str, Any]:
+    """Deprecated alias. Named Worker is the LIVE app door (CF 1042 closed)."""
+    return app_worker()
 
 
 def shelves_cite() -> dict[str, Any]:
@@ -345,6 +373,8 @@ def shelves_cite() -> dict[str, Any]:
         "invented_framagit": False,
         "plane_b_framagit": "awaiting-tip-pack",
         "live_worker": WORKER_HOST,
+        "app_worker": app_worker(),
+        "download_worker": download_worker(),
         "dead_named_worker": dead_named_worker(),
         "author": MESH_LAW_AUTHOR,
         "identity": MESH_LAW_AUTHOR,
@@ -382,6 +412,8 @@ def cap7_bridge_cite() -> dict[str, Any]:
         "cross_network_survival": CROSS_NETWORK_SURVIVAL,
         "no_lie": True,
         "live_worker": WORKER_HOST,
+        "app_worker": app_worker(),
+        "download_worker": download_worker(),
         "dead_named_worker": dead_named_worker(),
     }
 

@@ -89,8 +89,9 @@ def test_worker_product_homepage() -> None:
     assert "/shelves" in toml
     assert "/shelves" in js
     assert "design_of" in js
-    assert "cf-1042" in js or "1042" in js
+    assert "live-app" in js or "miragegrid.vibelock.workers.dev" in js
     assert "miragegrid-download-tracker.vibelock.workers.dev" in js
+    assert "closed-by-creating-worker-miragegrid" in js or "live-app" in js
     assert "framagit_url: null" in js or "framagit: null" in js
     assert "/llms.txt" in js
     assert "/v1/bridge" in js

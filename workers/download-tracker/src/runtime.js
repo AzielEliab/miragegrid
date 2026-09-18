@@ -519,6 +519,23 @@ function aiHtml() {
 </html>`;
 }
 
+export {
+  PRODUCT,
+  VERSION,
+  MOTTO,
+  BANNER,
+  assign,
+  listNodes,
+  meshView,
+  routeView,
+  verifyReceipt,
+  receiptFromDict,
+  hashOk,
+  makePool,
+  utcNow,
+  buildCircuit,
+};
+
 export async function handleRuntimeApi(request, url) {
   const path = url.pathname;
   if (path === "/v1/mesh" || path.startsWith("/v1/mesh/")) return null;

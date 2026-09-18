@@ -49,9 +49,11 @@ pytest is the dev extra.
    (`docs/mesh-law.md`). REDLINE-1.0 (`docs/REDLINE-1.0.md`): GET never
    enables radios or plants claims; AZ Generator is not callable;
    `public_icann:false`; `resolves_to_hub:false`; Cloudflare TLS only;
-   FoldLock cite-only. Cite only
-   `miragegrid-download-tracker.vibelock.workers.dev` (named
-   `miragegrid.vibelock.workers.dev` is CF 1042). `/shelves` cites
+   FoldLock cite-only.    Cite the named app Worker `miragegrid.vibelock.workers.dev` for
+   Cap-7 shuffle / FragGate doors. Cite
+   `miragegrid-download-tracker.vibelock.workers.dev` for counted
+   downloads. Historical CF 1042 is closed by Worker `miragegrid`.
+   `/shelves` cites
    corpus canonical; do not invent a Framagit URL. Assign stays live. Hosted vpn/hop/tunnel stubs
    remain refuse. Do not add neighbor talk-back heal, vote-to-fix
    labeled as auto-heal, live body sync, paper-body fan-out on the 1s

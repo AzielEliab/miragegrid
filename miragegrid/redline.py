@@ -157,6 +157,7 @@ def redline_dict() -> dict[str, Any]:
         "callable_azg_aliases": list(CALLABLE_AZG_ALIASES),
         "smaller_door": True,
         "live_worker": WORKER_HOST,
+        "app_worker": "https://miragegrid.vibelock.workers.dev",
         "dead_named_worker": dead_named_worker(),
         "shelves": shelves_cite(),
     }

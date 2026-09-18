@@ -18,13 +18,14 @@ Success for this sweep: **redline + sims green + smaller door surface.**
 
 ## Live Worker (G6)
 
-Live cite is **only**
+Live app cite is
+`https://miragegrid.vibelock.workers.dev` (Worker **`miragegrid`**,
+Cap-7 LIVE shuffle). Counted download cite remains
 `https://miragegrid-download-tracker.vibelock.workers.dev`.
 
-`https://miragegrid.vibelock.workers.dev` is **not deployed** (Cloudflare
-error **1042**, HTTP 404). Do **not** cite that named hostname as live.
-Do not invent a replacement deploy. Document the 1042 and point at the
-download-tracker Worker.
+Historical Cloudflare **1042** (Worker name missing / 10007) is **closed
+by creating Worker `miragegrid`**. Do not keep citing the named host as
+dead after that deploy. See [CAP7-SHUFFLE-1.0](CAP7-SHUFFLE-1.0.md).
 
 `GET /shelves` on this Worker is a **cite pointer** to corpus canonical
 `https://www.azielcorpuslibrary.net/shelves` (COLD-MULTI-SHELF-1.0).

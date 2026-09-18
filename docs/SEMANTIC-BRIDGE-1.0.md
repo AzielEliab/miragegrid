@@ -19,8 +19,9 @@ Public **Plane-A** ICANN hosts — official hubs as **cite / design**
 surfaces, plus the MirageGrid Worker — are the only hosts AI crawlers
 can resolve on public DNS:
 
-- https://miragegrid-download-tracker.vibelock.workers.dev/ (live Worker)
-- `https://miragegrid.vibelock.workers.dev` is **not live** (Cloudflare 1042). Do not cite it.
+- https://miragegrid.vibelock.workers.dev/ (LIVE named app Worker — Cap-7 shuffle / FragGate doors)
+- https://miragegrid-download-tracker.vibelock.workers.dev/ (LIVE counted download Worker)
+- Historical CF 1042 (Worker `miragegrid` missing) is closed by deploying the app Worker.
 - https://www.azieleliab.com/
 - https://www.azielcorpuslibrary.net/
 - https://godlock.uk/

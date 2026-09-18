@@ -1,17 +1,19 @@
 # MirageGrid mesh law
 
 **Author:** Aziel Eliab only  
-**Locked:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0 / REHEAL-1.0 / MESH-REHEAL) · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · SEMANTIC-BRIDGE-1.0 · CROSS-NETWORK-SURVIVAL-1.0 · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD (NO-FAN-1.0)
+**Locked:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0 / REHEAL-1.0 / MESH-REHEAL) · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · SEMANTIC-BRIDGE-1.0 · CAP7-SHUFFLE-1.0 · CROSS-NETWORK-SURVIVAL-1.0 · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD (NO-FAN-1.0)
 
 Hosted `/v1/assign` stays live. Hosted mesh / vpn-hop / tunnel stubs remain refuse.
 
 This is law, not a timer and not a neighbor vote. Executable copies live in
-`miragegrid/mesh.py` and `workers/download-tracker/src/mesh.js`.
+`miragegrid/mesh.py`, `miragegrid/cap7_shuffle.py`,
+`workers/miragegrid/src/`, and `workers/download-tracker/src/mesh.js`.
 
 Next-generation papers: [AZ-GENERATOR-1.0.md](AZ-GENERATOR-1.0.md) ·
 [MIRAGE-GRID-SHIFT-1.0.md](MIRAGE-GRID-SHIFT-1.0.md) ·
 [AIRGAP-1.0.md](AIRGAP-1.0.md) ·
 [SEMANTIC-BRIDGE-1.0.md](SEMANTIC-BRIDGE-1.0.md) ·
+[CAP7-SHUFFLE-1.0.md](CAP7-SHUFFLE-1.0.md) ·
 [REDLINE-1.0.md](REDLINE-1.0.md).
 
 ## Public stack (locked wording)
@@ -236,7 +238,8 @@ First-class refuse law beside NO-LIE / NO-REWRITE.
 | `miragegrid/mesh.py` | Topology stays live. Law functions refuse illegal planes. |
 | `miragegrid/az_generator.py` | Deep-node Cap-7 mesh DNS factory, local vault, FRONT Node Gate exit. Not callable. |
 | Worker `mesh.js` | `/v1/mesh/*` PROXY. Stamps STW/CCS/RH/AZG/MGS/AIRGAP + paper-vault-on-node + SEMANTIC-BRIDGE. `/v1/mesh/vpn|hop|tunnel` refuse `MESH-STUB`. `/v1/mesh/reheal` is local law (not neighbor heal). `GET /v1/mesh/az-generator` cites law; `POST` refuses `AZG-NOT-CALLABLE`. `/v1/mesh/airgap` and `/v1/mesh/vault` cite local law. `GET` never enables mesh. |
-| Worker `bridge.js` | Growth-ON SEMANTIC-BRIDGE-1.0. `/llms.txt` `/ai.txt` `/bridge.json` `/v1/bridge` `/cite.json` `/design-packs/*` `/shelves`. Named mesh sites azcorpus+azlibrary listed as designs. Empty Cap-7 claims stay SLOT. `canonical_hub` / `design_of` is hub design provenance only. `resolves_to_hub` is false. Live host is `miragegrid-download-tracker.vibelock.workers.dev`. Named `miragegrid.vibelock.workers.dev` is CF 1042 dead — do not cite. `/shelves` cites corpus canonical; Framagit URL is not invented. Not ICANN. Not a fifth product. |
+| Worker `bridge.js` | Growth-ON SEMANTIC-BRIDGE-1.0. `/llms.txt` `/ai.txt` `/bridge.json` `/v1/bridge` `/cite.json` `/design-packs/*` `/shelves`. Named mesh sites azcorpus+azlibrary listed as designs. Empty Cap-7 claims stay SLOT. `canonical_hub` / `design_of` is hub design provenance only. `resolves_to_hub` is false. Download host is `miragegrid-download-tracker.vibelock.workers.dev`. Named app Worker `miragegrid.vibelock.workers.dev` is LIVE (CAP7-SHUFFLE-1.0). Historical CF 1042 is closed. `/shelves` cites corpus canonical; Framagit URL is not invented. Not ICANN. Not a fifth product. |
+| App Worker `workers/miragegrid` | Named Worker `miragegrid`. Cap-7 ping→land→update. `/bridge` + `/v1/shuffle` + `/v1/cap7`. AZNet-side slots stay SLOT on public HTTPS. AZ Generator FRONT Node Gate only. `radio_phy: false`. |
 | REDLINE-1.0 | Attack sims. GET never enables radios or plants claims. AZG not callable. Fake ICANN refuse. `resolves_to_hub: true` refuse. Cloudflare TLS only. FoldLock cite-only. |
 | `POST /v1/assign` | Live session assignment. |
 

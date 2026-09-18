@@ -1,0 +1,15 @@
+{
+  "name": "miragegrid",
+  "private": true,
+  "type": "module",
+  "description": "MirageGrid app Worker — Cap-7 LIVE shuffle. Author Aziel Eliab.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --name miragegrid --config wrangler.jsonc",
+    "check": "wrangler check",
+    "test": "node test-shuffle.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4.127.1"
+  }
+}
