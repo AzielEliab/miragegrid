@@ -8,7 +8,7 @@ import { APP_HOST, CAP7_SHUFFLE_SPEC, DOWNLOAD_HOST, IDENTITY, cap7Roster, perso
 
 const TITLE = "MirageGrid — Cap-7 LIVE shuffle";
 const MOTTO = "Nodes ping MirageGrid until they land on one Cap-7 site. That land is the update endpoint for the round.";
-const BANNER = "THIS IS: the named app Worker (miragegrid). Cap-7 factory sites inherit hub design DNA only. resolves_to_hub is false. public_icann is false. AZ Generator exits FRONT Node Gate only. THIS IS NOT: a VPN, ICANN .az registrar, or the download-tracker. Author Aziel Eliab.";
+const BANNER = "THIS IS: the named app Worker (miragegrid). Cap-7 factory sites inherit hub design DNA only. resolves_to_hub is false. public_icann is false. AZ Generator exits FRONT Node Gate only. Communication/cite plane — not a VPN. FragGate is THE exec door. Hosted update and AZNet endpoints stay SLOT. THIS IS NOT: a VPN, ICANN .az registrar, a second /mcp, or the download-tracker. Author Aziel Eliab.";
 
 export function citeDocument() {
   return {
@@ -27,6 +27,9 @@ export function citeDocument() {
     resolves_to_hub: false,
     public_icann: false,
     radio_phy: false,
+    channel_plane_is_vpn: false,
+    second_door: false,
+    hosted_update: "SLOT",
     live_app_worker: APP_HOST,
     live_download_worker: DOWNLOAD_HOST,
     historical_cf_1042: "closed-by-creating-worker-miragegrid",
@@ -109,7 +112,7 @@ export function renderIndexHtml() {
 
   <section class="card" id="cap7">
     <h2>Cap-7 factory sites</h2>
-    <p class="kid">Different names. Hub design DNA only. <code>resolves_to_hub: false</code>. Mesh <code>.az</code> stays SLOT on ICANN. Public pair (azgrid + azbooth) is LIVE Worker HTTPS. Remainder is AZNet-side SLOT.</p>
+    <p class="kid">Different names. Hub design DNA only. <code>resolves_to_hub: false</code>. Mesh <code>.az</code> stays SLOT on ICANN. Public pair (azgrid + azbooth) is LIVE Worker HTTPS cite. Remainder is AZNet-side SLOT. Hosted update / AZNet endpoints stay SLOT. Communication plane — not a VPN. FragGate is THE door.</p>
     <table>
       <thead><tr><th>Label</th><th>Public</th><th>Reach</th><th>design_of</th><th>Path</th></tr></thead>
       <tbody>${rows}</tbody>

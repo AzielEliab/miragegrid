@@ -150,6 +150,9 @@ def test_refuses_icann_hub_resolve_radio_callable() -> None:
     assert ping(inbound_call=True)["code"] == "AZG-NOT-CALLABLE"
     assert ping(invent_first_flag=True)["code"] == "BRIDGE-NO-INVENT-HTTPS"
     assert ping(hardcoded_host="azgrid.az")["code"] == "CAP7-NO-HARDCODED-HOST"
+    assert ping(channel_plane_is_vpn=True)["code"] == "CAP7-NO-VPN-LIE"
+    assert ping(second_door=True)["code"] == "CAP7-NO-VPN-LIE"
+    assert ping(open_proxy=True)["code"] == "CAP7-NO-VPN-LIE"
 
 
 def test_bridge_doors_and_app_worker_live() -> None:
@@ -165,6 +168,24 @@ def test_bridge_doors_and_app_worker_live() -> None:
     assert doors["doors"]["update"].endswith("/v1/shuffle/update")
     assert doors["radio_phy"] is False
     assert doors["resolves_to_hub"] is False
+    assert doors["channel_plane_is_vpn"] is False
+    assert doors["second_door"] is False
+    assert doors["hosted_update"] == "SLOT"
+    assert doors["honesty"]["public_shuffle_land_exec"] == "SLOT"
+    assert doors["honesty"]["hosted_endpoints"] == "SLOT"
+    assert doors["aznet_payload_host"] is False
+    assert doors["hash_receipt"]["second_receipt_door"] is False
+    slot = public_gateway("azcloak")
+    assert slot["resolves_to_hub"] is False
+    assert slot["radio_phy"] is False
+    land = ping(node_id="node-01", round_id="outlast")
+    assert land["hosted_update"] == "SLOT"
+    assert land["public_shuffle_land_exec"] == "SLOT"
+    assert land["is_live_door"] is False
+    law = cap7_shuffle_dict()
+    assert law["live_node_api"] == "SLOT"
+    assert law["open_proxy"] is False
+    assert law["fraggate_single_door"] is True
     cite = shuffle_cite()
     assert cite["code"] == "CAP7-SHUFFLE-CITE"
     law = cap7_shuffle_dict()
@@ -221,3 +242,11 @@ def test_app_worker_wrangler_named_miragegrid() -> None:
     ci = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
     assert "npx wrangler deploy --name miragegrid --dry-run" in ci
     assert "/v1/shuffle/update" in APP_INDEX
+    assert "outlastHonesty" in APP_INDEX
+    assert "CAP7-NO-VPN-LIE" in APP_SHUFFLE
+    assert "hosted_update" in APP_CAP7
+    audit = (ROOT / "docs/audit/OUTLAST-CAP7-MESH-2026-09-18.md").read_text(encoding="utf-8")
+    assert "FragGate is THE exec door" in audit
+    assert "channel_plane_is_vpn" in audit
+    assert "MGS-NO-HOSTED-APPLY" in audit
+    assert "CAP7-NO-VPN-LIE" in audit

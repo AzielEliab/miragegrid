@@ -430,6 +430,46 @@ export const REDLINE = Object.freeze({
   smaller_door: true,
 });
 
+/** BAN-SURVIVAL / OUTLAST companion stamps. Hosted Worker is cite/assign, not VPN or a second door. */
+export const OUTLAST_HONESTY = Object.freeze({
+  communication_plane: true,
+  channel_plane_is_vpn: false,
+  pairing_is_tunnel: false,
+  hosted_vpn: false,
+  packet_forwarding: false,
+  second_door: false,
+  open_proxy: false,
+  fraggate_single_door: true,
+  this_worker_is_node_gate: false,
+  node_gate_exit: "node-gate-front",
+  radio_phy: false,
+  resolves_to_hub: false,
+  public_icann: false,
+  hosted_endpoints: "SLOT",
+  hosted_update: "SLOT",
+  public_shuffle_land_exec: "SLOT",
+  live_node_api: "SLOT",
+  aznet_payload_host: false,
+  payload_host: "stub",
+  is_live_door: false,
+  public_hostname_resurrection: false,
+});
+
+export const HASH_RECEIPT_CONTINUITY = Object.freeze({
+  worker_session_hash: true,
+  second_receipt_door: false,
+  fraggate_slug: "miragegrid",
+  fraggate_ops: ["verify-receipt"],
+  aznet_verify: ["stamp", "verify_hash", "receipt_verify"],
+  door: "fraggate_call",
+  continuity: "aznet-verify-via-fraggate",
+  note: "Worker receipt is SHA-256 of session fields. Ban-survival hash continuity is AZNet verify via FragGate, not a second Worker door.",
+});
+
+export function outlastHonesty() {
+  return { ...OUTLAST_HONESTY, hash_receipt: { ...HASH_RECEIPT_CONTINUITY } };
+}
+
 export function meshLawFields() {
   return {
     assign_live: ASSIGN_LIVE,
@@ -472,6 +512,7 @@ export function attachQnsCd(data) {
     this_worker_is_node_gate: false,
     hosted_hop: false,
     fraggate_single_door: true,
+    ...outlastHonesty(),
   };
 }
 
@@ -948,14 +989,14 @@ export function applyGridShift(body) {
       spec: GRID_SHIFT_SPEC,
     });
   }
-  return lawVerdict(true, "MGS-SHIFT-OK", "yes", "grid shift: .az stays answerable; node cloaked/hidden after domain pull", {
-    az_name: az || FIRST_CLAIM_NAME,
-    answerable: true,
-    node_cloaked: b.cloak !== false,
-    mesh_vault: "snapshot+official-standby",
-    hub_tunnels_die_with_pull: true,
-    resurrection: false,
-    downloads_stay_up: true,
+  return lawVerdict(false, "MGS-NO-HOSTED-APPLY", "refuse", "grid shift apply is FRONT Node Gate / local node only; hosted Worker cites MIRAGE-GRID-SHIFT-1.0 and does not cloak a node or make a .az answerable", {
+    az_name: az || "",
+    answerable: false,
+    hosted_apply: false,
+    this_worker_is_node_gate: false,
+    public_icann: false,
+    public_hostname_resurrection: false,
+    spec: GRID_SHIFT_SPEC,
   });
 }
 
@@ -1492,7 +1533,8 @@ export async function runMeshProxy(env, request, pathAndQuery) {
     }
     const dirty = refuseReheal(shiftBody);
     if (dirty) return { status: 403, data: dirty };
-    return { status: 200, data: applyGridShift(shiftBody) };
+    const shifted = applyGridShift(shiftBody);
+    return { status: shifted && shifted.ok ? 200 : 403, data: shifted };
   }
   if (pathOnly === "/v1/mesh/airgap") {
     const method = String((request && request.method) || "GET").toUpperCase();

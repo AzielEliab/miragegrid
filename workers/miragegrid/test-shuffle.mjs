@@ -66,6 +66,8 @@ assert(html.includes("Cap-7"), "home cap7");
 assert(html.includes("azgrid"), "home azgrid");
 assert(html.includes("/v1/shuffle/update"), "home update hop");
 assert(html.includes("resolves_to_hub"), "home no hub resolve");
+assert(html.includes("Communication/cite plane") || html.includes("Communication plane"), "home communication plane");
+assert(html.includes("FragGate is THE"), "home single door");
 
 const health = await call("/v1/health");
 assert(health.status === 200, "health");
@@ -137,6 +139,41 @@ assert(stamped.auto_heal === false, "overlay auto_heal");
 assert(stamped.anonymity_network === false, "overlay anonymity");
 assert(stamped.this_worker_is_node_gate === false, "overlay this worker");
 assert(stamped.enabled === true, "enabled status preserved");
+assert(stamped.channel_plane_is_vpn === false, "overlay not vpn");
+assert(stamped.second_door === false, "overlay no second door");
+assert(stamped.open_proxy === false, "overlay no open proxy");
+assert(stamped.hosted_endpoints === "SLOT", "overlay hosted endpoints slot");
+assert(stamped.aznet_payload_host === false, "overlay no aznet payload host");
+
+const applyShift = applyGridShift({ name: "foo.az" });
+assert(applyShift.ok === false && applyShift.code === "MGS-NO-HOSTED-APPLY", "hosted grid-shift apply refuses " + applyShift.code);
+
+assert(updBody.hosted_update === "SLOT", "update hosted SLOT");
+assert(updBody.channel_plane_is_vpn === false, "update not vpn");
+assert(updBody.second_door === false, "update no second door");
+assert(landA.public_shuffle_land_exec === "SLOT", "land exec SLOT");
+assert(bridge.honesty.hosted_update === "SLOT", "bridge hosted update slot");
+assert(bridge.channel_plane_is_vpn === false, "bridge not vpn");
+
+const vpnLie = await ping({ node_id: "node-01", round_id: "r1", channel_plane_is_vpn: true });
+assert(vpnLie.code === "CAP7-NO-VPN-LIE", "vpn lie refuse " + vpnLie.code);
+
+const slotHonesty = await call("/cap7/azcloak");
+const slotHonestyBody = await slotHonesty.json();
+assert(slotHonestyBody.resolves_to_hub === false, "slot r2h");
+assert(slotHonestyBody.radio_phy === false, "slot radio");
+
+const healthHonesty = await call("/v1/health");
+const healthHonestyBody = await healthHonesty.json();
+assert(healthHonestyBody.channel_plane_is_vpn === false, "health not vpn");
+assert(healthHonestyBody.second_door === false, "health no second door");
+assert(healthHonestyBody.hash_receipt && healthHonestyBody.hash_receipt.second_receipt_door === false, "health hash continuity");
+
+const assignHonesty = await call("/v1/assign", { method: "POST", headers: { "content-type": "application/json" }, body: "{}" });
+const assignHonestyBody = await assignHonesty.json();
+assert(assignHonestyBody.hosted_kind === "session-assignment", "hosted assign kind");
+assert(assignHonestyBody.channel_plane_is_vpn === false, "assign not vpn");
+assert(assignHonestyBody.packet_forwarding === false, "assign no packets");
 
 const badNode = await call("/v1/shuffle/ping", {
   method: "POST",
