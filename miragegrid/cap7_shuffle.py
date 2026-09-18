@@ -11,6 +11,7 @@ Author: Aziel Eliab only.
 from __future__ import annotations
 
 import hashlib
+import re
 from typing import Any, Mapping
 
 from miragegrid.az_generator import PUBLIC_HOST_PAIR, refuse_call_generator, refuse_public_registrar
@@ -20,6 +21,7 @@ from miragegrid.mesh import (
     REFUSE,
     YES,
     _verdict,
+    refuse_get_enable_or_plant,
     refuse_no_fan,
     refuse_radio_phy,
 )
@@ -324,9 +326,15 @@ def ping(
     method: str = "POST",
 ) -> dict[str, Any]:
     """Node pings MirageGrid. Lands on one Cap-7 site when a seed is present."""
-    if str(method or "POST").upper() in {"GET", "HEAD"} and (prev or lockset) and not round_id:
-        # GET may cite a land for a supplied round_id; it never plants an update.
-        pass
+    method_u = str(method or "POST").upper()
+    if method_u in {"GET", "HEAD"} and str(prev or "").strip() and str(lockset or "").strip():
+        planted = refuse_get_enable_or_plant(
+            method=method_u,
+            path="/v1/shuffle/ping",
+            search="prev=1&lockset=1",
+        )
+        if planted:
+            return planted
     if inbound_call:
         return refuse_call_generator(path="cap7-shuffle-ping")
     if radio_phy:
@@ -345,6 +353,15 @@ def ping(
 
     seed = shuffle_seed(prev=prev, lockset=lockset, round_id=round_id)
     node = str(node_id or "").strip() or "anonymous"
+    if node != "anonymous":
+        if not re.fullmatch(r"[A-Za-z0-9._-]{1,80}", node):
+            return _verdict(
+                False,
+                "CAP7-BAD-NODE-ID",
+                verdict=REFUSE,
+                message="node_id must be 1–80 [A-Za-z0-9._-]",
+                extra={"spec": CAP7_SHUFFLE_SPEC},
+            )
     if not seed:
         return _verdict(
             True,
@@ -365,7 +382,7 @@ def ping(
         )
 
     site = land_site(seed)
-    update = bool(str(prev or "").strip() and str(lockset or "").strip())
+    update = method_u not in {"GET", "HEAD"} and bool(str(prev or "").strip() and str(lockset or "").strip())
     return _verdict(
         True,
         "CAP7-LAND",

@@ -100,7 +100,8 @@ FragGate LIVE_OPS stay `health`, `assign`, `verify-receipt`, `bridge`,
 - Hard-coding one Cap-7 host as the only update door
 - Inventing live HTTPS for AZNet-side slots or `www.survivalnetwork.az`
 - Calling AZ Generator from the Worker
-- GET enable / GET radio-on / GET claim plant
+- GET enable / GET radio-on / GET claim plant / GET `prev`+`lockset` update plant
+- Hosted cloak-burst name plant (`MGS-NO-HOSTED-PLANT`)
 - Invented radio PHY
 - Merging AZNet / AZBrowser / MirageGrid into one product
 - Citing the named Worker as CF 1042 dead after this deploy

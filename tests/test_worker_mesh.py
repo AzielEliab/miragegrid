@@ -98,6 +98,9 @@ def test_qns_cd_cross_map_on_live_nodes_payload() -> None:
     assert "export function attachQnsCd" in MESH
     assert "...qnsCdFields()" in MESH
     assert "attachQnsCd(data)" in MESH
+    assert "this_worker_is_node_gate: false" in MESH
+    assert "fraggate_single_door: true" in MESH
+    assert "MGS-NO-HOSTED-PLANT" in MESH
     assert "QNS-CD-1.0" in HOMEPAGE
     assert "QNS-CD-1.0" in RUNTIME
     assert "No public qnsd" in RUNTIME or "no public qnsd" in RUNTIME.lower()

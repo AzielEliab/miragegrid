@@ -34,6 +34,15 @@ const DEFAULT_ASSET = "miragegrid-0.2.0.tar.gz";
 const DEFAULT_OWNER = "AzielEliab";
 const DEFAULT_REPO = "miragegrid";
 const DEFAULT_BRANCH = "main";
+const ASSET_NAME_RE = /^miragegrid-[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz$/;
+
+function safeAssetName(raw) {
+  const name = String(raw || "").trim();
+  if (!name || name.length > 80) return null;
+  if (name.includes("..") || name.includes("/") || name.includes("\\") || /[\r\n\0]/.test(name)) return null;
+  if (!ASSET_NAME_RE.test(name)) return null;
+  return name;
+}
 const GITHUB_RELEASES = "https://github.com/AzielEliab/miragegrid/releases";
 const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
 
@@ -431,6 +440,19 @@ export default {
         return json({ error: "JSON body required" }, 400);
       }
       const dims = parseDims(body || {});
+      const asset = safeAssetName(dims.asset || DEFAULT_ASSET);
+      const canonical = `${dims.owner}/${dims.repo}`.toLowerCase() === `${DEFAULT_OWNER}/${DEFAULT_REPO}`.toLowerCase();
+      if (!asset || !canonical) {
+        return json({
+          ok: false,
+          code: "DL-EVENT-REFUSED",
+          message: "counted /event only for AzielEliab/miragegrid + miragegrid-*.tar.gz",
+          owner: dims.owner,
+          repo: dims.repo,
+          asset: dims.asset || null,
+        }, 403);
+      }
+      dims.asset = asset;
       const count = await increment(env, dims);
       return json({
         ok: true,
@@ -440,13 +462,16 @@ export default {
         repo: dims.repo,
         branch: dims.branch,
         fork: dims.fork,
-        asset: dims.asset || null,
+        asset,
       });
     }
 
     if (url.pathname === "/go" && (request.method === "GET" || request.method === "HEAD")) {
       const dims = parseDims(url.searchParams);
-      const asset = dims.asset || DEFAULT_ASSET;
+      const asset = safeAssetName(dims.asset || DEFAULT_ASSET);
+      if (!asset) {
+        return json({ error: "asset not hosted", code: "DL-ASSET-REFUSED" }, 404);
+      }
       dims.asset = asset;
       if (request.method === "GET") await increment(env, dims);
       return serveAsset(request, env, asset, { head: request.method === "HEAD" });
@@ -457,7 +482,10 @@ export default {
       if (!dims.asset && url.pathname.startsWith("/download/")) {
         dims.asset = decodeURIComponent(url.pathname.slice("/download/".length));
       }
-      const asset = dims.asset || DEFAULT_ASSET;
+      const asset = safeAssetName(dims.asset || DEFAULT_ASSET);
+      if (!asset) {
+        return json({ error: "asset not hosted", code: "DL-ASSET-REFUSED" }, 404);
+      }
       dims.asset = asset;
       if (request.method === "GET") await increment(env, dims);
       return serveAsset(request, env, asset, { head: request.method === "HEAD" });

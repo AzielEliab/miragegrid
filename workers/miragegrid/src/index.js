@@ -84,6 +84,35 @@ function normPath(pathname) {
   return path.startsWith("/") ? path : "/" + path;
 }
 
+const JSON_BODY_LIMIT = 65536;
+
+async function readJsonBody(request, { required = false } = {}) {
+  const len = Number(request.headers.get("Content-Length") || "0");
+  if (Number.isFinite(len) && len > JSON_BODY_LIMIT) {
+    return { error: { ok: false, code: "CAP7-BODY-TOO-LARGE", message: "JSON body exceeds 64 KiB", spec: "CAP7-SHUFFLE-1.0" }, status: 413 };
+  }
+  let text = "";
+  try {
+    text = await request.text();
+  } catch {
+    text = "";
+  }
+  if (text.length > JSON_BODY_LIMIT) {
+    return { error: { ok: false, code: "CAP7-BODY-TOO-LARGE", message: "JSON body exceeds 64 KiB", spec: "CAP7-SHUFFLE-1.0" }, status: 413 };
+  }
+  if (!String(text || "").trim()) {
+    if (required) return { error: { error: "JSON body required" }, status: 400 };
+    return { body: {} };
+  }
+  try {
+    const body = JSON.parse(text);
+    return { body: body && typeof body === "object" ? body : {} };
+  } catch {
+    if (required) return { error: { error: "JSON body required" }, status: 400 };
+    return { body: {} };
+  }
+}
+
 function openapiSpec() {
   return {
     openapi: "3.1.0",
@@ -198,13 +227,9 @@ export default {
         return json(landed);
       }
       if (method !== "POST") return json({ error: "method not allowed", path }, 405);
-      let body = {};
-      try {
-        body = await request.json();
-      } catch {
-        body = {};
-      }
-      return json(await ping(body, { method }));
+      const parsed = await readJsonBody(request);
+      if (parsed.error) return json(parsed.error, parsed.status);
+      return json(await ping(parsed.body, { method }));
     }
 
     if (path === "/v1/shuffle/land" && (method === "GET" || method === "HEAD")) {
@@ -224,13 +249,9 @@ export default {
       if (method !== "POST") {
         return json(await applyUpdate({}, { method }), method === "GET" || method === "HEAD" ? 403 : 405);
       }
-      let body = {};
-      try {
-        body = await request.json();
-      } catch {
-        body = {};
-      }
-      const out = await applyUpdate(body, { method });
+      const parsed = await readJsonBody(request);
+      if (parsed.error) return json(parsed.error, parsed.status);
+      const out = await applyUpdate(parsed.body, { method });
       return json(out, out.ok ? 200 : 403);
     }
 
@@ -254,14 +275,34 @@ export default {
     }
 
     const cap7Match = path.match(/^\/cap7\/([a-z0-9-]+)(\/update)?$/);
-    if (cap7Match && (method === "GET" || method === "HEAD")) {
-      const gate = publicGateway(cap7Match[1]);
-      return json(gate, gate.ok ? 200 : 403);
+    if (cap7Match) {
+      if (cap7Match[2] === "/update") {
+        if (method === "GET" || method === "HEAD") {
+          return json(await applyUpdate({}, { method }), 403);
+        }
+        if (method === "POST") {
+          return json({
+            ok: false,
+            code: "CAP7-NO-HARDCODED-HOST",
+            message: "update via POST /v1/shuffle/update after ping→land; no hard-coded Cap-7 host",
+            hardcoded_host: false,
+          }, 403);
+        }
+      }
+      if (method === "GET" || method === "HEAD") {
+        const gate = publicGateway(cap7Match[1]);
+        return json(gate, gate.ok ? 200 : 403);
+      }
     }
 
     const aznetMatch = path.match(/^\/aznet\/cap7\/([a-z0-9-]+)(\/update)?$/);
-    if (aznetMatch && (method === "GET" || method === "HEAD")) {
-      return json(aznetCite(aznetMatch[1]));
+    if (aznetMatch) {
+      if (aznetMatch[2] === "/update" && (method === "GET" || method === "HEAD")) {
+        return json(await applyUpdate({}, { method }), 403);
+      }
+      if (method === "GET" || method === "HEAD") {
+        return json(aznetCite(aznetMatch[1]));
+      }
     }
 
     if (path === "/v1/health" && (method === "GET" || method === "HEAD")) {
@@ -297,13 +338,9 @@ export default {
     if (path === "/openapi.json" && method === "GET") return json(openapiSpec());
 
     if (path === "/v1/assign" && method === "POST") {
-      let body = {};
-      try {
-        body = await request.json();
-      } catch {
-        body = {};
-      }
-      return json(await assign(body && typeof body === "object" ? body : {}));
+      const parsed = await readJsonBody(request);
+      if (parsed.error) return json(parsed.error, parsed.status);
+      return json(await assign(parsed.body && typeof parsed.body === "object" ? parsed.body : {}));
     }
 
     if (path === "/v1/verify-receipt" && method === "POST") {
