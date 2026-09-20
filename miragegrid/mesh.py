@@ -1107,6 +1107,10 @@ GET_ENABLE_PLANT_INTENTS: frozenset[str] = frozenset(
         "call-generator",
         "fielded",
         "fielded-100",
+        "completeness",
+        "completeness-claim",
+        "invent-completeness",
+        "claim-complete",
         "radio-on",
     }
 )
@@ -2509,7 +2513,7 @@ def mesh_law_dict() -> dict[str, Any]:
         "radio_phy": False,
         "semantic_bridge": _semantic_bridge_stamp(),
         "get_never_enables": True,
-        "claim_complete": False,
+        "completeness_claim": False,
         "redline": _redline_stamp(),
         "cap7_shuffle": _cap7_shuffle_stamp(),
     }

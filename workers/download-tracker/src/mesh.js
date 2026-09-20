@@ -362,7 +362,8 @@ export const PUBLIC_DOOR_CRYPTO = "cloudflare-tls";
 export const GET_ENABLE_PLANT_INTENTS = Object.freeze([
   "enable", "enabled", "radio", "radios", "bearer-radio", "bearer-radios",
   "mesh-enable", "claim", "plant", "claim-plant", "run-generator",
-  "call-generator", "fielded", "fielded-100", "radio-on",
+  "call-generator", "fielded", "fielded-100", "completeness",
+  "completeness-claim", "invent-completeness", "claim-complete", "radio-on",
 ]);
 export const PUBLIC_MESH_GET_DOORS = Object.freeze([
   "/v1/mesh",
@@ -412,7 +413,7 @@ export const LAMB_LENS = Object.freeze({
   harvest: false,
   node_gate: false,
   no_fan: "NO-FAN-1.0",
-  claim_complete: false,
+  completeness_claim: false,
 });
 export const REDLINE = Object.freeze({
   law: "REDLINE",
@@ -426,7 +427,7 @@ export const REDLINE = Object.freeze({
   public_door_crypto: PUBLIC_DOOR_CRYPTO,
   foldlock: "cite-only",
   lamb_lens: true,
-  claim_complete: false,
+  completeness_claim: false,
   smaller_door: true,
 });
 
@@ -487,7 +488,7 @@ export function meshLawFields() {
     semantic_bridge: SEMANTIC_BRIDGE,
     redline: REDLINE,
     get_never_enables: true,
-    claim_complete: false,
+    completeness_claim: false,
     foldlock: FOLDLOCK_CITE,
     lamb_lens: LAMB_LENS,
     public_door_crypto: PUBLIC_DOOR_CRYPTO,
