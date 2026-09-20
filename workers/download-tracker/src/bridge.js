@@ -89,7 +89,13 @@ const DESIGN_BY_HOST = {
 const ACCESS_VALUES = new Set(["aznet", "azbrowser", "https-gateway"]);
 
 export function personId() {
-  return { "@id": PERSON_ID, name: IDENTITY };
+  return {
+    "@id": PERSON_ID,
+    name: IDENTITY,
+    sameAs: ["https://x.com/AzielEliab"],
+    x: "https://x.com/AzielEliab",
+    x_handle: "@AzielEliab",
+  };
 }
 
 export function honestMeshName(label, suffix) {
@@ -702,6 +708,7 @@ export function llmsTxt() {
     "> Ephemeral session node assignment. Not a VPN and not an anonymity network.",
     "",
     "Author: Aziel Eliab only",
+    "X / Twitter: @AzielEliab https://x.com/AzielEliab",
     "Person @id: " + PERSON_ID,
     "",
     "## SEMANTIC-BRIDGE-1.0",
@@ -770,6 +777,8 @@ export function aiTxt() {
     "no_lie:true",
     "honesty:empty-cap-7-slots-named-sites-listed",
     "person:" + PERSON_ID,
+    "x:@AzielEliab",
+    "x_url:https://x.com/AzielEliab",
     "cite:" + AZ_GENERATOR_CITE,
     "bridge:" + HOST + "/v1/bridge",
     "llms:" + HOST + "/llms.txt",
