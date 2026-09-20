@@ -1,7 +1,7 @@
 """REDLINE-1.0 attack simulations. All four operator attacks REFUSE.
 
 callable AZG · enable via GET · fake ICANN publish · Cap-7 resolve_to_hub true
-Plus GET radio/plant, theater crypto, fielded 100.
+Plus GET radio/plant, theater crypto, invented completeness.
 Author: Aziel Eliab only.
 """
 
@@ -19,7 +19,7 @@ from miragegrid.redline import (
     lamb_lens_cite,
     redline_dict,
     refuse_callable_alias,
-    refuse_claim_complete,
+    refuse_completeness_claim,
     refuse_theater_crypto,
     run_attack_sims,
 )
@@ -54,7 +54,7 @@ def test_operator_attack_sims_all_refuse() -> None:
     assert bar["resolves_to_hub"] is False
     assert bar["callable"] is False
     assert bar["get_never_enables"] is True
-    assert bar["claim_complete"] is False
+    assert bar["completeness_claim"] is False
     assert bar["public_door_crypto"] == "cloudflare-tls"
     assert bar["foldlock"] == "cite-only"
     assert bar["lamb_lens"] is True
@@ -67,7 +67,7 @@ def test_operator_attack_sims_all_refuse() -> None:
         "fake-icann-publish",
         "cap7-resolve-to-hub",
         "theater-crypto",
-        "fielded-100",
+        "invent-completeness",
     } <= names
     for sim in bar["sims"]:
         assert sim["ok"] is True, sim
@@ -119,7 +119,7 @@ def test_fake_icann_and_resolve_to_hub_refuse() -> None:
     assert law["callable"] is False
 
 
-def test_tls_foldlock_lamb_lens_no_claim_complete() -> None:
+def test_tls_foldlock_lamb_lens_no_completeness_claim() -> None:
     tls = refuse_theater_crypto(layer="cloudflare-tls")
     assert tls["code"] == "REDLINE-TLS-OK"
     assert refuse_theater_crypto(layer="xor")["code"] == "REDLINE-NO-THEATER-CRYPTO"
@@ -130,17 +130,22 @@ def test_tls_foldlock_lamb_lens_no_claim_complete() -> None:
     assert fold["not_zip"] is True
     lens = lamb_lens_cite()
     assert lens["harvest"] is False
-    assert lens["claim_complete"] is False
-    assert refuse_claim_complete(fielded=100)["code"] == "AZG-NO-FIELDED-100"
-    assert refuse_claim_complete(claimed=7)["code"] == "AZG-FIELDED-OK"
+    assert lens["completeness_claim"] is False
+    hit = refuse_completeness_claim(completeness=100)
+    assert hit["code"] == "AZG-NO-COMPLETENESS-CLAIM"
+    assert hit["ok"] is False
+    assert hit["completeness_claim"] is False
+    honest = refuse_completeness_claim(claimed=7)
+    assert honest["code"] == "AZG-COMPLETENESS-HONEST"
+    assert honest["completeness_claim"] is False
     stamp = redline_dict()
     assert stamp["spec"] == REDLINE_SPEC
-    assert stamp["claim_complete"] is False
+    assert stamp["completeness_claim"] is False
     assert stamp["public_door_crypto"]["layer"] == "cloudflare-tls"
     law = mesh_law_dict()
     assert law["redline"]["spec"] == REDLINE_SPEC
     assert law["get_never_enables"] is True
-    assert law["claim_complete"] is False
+    assert law["completeness_claim"] is False
 
 
 def test_smaller_door_surface_in_worker_and_docs() -> None:
@@ -152,7 +157,10 @@ def test_smaller_door_surface_in_worker_and_docs() -> None:
     assert "REDLINE-1.0" in MESH_JS
     assert "cloudflare-tls" in MESH_JS
     assert "cite-only" in MESH_JS
-    assert "claim_complete: false" in MESH_JS
+    assert "completeness_claim: false" in MESH_JS
+    assert "claim_complete" not in MESH_JS
+    assert "CLAIM_COMPLETE" not in MESH_JS
+    assert "AZG-NO-FIELDED-100" not in MESH_JS
     assert "LAMB LENS" in MESH_JS or "lamb_lens" in MESH_JS
     assert "FOLDLOCK" in MESH_JS
     assert "AZG-NOT-CALLABLE" in RUNTIME
@@ -162,15 +170,22 @@ def test_smaller_door_surface_in_worker_and_docs() -> None:
     assert "resolves_to_hub: false" in BRIDGE
     assert "GET never enables" in HOME
     assert "REDLINE-1.0" in HOME
-    assert "fielded 100" not in HOME.lower() or "no fielded 100" in HOME.lower()
+    assert "no invented completeness" in HOME.lower()
+    assert "fielded 100" not in HOME.lower()
+    assert "claim_complete" not in HOME
+    assert "CLAIM_COMPLETE" not in HOME
     assert REDLINE_SPEC in REDLINE_DOC
     assert "MESH-GET-NO-ENABLE" in REDLINE_DOC
     assert "AZG-NOT-CALLABLE" in REDLINE_DOC
     assert "BRIDGE-NO-HUB-RESOLVE" in REDLINE_DOC
+    assert "AZG-NO-COMPLETENESS-CLAIM" in REDLINE_DOC
     assert "cloudflare-tls" in REDLINE_DOC.lower() or "Cloudflare TLS" in REDLINE_DOC
     assert "FoldLock" in REDLINE_DOC
     assert "Lamb Lens" in REDLINE_DOC
-    assert "no fielded 100" in REDLINE_DOC.lower()
+    assert "no invented completeness" in REDLINE_DOC.lower()
+    assert "fielded 100" not in REDLINE_DOC.lower()
+    assert "CLAIM_COMPLETE" not in REDLINE_DOC
+    assert "claim_complete" not in REDLINE_DOC
     assert "REDLINE-1.0" in MESH_LAW
     assert "REDLINE-1.0" in README
     assert "REDLINE-1.0" in SKILL
@@ -182,6 +197,31 @@ def test_smaller_door_surface_in_worker_and_docs() -> None:
     assert planted is not None and planted["code"] == "MESH-GET-NO-ENABLE"
     upd = refuse_get_enable_or_plant(method="GET", path="/v1/shuffle/update")
     assert upd is not None and upd["code"] == "MESH-GET-NO-ENABLE"
+    completeness = refuse_get_enable_or_plant(method="GET", path="/v1/mesh", search="completeness-claim=1")
+    assert completeness is not None and completeness["code"] == "MESH-GET-NO-ENABLE"
+    invent = refuse_get_enable_or_plant(method="GET", path="/v1/mesh", search="invent-completeness=1")
+    assert invent is not None and invent["code"] == "MESH-GET-NO-ENABLE"
+    heritage = refuse_get_enable_or_plant(method="GET", path="/v1/mesh", search="fielded-100=1")
+    assert heritage is not None and heritage["code"] == "MESH-GET-NO-ENABLE"
+
+
+def test_public_llms_cite_health_have_no_scoring_metrics() -> None:
+    """llms / cite / health may carry false refuse stamps, never scoreboard language."""
+    score_needles = (
+        "CLAIM_COMPLETE",
+        "claim_complete",
+        "AZG-NO-FIELDED-100",
+        "AZG-FIELDED-OK",
+        "fielded_100",
+        "scoreboard",
+        "unkillability",
+        "pissed-off-gov",
+        "fielded 100",
+    )
+    public = "\n".join((HOME, BRIDGE, RUNTIME, INDEX, MESH_JS))
+    for needle in score_needles:
+        assert needle not in public, needle
+    assert "completeness_claim: false" in MESH_JS
 
 
 def test_g6_live_host_cite_design_of_and_shelves() -> None:

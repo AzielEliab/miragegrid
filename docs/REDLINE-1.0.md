@@ -103,10 +103,10 @@ Refuse:
 | fake ICANN publish | `icann_publish` / `public_registrar` / `public_icann: true` | `AZG-NOT-PUBLIC-REGISTRAR` or `BRIDGE-NO-ICANN-PUBLISH` / `BRIDGE-NO-PUBLIC-DNS` |
 | Cap-7 `resolve_to_hub: true` | bridge registry / claim `resolves_to_hub` | `BRIDGE-NO-HUB-RESOLVE` |
 | theater crypto | homemade Worker encrypt / FoldLock-as-TLS | `REDLINE-NO-THEATER-CRYPTO` |
-| fielded 100 | invent 100 fielded nodes / radios / doors | `AZG-NO-FIELDED-100` |
+| invent completeness | invent 100% complete nodes / radios / doors | `AZG-NO-COMPLETENESS-CLAIM` |
 
 `python -m pytest tests/test_redline.py` is the green bar. All four
-operator attacks plus the crypto / fielded extras must refuse.
+operator attacks plus the crypto / completeness extras must refuse.
 
 ## Encrypt: Cloudflare TLS only
 
@@ -126,7 +126,7 @@ Not zip. Not Worker TLS. Not a MirageGrid public door.
 FragGate FoldLock engine. This Worker does not fold, unfold, or encrypt
 with FoldLock.
 
-## Lamb Lens · NO-FAN · no fielded 100
+## Lamb Lens · NO-FAN · no invented completeness
 
 Lamb Lens is the ethical-research hop after FragGate (AZBrowser pairing).
 It does not harvest. It does not operate Node Gate. It does not claim
@@ -135,9 +135,10 @@ It does not harvest. It does not operate Node Gate. It does not claim
 NO-FAN-1.0 stays first-class: **No falsification. No ambiguity. No
 misleading.**
 
-There is **no fielded 100**. The persistent pool is **25** named peers.
-Cap-7 is **7** names per node. Public host pair is **exactly 2**. Do not
-invent 100 fielded nodes, radios, or doors.
+There is **no invented completeness**. The persistent pool is **25** named
+peers. Cap-7 is **7** names per node. Public host pair is **exactly 2**.
+Do not invent a 100% complete mesh, radio set, or door set. Cap-7
+honesty (NO-LIE) refuses completeness claims. This is not a score.
 
 ## Refuse
 
@@ -147,7 +148,7 @@ invent 100 fielded nodes, radios, or doors.
 - `resolves_to_hub: true`
 - Theater crypto on the public door
 - FoldLock used as Worker encryption
-- Fielded 100
+- Invented completeness (100% complete-mesh lie)
 - Visible 15:20 identity-lock HTML
 - Invented Zenodo DOIs
 - Falsify / ambiguous / misleading verbs (NO-FAN-1.0)

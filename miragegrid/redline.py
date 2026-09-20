@@ -3,7 +3,7 @@
 GET never enables radios or plants Cap-7 claims. AZ Generator is not
 externally callable. Bridge stamps stay ``public_icann: false`` and
 ``resolves_to_hub: false``. Public-door crypto is Cloudflare TLS only.
-FoldLock is cite-only. Lamb Lens + NO-FAN. No fielded 100.
+FoldLock is cite-only. Lamb Lens + NO-FAN. No invented completeness.
 
 Author: Aziel Eliab only.
 """
@@ -48,7 +48,8 @@ FOLDLOCK_LAW = "FOLDLOCK"
 FOLDLOCK_SLUG = "foldlock"
 LAMB_LENS_LAW = "LAMB LENS"
 PUBLIC_DOOR_CRYPTO = "cloudflare-tls"
-CLAIM_COMPLETE = 100
+# Invented 100% completeness is a NO-LIE refuse — not a score.
+INVENT_COMPLETENESS = 100
 
 GET_ENABLE_PLANT_INTENTS: frozenset[str] = frozenset(
     {
@@ -66,6 +67,10 @@ GET_ENABLE_PLANT_INTENTS: frozenset[str] = frozenset(
         "call-generator",
         "fielded",
         "fielded-100",
+        "completeness",
+        "completeness-claim",
+        "invent-completeness",
+        "claim-complete",
         "radio-on",
     }
 )
@@ -116,7 +121,7 @@ def lamb_lens_cite() -> dict[str, Any]:
         "harvest": False,
         "node_gate": False,
         "no_fan": "NO-FAN-1.0",
-        "claim_complete": False,
+        "completeness_claim": False,
         "author": MESH_LAW_AUTHOR,
         "identity": MESH_LAW_AUTHOR,
     }
@@ -149,7 +154,7 @@ def redline_dict() -> dict[str, Any]:
         "foldlock": foldlock_cite(),
         "lamb_lens": lamb_lens_cite(),
         "no_fan": "NO-FAN-1.0",
-        "claim_complete": False,
+        "completeness_claim": False,
         "pool": POOL_SIZE,
         "cap": CAP_7,
         "public_host_pair": 2,
@@ -198,17 +203,17 @@ def refuse_theater_crypto(
     )
 
 
-def refuse_claim_complete(*, claimed: int | None = None, fielded: int | None = None) -> dict[str, Any]:
-    """No fielded 100. Pool is 25. Cap-7 is 7."""
-    n = fielded if fielded is not None else claimed
-    if n == CLAIM_COMPLETE or claimed == CLAIM_COMPLETE or fielded == CLAIM_COMPLETE:
+def refuse_completeness_claim(*, claimed: int | None = None, completeness: int | None = None) -> dict[str, Any]:
+    """Refuse invented 100% completeness. Pool is 25. Cap-7 is 7. Public host pair is 2."""
+    n = completeness if completeness is not None else claimed
+    if n == INVENT_COMPLETENESS or claimed == INVENT_COMPLETENESS or completeness == INVENT_COMPLETENESS:
         return _verdict(
             False,
-            "AZG-NO-FIELDED-100",
+            "AZG-NO-COMPLETENESS-CLAIM",
             verdict=REFUSE,
-            message="no fielded 100; pool is 25; Cap-7 is 7; public host pair is 2",
+            message="no invented completeness; pool is 25; Cap-7 is 7; public host pair is 2",
             extra={
-                "claim_complete": False,
+                "completeness_claim": False,
                 "pool": POOL_SIZE,
                 "cap": CAP_7,
                 "public_host_pair": 2,
@@ -219,10 +224,10 @@ def refuse_claim_complete(*, claimed: int | None = None, fielded: int | None = N
         )
     return _verdict(
         True,
-        "AZG-FIELDED-OK",
+        "AZG-COMPLETENESS-HONEST",
         verdict="yes",
-        message="fielded count is not 100",
-        extra={"claim_complete": False, "pool": POOL_SIZE, "cap": CAP_7},
+        message="count is not an invented 100% completeness claim",
+        extra={"completeness_claim": False, "pool": POOL_SIZE, "cap": CAP_7},
     )
 
 
@@ -353,9 +358,9 @@ def sim_theater_crypto() -> dict[str, Any]:
     return out
 
 
-def sim_claim_complete() -> dict[str, Any]:
-    hit = refuse_claim_complete(fielded=100)
-    out = _sim("fielded-100", hit, "AZG-NO-FIELDED-100")
+def sim_invent_completeness() -> dict[str, Any]:
+    hit = refuse_completeness_claim(completeness=100)
+    out = _sim("invent-completeness", hit, "AZG-NO-COMPLETENESS-CLAIM")
     fan = refuse_no_fan("false-live-nodes")
     out["no_fan"] = fan is not None and fan.get("code") == "NO-FAN-FALSIFY"
     out["ok"] = bool(out["ok"] and out["no_fan"])
@@ -371,7 +376,7 @@ def run_attack_sims() -> dict[str, Any]:
         sim_fake_icann_publish(),
         sim_resolve_to_hub(),
         sim_theater_crypto(),
-        sim_claim_complete(),
+        sim_invent_completeness(),
     ]
     green = all(bool(s.get("ok")) and bool(s.get("refuse") or s.get("all_refused")) for s in sims)
     return _verdict(
@@ -392,7 +397,7 @@ def run_attack_sims() -> dict[str, Any]:
             "resolves_to_hub": False,
             "callable": False,
             "get_never_enables": True,
-            "claim_complete": False,
+            "completeness_claim": False,
             "public_door_crypto": PUBLIC_DOOR_CRYPTO,
             "foldlock": "cite-only",
             "lamb_lens": True,
