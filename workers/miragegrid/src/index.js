@@ -54,6 +54,7 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | POST | \`/v1/shuffle/update\` | Update via the landed Cap-7 site. |
 | GET | \`/v1/cap7\` | Seven factory sites. SLOT vs LIVE. |
 | GET | \`/v1/health\` | Liveness. |
+| GET | \`/stats\` / \`/v1/stats\` | Honest app/download-plane stats. |
 | GET | \`/v1/skill\` | This markdown. |
 | GET | \`/v1/nodes\` | 25 mesh nodes. |
 | GET | \`/v1/doctor\` | Law stamp + Worker role. |
@@ -129,6 +130,8 @@ function openapiSpec() {
       "/v1/shuffle/update": { post: { operationId: "miragegrid_shuffle_update", summary: "Update via the landed Cap-7 site. No hard-coded host." } },
       "/v1/cap7": { get: { operationId: "miragegrid_cap7", summary: "Factory roster. Honest SLOT vs LIVE." } },
       "/v1/health": { get: { operationId: "health", summary: "Liveness." } },
+      "/stats": { get: { operationId: "stats", summary: "Honest app/download-plane stats." } },
+      "/v1/stats": { get: { operationId: "v1Stats", summary: "Honest app/download-plane stats alias." } },
       "/v1/skill": { get: { operationId: "skill", summary: "Skill markdown." } },
       "/v1/nodes": { get: { operationId: "nodes", summary: "25 mesh nodes." } },
       "/v1/doctor": { get: { operationId: "doctor", summary: "Law stamp." } },
@@ -160,6 +163,37 @@ function doctor() {
     author: IDENTITY,
     identity: IDENTITY,
   };
+}
+
+function minimalStats() {
+  return {
+    ok: true,
+    product: PRODUCT,
+    note: `The named app Worker does not own counters. Honest views/downloads, when available, are maintained by ${DOWNLOAD_HOST}/stats.`,
+  };
+}
+
+async function appStats() {
+  try {
+    const upstream = await fetch(`${DOWNLOAD_HOST}/stats`, {
+      headers: { Accept: "application/json", "User-Agent": "Mozilla/5.0 MirageGrid-app" },
+    });
+    if (upstream.ok) {
+      const body = await upstream.json();
+      if (body && typeof body === "object" && !Array.isArray(body)) {
+        return {
+          ...body,
+          ok: true,
+          product: PRODUCT,
+          source: `${DOWNLOAD_HOST}/stats`,
+          note: "Views/downloads are reported by the separate counted download-tracker; the named app Worker owns no counters.",
+        };
+      }
+    }
+  } catch {
+    // Keep the app stats route honest if the separate counter plane is unavailable.
+  }
+  return minimalStats();
 }
 
 export default {
@@ -322,6 +356,17 @@ export default {
         download_worker: DOWNLOAD_HOST,
         ...outlastHonesty(),
       });
+    }
+
+    if ((path === "/stats" || path === "/v1/stats") && (method === "GET" || method === "HEAD")) {
+      const body = await appStats();
+      if (method === "HEAD") {
+        return new Response(null, {
+          status: 200,
+          headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "private, no-store", ...corsHeaders() },
+        });
+      }
+      return json(body);
     }
 
     if (path === "/v1/skill" && method === "GET") {
