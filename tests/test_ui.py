@@ -20,6 +20,14 @@ def test_ui_html_is_self_contained() -> None:
     assert "127.0.0.1" in html or "loopback" in html.lower()
     assert "VPN" in html or "anonymity" in html.lower()
     assert "node-mesh" in html.lower() or "mesh" in html.lower()
+    assert "prefers-color-scheme" in html
+    assert ":focus-visible" in html
+    assert "Advanced" in html
+    assert "<details open" not in html
+    assert "details.advanced:not([open])" in html
+    assert "Open a circuit" in html
+    assert "four hub mirrors" in html
+    assert "Aziel Eliab" in html
 
 
 def test_ui_http_assign_and_end() -> None:

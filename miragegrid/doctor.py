@@ -144,9 +144,12 @@ def run_doctor(*, as_json: bool = False) -> int:
         results.append({"name": name, "ok": ok, "detail": detail})
         if not ok:
             failed += 1
-        mark = "ok" if ok else "FAIL"
+        mark = "pass" if ok else "fail"
         if not as_json:
-            print(f"[{mark}] {name}" + (f" — {detail}" if detail else ""))
+            line = f"{mark}  {name}"
+            if detail:
+                line += f"  {detail}"
+            print(line)
     payload = {
         "ok": failed == 0,
         "failed": failed,
@@ -158,6 +161,10 @@ def run_doctor(*, as_json: bool = False) -> int:
     }
     if as_json:
         print(json.dumps(payload, indent=2))
+    elif failed == 0:
+        print("Doctor passed.")
+        print("Next: miragegrid ui")
     else:
-        print("doctor", "passed" if failed == 0 else "failed")
+        print("Doctor failed.")
+        print("Next: read the failed line above, then run miragegrid doctor again.")
     return 0 if failed == 0 else 1

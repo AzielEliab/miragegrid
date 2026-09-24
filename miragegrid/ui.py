@@ -107,6 +107,12 @@ def make_handler(state: _State):
             self.end_headers()
             self.wfile.write(raw)
 
+        def _wants_json(self) -> bool:
+            accept = (self.headers.get("Accept") or "").lower()
+            if "text/html" in accept and accept.find("text/html") <= accept.find("application/json"):
+                return False
+            return "application/json" in accept
+
         def _html(self) -> None:
             raw = _html()
             self.send_response(200)
@@ -118,6 +124,16 @@ def make_handler(state: _State):
         def do_GET(self) -> None:  # noqa: N802
             path = urlparse(self.path).path
             if path in ("/", "/index.html"):
+                if self._wants_json():
+                    self._json(
+                        {
+                            "ok": True,
+                            "bind_host": DEFAULT_HOST,
+                            "kind": "node-mesh-vpn",
+                            "product": "miragegrid",
+                        }
+                    )
+                    return
                 self._html()
                 return
             if path == "/session":
@@ -165,10 +181,12 @@ def serve(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT) -> None:
     if host not in ("127.0.0.1", "localhost", "::1"):
         host = DEFAULT_HOST
     httpd = ThreadingHTTPServer((host, int(port)), make_handler(_State()))
-    print(f"miragegrid ui  http://{host}:{port}/  (loopback mesh-VPN console)")
+    bound_host, bound_port = httpd.server_address[:2]
+    shown = f"[{bound_host}]" if ":" in str(bound_host) else bound_host
+    print(f"Open http://{shown}:{bound_port}/", flush=True)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nmiragegrid ui stopped")
+        print("\nConsole stopped.")
     finally:
         httpd.server_close()

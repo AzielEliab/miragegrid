@@ -1,13 +1,17 @@
 # MirageGrid — iPhone & Android
 
-Assign a mesh circuit (entry 1–25 plus onion hops) via
-SHA-256(entropy||timestamp) and mint an in-memory receipt. End session
-destroys the mapping.
-
-Companion to the desktop **node-mesh VPN**. Offline. No analytics.
-Dark matte / gold.
+Open a circuit on this phone across 25 mesh peers. Offline. No analytics.
+Light and dark follow the phone. Author: Aziel Eliab.
 
 Application id: `com.azieeliab.miragegrid`
+
+## Start
+
+1. `cd mobile && flutter create --org com.azieeliab --project-name miragegrid .`
+2. `flutter pub get && flutter run`
+3. Choose **Open a circuit**.
+
+The SOCKS5 proxy stays in the desktop package (`miragegrid vpn`).
 
 ## Open in Android Studio / Xcode
 

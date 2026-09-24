@@ -1,67 +1,46 @@
 # MirageGrid
 
-Node-mesh **VPN** and **anonymity network** for AZ-OS. A persistent
-pool of 25 named peers. At session init the system selects an entry
-node, builds a multi-hop onion circuit, and routes along the mesh.
-An internal receipt is minted. Circuit keys and the session mapping
-are destroyed when the session ends.
+Open a local circuit through 25 mesh peers on this computer.
 
 **Author:** Aziel Eliab
-**Version:** 0.2.0 (mesh VPN MVP)
-**License:** [Apache-2.0](LICENSE)
-**Date:** 2026
 
-> You enter the booth. The mesh selects a booth and builds a circuit.
-> The call is attributed to that booth. You leave with no persistent
-> booth identity.
+## Start
 
-See the spec: [docs/whitepaper.md](docs/whitepaper.md).
-How to contribute: [CONTRIBUTING.md](CONTRIBUTING.md).
+1. Install.
 
-**Forks are welcome and always allowed.**
+   ```bash
+   python -m venv .venv && source .venv/bin/activate && pip install -e .
+   ```
 
-This is a **lawful privacy tool**. Use it only where you have the right
-to do so (personal privacy, journalism, research). It does not authorize
-crime, and it does not claim to defeat a global adversary.
+2. Open the console.
 
-**Public stack (locked wording).** MirageGrid’s public stack is now
-three named pieces:
+   ```bash
+   miragegrid ui
+   ```
 
-1. **Anonymity network** — onion/mesh privacy (existing MVP stays a
-   lawful privacy tool).
-2. **Node Gate** — the MirageGrid admission/claim surface for `.az`
-   names (NOT azieleliab.com, NOT godlock.uk, NOT corpus — those hubs
-   are not Node Gate).
-3. **Auto-heal** — MUST obey REHEAL-1.0 / MESH-REHEAL: heal from own
-   last good tip + verified trusted pull, or phoenix-WAIT. NEVER
-   neighbor vote-to-fix / majority fanfic. “Auto-heal” in copy means
-   that lawful reheal + archive re-expand, not peer talk-back-to-health.
+3. Choose **Open a circuit**.
 
-AZ Generator and Node Gate are MirageGrid subsystems / law — not
-Softwares-tab products. **AZ Generator is a Cap-7 mesh DNS factory**
-that lives **deep in the node** and exits only through the **FRONT
-Node Gate**. It does not get called from outside. Mesh-authoritative
-`.az` / `.aziel` / honest-pivot names (not public ICANN; not `.az`
-ccTLD takeover). Exactly **2** of Cap-7 are hosted public HTTPS
-gateways; the rest stay mesh/AZNet-side. Access is **AZNet +
-AZBrowser** (separate Softwares; pairing only). See
-[docs/AZ-GENERATOR-1.0.md](docs/AZ-GENERATOR-1.0.md),
-[docs/MIRAGE-GRID-SHIFT-1.0.md](docs/MIRAGE-GRID-SHIFT-1.0.md), and
-[docs/AIRGAP-1.0.md](docs/AIRGAP-1.0.md).
+The console is at http://127.0.0.1:8080 (this computer only).
+`miragegrid doctor` checks the install. `miragegrid --help` lists commands.
+People get short text. Machines use `--json`.
 
-## Quick start
+Cap-7 is the mesh DNS factory: four hub mirrors and three decoys. It keeps those names on the mesh. It does not register names at a public ICANN registrar.
 
-```bash
-python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
-miragegrid ui
-```
-
-Local SOCKS5 mesh VPN:
+A local SOCKS5 proxy, when you want it:
 
 ```bash
 miragegrid vpn
-# socks5://127.0.0.1:1080  — traffic is onion-wrapped through the 25-node mesh
 ```
+
+It listens at `127.0.0.1:1080`.
+
+See [RUN.txt](RUN.txt), the spec [docs/whitepaper.md](docs/whitepaper.md), and [CONTRIBUTING.md](CONTRIBUTING.md). License: [Apache-2.0](LICENSE). Version 0.2.0.
+
+## Notes
+
+This is a lawful privacy tool for personal privacy, journalism, and research where you have the right to use it.
+
+The public stack is three pieces: the anonymity network (this local mesh VPN), Node Gate (the admission surface for mesh `.az` names; the hub websites stay the hub websites), and auto-heal (REHEAL-1.0 / MESH-REHEAL: own last good tip plus a verified trusted pull, or phoenix-WAIT). AZ Generator and Node Gate are MirageGrid subsystems. AZ Generator is the Cap-7 mesh DNS factory. It lives deep in the node and exits through the front Node Gate. A node may publish two hosted HTTPS mirrors of the mesh tip; the other Cap-7 names stay on the mesh. Access for mesh names is AZNet and AZBrowser, which stay separate products. See [docs/AZ-GENERATOR-1.0.md](docs/AZ-GENERATOR-1.0.md), [docs/MIRAGE-GRID-SHIFT-1.0.md](docs/MIRAGE-GRID-SHIFT-1.0.md), and [docs/AIRGAP-1.0.md](docs/AIRGAP-1.0.md).
 
 
 ## One-click install
@@ -143,16 +122,18 @@ isolated / tip-hash. Forbidden: bodies, diffs, vote-to-fix.
 Public-stack auto-heal means this lawful reheal (REHEAL-1.0 /
 MESH-REHEAL), not neighbor vote-to-fix.
 
-**AZ GENERATOR** — Cap-7 mesh DNS factory living deep in the node.
-7m77s (497s) local tick exits FRONT Node Gate only (not callable).
-Honest suffix order `.az` → `.aziel` → pivot. First flag
-`www.survivalnetwork.<active-suffix>`. Exactly 2 of Cap-7 are public
-browser gateways; the rest stay mesh/AZNet. Access via AZNet +
-AZBrowser. Restore needs ≥49 local vault papers (vault multiply onto
-each node as cold copies; no paper-body fan-out on the 1s tip tick).
-Incomplete vault refuses (AZG-UNVERIFIED-TIP / AZG-INCOMPLETE-VAULT).
-Not ICANN. Not a qnm radio mesh (RF/BT/Wi-Fi/photon PHY is local qnm,
-not this product). Hub `GET /v1/mesh` never enables.
+**AZ GENERATOR** — Cap-7 mesh DNS factory living deep in the node:
+four hub mirrors and three decoys. It does not register names at a
+public ICANN registrar. 7m77s (497s) local tick exits the front Node
+Gate only (the generator is not called from outside). Honest suffix
+order `.az` → `.aziel` → pivot. First flag
+`www.survivalnetwork.<active-suffix>`. Two of a node's Cap-7 names
+may be hosted HTTPS mirrors of the mesh tip; the rest stay mesh/AZNet.
+Access via AZNet + AZBrowser. Restore needs ≥49 local vault papers
+(vault multiply onto each node as cold copies; no paper-body fan-out
+on the 1s tip tick). Incomplete vault refuses (AZG-UNVERIFIED-TIP /
+AZG-INCOMPLETE-VAULT). Radio PHY stays in local qnm-node. Hub
+`GET /v1/mesh` never enables.
 
 **MIRAGE GRID SHIFT** — MESH-VAULT is snapshot + official standby
 (IP-mask host). Grid shift keeps the `.az` answerable and cloaks the
@@ -253,23 +234,18 @@ python -m pip install miragegrid-0.2.0.tar.gz
 
 ## CLI
 
+With no arguments, `miragegrid` prints a short welcome and the next command.
+
 ```bash
-miragegrid version
-miragegrid nodes
-miragegrid mesh
-miragegrid route --from node-01 --to node-17
+miragegrid
+miragegrid --help
+miragegrid ui
+miragegrid doctor
 miragegrid assign
-miragegrid assign --emit-receipt receipt.json
-miragegrid circuit
-miragegrid verify-receipt receipt.json
-miragegrid vpn --host 127.0.0.1 --port 1080
-miragegrid node --id node-01 --host 127.0.0.1 --port 19001
-miragegrid ui --host 127.0.0.1 --port 8080
-miragegrid serve --host 127.0.0.1 --port 8080
+miragegrid vpn
 ```
 
-`assign` prints the entry node, session id, circuit hops, and mesh path.
-A receipt file is written only if `--emit-receipt` is passed.
+Advanced commands stay available: `mesh`, `route`, `circuit`, `verify-receipt`, `node`, `import`, `export`, `generator-tick`, and `serve` (same as `ui`). Add `--json` for the machine document. `assign` still prints the entry peer, session id, circuit hops, and mesh path. A receipt file is written only if `--emit-receipt` is passed.
 
 Library:
 
