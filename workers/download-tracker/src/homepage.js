@@ -115,68 +115,179 @@ ${JSON.stringify(jsonLd, null, 2)}
     color-scheme: dark;
     --bg: #0e1014;
     --panel: #151922;
-    --ink: #e8eaef;
-    --muted: #9aa3b2;
-    --line: #2a3140;
-    --gold: #c9a227;
-    --pass: #7dcf9a;
-    --fail: #ff8a8a;
+    --ink: #f2f4f8;
+    --muted: #c5ccd6;
+    --line: #3a4454;
+    --gold: #e0c15a;
+    --gold-btn: #c9a227;
+    --gold-ink: #14110a;
+    --link: #d6e0ff;
+    --pass: #8ee0ae;
+    --pass-ink: #0e1014;
+    --fail: #ffb4b4;
+    --exit: #9ec8ff;
+    --focus: #ffffff;
+    --btn: #f2f4f8;
+    --btn-ink: #0e1014;
+    --banner-bg: #2a220f;
+    --banner-ink: #f6e7b0;
+    --banner-line: #8a7340;
+    --field: #0e1014;
+    --secondary: transparent;
+    --mesh: #12110c;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --ink: #141414;
+      --muted: #3d4a5c;
+      --line: #c5cdd8;
+      --gold: #6b5208;
+      --gold-btn: #c9a227;
+      --gold-ink: #14110a;
+      --link: #0b3a6e;
+      --pass: #0d6b3a;
+      --pass-ink: #ffffff;
+      --fail: #9b1c1c;
+      --exit: #0b3a6e;
+      --focus: #0b3a6e;
+      --btn: #141414;
+      --btn-ink: #ffffff;
+      --banner-bg: #fff8e6;
+      --banner-ink: #3a2e0a;
+      --banner-line: #c4a24a;
+      --field: #ffffff;
+      --secondary: transparent;
+      --mesh: #ffffff;
+    }
   }
   * { box-sizing: border-box; }
+  html { overflow-x: clip; }
   body {
-    font: 16px/1.45 system-ui, sans-serif;
-    max-width: 56rem;
-    margin: 2.25rem auto;
-    padding: 0 1.25rem 4rem;
+    font: 16px/1.5 system-ui, "Segoe UI", sans-serif;
+    max-width: 58rem;
+    margin: 0 auto;
+    padding: 1.15rem 1.2rem 2.8rem;
     background: var(--bg);
     color: var(--ink);
+    overflow-wrap: break-word;
   }
-  h1 { font-size: 1.85rem; margin: 0 0 .2rem; letter-spacing: .01em; }
-  h2 { font-size: 1.15rem; margin: 0 0 .55rem; }
-  a { color: #c9d4ff; }
-  .brandrow { display: flex; align-items: center; gap: 12px; margin: 0 0 10px; }
+  h1 { font-size: 2rem; font-weight: 650; letter-spacing: .02em; margin: 0 0 .2rem; line-height: 1.15; }
+  h2 { font-size: 1.12rem; margin: 0 0 .45rem; }
+  a { color: var(--link); }
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+  a.skip {
+    position: absolute;
+    left: -999px;
+    top: 0;
+  }
+  a.skip:focus {
+    left: 1rem;
+    top: 1rem;
+    z-index: 5;
+    background: var(--btn);
+    color: var(--btn-ink);
+    padding: .4rem .7rem;
+    text-decoration: none;
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+  .hero { margin: 0 0 1.1rem; }
+  .brandrow { display: flex; align-items: center; gap: 12px; margin: 0 0 12px; }
   .brandmark {
-    width: 48px; height: 48px; border-radius: 12px; object-fit: cover; flex: 0 0 auto;
-    box-shadow: 0 0 0 1px #d4af3733, 0 0 18px #c9a22733;
+    width: 40px; height: 40px; border-radius: 10px; object-fit: cover; flex: 0 0 auto;
+    box-shadow: 0 0 0 1px var(--line);
   }
-  .motto { color: var(--muted); margin: 0 0 1rem; }
+  .motto { color: var(--gold); font-style: italic; margin: 0 0 .7rem; font-size: 1.08rem; }
+  .lede { color: var(--muted); margin: 0 0 1rem; max-width: 46rem; }
+  .asset-note { color: var(--muted); font-size: .9rem; margin: 0 0 1rem; }
+  .features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: .75rem 1.2rem;
+    margin: 0 0 1.2rem;
+    padding: 0;
+    list-style: none;
+    max-width: 46rem;
+  }
+  .features li { margin: 0; }
   .banner {
-    border: 1px solid #5c4a1a; background: #241c0d; color: #f0d78c;
-    padding: .85rem 1rem; border-radius: 8px; margin: 0 0 1.2rem; font-size: .92rem;
+    border: 1px solid var(--banner-line);
+    background: var(--banner-bg);
+    color: var(--banner-ink);
+    padding: .85rem 1rem;
+    border-radius: 10px;
+    margin: 0 0 1.1rem;
+    font-size: .92rem;
   }
-  .grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 1rem; }
-  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
   .card {
-    border: 1px solid var(--line); border-radius: 12px;
-    padding: 1.15rem 1.25rem; background: var(--panel); margin: 0 0 1rem;
+    border: 1px solid var(--line); border-radius: 14px;
+    padding: 1.15rem 1.2rem; background: var(--panel); margin: 0 0 1rem;
+    min-width: 0;
   }
   .nums { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin: 0 0 1rem; }
   .count { font-size: 2.1rem; font-variant-numeric: tabular-nums; font-weight: 700; margin: 0; }
   .count span { display: block; font-size: .95rem; font-weight: 500; color: var(--muted); }
-  .btns { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin: 0 0 .85rem; }
-  @media (max-width: 520px) { .btns { grid-template-columns: 1fr; } }
   a.btn, button.btn {
-    display: block; width: 100%; box-sizing: border-box; text-align: center;
-    font: inherit; font-size: 1.05rem; font-weight: 750; padding: .85rem 1rem;
-    border-radius: 10px; border: 0; cursor: pointer; text-decoration: none;
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+    font: 700 .88rem/1.1 ui-monospace, Menlo, Consolas, monospace;
+    letter-spacing: .03em;
+    padding: .72rem .9rem;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    max-width: 100%;
   }
-  a.btn.primary, button.btn.primary { background: #e8eaef; color: #0e1014; }
-  button.btn.install, button.btn.gold { background: var(--gold); color: #14110a; }
-  button.btn.install.copied { background: var(--pass); color: #0e1014; }
-  button.btn.secondary { background: #2a3340; color: var(--ink); }
+  a.btn.block.primary {
+    display: block;
+    width: 100%;
+    max-width: 40rem;
+    margin: 0 0 .7rem;
+    padding: 1.05rem 1.2rem;
+    background: var(--btn);
+    color: var(--btn-ink);
+    font-size: 1.25rem;
+  }
+  a.btn.block.primary:hover { filter: brightness(1.08); }
+  button.btn.install {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  button.btn.install.copied { background: var(--pass); color: var(--pass-ink); border-color: transparent; }
+  button.btn.gold { background: var(--gold-btn); color: var(--gold-ink); }
+  button.btn.secondary { background: var(--secondary); color: var(--ink); border-color: var(--line); }
   button.btn:disabled { opacity: .45; cursor: not-allowed; }
   .ops { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 .75rem; }
-  .ops button { width: auto; padding: .55rem .85rem; font-size: .95rem; }
+  .ops button { width: auto; }
   label.field { display: block; color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; margin: .45rem 0 .2rem; }
   input, select, textarea {
-    width: 100%; background: #0e1014; color: var(--ink); border: 1px solid var(--line);
-    border-radius: 8px; padding: .5rem .65rem; font: inherit;
+    width: 100%;
+    max-width: 100%;
+    background: var(--field);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: .5rem .65rem;
+    font: inherit;
   }
   textarea { min-height: 7rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .82rem; }
-  .route { display: grid; grid-template-columns: 1fr 1fr auto; gap: .5rem; align-items: end; margin: 0 0 .75rem; }
-  @media (max-width: 640px) { .route { grid-template-columns: 1fr; } }
+  .route { display: grid; grid-template-columns: 1fr; gap: .5rem; align-items: end; margin: 0 0 .75rem; }
   .k { color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; }
-  .v { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.02rem; margin: .1rem 0 .65rem; word-break: break-word; }
+  .v { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.02rem; margin: .1rem 0 .65rem; overflow-wrap: anywhere; }
   .pass { color: var(--pass); }
   .fail { color: var(--fail); }
   .hops { display: flex; flex-wrap: wrap; gap: .4rem; margin: .25rem 0 .7rem; }
@@ -185,48 +296,102 @@ ${JSON.stringify(jsonLd, null, 2)}
     font-family: ui-monospace, monospace; font-size: .85rem;
   }
   .hop.entry { border-color: var(--gold); color: var(--gold); }
-  .hop.exit { border-color: #7eb8ff; color: #7eb8ff; }
+  .hop.exit { border-color: var(--exit); color: var(--exit); }
   .status { min-height: 1.3rem; color: var(--muted); margin: 0 0 .6rem; }
   .kid { font-size: 1.02rem; margin: 0 0 1rem; }
   .meta { margin-top: 1.1rem; color: var(--muted); font-size: .92rem; }
-  .iso { margin-top: .85rem; font-size: .85rem; color: #7d8696; }
-  pre { background: #0e1014; padding: .75rem .9rem; overflow: auto; border-radius: 8px; font-size: .82rem; }
+  .iso { margin-top: .85rem; font-size: .85rem; color: var(--muted); }
+  pre {
+    background: var(--field);
+    color: var(--ink);
+    padding: .75rem .9rem;
+    overflow: auto;
+    border-radius: 8px;
+    font-size: .82rem;
+    max-width: 100%;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
   code { font-size: .88rem; }
   .cite { margin-top: .4rem; }
-  .cite p { color: #c5ccd8; }
-  footer { color: var(--muted); font-size: .88rem; margin-top: 1.5rem; }
-  nav.jump { display: flex; flex-wrap: wrap; gap: .75rem; margin: 0 0 1.1rem; font-size: .92rem; }
-  #meshStrip { border: 1px solid var(--gold); border-radius: 12px; padding: .85rem 1rem; background: #12110c; margin: 0 0 1.2rem; display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1rem; font-size: .88rem; color: var(--muted); }
+  .cite p { color: var(--ink); }
+  footer.quiet { color: var(--muted); font-size: .9rem; margin-top: .4rem; }
+  footer.quiet p { margin: .35rem 0; }
+  footer.quiet a { color: var(--ink); }
+  nav.jump { display: flex; flex-wrap: wrap; gap: .55rem .75rem; margin: 0 0 1.1rem; font-size: .92rem; }
+  #meshStrip {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: .85rem 1rem;
+    background: var(--mesh);
+    margin: 0 0 1.1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .7rem 1rem;
+    font-size: .88rem;
+    color: var(--muted);
+    min-width: 0;
+  }
+  #meshStrip > * { min-width: 0; max-width: 100%; }
   #meshStrip .live { color: var(--ink); }
   #meshStrip .live b { color: var(--gold); font-size: 1.35rem; margin-right: .35rem; }
   #meshStrip .rollup b { color: var(--gold); }
-  #meshStrip button { font: 700 .78rem/1 ui-monospace, Menlo, Consolas, monospace; height: 2rem; padding: 0 .75rem; border-radius: 8px; background: #0c0b08; color: var(--ink); border: 1px solid var(--gold); cursor: pointer; }
-  #meshStrip button:hover { background: #241c0d; color: var(--gold); }
-  #meshStrip input { width: 10rem; padding: .4rem .55rem; border: 1px solid var(--gold); border-radius: 8px; background: #0c0b08; color: var(--ink); font: inherit; }
+  #meshStrip .law { flex-basis: 100%; }
+  #meshStrip button {
+    font: 700 .78rem/1 ui-monospace, Menlo, Consolas, monospace;
+    height: 2rem;
+    padding: 0 .75rem;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    cursor: pointer;
+  }
+  #meshStrip button:hover { border-color: var(--focus); color: var(--ink); }
+  .mesh-ops { display: flex; flex-wrap: wrap; gap: .5rem; flex-basis: 100%; align-items: center; }
+  #meshStrip input {
+    width: min(100%, 16rem);
+    max-width: 100%;
+    padding: .4rem .55rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--field);
+    color: var(--ink);
+    font: inherit;
+  }
   #meshProducts { flex-basis: 100%; margin: 0; }
+  @media (min-width: 640px) {
+    .route { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; }
+  }
+  @media (min-width: 800px) {
+    .grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); }
+    .features { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    body { padding-top: 1.4rem; }
+  }
 </style>
 </head>
 <body>
-  <div class="brandrow">
-    <img class="brandmark" src="/sigil.png" width="48" height="48" alt="" decoding="async">
-  </div>
-  <h1>MirageGrid</h1>
-  <p class="motto">${escapeHtml(MOTTO)} Author Aziel Eliab.</p>
-  <p class="banner">${escapeHtml(BANNER)}</p>
-  <div id="meshStrip" aria-label="Suite Live Nodes">
-    <div class="live"><b id="meshLiveCount">0</b> Live Nodes</div>
-    <div id="meshLine">Suite mesh: off (default). QNM-BUILD-1.0. QNS-CD-1.0. Not an anonymity network.</div>
-    <div class="rollup">live <b id="qnmLive">0</b> · locked <b id="qnmLocked">0</b> · isolated <b id="qnmIsolated">0</b></div>
-    <div>No Node Gate · No auto-heal · GET never enables radios or plants claims · REDLINE-1.0 · no invented completeness · Cloudflare TLS only · FoldLock cite-only · Lamb Lens · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 Cap-7 mesh DNS factory (deep-node → front Node Gate; four real hub duplications, three false sites; not typed on ICANN DNS; AZNet+AZBrowser) · CAP7-SHUFFLE-1.0 ping→land · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · PAPER-VAULT-ON-NODE · NO-FAN-1.0 · No falsification. No ambiguity. No misleading. · download cite miragegrid-download-tracker.vibelock.workers.dev · app Worker miragegrid.vibelock.workers.dev is LIVE (historical CF 1042 closed) · Aziel Eliab only</div>
-    <div>
-      <input id="meshBearer" type="text" maxlength="80" placeholder="bearer (required to enable)" aria-label="mesh bearer">
-      <button id="meshEnable" type="button" title="Enable suite mesh. Declared bearer required. Default off.">Enable</button>
-      <button id="meshDisable" type="button" title="Disable suite mesh (always allowed)">Disable</button>
-      <button id="meshJoin" type="button" title="Join as miragegrid. Refused while mesh is OFF. No auto-join.">Join</button>
-      <button id="meshLeave" type="button" title="Leave this node. No auto-heal.">Leave</button>
+  <a class="skip" href="#workspace">Skip to workspace</a>
+  <header class="hero">
+    <div class="brandrow">
+      <img class="brandmark" src="/sigil.png" width="40" height="40" alt="" decoding="async">
     </div>
-    <p id="meshProducts">Catalog MCP mesh_* · FragGate slug=mesh · /v1/mesh/* PROXY · QNS-CD-1.0 cross-map · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · PAPER-VAULT-ON-NODE · not AnonBroadcast · not AZMail ring · not a Node Gate · no public qnsd</p>
-  </div>
+    <h1>MirageGrid</h1>
+    <p class="motto">${escapeHtml(MOTTO)}</p>
+    <p class="lede">Session assignment for AZ-OS, by Aziel Eliab. One click saves the package from this Worker.</p>
+    <a class="btn block primary" id="download" href="/download?asset=${DEFAULT_ASSET}" aria-describedby="downloadNote">Download</a>
+    <p class="asset-note" id="downloadNote">${n} downloads · ${DEFAULT_ASSET} · counted on this Worker for every branch and fork</p>
+    <ul class="features">
+      <li>Assign a session node and read the circuit map on this page.</li>
+      <li>The gzip is served here. Live downloads count for every branch and fork.</li>
+      <li>OpenAPI, the skill, and the suite mesh stay on this same Worker.</li>
+    </ul>
+    <p class="lede">On this computer, copy the install command, then run <code>miragegrid ui</code>. Local console is http://127.0.0.1:8080.</p>
+    <pre id="install-cmd">${INSTALL_LINE}</pre>
+    <button type="button" class="btn install" id="install-btn">One-click install</button>
+  </header>
+  <p class="banner">${escapeHtml(BANNER)}</p>
   <nav class="jump">
     <a href="#workspace">Workspace</a>
     <a href="#download">Download</a>
@@ -236,6 +401,20 @@ ${JSON.stringify(jsonLd, null, 2)}
     <a href="/openapi.json">OpenAPI</a>
     <a href="${GITHUB_REPO}">GitHub</a>
   </nav>
+  <div id="meshStrip" aria-label="Suite Live Nodes">
+    <div class="live"><b id="meshLiveCount">0</b> Live Nodes</div>
+    <div id="meshLine">Suite mesh: off (default). QNM-BUILD-1.0. QNS-CD-1.0. Not an anonymity network.</div>
+    <div class="rollup">live <b id="qnmLive">0</b> · locked <b id="qnmLocked">0</b> · isolated <b id="qnmIsolated">0</b></div>
+    <div class="law">No Node Gate · No auto-heal · GET never enables radios or plants claims · REDLINE-1.0 · no invented completeness · Cloudflare TLS only · FoldLock cite-only · Lamb Lens · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 Cap-7 mesh DNS factory (deep-node → front Node Gate; four real hub duplications, three false sites; not typed on ICANN DNS; AZNet+AZBrowser) · CAP7-SHUFFLE-1.0 ping→land · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · PAPER-VAULT-ON-NODE · NO-FAN-1.0 · No falsification. No ambiguity. No misleading. · download cite miragegrid-download-tracker.vibelock.workers.dev · app Worker miragegrid.vibelock.workers.dev is LIVE (historical CF 1042 closed) · Aziel Eliab only</div>
+    <div class="mesh-ops">
+      <input id="meshBearer" type="text" maxlength="80" placeholder="bearer (required to enable)" aria-label="mesh bearer">
+      <button id="meshEnable" type="button" title="Enable suite mesh. Declared bearer required. Default off.">Enable</button>
+      <button id="meshDisable" type="button" title="Disable suite mesh (always allowed)">Disable</button>
+      <button id="meshJoin" type="button" title="Join as miragegrid. Refused while mesh is OFF. No auto-join.">Join</button>
+      <button id="meshLeave" type="button" title="Leave this node. No auto-heal.">Leave</button>
+    </div>
+    <p id="meshProducts">Catalog MCP mesh_* · FragGate slug=mesh · /v1/mesh/* PROXY · QNS-CD-1.0 cross-map · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · PAPER-VAULT-ON-NODE · not AnonBroadcast · not AZMail ring · not a Node Gate · no public qnsd</p>
+  </div>
 
   <div class="grid">
     <section class="card" id="workspace">
@@ -284,17 +463,13 @@ ${JSON.stringify(jsonLd, null, 2)}
       <pre id="ws-raw">{}</pre>
     </section>
 
-    <section class="card" id="download">
+    <section class="card" id="tracker">
+      <h2>Counted downloads</h2>
       <div class="nums">
         <p class="count">${v}<span>Views</span></p>
         <p class="count">${n}<span>Downloads</span></p>
       </div>
-      <p class="kid"><strong>Two big buttons.</strong> Download saves the gzip (the Downloads number goes up — live downloads). One-click install copies a Terminal command. After it finishes, type <code>miragegrid ui</code>.</p>
-      <div class="btns">
-        <a class="btn primary dl" href="/download?asset=${DEFAULT_ASSET}">Download</a>
-        <button type="button" class="btn install" id="install-btn">One-click install</button>
-      </div>
-      <pre id="install-cmd">${INSTALL_LINE}</pre>
+      <p class="kid">Download saves the gzip (the Downloads number goes up — live downloads). One-click install copies a Terminal command. After it finishes, type <code>miragegrid ui</code>.</p>
       <p class="kid">Then run: <code>miragegrid ui</code>. Local console is http://127.0.0.1:8080. Hosted MirageGrid is not a VPN.</p>
       <p class="meta">Live download count ticks on the Download click. The Worker serves the gzip (HTTP 200). No 302 to GitHub. Forks using this same link are counted automatically. ${DEFAULT_ASSET} — ${n} counted.</p>
       <p class="iso">Isolated counter: Worker <code>miragegrid-download-tracker</code>, project <code>miragegrid</code>, KV <code>MIRAGEGRID_DOWNLOADS</code>. Not mixed with any other product. /v1 does not increment downloads.</p>
@@ -320,9 +495,10 @@ ${JSON.stringify(jsonLd, null, 2)}
     <pre>${escapeHtml(JSON.stringify(cite, null, 2))}</pre>
   </section>
 
-  <footer>
-    Apache-2.0 · Aziel Eliab · 2026 · forks welcome and always allowed.
-    Lawful use only. MirageGrid is not a VPN.
+  <footer class="quiet">
+    <p>Apache-2.0 · Aziel Eliab · MirageGrid</p>
+    <p>Forks welcome and always allowed.</p>
+    <p><a href="${GITHUB_REPO}">GitHub</a> · <a href="/openapi.json">OpenAPI</a> · <a href="/v1/skill">Skill</a> · <a href="/cite.json">Cite</a></p>
   </footer>
 
   <script>
