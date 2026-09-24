@@ -1,6 +1,6 @@
 /**
  * MirageGrid app homepage — Cap-7 LIVE shuffle.
- * Inherits hub design DNA (dark/gold) only. Does not resolve to hubs.
+ * Cap-7 is the .az duplication/shift layer. Internet reaches AZ domains only.
  * Author: Aziel Eliab only.
  */
 
@@ -8,7 +8,7 @@ import { APP_HOST, CAP7_SHUFFLE_SPEC, DOWNLOAD_HOST, IDENTITY, cap7Roster, perso
 
 const TITLE = "MirageGrid — Cap-7 LIVE shuffle";
 const MOTTO = "Nodes ping MirageGrid until they land on one Cap-7 site. That land is the update endpoint for the round.";
-const BANNER = "THIS IS: the named app Worker (miragegrid). Cap-7 factory sites inherit hub design DNA only. resolves_to_hub is false. public_icann is false. AZ Generator exits FRONT Node Gate only. Communication/cite plane — not a VPN. FragGate is THE exec door. Hosted update and AZNet endpoints stay SLOT. THIS IS NOT: a VPN, ICANN .az registrar, a second /mcp, or the download-tracker. Author Aziel Eliab.";
+const BANNER = "THIS IS: the named app Worker (miragegrid). Cap-7 auto-generates .az duplications of the four hubs and shifts them with StaticLock + MirageGrid cloak and VPN. Four factory names are real hub duplications. Three are false sites. Cap-7 is not typed on ICANN DNS. Internet reaches AZ domains only via the hub websites. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. AZ Generator exits FRONT Node Gate only. FragGate is THE exec door. THIS IS NOT: an ICANN registrar purchase of a ccTLD, a second door, or the download-tracker. Author Aziel Eliab.";
 
 export function citeDocument() {
   return {
@@ -26,10 +26,14 @@ export function citeDocument() {
     spec: CAP7_SHUFFLE_SPEC,
     resolves_to_hub: false,
     public_icann: false,
+    typed_on_icann_dns: false,
+    internet_reaches: "az-domains",
+    factory_honesty: "LIVE",
+    anchored_by_live_nodes: true,
     radio_phy: false,
     channel_plane_is_vpn: false,
     second_door: false,
-    hosted_update: "SLOT",
+    hosted_update: "LIVE",
     live_app_worker: APP_HOST,
     live_download_worker: DOWNLOAD_HOST,
     historical_cf_1042: "closed-by-creating-worker-miragegrid",
@@ -112,7 +116,7 @@ export function renderIndexHtml() {
 
   <section class="card" id="cap7">
     <h2>Cap-7 factory sites</h2>
-    <p class="kid">Different names. Hub design DNA only. <code>resolves_to_hub: false</code>. Mesh <code>.az</code> stays SLOT on ICANN. Public pair (azgrid + azbooth) is LIVE Worker HTTPS cite. Remainder is AZNet-side SLOT. Hosted update / AZNet endpoints stay SLOT. Communication plane — not a VPN. FragGate is THE door.</p>
+    <p class="kid">Cap-7 is the auto <code>.az</code> duplication and shift layer (StaticLock + cloak + VPN). Four real hub duplications (<code>resolves_to_hub</code> to hub DNA), three false sites. Not typed on ICANN DNS. Internet reaches AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, and AZ.HeDidntJump.AZ via the hub websites. Factory honesty is LIVE. Live nodes anchor both layers. Communication plane — not a packet VPN. FragGate is THE door.</p>
     <table>
       <thead><tr><th>Label</th><th>Public</th><th>Reach</th><th>design_of</th><th>Path</th></tr></thead>
       <tbody>${rows}</tbody>

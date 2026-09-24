@@ -85,19 +85,26 @@ cite-only.
    node can actually register in its Cap-7 zone. Stamp the active
    suffix. Do **not** pretend `.az` or `.aziel` succeeded.
 
-### Exactly 2 public browser hosts
+### Cap-7 duplication, not a public ICANN type
 
-Of the Cap-7 set, **exactly 2** names become hosted public HTTPS
-gateways/mirrors reachable by a standard internet browser. Those two
-are **mirrors of mesh names** — not ICANN registrations. The other
-Cap-7 slots stay mesh/AZNet-side.
+Cap-7 auto-generates `.az` duplications of all 4 hubs and shifts them
+with StaticLock + MirageGrid cloak and VPN. Exactly **4** factory names
+are real hub duplications. Exactly **3** are false sites (decoys).
+Factory honesty is **LIVE**. Live nodes anchor the factory.
+
+Cap-7 is **not** publicly typed on ICANN DNS. Standard internet reaches
+**AZ domains only** (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ,
+AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Those
+doors shuffle once, mirror the hubs while up, stand alone, and stay
+immutable after the hubs die.
 
 ### Access (AZNet + AZBrowser)
 
-All generated names, including the public pair, are resolved/browsed
-through **AZNet** and **AZBrowser** (functional pairing only). This is
-not a naked public DNS story. Standard browsers reach only the public
-pair. Do not merge AZNet, AZBrowser, and MirageGrid into one product.
+Cap-7 names are reached through **AZNet** and **AZBrowser** (functional
+pairing only) plus the StaticLock shift stack. This is not a naked
+public DNS story and not an ICANN type. Standard browsers reach the
+four AZ domain doors via the hub websites. Do not merge AZNet,
+AZBrowser, and MirageGrid into one product.
 
 ## Flag / repost / restore
 
@@ -222,11 +229,12 @@ hedidntjump.com) remain named public hosts. They are **not** Node Gate.
 - Falsify / ambiguous / misleading verbs (NO-FAN-1.0)
 - Sharing the 7m77s claim socket with the 1s tip tick or the 777s dwell
 - Calling the generator from outside / Worker POST run-generator
-- Faking ICANN / Cloudflare registrar success or `.az` ccTLD takeover
-- Hosting more or fewer than exactly 2 public browser gateways of Cap-7
+- Faking an ICANN registrar purchase of a ccTLD
+- Claiming Cap-7 is publicly typed on ICANN DNS
+- Hosting a factory count other than 4 real hub duplications and 3 false sites
 - Merging AZNet / AZBrowser / generator into one product
-- Naked public DNS as the access story
-- Mapping a mesh name onto an official hub as resolution / CNAME / redirect (hubs are design provenance only; see [SEMANTIC-BRIDGE-1.0](SEMANTIC-BRIDGE-1.0.md))
+- Naked public DNS as the access story for Cap-7 names
+- Calling the AZ domain doors a Cap-7 product (internet reaches AZ domains via hub HTTPS; see [SEMANTIC-BRIDGE-1.0](SEMANTIC-BRIDGE-1.0.md))
 - Claiming `.com` / `.net` / other ICANN TLDs
 - Pretending `.az` or `.aziel` succeeded after an honest pivot
 - Invented radio PHY / turning MirageGrid into a qnm RF/BT/Wi-Fi/photon mesh (local qnm radios are not this product; hub `GET /v1/mesh` never enables)

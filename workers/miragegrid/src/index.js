@@ -52,7 +52,7 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | GET | \`/v1/shuffle\` | CAP7-SHUFFLE-1.0 cite. |
 | POST | \`/v1/shuffle/ping\` | Ping until land. |
 | POST | \`/v1/shuffle/update\` | Update via the landed Cap-7 site. |
-| GET | \`/v1/cap7\` | Seven factory sites. SLOT vs LIVE. |
+| GET | \`/v1/cap7\` | Seven factory sites. Four real hub duplications, three decoys. LIVE. |
 | GET | \`/v1/health\` | Liveness. |
 | GET | \`/stats\` / \`/v1/stats\` | Honest app/download-plane stats. |
 | GET | \`/v1/skill\` | This markdown. |
@@ -62,7 +62,7 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | POST | \`/v1/verify-receipt\` | Verify receipt. |
 | GET | \`/v1/mesh\` | PROXY. Default OFF. GET never enables. |
 
-AZ Generator is not callable. \`radio_phy: false\`. \`public_icann: false\`. \`resolves_to_hub: false\`. Communication plane, not a VPN. FragGate is THE exec door. Hosted update / AZNet endpoints stay SLOT.
+AZ Generator is not callable. \`radio_phy: false\`. Cap-7 is not typed on ICANN DNS. Internet reaches AZ domains only (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Factory honesty is LIVE. Live nodes anchor the factory and those doors. FragGate is THE exec door.
 `;
 
 function corsHeaders() {
@@ -128,7 +128,7 @@ function openapiSpec() {
       "/v1/shuffle": { get: { operationId: "miragegrid_shuffle_cite", summary: "CAP7-SHUFFLE-1.0 cite." } },
       "/v1/shuffle/ping": { post: { operationId: "miragegrid_shuffle_ping", summary: "Ping until land." } },
       "/v1/shuffle/update": { post: { operationId: "miragegrid_shuffle_update", summary: "Update via the landed Cap-7 site. No hard-coded host." } },
-      "/v1/cap7": { get: { operationId: "miragegrid_cap7", summary: "Factory roster. Honest SLOT vs LIVE." } },
+      "/v1/cap7": { get: { operationId: "miragegrid_cap7", summary: "Factory roster. Four real hub duplications, three false sites. LIVE. Not ICANN DNS." } },
       "/v1/health": { get: { operationId: "health", summary: "Liveness." } },
       "/stats": { get: { operationId: "stats", summary: "Honest app/download-plane stats." } },
       "/v1/stats": { get: { operationId: "v1Stats", summary: "Honest app/download-plane stats alias." } },
@@ -299,8 +299,15 @@ export default {
         public_host_pair: 2,
         sites: cap7Roster(),
         labels: FACTORY_LABELS.slice(),
+        real_hub_duplications: ["azgrid", "azcloak", "azvault", "azshift"],
+        false_sites: ["azbooth", "azflag", "azstandby"],
+        false_site_count: 3,
+        real_duplication_count: 4,
+        internet_reaches: "az-domains",
+        typed_on_icann_dns: false,
+        factory_honesty: "LIVE",
+        anchored_by_live_nodes: true,
         public_icann: false,
-        resolves_to_hub: false,
         name_may_change: true,
         radio_phy: false,
         hardcoded_host: false,

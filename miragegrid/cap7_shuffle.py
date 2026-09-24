@@ -1,9 +1,17 @@
 """CAP7-SHUFFLE-1.0 — ping MirageGrid until land; land is the update door.
 
-Cap-7 factory sites have different MirageGrid-only names. They inherit
-hub design DNA only (resolves_to_hub false; name_may_change true).
-Not a public ICANN .az registrar. AZ Generator exits FRONT Node Gate
-only. radio_phy stays false.
+Cap-7 auto-generates ``.az`` duplications of the four hubs and shifts them
+with StaticLock + MirageGrid cloak and VPN. Four factory names are real
+hub duplications. Three are false sites (decoys). Cap-7 is not typed on
+ICANN DNS and is not the public internet door.
+
+Internet reaches AZ domains only, via the four hub websites. Those
+drop-ins shuffle once, mirror the hubs while they are up, stand alone,
+and stay immutable after the hubs die. Live nodes anchor both layers.
+Factory honesty is LIVE (no SLOT hedge).
+
+AZ Generator exits FRONT Node Gate only. radio_phy stays false.
+Not an ICANN registrar purchase of a ccTLD.
 
 Author: Aziel Eliab only.
 """
@@ -35,7 +43,6 @@ from miragegrid.semantic_bridge import (
     app_worker,
     download_worker,
     person_id,
-    refuse_hub_resolution,
     refuse_invent_first_flag_https,
     refuse_public_dns_claim,
 )
@@ -49,7 +56,12 @@ AZBROWSER_PRODUCT = "azbrowser"
 
 
 def outlast_honesty() -> dict[str, Any]:
-    """BAN-SURVIVAL / OUTLAST companion stamps. Hosted path is cite, not VPN."""
+    """Factory honesty is LIVE. Cap-7 is not the public internet door.
+
+    Hosted HTTP is not a packet VPN. The Cap-7 shift stack still cites
+    StaticLock + MirageGrid cloak + MirageGrid VPN. Live nodes anchor
+    the factory and the AZ domain doors.
+    """
     return {
         "communication_plane": True,
         "channel_plane_is_vpn": False,
@@ -62,12 +74,16 @@ def outlast_honesty() -> dict[str, Any]:
         "this_worker_is_node_gate": False,
         "node_gate_exit": "node-gate-front",
         "radio_phy": False,
-        "resolves_to_hub": False,
-        "public_icann": False,
-        "hosted_endpoints": "SLOT",
-        "hosted_update": "SLOT",
-        "public_shuffle_land_exec": "SLOT",
-        "live_node_api": "SLOT",
+        "factory_honesty": "LIVE",
+        "hosted_endpoints": "LIVE",
+        "hosted_update": "LIVE",
+        "hosted_mcp": "LIVE",
+        "public_shuffle_land_exec": "LIVE",
+        "anchored_by_live_nodes": True,
+        "domain_anchor": "live-nodes",
+        "internet_reaches": "az-domains",
+        "cap7_typed_on_icann_dns": False,
+        "cap7_internet_reachable": False,
         "aznet_payload_host": False,
         "payload_host": "stub",
         "is_live_door": False,
@@ -98,6 +114,36 @@ HUB_CORPUS = "https://www.azielcorpuslibrary.net/"
 HUB_GODLOCK = "https://godlock.uk/"
 HUB_HDJ = "https://hedidntjump.com/"
 
+# Public internet doors. Not Cap-7. Shuffle-once locked pairs.
+# Mirror the hub while it is up; stand alone; immutable after the hub dies.
+AZ_DOMAIN_DROP_INS: tuple[dict[str, str], ...] = (
+    {
+        "display_name": "AZ.AzielEliab.AZ",
+        "mirror_host": "azieleliab.com",
+        "canonical_hub": HUB_AE,
+    },
+    {
+        "display_name": "AZ.AzielCorpusLibrary.AZ",
+        "mirror_host": "azielcorpuslibrary.net",
+        "canonical_hub": HUB_CORPUS,
+    },
+    {
+        "display_name": "AZ.Godlock.AZ",
+        "mirror_host": "godlock.uk",
+        "canonical_hub": HUB_GODLOCK,
+    },
+    {
+        "display_name": "AZ.HeDidntJump.AZ",
+        "mirror_host": "hedidntjump.com",
+        "canonical_hub": HUB_HDJ,
+    },
+)
+
+# One real .az duplication per hub. The other three names are decoys.
+REAL_HUB_DUPLICATIONS: tuple[str, ...] = ("azgrid", "azcloak", "azvault", "azshift")
+FALSE_SITES: tuple[str, ...] = ("azbooth", "azflag", "azstandby")
+SHIFT_STACK: tuple[str, ...] = ("staticlock", "miragegrid-cloak", "miragegrid-vpn")
+
 # MirageGrid-only factory names. Not hub hostnames. Not azcorpus/azlibrary.
 CAP7_FACTORY_SITES: tuple[dict[str, Any], ...] = (
     {
@@ -106,9 +152,6 @@ CAP7_FACTORY_SITES: tuple[dict[str, Any], ...] = (
         "design": "azieleliab software/runtime hub design DNA",
         "canonical_hub": HUB_AE,
         "design_of": HUB_AE,
-        "reach": "https-gateway",
-        "honesty_public": "LIVE",
-        "browser_reachable": True,
     },
     {
         "label": "azbooth",
@@ -116,9 +159,6 @@ CAP7_FACTORY_SITES: tuple[dict[str, Any], ...] = (
         "design": "azieleliab session-booth design DNA",
         "canonical_hub": HUB_AE,
         "design_of": HUB_AE,
-        "reach": "https-gateway",
-        "honesty_public": "LIVE",
-        "browser_reachable": True,
     },
     {
         "label": "azcloak",
@@ -126,9 +166,6 @@ CAP7_FACTORY_SITES: tuple[dict[str, Any], ...] = (
         "design": "godlock cloak/dark design DNA",
         "canonical_hub": HUB_GODLOCK,
         "design_of": HUB_GODLOCK,
-        "reach": "aznet",
-        "honesty_public": "SLOT",
-        "browser_reachable": False,
     },
     {
         "label": "azvault",
@@ -136,9 +173,6 @@ CAP7_FACTORY_SITES: tuple[dict[str, Any], ...] = (
         "design": "corpus vault/shelf design DNA",
         "canonical_hub": HUB_CORPUS,
         "design_of": HUB_CORPUS,
-        "reach": "aznet",
-        "honesty_public": "SLOT",
-        "browser_reachable": False,
     },
     {
         "label": "azshift",
@@ -146,9 +180,6 @@ CAP7_FACTORY_SITES: tuple[dict[str, Any], ...] = (
         "design": "hedidntjump shift/standby design DNA",
         "canonical_hub": HUB_HDJ,
         "design_of": HUB_HDJ,
-        "reach": "aznet",
-        "honesty_public": "SLOT",
-        "browser_reachable": False,
     },
     {
         "label": "azflag",
@@ -156,9 +187,6 @@ CAP7_FACTORY_SITES: tuple[dict[str, Any], ...] = (
         "design": "corpus cite/flag design DNA",
         "canonical_hub": HUB_CORPUS,
         "design_of": HUB_CORPUS,
-        "reach": "aznet",
-        "honesty_public": "SLOT",
-        "browser_reachable": False,
     },
     {
         "label": "azstandby",
@@ -166,15 +194,49 @@ CAP7_FACTORY_SITES: tuple[dict[str, Any], ...] = (
         "design": "godlock standby/mask design DNA",
         "canonical_hub": HUB_GODLOCK,
         "design_of": HUB_GODLOCK,
-        "reach": "aznet",
-        "honesty_public": "SLOT",
-        "browser_reachable": False,
     },
 )
 
-PUBLIC_PAIR_LABELS: tuple[str, ...] = ("azgrid", "azbooth")
-AZNET_SIDE_LABELS: tuple[str, ...] = ("azcloak", "azvault", "azshift", "azflag", "azstandby")
 FACTORY_LABELS: tuple[str, ...] = tuple(site["label"] for site in CAP7_FACTORY_SITES)
+
+
+def az_domain_for_hub(hub: str) -> dict[str, str] | None:
+    target = str(hub or "").rstrip("/") + "/"
+    for row in AZ_DOMAIN_DROP_INS:
+        if row["canonical_hub"] == target or row["canonical_hub"] == hub:
+            return row
+    return None
+
+
+def az_domain_rows() -> list[dict[str, Any]]:
+    """Internet reaches these four names only, via hub HTTPS."""
+    rows: list[dict[str, Any]] = []
+    for row in AZ_DOMAIN_DROP_INS:
+        rows.append(
+            {
+                "display_name": row["display_name"],
+                "mirror_host": row["mirror_host"],
+                "canonical_hub": row["canonical_hub"],
+                "internet_url": row["canonical_hub"],
+                "public_icann": True,
+                "resolves_to_hub": True,
+                "internet_reachable": True,
+                "honesty": "LIVE",
+                "shuffle_once": True,
+                "pool": 4,
+                "mirrors_while_up": True,
+                "stands_alone": True,
+                "immutable_after_hub_down": True,
+                "anchored_by_live_nodes": True,
+                "domain_anchor": "live-nodes",
+                "softwares_tab": False,
+                "cap7": False,
+                "icann_registrar_purchase": False,
+                "cctld_purchase": False,
+                "author": MESH_LAW_AUTHOR,
+            }
+        )
+    return rows
 
 
 def _hex64(value: Any) -> str | None:
@@ -183,10 +245,12 @@ def _hex64(value: Any) -> str | None:
 
 
 def site_record(site: Mapping[str, Any]) -> dict[str, Any]:
+    """Cap-7 factory row. LIVE duplication/shift layer. Not an ICANN door."""
     label = str(site["label"])
-    public = bool(site.get("browser_reachable"))
-    honesty = "LIVE" if public else "SLOT"
-    path = f"/cap7/{label}" if public else f"/aznet/cap7/{label}"
+    real = label in REAL_HUB_DUPLICATIONS
+    false_site = label in FALSE_SITES
+    path = f"/cap7/{label}"
+    drop = az_domain_for_hub(str(site["canonical_hub"]))
     return {
         "label": label,
         "mesh_name": f"{label}.az",
@@ -194,24 +258,41 @@ def site_record(site: Mapping[str, Any]) -> dict[str, Any]:
         "design": site["design"],
         "canonical_hub": site["canonical_hub"],
         "design_of": site["design_of"],
-        "resolves_to_hub": False,
+        "layer": "cap7-az-duplication",
+        "generates": "auto-.az-hub-duplication",
+        "hub_duplication": real,
+        "false_site": false_site,
+        "decoy": false_site,
+        "resolves_to_hub": real,
         "name_may_change": True,
         "public_icann": False,
+        "typed_on_icann_dns": False,
+        "internet_reachable": False,
+        "public_internet_door": False,
         "icann": False,
         "fifth_product": False,
         "radio_phy": False,
-        "reach": site["reach"],
-        "honesty_public": honesty,
-        "browser_reachable": public,
+        "reach": "cap7-shift",
+        "honesty_public": "LIVE",
+        "factory_honesty": "LIVE",
+        "browser_reachable": False,
         "aznet": True,
         "azbrowser": True,
         "merge": False,
-        "mesh_name_icann": "SLOT",
         "worker_path": APP_WORKER_HOST + path,
         "aznet_endpoint": f"aznet://cap7/{label}",
-        "update_path": (APP_WORKER_HOST + path + "/update") if public else f"aznet://cap7/{label}/update",
-        "hosted_status": "SLOT",
-        "hosted_update": "SLOT",
+        "update_path": APP_WORKER_HOST + "/v1/shuffle/update",
+        "hosted_status": "LIVE",
+        "hosted_update": "LIVE",
+        "hosted_mcp": "LIVE",
+        "public_shuffle_land_exec": "LIVE",
+        "anchored_by_live_nodes": True,
+        "domain_anchor": "live-nodes",
+        "shift_stack": list(SHIFT_STACK),
+        "staticlock": True,
+        "miragegrid_cloak": True,
+        "miragegrid_vpn": True,
+        "internet_door": None if drop is None else drop["display_name"],
         "is_live_door": False,
         "aznet_payload_host": False,
         "channel_plane_is_vpn": False,
@@ -233,23 +314,31 @@ def cap7_shuffle_dict() -> dict[str, Any]:
         "person": person_id(),
         "cap": CAP_7,
         "public_host_pair": PUBLIC_HOST_PAIR,
-        "public_pair": list(PUBLIC_PAIR_LABELS),
-        "aznet_side": list(AZNET_SIDE_LABELS),
         "labels": list(FACTORY_LABELS),
         "sites": cap7_roster(),
-        "resolves_to_hub": False,
+        "real_hub_duplications": list(REAL_HUB_DUPLICATIONS),
+        "false_sites": list(FALSE_SITES),
+        "real_duplication_count": 4,
+        "false_site_count": 3,
+        "az_domains": az_domain_rows(),
+        "internet_reaches": "az-domains",
+        "typed_on_icann_dns": False,
+        "internet_reachable": False,
         "name_may_change": True,
-        "public_icann": False,
         "fifth_product": False,
         "radio_phy": False,
         "hardcoded_host": False,
         "update_is_proof": True,
+        "shift_stack": list(SHIFT_STACK),
+        "staticlock": True,
+        "miragegrid_cloak": True,
+        "miragegrid_vpn": True,
         "az_generator": {
             "callable": False,
             "lives": "deep-node",
             "exit": "node-gate-front",
             "radio_phy": False,
-            "public_icann": False,
+            "typed_on_icann_dns": False,
         },
         "access": {"aznet": True, "azbrowser": True, "merge": False, "naked_public_dns": False},
         "app_worker": app_worker(),
@@ -259,7 +348,7 @@ def cap7_shuffle_dict() -> dict[str, Any]:
         "canonical_hubs": [row["canonical_hub"] for row in CANONICAL_HUBS],
         "named_mesh_designs": ["azcorpus", "azlibrary"],
         **outlast_honesty(),
-        "note": "Nodes ping the app Worker until they land on one Cap-7 site. That land is the update endpoint for the round. No single hard-coded Cap-7 host. Public land/update is cite/coordination (SLOT exec). FragGate stays THE door.",
+        "note": "Cap-7 auto-generates .az duplications of the four hubs and shifts them with StaticLock + MirageGrid cloak and VPN. Four names are real hub duplications; three are false sites. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door.",
     }
 
 
@@ -295,6 +384,11 @@ def apply_update(
     inbound_call: bool = False,
     public_icann: bool = False,
     resolves_to_hub: bool = False,
+    typed_on_icann_dns: bool = False,
+    cap7_on_icann: bool = False,
+    icann_registrar_purchase: bool = False,
+    cctld_purchase: bool = False,
+    public_registrar: bool = False,
     hardcoded_host: str | None = None,
     invent_first_flag: bool = False,
     channel_plane_is_vpn: bool = False,
@@ -313,6 +407,11 @@ def apply_update(
         inbound_call=inbound_call,
         public_icann=public_icann,
         resolves_to_hub=resolves_to_hub,
+        typed_on_icann_dns=typed_on_icann_dns,
+        cap7_on_icann=cap7_on_icann,
+        icann_registrar_purchase=icann_registrar_purchase,
+        cctld_purchase=cctld_purchase,
+        public_registrar=public_registrar,
         hardcoded_host=hardcoded_host,
         invent_first_flag=invent_first_flag,
         channel_plane_is_vpn=channel_plane_is_vpn,
@@ -354,11 +453,19 @@ def apply_update(
             "round_seed": landed.get("round_seed"),
             "node_id": landed.get("node_id"),
             "hardcoded_host": False,
-            "resolves_to_hub": False,
+            "resolves_to_hub": bool(site.get("resolves_to_hub")),
+            "false_site": bool(site.get("false_site")),
+            "hub_duplication": bool(site.get("hub_duplication")),
             "public_icann": False,
+            "typed_on_icann_dns": False,
+            "internet_reachable": False,
+            "internet_reaches": "az-domains",
             "radio_phy": False,
-            "hosted_update": "SLOT",
-            "public_shuffle_land_exec": "SLOT",
+            "hosted_update": "LIVE",
+            "hosted_mcp": "LIVE",
+            "public_shuffle_land_exec": "LIVE",
+            "factory_honesty": "LIVE",
+            "anchored_by_live_nodes": True,
             "is_live_door": False,
             "channel_plane_is_vpn": False,
             "second_door": False,
@@ -388,6 +495,11 @@ def ping(
     inbound_call: bool = False,
     public_icann: bool = False,
     resolves_to_hub: bool = False,
+    typed_on_icann_dns: bool = False,
+    cap7_on_icann: bool = False,
+    icann_registrar_purchase: bool = False,
+    cctld_purchase: bool = False,
+    public_registrar: bool = False,
     hardcoded_host: str | None = None,
     invent_first_flag: bool = False,
     channel_plane_is_vpn: bool = False,
@@ -411,10 +523,10 @@ def ping(
         return refuse_call_generator(path="cap7-shuffle-ping")
     if radio_phy:
         return refuse_radio_phy(kind="rf")
-    if public_icann:
-        return refuse_public_registrar(kind="shuffle-icann")
-    if resolves_to_hub:
-        return refuse_hub_resolution()
+    if icann_registrar_purchase or cctld_purchase or public_registrar:
+        return refuse_public_registrar(kind="cctld-purchase")
+    if typed_on_icann_dns or cap7_on_icann:
+        return refuse_cap7_typed_on_icann()
     if invent_first_flag:
         return refuse_invent_first_flag_https()
     if hardcoded_host:
@@ -474,9 +586,18 @@ def ping(
             "spec": CAP7_SHUFFLE_SPEC,
             "radio_phy": False,
             "public_icann": False,
-            "resolves_to_hub": False,
-            "hosted_update": "SLOT",
-            "public_shuffle_land_exec": "SLOT",
+            "typed_on_icann_dns": False,
+            "internet_reachable": False,
+            "internet_reaches": "az-domains",
+            "resolves_to_hub": bool(site.get("resolves_to_hub")),
+            "false_site": bool(site.get("false_site")),
+            "hub_duplication": bool(site.get("hub_duplication")),
+            "hosted_update": "LIVE",
+            "hosted_mcp": "LIVE",
+            "public_shuffle_land_exec": "LIVE",
+            "factory_honesty": "LIVE",
+            "anchored_by_live_nodes": True,
+            "domain_anchor": "live-nodes",
             "is_live_door": False,
             "channel_plane_is_vpn": False,
             "second_door": False,
@@ -491,7 +612,7 @@ def shuffle_cite() -> dict[str, Any]:
         True,
         "CAP7-SHUFFLE-CITE",
         verdict=YES,
-        message="CAP7-SHUFFLE-1.0 cite. Ping the app Worker until land. No hard-coded Cap-7 host. Empty ICANN claims stay SLOT.",
+        message="CAP7-SHUFFLE-1.0 cite. Four real .az hub duplications, three false sites, StaticLock shift. Internet reaches AZ domains only.",
         extra={
             **law,
             "doors": {
@@ -512,7 +633,7 @@ def shuffle_cite() -> dict[str, Any]:
 
 
 def hosted_bridge_doors() -> dict[str, Any]:
-    """LIVE doors aziel-runtime can cite. Honest SLOT vs LIVE."""
+    """LIVE factory cite. Internet doors are the AZ domains, not Cap-7."""
     cite = shuffle_cite()
     return {
         "ok": True,
@@ -523,7 +644,9 @@ def hosted_bridge_doors() -> dict[str, Any]:
         "identity": MESH_LAW_AUTHOR,
         "person": {"@id": PERSON_ID, "name": MESH_LAW_AUTHOR},
         "public_icann": False,
-        "resolves_to_hub": False,
+        "typed_on_icann_dns": False,
+        "internet_reachable": False,
+        "internet_reaches": "az-domains",
         "name_may_change": True,
         "fifth_product": False,
         "radio_phy": False,
@@ -535,21 +658,26 @@ def hosted_bridge_doors() -> dict[str, Any]:
         "azbrowser": AZBROWSER_PRODUCT,
         "merge": False,
         "cap7": cite["sites"],
-        "public_pair": list(PUBLIC_PAIR_LABELS),
-        "aznet_side": list(AZNET_SIDE_LABELS),
+        "real_hub_duplications": list(REAL_HUB_DUPLICATIONS),
+        "false_sites": list(FALSE_SITES),
+        "real_duplication_count": 4,
+        "false_site_count": 3,
+        "az_domains": az_domain_rows(),
+        "shift_stack": list(SHIFT_STACK),
         "doors": cite["doors"],
         "first_flag": FIRST_CLAIM_NAME,
         "invented_first_flag_https": False,
         "honesty": {
             "app_worker": "LIVE",
             "download_worker": "LIVE",
-            "public_pair_https": "LIVE",
-            "aznet_side_https": "SLOT",
-            "mesh_az_icann": "SLOT",
-            "first_flag_https": "SLOT",
-            "hosted_endpoints": "SLOT",
-            "hosted_update": "SLOT",
-            "public_shuffle_land_exec": "SLOT",
+            "factory": "LIVE",
+            "az_domains": "LIVE",
+            "cap7_icann_dns": False,
+            "hosted_endpoints": "LIVE",
+            "hosted_update": "LIVE",
+            "hosted_mcp": "LIVE",
+            "public_shuffle_land_exec": "LIVE",
+            "anchored_by_live_nodes": True,
             "channel_plane_is_vpn": False,
             "second_door": False,
         },
@@ -559,23 +687,20 @@ def hosted_bridge_doors() -> dict[str, Any]:
     }
 
 
-def refuse_slot_as_live(label: str) -> dict[str, Any]:
+def refuse_cap7_typed_on_icann() -> dict[str, Any]:
     return _verdict(
         False,
-        "CAP7-SLOT-NOT-LIVE",
+        "CAP7-NOT-ICANN-DNS",
         verdict=REFUSE,
-        message="this Cap-7 slot is AZNet-side; do not invent public HTTPS LIVE",
+        message="Cap-7 is the .az duplication/shift/cloak layer; it is not publicly typed on ICANN DNS. Internet reaches AZ domains via the four hub websites.",
         extra={
-            "label": label,
-            "honesty_public": "SLOT",
-            "browser_reachable": False,
-            "aznet": True,
-            "public_icann": False,
-            "resolves_to_hub": False,
-            "radio_phy": False,
-            "hosted_endpoints": "SLOT",
-            "aznet_payload_host": False,
-            "is_live_door": False,
+            "typed_on_icann_dns": False,
+            "internet_reachable": False,
+            "internet_reaches": "az-domains",
+            "az_domains": az_domain_rows(),
+            "anchored_by_live_nodes": True,
+            "factory_honesty": "LIVE",
+            "icann_registrar_purchase": False,
             "spec": CAP7_SHUFFLE_SPEC,
         },
     )
@@ -586,13 +711,15 @@ def public_gateway(label: str) -> dict[str, Any]:
     for site in CAP7_FACTORY_SITES:
         if site["label"] == key:
             row = site_record(site)
-            if not row["browser_reachable"]:
-                return refuse_slot_as_live(key)
             return _verdict(
                 True,
-                "CAP7-GATEWAY-LIVE",
+                "CAP7-FACTORY-LIVE",
                 verdict=YES,
-                message="browser-reachable Cap-7 public pair mirror on the app Worker (not ICANN .az)",
-                extra={**row, "spec": CAP7_SHUFFLE_SPEC, "public_icann": False},
+                message="LIVE Cap-7 factory site (duplication/shift/cloak). Not an ICANN public door. Internet reaches AZ domains via hub HTTPS.",
+                extra={
+                    **row,
+                    "spec": CAP7_SHUFFLE_SPEC,
+                    "az_domains": az_domain_rows(),
+                },
             )
     return refuse_public_dns_claim(kind="unknown-cap7-label")

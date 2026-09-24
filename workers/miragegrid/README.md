@@ -35,14 +35,16 @@ curl -sS -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/v1/health
 | `POST /v1/shuffle/ping` | Node ping → land |
 | `GET /v1/shuffle/land?round_id=` | Cite land for a round (GET never plants) |
 | `POST /v1/shuffle/update` | Third hop: update via the landed Cap-7 site (GET 403) |
-| `GET /v1/cap7` | Seven factory sites, SLOT vs LIVE |
-| `GET /cap7/azgrid` `/cap7/azbooth` | Public pair **LIVE** HTTPS mirrors |
-| `GET /aznet/cap7/{label}` | AZNet-side cite (**SLOT** on public HTTPS) |
+| `GET /v1/cap7` | Seven factory sites: four real hub duplications, three false sites, honesty LIVE |
+| `GET /cap7/{label}` | LIVE factory cite. Not typed on ICANN DNS |
+| `GET /aznet/cap7/{label}` | AZNet-plane factory cite (LIVE). Not a public internet door |
 | `GET /v1/health` `/v1/skill` `/v1/nodes` `/v1/doctor` | FragGate LIVE_OPS |
 | `POST /v1/assign` `/v1/verify-receipt` | Session assignment |
 | `GET /v1/mesh` | PROXY (default OFF). GET never enables. |
 
-AZ Generator is not callable. `public_icann: false`.
-`resolves_to_hub: false`. `radio_phy: false`. No hard-coded Cap-7 host.
+AZ Generator is not callable. Cap-7 `public_icann: false` and
+`typed_on_icann_dns: false`. AZ domain doors are `public_icann: true`
+and `resolves_to_hub: true`. `radio_phy: false`. No hard-coded Cap-7 host.
+Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors.
 
 Author: Aziel Eliab only.

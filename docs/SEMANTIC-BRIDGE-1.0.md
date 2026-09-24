@@ -28,8 +28,10 @@ can resolve on public DNS:
 - https://hedidntjump.com/
 
 Crawlers (GPTBot and peers) **pull machine maps from these bridge
-URLs**. They do **not** resolve mesh-only `.az` on public ICANN DNS.
-`public_icann` stays **false**.
+URLs**. **Internet reaches AZ domains only** (AZ.AzielEliab.AZ,
+AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via those
+four hub HTTPS links. Cap-7 `.az` factory names are **not** publicly
+typed on ICANN DNS.
 
 Mesh names are **cited** with SHA-256 tips and hash-absolute design
 packs. A mesh name is a relocatable claim label (`name_may_change`),
@@ -67,16 +69,15 @@ of mesh names that still hash-verify as those hubs’ designs.
 ## Cap-7 names are independent mesh hosts
 
 The Cap-7 mesh DNS factory lives **deep-node → FRONT Node Gate**. It
-is not callable. Suffix honesty: **`.az` → `.aziel` → pivot**. Exactly
-**2** of Cap-7 are public HTTPS gateways; the rest stay mesh / AZNet.
-Prefer **azcorpus + azlibrary** as that public host pair when claiming,
-or map them as mesh names mirrored by the two gateways. Browsing mesh
-names is **AZNet + AZBrowser pairing** or those two gateways — never
-“opens azieleliab.com”. Do **not** invent live ICANN success.
+is not callable. Suffix honesty: **`.az` → `.aziel` → pivot**. Cap-7
+is the duplication/shift layer, not a public HTTPS ICANN type. Browsing
+a Cap-7 name is not “opens azieleliab.com”. The public internet door
+is the AZ domain for that hub. Do **not** invent a ccTLD purchase.
 
-Cap-7 mesh sites do **not** resolve, redirect, or CNAME to the four
-ICANN hubs. They only inherit the **design** (website design / UX /
-product shape) of:
+Cap-7 **auto-generates `.az` duplications of all 4 hubs** and shifts
+them with StaticLock + MirageGrid cloak and VPN. Four factory names
+are real hub duplications. Three are false sites. That layer is not
+the public internet. The public doors are the AZ domains:
 
 | Hub | Design provenance |
 | --- | --- |
@@ -85,9 +86,11 @@ product shape) of:
 | https://godlock.uk/ | godlock |
 | https://hedidntjump.com/ | hedidntjump |
 
-`design_of` / `canonical_hub` is that hub URL — **design provenance
-only**. `resolves_to_hub` is always **false**. `name_may_change` is
-**true** (`.az` → `.aziel` → pivot, cloak burst, Cap-7 slot reuse).
+AZ domain doors (`public_icann: true`, `resolves_to_hub: true`,
+`internet_reachable: true`) mirror those hubs while they are up, stand
+alone, and stay immutable after the hubs die. Live nodes anchor them.
+`name_may_change` is **true** on relocatable Cap-7 labels. Factory
+honesty is **LIVE** (no SLOT hedge).
 Tip and design-pack SHA-256 are for **download-to-node** (pull-only;
 hash-absolute). Website designs ship as Worker packs:
 
@@ -99,7 +102,7 @@ hash-absolute). Website designs ship as Worker packs:
 Both have `download_open: true`, `public_icann: false`, access
 AZNet + AZBrowser. They live **inside**
 https://www.azielcorpuslibrary.net/ — not separate ICANN sites.
-Do **not** map `mesh_name` → hub hostname as resolution.
+Do **not** type a Cap-7 `mesh_name` onto ICANN DNS. The AZ domain is the internet door.
 
 ## Honesty (NO-LIE / NO-FAN / CROSS-NETWORK-SURVIVAL)
 
@@ -122,8 +125,9 @@ hash. No rewrite key. The network never lies to stay alive.
 - Re-expand remains **archive, not index**. Archive re-expand is
   REHEAL / MESH-VAULT pull of already-trusted bytes — not crawler
   indexing of mesh names as if they were ICANN hosts.
-- Refuse claiming `.az` is public DNS. Refuse AZG live ICANN publish.
-- Refuse `resolves_to_hub: true`. Refuse hub CNAME / redirect stories.
+- Refuse claiming Cap-7 is publicly typed on ICANN DNS.
+- Refuse an ICANN registrar purchase of a ccTLD.
+- AZ-domain `resolves_to_hub: true` is the designed internet path.
 
 ## Machine surfaces (Growth-ON)
 
@@ -153,9 +157,11 @@ Locked fields:
 - `canonical_hubs` — the four online hubs
 - `named_mesh_sites` — `azcorpus`, `azlibrary`
 - `fifth_product` — `false`
-- `public_icann` — `false`
+- `public_icann` — `false` on Cap-7 factory names; `true` on the four AZ domain doors
 - `design_of` — `{azcorpus, azlibrary}` → https://www.azielcorpuslibrary.net/ (provenance)
-- `resolves_to_hub` — `false`
+- `typed_on_icann_dns` — `false` for Cap-7
+- `internet_reaches` — `az-domains`
+- `resolves_to_hub` — `true` on AZ domain doors and on the four real hub duplications
 - AZNet / AZBrowser access (pair, never merge; not naked public DNS)
 - link to `/v1/mesh/az-generator`
 - Person `@id` https://www.azieleliab.com/#aziel
@@ -201,10 +207,10 @@ does not operate Node Gate and does not claim `.az` names.
 
 ## Refuse
 
-- Claiming `.az` / `.aziel` is public ICANN DNS
-- AZG live ICANN / Cloudflare registrar publish
-- Mapping `mesh_name` → hub hostname as resolution, CNAME, or redirect
-- `resolves_to_hub: true`
+- Claiming Cap-7 `.az` names are publicly typed on ICANN DNS
+- AZG live ICANN registrar purchase of a ccTLD
+- Treating a Cap-7 decoy as a real hub duplication
+- SLOT hedges on Cap-7 factory honesty
 - Inventing live ICANN success or a fifth public product
 - Listing a mesh entry without `canonical_hub` or `tip`
 - Inventing `www.survivalnetwork.az` as live HTTPS when Cap-7 claims

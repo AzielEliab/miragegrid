@@ -501,18 +501,41 @@ function accessFor(claim, hostedGateway) {
   return "aznet";
 }
 
+const CAP7_LABELS = new Set(["azgrid", "azbooth", "azcloak", "azvault", "azshift", "azflag", "azstandby"]);
+const AZ_DISPLAY = new Set(["az.azieleliab.az", "az.azielcorpuslibrary.az", "az.godlock.az", "az.hedidntjump.az"]);
+
+function cap7Label(host) {
+  let name = String(host || "").trim().toLowerCase().replace(/\.+$/, "");
+  if (name.endsWith(".az")) name = name.slice(0, -3);
+  return CAP7_LABELS.has(name) ? name : null;
+}
+
+function refuseCap7OnIcann() {
+  return verdict(false, "CAP7-NOT-ICANN-DNS", "refuse", "Cap-7 is not publicly typed on ICANN DNS. Internet reaches AZ domains via the four hub websites.", {
+    typed_on_icann_dns: false,
+    internet_reaches: "az-domains",
+    factory_honesty: "LIVE",
+    icann_registrar_purchase: false,
+  });
+}
+
 async function entryFromClaim(claim) {
   const host = String(claim.name || "");
-  if (isHubHost(host)) return refuseHubResolution(host, host);
-  if (claim.resolves_to_hub === true || claim.cname_to_hub || claim.redirect_to_hub) {
-    return refuseHubResolution(host, String(claim.hub || claim.canonical_hub || claim.design_of || ""));
-  }
-  const gateway = claim.public_gateway_url || claim.gateway_url || "";
-  if (gateway && isHubHost(gateway)) return refuseHubResolution(host, String(gateway));
-  if (claim.icann === true || claim.public_icann === true) return refusePublicDnsClaim("claim-icann");
+  const cap7Name = cap7Label(host);
+  const azDoor = AZ_DISPLAY.has(host.toLowerCase()) || isHubHost(host);
+  const claimsIcann = claim.icann === true || claim.public_icann === true || claim.typed_on_icann_dns === true;
+  if (cap7Name && claimsIcann) return refuseCap7OnIcann();
+  if (claimsIcann && !cap7Name && !isHubHost(host) && !azDoor) return refusePublicDnsClaim("claim-icann");
   if (claim.fifth_product === true) return refuseFifthProduct(host);
+  let gateway = claim.public_gateway_url || claim.gateway_url || "";
 
-  const designOf = normalizeDesignOf(claim.design_of || claim.canonical_hub);
+  let designOf = normalizeDesignOf(claim.design_of || claim.canonical_hub || claim.hub);
+  if (isHubHost(host)) designOf = normalizeDesignOf(host) || designOf;
+  const hubLink = !!(gateway && isHubHost(gateway));
+  if (hubLink) {
+    designOf = normalizeDesignOf(gateway) || designOf;
+    gateway = "";
+  }
   const publicHost = !!(claim.public_host || claim.plane === "public-gateway");
   const hosted = !!gateway && !isHubHost(gateway) && publicHost;
   let status = "mesh-only";
@@ -528,14 +551,18 @@ async function entryFromClaim(claim) {
   const packObj = claim.design_pack && typeof claim.design_pack === "object" ? claim.design_pack : {};
   const tip = hex64(claim.tip_sha256 || claim.tip_hash || claim.sha256 || receipt.hash);
   const pack = hex64(claim.design_pack_sha256 || packObj.sha256 || claim.pack_sha256);
+  const wantsResolve = claim.resolves_to_hub === true || !!claim.cname_to_hub || !!claim.redirect_to_hub || azDoor || hubLink;
   const entry = {
-    status,
+    status: azDoor ? "az-domain" : status,
     access: accessFor(claim, hosted),
-    icann: false,
-    public_icann: false,
-    resolves_to_hub: false,
+    icann: azDoor,
+    public_icann: azDoor,
+    typed_on_icann_dns: cap7Name ? false : azDoor,
+    internet_reachable: azDoor && !cap7Name,
+    resolves_to_hub: !!(wantsResolve && (designOf || azDoor)),
     name_may_change: true,
     fifth_product: false,
+    cap7: !!cap7Name,
   };
   if (tip) entry.tip_sha256 = tip;
   if (pack) entry.design_pack_sha256 = pack;
@@ -559,6 +586,33 @@ async function entryFromClaim(claim) {
     if (!entry.tip_sha256) entry.tip_sha256 = digest;
     if (site.upload_plane) entry.upload_plane = site.upload_plane;
   }
+  if (azDoor) {
+    entry.design_of = designOf;
+    entry.canonical_hub = designOf;
+    entry.internet_url = designOf;
+    entry.internet_reachable = true;
+    entry.public_icann = true;
+    entry.resolves_to_hub = true;
+    entry.honesty = "LIVE";
+    entry.anchored_by_live_nodes = true;
+    entry.domain_anchor = "live-nodes";
+    entry.shuffle_once = true;
+    entry.stands_alone = true;
+    entry.immutable_after_hub_down = true;
+    entry.mirrors_while_up = true;
+    entry.cap7 = false;
+    entry.icann_registrar_purchase = false;
+    entry.mesh_name = host;
+    entry.person = personId();
+    return entry;
+  }
+  if (cap7Name) {
+    entry.typed_on_icann_dns = false;
+    entry.internet_reachable = false;
+    entry.public_icann = false;
+    entry.factory_honesty = "LIVE";
+    entry.anchored_by_live_nodes = true;
+  }
   if (!entry.canonical_hub) return refuseNeedCanonicalHub(host);
   if (!entry.tip_sha256) return refuseNeedTip(host);
   entry.tip = entry.tip_sha256;
@@ -569,9 +623,9 @@ async function entryFromClaim(claim) {
 
 export async function buildBridgeRegistry(claims, opts) {
   const options = opts && typeof opts === "object" ? opts : {};
-  if (options.public_icann || options.public_dns) return refusePublicDnsClaim("registry-public-dns");
-  if (options.icann_publish) return refuseAzgIcannPublish();
-  if (options.resolve_to_hub) return refuseHubResolution();
+  if (options.icann_publish || options.icann_registrar_purchase || options.cctld_purchase) return refuseAzgIcannPublish();
+  if (options.typed_on_icann_dns || options.cap7_on_icann) return refuseCap7OnIcann();
+  if (options.public_dns) return refusePublicDnsClaim("registry-public-dns");
 
   const records = Array.isArray(claims) ? claims.slice() : [];
   if (options.zone && Array.isArray(options.zone.records)) records.push(...options.zone.records);
@@ -609,7 +663,13 @@ export async function buildBridgeRegistry(claims, opts) {
     {
       spec: SEMANTIC_BRIDGE_SPEC,
       public_icann: false,
-      resolves_to_hub: false,
+      resolves_to_hub: !!options.resolve_to_hub,
+      az_domain_public_icann: true,
+      internet_reaches: "az-domains",
+      cap7_typed_on_icann_dns: false,
+      factory_honesty: "LIVE",
+      anchored_by_live_nodes: true,
+      public_icann_flag: !!options.public_icann,
       name_may_change: true,
       honesty: empty ? "empty-cap-7" : "claimed",
       names,
@@ -714,9 +774,11 @@ export function llmsTxt() {
     "## SEMANTIC-BRIDGE-1.0",
     "Public Plane-A ICANN hosts + this Worker are the AI-facing bridge.",
     "Cap-7 mesh names are relocatable labels (mesh_name ≠ new product).",
-    "public_icann:false. resolves_to_hub:false. design_of on cite+bridge. name_may_change:true.",
+    "Cap-7 is not typed on ICANN DNS (public_icann:false on factory names). Four real .az hub duplications, three false sites.",
+    "Internet reaches AZ domains only: AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ via the four hub websites.",
+    "Those AZ doors are public_icann:true and resolves_to_hub:true. Shuffle once. Stand alone. Immutable after the hubs die. Anchored by live nodes.",
     "Ultimately the original 4 websites. Not a fifth public product.",
-    "Do not resolve .az on public DNS. Crawlers pull from the URLs below.",
+    "Do not type Cap-7 .az names on public DNS. Crawlers pull from the URLs below.",
     "Re-expand is archive, not index. CROSS-NETWORK-SURVIVAL + NO-LIE.",
     "Growth-ON.",
     "",

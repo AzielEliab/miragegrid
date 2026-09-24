@@ -94,13 +94,15 @@ assert(refusePublicDnsClaim().code === "BRIDGE-NO-PUBLIC-DNS", "dns refuse");
 assert(refuseAzgIcannPublish().code === "BRIDGE-NO-ICANN-PUBLISH", "icann publish refuse");
 assert(refuseHubResolution().code === "BRIDGE-NO-HUB-RESOLVE", "hub resolve refuse");
 assert(refuseInventFirstFlagHttps().code === "BRIDGE-NO-INVENT-HTTPS", "invent refuse");
-assert((await buildBridgeRegistry([], { public_icann: true })).code === "BRIDGE-NO-PUBLIC-DNS", "registry public dns");
+const azDoors = await buildBridgeRegistry([], { public_icann: true });
+assert(azDoors.ok === true && azDoors.internet_reaches === "az-domains", "az doors allowed");
+assert((await buildBridgeRegistry([], { cctld_purchase: true })).code === "BRIDGE-NO-ICANN-PUBLISH", "cctld purchase refuse");
 assert((await buildBridgeRegistry([], { invent_first_flag: true })).code === "BRIDGE-NO-INVENT-HTTPS", "invent empty");
 assert(
-  (await buildBridgeRegistry([{ name: "x.az", public_host: true, public_gateway_url: "https://godlock.uk/" }])).code ===
-    "BRIDGE-NO-HUB-RESOLVE",
-  "gateway must not be a hub",
+  (await buildBridgeRegistry([{ name: "x.az", public_host: true, public_gateway_url: "https://godlock.uk/", tip_sha256: "ab".repeat(32) }])).names["x.az"].resolves_to_hub === true,
+  "hub link is the AZ door pairing",
 );
+assert((await buildBridgeRegistry([{ name: "azgrid.az", public_icann: true, design_of: "https://godlock.uk/", tip_sha256: "ab".repeat(32) }])).code === "CAP7-NOT-ICANN-DNS", "cap7 not icann");
 
 const llms = llmsTxt();
 assert(llms.includes("SEMANTIC-BRIDGE-1.0"), "llms law");
@@ -128,7 +130,7 @@ assert(sitemap.includes("/v1/bridge"), "sitemap bridge");
 assert(sitemap.includes("/v1/mesh/az-generator"), "sitemap az-generator");
 assert(sitemap.includes("/design-packs/azcorpus.json"), "sitemap pack");
 
-const repoRoot = new URL("../../..", import.meta.url).pathname;
+const repoRoot = new URL("../..", import.meta.url).pathname;
 const py = execSync(
   "python3 -c \"from miragegrid.semantic_bridge import design_pack_sha256; print(design_pack_sha256('azcorpus')); print(design_pack_sha256('azlibrary'))\"",
   { cwd: repoRoot, env: { ...process.env, PYTHONPATH: repoRoot } },

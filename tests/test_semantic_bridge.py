@@ -224,26 +224,40 @@ def test_claimed_names_listed_honestly_with_design_provenance() -> None:
 def test_refuse_hub_resolution_and_icann_publish() -> None:
     assert refuse_public_dns_claim()["code"] == "BRIDGE-NO-PUBLIC-DNS"
     assert refuse_azg_icann_publish()["code"] == "BRIDGE-NO-ICANN-PUBLISH"
-    assert refuse_hub_resolution()["resolves_to_hub"] is False
-    assert build_bridge_registry([], public_icann=True)["code"] == "BRIDGE-NO-PUBLIC-DNS"
+    assert refuse_hub_resolution()["code"] == "BRIDGE-NO-HUB-RESOLVE"
+    doors = build_bridge_registry([], public_icann=True)
+    assert doors["ok"] is True
+    assert doors["internet_reaches"] == "az-domains"
+    assert doors["cap7_typed_on_icann_dns"] is False
     assert build_bridge_registry([], icann_publish=True)["code"] == "BRIDGE-NO-ICANN-PUBLISH"
-    assert build_bridge_registry([], resolve_to_hub=True)["code"] == "BRIDGE-NO-HUB-RESOLVE"
+    assert build_bridge_registry([], cctld_purchase=True)["code"] == "BRIDGE-NO-ICANN-PUBLISH"
+    allowed = build_bridge_registry([], resolve_to_hub=True)
+    assert allowed["ok"] is True
+    assert allowed["resolves_to_hub"] is True
     cname = build_bridge_registry(
         [
             {
                 "name": "www.survivalnetwork.az",
                 "public_gateway_url": "https://www.azieleliab.com/",
                 "public_host": True,
+                "tip_sha256": TIP,
             }
         ]
     )
-    assert cname["code"] == "BRIDGE-NO-HUB-RESOLVE"
+    assert cname["ok"] is True
+    paired = cname["names"]["www.survivalnetwork.az"]
+    assert paired["resolves_to_hub"] is True
+    assert paired["internet_reachable"] is False
+    assert paired["canonical_hub"] == "https://www.azieleliab.com/"
     flag = build_bridge_registry(
-        [{"name": "www.survivalnetwork.az", "resolves_to_hub": True, "design_of": "https://godlock.uk/"}]
+        [{"name": "azgrid.az", "public_icann": True, "design_of": "https://godlock.uk/", "tip_sha256": TIP}]
     )
-    assert flag["code"] == "BRIDGE-NO-HUB-RESOLVE"
+    assert flag["code"] == "CAP7-NOT-ICANN-DNS"
     hub_name = build_bridge_registry([{"name": "azieleliab.com"}])
-    assert hub_name["code"] == "BRIDGE-NO-HUB-RESOLVE"
+    assert hub_name["ok"] is True
+    assert hub_name["names"]["azieleliab.com"]["public_icann"] is True
+    assert hub_name["names"]["azieleliab.com"]["internet_reachable"] is True
+    assert hub_name["names"]["azieleliab.com"]["cap7"] is False
 
 
 def test_zone_bridge_registry_does_not_map_to_hubs() -> None:
