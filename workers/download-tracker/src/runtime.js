@@ -475,7 +475,7 @@ function openapiSpec() {
       "/v1/bridge": {
         get: {
           operationId: "semanticBridge",
-          summary: "SEMANTIC-BRIDGE-1.0 honest Cap-7 map. public_icann:false. Named mesh sites azcorpus+azlibrary listed as designs (not a fifth product). design_of/canonical_hub is hub provenance only; resolves_to_hub is false. Empty Cap-7 claims stay SLOT.",
+          summary: "SEMANTIC-BRIDGE-1.0. Internet reaches AZ domains only (public_icann:true, resolves_to_hub:true). Cap-7 is the .az duplication/shift layer: four real, three false sites, factory honesty LIVE, not typed on ICANN DNS. Named mesh sites azcorpus+azlibrary stay designs (public_icann:false).",
           responses: { "200": { description: "bridge", content: { "application/json": { schema: { type: "object" } } } } },
         },
       },

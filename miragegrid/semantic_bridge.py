@@ -261,6 +261,9 @@ def semantic_bridge_dict() -> dict[str, Any]:
         "registrar": False,
         "unbounded_public_dns": False,
         "cctld_takeover": False,
+        "icann_registrar_purchase": False,
+        "cap7_typed_on_icann_dns": False,
+        "internet_reaches": "az-domains",
         "resolves_to_hub": False,
         "name_may_change": True,
         "reexpand": REEXPAND,
@@ -383,7 +386,10 @@ def shelves_cite() -> dict[str, Any]:
 
 
 def cap7_bridge_cite() -> dict[str, Any]:
-    """cite.json Cap-7 bridge section. Law stamps only — not a live ICANN list."""
+    """cite.json Cap-7 section plus the AZ-domain internet doors."""
+    from miragegrid.cap7_shuffle import az_domain_rows, cap7_shuffle_dict
+
+    factory = cap7_shuffle_dict()
     return {
         "spec": SEMANTIC_BRIDGE_SPEC,
         "first_flag": FIRST_CLAIM_NAME,
@@ -391,6 +397,18 @@ def cap7_bridge_cite() -> dict[str, Any]:
         "public_host_pair": PUBLIC_HOST_PAIR,
         "preferred_public_pair": list(PREFERRED_PUBLIC_PAIR),
         "public_icann": False,
+        "typed_on_icann_dns": False,
+        "internet_reachable": False,
+        "internet_reaches": "az-domains",
+        "factory_honesty": "LIVE",
+        "anchored_by_live_nodes": True,
+        "domain_anchor": "live-nodes",
+        "real_hub_duplications": factory["real_hub_duplications"],
+        "false_sites": factory["false_sites"],
+        "real_duplication_count": 4,
+        "false_site_count": 3,
+        "shift_stack": factory["shift_stack"],
+        "az_domains": az_domain_rows(),
         "access": {
             "aznet": True,
             "azbrowser": True,
@@ -403,6 +421,7 @@ def cap7_bridge_cite() -> dict[str, Any]:
         "person": person_id(),
         "resolves_to_hub": False,
         "name_may_change": True,
+        "cap7_note": "Cap-7 auto-generates .az duplications of the four hubs and shifts with StaticLock + MirageGrid cloak and VPN. Not publicly typed on ICANN DNS.",
         "canonical_hubs": [row["canonical_hub"] for row in CANONICAL_HUBS],
         "named_mesh_sites": list(PREFERRED_PUBLIC_PAIR),
         "design_of": cap7_design_of_map(),
@@ -592,21 +611,47 @@ def _access_for(claim: Mapping[str, Any], *, hosted_gateway: bool) -> str:
     return "aznet"
 
 
+_CAP7_LABELS = frozenset({"azgrid", "azbooth", "azcloak", "azvault", "azshift", "azflag", "azstandby"})
+_AZ_DISPLAY = frozenset({
+    "az.azieleliab.az",
+    "az.azielcorpuslibrary.az",
+    "az.godlock.az",
+    "az.hedidntjump.az",
+})
+
+
+def _cap7_label(host: str) -> str | None:
+    name = str(host or "").strip().lower().rstrip(".")
+    if name.endswith(".az"):
+        name = name[: -len(".az")]
+    return name if name in _CAP7_LABELS else None
+
+
+def _is_az_display(host: str) -> bool:
+    return str(host or "").strip().lower().rstrip(".") in _AZ_DISPLAY
+
+
 def _entry_from_claim(claim: Mapping[str, Any]) -> dict[str, Any]:
     host = str(claim.get("name") or "")
-    if _is_hub_host(host):
-        return refuse_hub_resolution(name=host, hub=host)
-    if claim.get("resolves_to_hub") is True or claim.get("cname_to_hub") or claim.get("redirect_to_hub"):
-        return refuse_hub_resolution(name=host, hub=str(claim.get("hub") or claim.get("canonical_hub") or claim.get("design_of") or ""))
-    gateway = claim.get("public_gateway_url") or claim.get("gateway_url")
-    if gateway and _is_hub_host(gateway):
-        return refuse_hub_resolution(name=host, hub=str(gateway))
-    if claim.get("icann") is True or claim.get("public_icann") is True:
+    cap7_name = _cap7_label(host)
+    claims_icann = claim.get("icann") is True or claim.get("public_icann") is True or claim.get("typed_on_icann_dns") is True
+    if cap7_name and claims_icann:
+        from miragegrid.cap7_shuffle import refuse_cap7_typed_on_icann
+
+        return refuse_cap7_typed_on_icann()
+    if claims_icann and not cap7_name and not _is_hub_host(host) and not _is_az_display(host):
         return refuse_public_dns_claim(kind="claim-icann")
     if claim.get("fifth_product") is True:
         return refuse_fifth_product(name=host)
 
-    design_of = normalize_design_of(claim.get("design_of") or claim.get("canonical_hub"))
+    design_of = normalize_design_of(claim.get("design_of") or claim.get("canonical_hub") or claim.get("hub"))
+    if _is_hub_host(host):
+        design_of = normalize_design_of(host) or design_of
+    gateway = claim.get("public_gateway_url") or claim.get("gateway_url")
+    hub_link = bool(gateway and _is_hub_host(gateway))
+    if hub_link:
+        design_of = normalize_design_of(gateway) or design_of
+        gateway = None
     public_host = bool(claim.get("public_host") or claim.get("plane") == "public-gateway")
     hosted = bool(gateway) and not _is_hub_host(gateway) and public_host
     if public_host and hosted:
@@ -628,14 +673,24 @@ def _entry_from_claim(claim: Mapping[str, Any]) -> dict[str, Any]:
     if isinstance(claim.get("design_pack"), Mapping):
         pack = _hex64(claim["design_pack"].get("sha256")) or pack
 
+    az_door = _is_az_display(host) or _is_hub_host(host)
+    wants_resolve = (
+        claim.get("resolves_to_hub") is True
+        or bool(claim.get("cname_to_hub") or claim.get("redirect_to_hub"))
+        or az_door
+        or hub_link
+    )
     entry: dict[str, Any] = {
-        "status": status,
+        "status": "az-domain" if az_door else status,
         "access": _access_for(claim, hosted_gateway=hosted),
-        "icann": False,
-        "public_icann": False,
-        "resolves_to_hub": False,
+        "icann": az_door,
+        "public_icann": az_door,
+        "typed_on_icann_dns": False if cap7_name else az_door,
+        "internet_reachable": az_door and not bool(cap7_name),
+        "resolves_to_hub": bool(wants_resolve and (design_of or az_door)),
         "name_may_change": True,
         "fifth_product": False,
+        "cap7": bool(cap7_name),
     }
     if tip:
         entry["tip_sha256"] = tip
@@ -665,6 +720,31 @@ def _entry_from_claim(claim: Mapping[str, Any]) -> dict[str, Any]:
             entry["tip_sha256"] = design_pack_sha256(label)
         if site.get("upload_plane"):
             entry["upload_plane"] = site["upload_plane"]
+    if az_door:
+        entry["design_of"] = design_of
+        entry["canonical_hub"] = design_of
+        entry["internet_url"] = design_of
+        entry["internet_reachable"] = True
+        entry["public_icann"] = True
+        entry["resolves_to_hub"] = True
+        entry["honesty"] = "LIVE"
+        entry["anchored_by_live_nodes"] = True
+        entry["domain_anchor"] = "live-nodes"
+        entry["shuffle_once"] = True
+        entry["stands_alone"] = True
+        entry["immutable_after_hub_down"] = True
+        entry["mirrors_while_up"] = True
+        entry["cap7"] = False
+        entry["icann_registrar_purchase"] = False
+        entry["mesh_name"] = host
+        entry["person"] = person_id()
+        return entry
+    if cap7_name:
+        entry["typed_on_icann_dns"] = False
+        entry["internet_reachable"] = False
+        entry["public_icann"] = False
+        entry["factory_honesty"] = "LIVE"
+        entry["anchored_by_live_nodes"] = True
     if not entry.get("canonical_hub"):
         return refuse_need_canonical_hub(name=host)
     if not entry.get("tip_sha256"):
@@ -684,16 +764,22 @@ def build_bridge_registry(
     public_icann: bool = False,
     icann_publish: bool = False,
     public_dns: bool = False,
+    typed_on_icann_dns: bool = False,
+    cap7_on_icann: bool = False,
+    icann_registrar_purchase: bool = False,
+    cctld_purchase: bool = False,
     suffix: str = AZ_TLD,
     include_named_sites: bool = True,
 ) -> dict[str, Any]:
-    """Named mesh sites always listed. Empty Cap-7 claims stay an empty SLOT list."""
-    if public_icann or public_dns:
-        return refuse_public_dns_claim(kind="registry-public-dns")
-    if icann_publish:
+    """Named mesh sites always listed. AZ domains are the public internet doors."""
+    if icann_publish or icann_registrar_purchase or cctld_purchase:
         return refuse_azg_icann_publish()
-    if resolve_to_hub:
-        return refuse_hub_resolution()
+    if typed_on_icann_dns or cap7_on_icann:
+        from miragegrid.cap7_shuffle import refuse_cap7_typed_on_icann
+
+        return refuse_cap7_typed_on_icann()
+    if public_dns:
+        return refuse_public_dns_claim(kind="registry-public-dns")
 
     records: list[Any] = []
     if zone is not None:
@@ -742,7 +828,13 @@ def build_bridge_registry(
         extra={
             "spec": SEMANTIC_BRIDGE_SPEC,
             "public_icann": False,
-            "resolves_to_hub": False,
+            "resolves_to_hub": bool(resolve_to_hub),
+            "az_domain_public_icann": True,
+            "internet_reaches": "az-domains",
+            "cap7_typed_on_icann_dns": False,
+            "factory_honesty": "LIVE",
+            "anchored_by_live_nodes": True,
+            "public_icann_flag": bool(public_icann),
             "name_may_change": True,
             "honesty": honesty,
             "names": names,

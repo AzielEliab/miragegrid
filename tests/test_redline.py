@@ -65,7 +65,7 @@ def test_operator_attack_sims_all_refuse() -> None:
         "enable-via-get",
         "get-radio-plant",
         "fake-icann-publish",
-        "cap7-resolve-to-hub",
+        "cap7-typed-on-icann",
         "theater-crypto",
         "invent-completeness",
     } <= names
@@ -111,11 +111,15 @@ def test_get_never_enables_radios_or_plants() -> None:
 
 def test_fake_icann_and_resolve_to_hub_refuse() -> None:
     assert build_bridge_registry([], icann_publish=True)["code"] == "BRIDGE-NO-ICANN-PUBLISH"
-    assert build_bridge_registry([], public_icann=True)["code"] == "BRIDGE-NO-PUBLIC-DNS"
-    assert build_bridge_registry([], resolve_to_hub=True)["code"] == "BRIDGE-NO-HUB-RESOLVE"
+    assert build_bridge_registry([], cctld_purchase=True)["code"] == "BRIDGE-NO-ICANN-PUBLISH"
+    assert build_bridge_registry([], typed_on_icann_dns=True)["code"] == "CAP7-NOT-ICANN-DNS"
+    doors = build_bridge_registry([], public_icann=True)
+    assert doors["ok"] is True
+    assert doors["internet_reaches"] == "az-domains"
     law = semantic_bridge_dict()
     assert law["public_icann"] is False
-    assert law["resolves_to_hub"] is False
+    assert law["cap7_typed_on_icann_dns"] is False
+    assert law["internet_reaches"] == "az-domains"
     assert law["callable"] is False
 
 
@@ -177,7 +181,7 @@ def test_smaller_door_surface_in_worker_and_docs() -> None:
     assert REDLINE_SPEC in REDLINE_DOC
     assert "MESH-GET-NO-ENABLE" in REDLINE_DOC
     assert "AZG-NOT-CALLABLE" in REDLINE_DOC
-    assert "BRIDGE-NO-HUB-RESOLVE" in REDLINE_DOC
+    assert "CAP7-NOT-ICANN-DNS" in REDLINE_DOC
     assert "AZG-NO-COMPLETENESS-CLAIM" in REDLINE_DOC
     assert "cloudflare-tls" in REDLINE_DOC.lower() or "Cloudflare TLS" in REDLINE_DOC
     assert "FoldLock" in REDLINE_DOC

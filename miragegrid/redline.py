@@ -1,8 +1,10 @@
 """REDLINE-1.0 — smaller public door + attack simulations.
 
 GET never enables radios or plants Cap-7 claims. AZ Generator is not
-externally callable. Bridge stamps stay ``public_icann: false`` and
-``resolves_to_hub: false``. Public-door crypto is Cloudflare TLS only.
+externally callable. AZ domain doors are the public internet path
+(``public_icann: true``, ``resolves_to_hub: true``). Cap-7 is the
+``.az`` duplication/shift layer and is not typed on ICANN DNS.
+Public-door crypto is Cloudflare TLS only.
 FoldLock is cite-only. Lamb Lens + NO-FAN. No invented completeness.
 
 Author: Aziel Eliab only.
@@ -36,7 +38,6 @@ from miragegrid.semantic_bridge import (
     build_bridge_registry,
     dead_named_worker,
     refuse_azg_icann_publish,
-    refuse_hub_resolution,
     refuse_public_dns_claim,
     semantic_bridge_dict,
     shelves_cite,
@@ -310,7 +311,7 @@ def sim_fake_icann_publish() -> dict[str, Any]:
         refuse_azg_icann_publish(),
         refuse_public_dns_claim(kind="az-public-dns"),
         build_bridge_registry([], icann_publish=True),
-        build_bridge_registry([], public_icann=True),
+        build_bridge_registry([], cctld_purchase=True),
     ]
     hit = next((r for r in rows if r.get("code") in {"AZG-NOT-PUBLIC-REGISTRAR", "BRIDGE-NO-ICANN-PUBLISH", "BRIDGE-NO-PUBLIC-DNS"}), rows[0])
     out = _sim("fake-icann-publish", hit, str(hit.get("code") or ""))
@@ -324,22 +325,24 @@ def sim_fake_icann_publish() -> dict[str, Any]:
     return out
 
 
-def sim_resolve_to_hub() -> dict[str, Any]:
+def sim_cap7_typed_on_icann() -> dict[str, Any]:
+    from miragegrid.cap7_shuffle import refuse_cap7_typed_on_icann
+
     rows = [
-        refuse_hub_resolution(),
-        build_bridge_registry([], resolve_to_hub=True),
+        refuse_cap7_typed_on_icann(),
+        build_bridge_registry([], typed_on_icann_dns=True),
         build_bridge_registry(
-            [{"name": "www.survivalnetwork.az", "resolves_to_hub": True, "design_of": "https://godlock.uk/"}]
+            [{"name": "azgrid.az", "public_icann": True, "design_of": "https://www.azieleliab.com/", "tip_sha256": "ab" * 32}]
         ),
     ]
-    hit = next((r for r in rows if r.get("code") == "BRIDGE-NO-HUB-RESOLVE"), rows[0])
-    out = _sim("cap7-resolve-to-hub", hit, "BRIDGE-NO-HUB-RESOLVE")
-    out["all_refused"] = all(r.get("code") == "BRIDGE-NO-HUB-RESOLVE" and r.get("resolves_to_hub") is False for r in rows)
+    hit = next((r for r in rows if r.get("code") == "CAP7-NOT-ICANN-DNS"), rows[0])
+    out = _sim("cap7-typed-on-icann", hit, "CAP7-NOT-ICANN-DNS")
+    out["all_refused"] = all(r.get("code") == "CAP7-NOT-ICANN-DNS" and r.get("typed_on_icann_dns") is False for r in rows)
     out["ok"] = bool(out["ok"] and out["all_refused"])
     law = semantic_bridge_dict()
-    out["bridge_public_icann"] = law.get("public_icann") is False
-    out["bridge_resolves_to_hub"] = law.get("resolves_to_hub") is False
-    out["ok"] = bool(out["ok"] and out["bridge_public_icann"] and out["bridge_resolves_to_hub"])
+    out["cap7_typed_on_icann_dns"] = law.get("cap7_typed_on_icann_dns") is False
+    out["internet_reaches"] = law.get("internet_reaches")
+    out["ok"] = bool(out["ok"] and out["cap7_typed_on_icann_dns"] and out["internet_reaches"] == "az-domains")
     return out
 
 
@@ -374,7 +377,7 @@ def run_attack_sims() -> dict[str, Any]:
         sim_get_enable(),
         sim_get_radio_and_plant(),
         sim_fake_icann_publish(),
-        sim_resolve_to_hub(),
+        sim_cap7_typed_on_icann(),
         sim_theater_crypto(),
         sim_invent_completeness(),
     ]
@@ -394,6 +397,8 @@ def run_attack_sims() -> dict[str, Any]:
             "count": len(sims),
             "refused": sum(1 for s in sims if s.get("ok")),
             "public_icann": False,
+            "cap7_typed_on_icann_dns": False,
+            "internet_reaches": "az-domains",
             "resolves_to_hub": False,
             "callable": False,
             "get_never_enables": True,

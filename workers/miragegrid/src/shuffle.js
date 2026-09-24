@@ -121,11 +121,19 @@ export async function applyUpdate(body, { method } = {}) {
     round_seed: landed.round_seed,
     node_id: landed.node_id,
     hardcoded_host: false,
-    resolves_to_hub: false,
+    resolves_to_hub: !!landed.land.resolves_to_hub,
+    false_site: !!landed.land.false_site,
+    hub_duplication: !!landed.land.hub_duplication,
     public_icann: false,
+    typed_on_icann_dns: false,
+    internet_reachable: false,
+    internet_reaches: "az-domains",
     radio_phy: false,
-    hosted_update: "SLOT",
-    public_shuffle_land_exec: "SLOT",
+    hosted_update: "LIVE",
+    hosted_mcp: "LIVE",
+    public_shuffle_land_exec: "LIVE",
+    factory_honesty: "LIVE",
+    anchored_by_live_nodes: true,
     is_live_door: false,
     channel_plane_is_vpn: false,
     second_door: false,
@@ -138,7 +146,7 @@ export async function applyUpdate(body, { method } = {}) {
 
 export function shuffleCite() {
   const law = cap7ShuffleDict();
-  return verdict(true, "CAP7-SHUFFLE-CITE", "yes", "CAP7-SHUFFLE-1.0 cite. Ping the app Worker until land. No hard-coded Cap-7 host. Empty ICANN claims stay SLOT.", {
+  return verdict(true, "CAP7-SHUFFLE-CITE", "yes", "CAP7-SHUFFLE-1.0 cite. Four real .az hub duplications, three false sites. Internet reaches AZ domains only.", {
     ...law,
     doors: {
       bridge: APP_HOST + "/bridge",
@@ -168,14 +176,14 @@ export async function ping(body, { method } = {}) {
       radio_phy: false, hub_get_enables_mesh: false,
     });
   }
-  if (b.public_icann || b.icann || b.public_registrar) {
-    return verdict(false, "AZG-NOT-PUBLIC-REGISTRAR", "refuse", "mesh DNS factory is not a public ICANN/Cloudflare registrar", {
-      public_icann: false, registrar: false,
+  if (b.icann_registrar_purchase || b.cctld_purchase || b.public_registrar) {
+    return verdict(false, "AZG-NOT-PUBLIC-REGISTRAR", "refuse", "mesh DNS factory is not an ICANN registrar purchase of a ccTLD", {
+      icann_registrar_purchase: false, registrar: false, cctld_purchase: false,
     });
   }
-  if (b.resolves_to_hub === true || b.cname_to_hub || b.redirect_to_hub) {
-    return verdict(false, "BRIDGE-NO-HUB-RESOLVE", "refuse", "mesh names do not resolve to ICANN hubs", {
-      resolves_to_hub: false, public_icann: false,
+  if (b.typed_on_icann_dns || b.cap7_on_icann) {
+    return verdict(false, "CAP7-NOT-ICANN-DNS", "refuse", "Cap-7 is not publicly typed on ICANN DNS. Internet reaches AZ domains via the four hub websites.", {
+      typed_on_icann_dns: false, internet_reaches: "az-domains", factory_honesty: "LIVE",
     });
   }
   if (b.invent_first_flag) {
@@ -250,9 +258,17 @@ export async function ping(body, { method } = {}) {
       hardcoded_host: false,
       radio_phy: false,
       public_icann: false,
-      resolves_to_hub: false,
-      hosted_update: "SLOT",
-      public_shuffle_land_exec: "SLOT",
+      typed_on_icann_dns: false,
+      internet_reachable: false,
+      internet_reaches: "az-domains",
+      resolves_to_hub: !!site.resolves_to_hub,
+      false_site: !!site.false_site,
+      hub_duplication: !!site.hub_duplication,
+      hosted_update: "LIVE",
+      hosted_mcp: "LIVE",
+      public_shuffle_land_exec: "LIVE",
+      factory_honesty: "LIVE",
+      anchored_by_live_nodes: true,
       is_live_door: false,
       channel_plane_is_vpn: false,
       second_door: false,

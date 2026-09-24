@@ -151,22 +151,24 @@ Full text: [MIRAGE-GRID-SHIFT-1.0.md](MIRAGE-GRID-SHIFT-1.0.md).
 ## SEMANTIC BRIDGE (SEMANTIC-BRIDGE-1.0)
 
 Public Plane-A hosts + the MirageGrid Worker are the AI-facing
-bridge. Cap-7 mesh names stay mesh-authoritative
-(`public_icann: false`). Crawlers pull `/llms.txt`, `/ai.txt`,
+bridge. Internet reaches **AZ domains only**
+(AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ,
+AZ.HeDidntJump.AZ) via the four hub websites
+(`public_icann: true`, `resolves_to_hub: true`). Cap-7 is the auto
+`.az` duplication/shift layer (StaticLock + MirageGrid cloak and VPN):
+four real hub duplications, three false sites, factory honesty LIVE,
+not typed on ICANN DNS. Crawlers pull `/llms.txt`, `/ai.txt`,
 `/cite.json`, `/bridge.json`, `/v1/bridge`,
 `/design-packs/azcorpus.json`, `/design-packs/azlibrary.json`, and
 `GET /v1/mesh/az-generator`. Re-expand is archive, not index.
 
-Mesh names are relocatable labels, not a fifth public product.
-They are ultimately the four online hubs (azieleliab.com,
-azielcorpuslibrary.net, godlock.uk, hedidntjump.com). Each
-`/bridge.json` entry has `canonical_hub`, `tip`, `public_icann:false`,
-`name_may_change:true`. `azcorpus` + `azlibrary` are designs inside azielcorpuslibrary.net
-(download open; azlibrary upload is Plane-A token). They do **not**
-resolve, redirect, or CNAME to those hubs. `canonical_hub` /
-`design_of` is provenance. `resolves_to_hub` is false.
-`name_may_change` is true. Empty Cap-7 **claims** → SLOT — do not
-invent `www.survivalnetwork.az` as live HTTPS. Growth-ON.
+Named mesh sites are relocatable labels, not a fifth public product.
+`azcorpus` + `azlibrary` are designs inside azielcorpuslibrary.net
+(download open; azlibrary upload is Plane-A token) and stay
+`public_icann: false`. They do **not** resolve, redirect, or CNAME to
+those hubs. `canonical_hub` / `design_of` on a named-mesh entry is
+provenance. Do not invent `www.survivalnetwork.az` as live HTTPS.
+Live nodes anchor the factory and the AZ doors. Growth-ON.
 CROSS-NETWORK-SURVIVAL + NO-LIE.
 
 Full text: [SEMANTIC-BRIDGE-1.0.md](SEMANTIC-BRIDGE-1.0.md).
@@ -238,9 +240,9 @@ First-class refuse law beside NO-LIE / NO-REWRITE.
 | `miragegrid/mesh.py` | Topology stays live. Law functions refuse illegal planes. |
 | `miragegrid/az_generator.py` | Deep-node Cap-7 mesh DNS factory, local vault, FRONT Node Gate exit. Not callable. |
 | Worker `mesh.js` | `/v1/mesh/*` PROXY. Stamps STW/CCS/RH/AZG/MGS/AIRGAP + paper-vault-on-node + SEMANTIC-BRIDGE. `/v1/mesh/vpn|hop|tunnel` refuse `MESH-STUB`. `/v1/mesh/reheal` is local law (not neighbor heal). `GET /v1/mesh/az-generator` cites law; `POST` refuses `AZG-NOT-CALLABLE`. `/v1/mesh/airgap` and `/v1/mesh/vault` cite local law. `GET` never enables mesh. |
-| Worker `bridge.js` | Growth-ON SEMANTIC-BRIDGE-1.0. `/llms.txt` `/ai.txt` `/bridge.json` `/v1/bridge` `/cite.json` `/design-packs/*` `/shelves`. Named mesh sites azcorpus+azlibrary listed as designs. Empty Cap-7 claims stay SLOT. `canonical_hub` / `design_of` is hub design provenance only. `resolves_to_hub` is false. Download host is `miragegrid-download-tracker.vibelock.workers.dev`. Named app Worker `miragegrid.vibelock.workers.dev` is LIVE (CAP7-SHUFFLE-1.0). Historical CF 1042 is closed. `/shelves` cites corpus canonical; Framagit URL is not invented. Not ICANN. Not a fifth product. |
-| App Worker `workers/miragegrid` | Named Worker `miragegrid`. Cap-7 ping→land→update. `/bridge` + `/v1/shuffle` + `/v1/cap7`. AZNet-side slots stay SLOT on public HTTPS. AZ Generator FRONT Node Gate only. `radio_phy: false`. |
-| REDLINE-1.0 | Attack sims. GET never enables radios or plants claims. AZG not callable. Fake ICANN refuse. `resolves_to_hub: true` refuse. Cloudflare TLS only. FoldLock cite-only. |
+| Worker `bridge.js` | Growth-ON SEMANTIC-BRIDGE-1.0. `/llms.txt` `/ai.txt` `/bridge.json` `/v1/bridge` `/cite.json` `/design-packs/*` `/shelves`. Named mesh sites azcorpus+azlibrary listed as designs (`public_icann: false`). AZ domain doors are the public internet path. Cap-7 factory honesty is LIVE and is not typed on ICANN DNS. Download host is `miragegrid-download-tracker.vibelock.workers.dev`. Named app Worker `miragegrid.vibelock.workers.dev` is LIVE (CAP7-SHUFFLE-1.0). Historical CF 1042 is closed. `/shelves` cites corpus canonical; Framagit URL is not invented. Not a fifth product. |
+| App Worker `workers/miragegrid` | Named Worker `miragegrid`. Cap-7 ping→land→update. `/bridge` + `/v1/shuffle` + `/v1/cap7`. Four real hub duplications, three false sites. Factory honesty LIVE. AZ Generator FRONT Node Gate only. `radio_phy: false`. |
+| REDLINE-1.0 | Attack sims. GET never enables radios or plants claims. AZG not callable. Fake ICANN registrar purchase refuses. Claiming Cap-7 is typed on ICANN DNS refuses (`CAP7-NOT-ICANN-DNS`). Designed AZ-domain `resolves_to_hub: true` is allowed. Cloudflare TLS only. FoldLock cite-only. |
 | `POST /v1/assign` | Live session assignment. |
 
 Identity: **Aziel Eliab** only.

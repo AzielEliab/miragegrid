@@ -76,21 +76,20 @@ The factory lives **deep in the node**. It exits FRONT Node Gate only.
 `POST` and every run-generator / call-generator alias **refuse**
 `AZG-NOT-CALLABLE`.
 
-`public_icann` stays **false**. Not a Cloudflare / public registrar
-write. Not `.az` ccTLD takeover.
+Cap-7 is **not** publicly typed on ICANN DNS (`CAP7-NOT-ICANN-DNS`).
+An ICANN registrar purchase of a ccTLD still refuses. AZ domain doors
+are the public internet path (`public_icann: true`, `resolves_to_hub: true`).
 
-## Semantic bridge: no hub resolve, no fake ICANN
+## Semantic bridge: AZ doors, not Cap-7 on ICANN
 
-Cap-7 mesh names are relocatable labels (`name_may_change: true`).
-`canonical_hub` / `design_of` is provenance only.
-`resolves_to_hub` is always **false**. `public_icann` is always
-**false**. Empty Cap-7 claims stay SLOT.
+Cap-7 auto-generates `.az` duplications and shifts them. Four real,
+three false sites. Factory honesty is **LIVE**. Internet reaches AZ
+domains only, via the four hub websites. Live nodes anchor both.
 
 Refuse:
 
-- `resolves_to_hub: true`
-- CNAME / redirect of a mesh name onto a hub
-- AZG live ICANN publish
+- Claiming Cap-7 is publicly typed on ICANN DNS (`CAP7-NOT-ICANN-DNS`)
+- AZG registrar purchase of a ccTLD
 - inventing `www.survivalnetwork.az` as live HTTPS when claims are empty
 
 ## Attack simulations (must REFUSE)
@@ -100,8 +99,8 @@ Refuse:
 | callable AZG | `AzGenerator.call` / Worker POST run-generator / inbound call | `AZG-NOT-CALLABLE` |
 | enable via GET | `GET /v1/mesh/enable` or `GET ?enable=1` | `MESH-GET-NO-ENABLE` |
 | GET radio / plant | `GET ?radio=1` / `GET ?plant=1` / `GET /v1/mesh/az-generator?claim=1` | `MESH-GET-NO-ENABLE` |
-| fake ICANN publish | `icann_publish` / `public_registrar` / `public_icann: true` | `AZG-NOT-PUBLIC-REGISTRAR` or `BRIDGE-NO-ICANN-PUBLISH` / `BRIDGE-NO-PUBLIC-DNS` |
-| Cap-7 `resolve_to_hub: true` | bridge registry / claim `resolves_to_hub` | `BRIDGE-NO-HUB-RESOLVE` |
+| fake ICANN registrar purchase | `icann_publish` / `cctld_purchase` / `public_registrar` | `AZG-NOT-PUBLIC-REGISTRAR` or `BRIDGE-NO-ICANN-PUBLISH` / `BRIDGE-NO-PUBLIC-DNS` |
+| Cap-7 typed on ICANN DNS | claim `typed_on_icann_dns` / `public_icann` on a Cap-7 name | `CAP7-NOT-ICANN-DNS` |
 | theater crypto | homemade Worker encrypt / FoldLock-as-TLS | `REDLINE-NO-THEATER-CRYPTO` |
 | invent completeness | invent 100% complete nodes / radios / doors | `AZG-NO-COMPLETENESS-CLAIM` |
 
@@ -144,8 +143,8 @@ honesty (NO-LIE) refuses completeness claims. This is not a score.
 
 - GET enable / GET radio-on / GET claim plant
 - External AZ Generator call
-- Fake ICANN / Cloudflare registrar publish
-- `resolves_to_hub: true`
+- Fake ICANN registrar purchase of a ccTLD
+- Claiming Cap-7 is publicly typed on ICANN DNS (`CAP7-NOT-ICANN-DNS`)
 - Theater crypto on the public door
 - FoldLock used as Worker encryption
 - Invented completeness (100% complete-mesh lie)

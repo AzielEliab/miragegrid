@@ -385,16 +385,17 @@ bytes already trusted, or phoenix-WAIT — never neighbor majority.
 Full text: [SEMANTIC-BRIDGE-1.0.md](SEMANTIC-BRIDGE-1.0.md).
 
 Public Plane-A hosts + the MirageGrid Worker are the AI-facing
-bridge. Cap-7 mesh names are not public ICANN DNS
-(`public_icann: false`). They inherit hub **design** only; they do
-not resolve, redirect, or CNAME to official hubs. `design_of` is
-provenance. `resolves_to_hub` is false. Mesh names are relocatable
-labels of the four online hubs, not a fifth product. Each
-`/bridge.json` entry has `canonical_hub`, `tip`, `public_icann:false`,
-`name_may_change:true`. Named sites azcorpus + azlibrary are designs
-inside azielcorpuslibrary.net (hash-absolute `/design-packs/*`). Empty
-Cap-7 **claims** stay SLOT. Growth-ON. CROSS-NETWORK-SURVIVAL +
-NO-LIE. Re-expand is archive, not index. Named app Worker is
+bridge. Internet reaches AZ domains only
+(AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ,
+AZ.HeDidntJump.AZ) via the four hub websites
+(`public_icann: true`, `resolves_to_hub: true`). Cap-7 auto-generates
+`.az` duplications of those hubs and shifts them with StaticLock +
+MirageGrid cloak and VPN. Four factory names are real hub duplications.
+Three are false sites. Factory honesty is LIVE. Cap-7 is not typed on
+ICANN DNS. Named sites azcorpus + azlibrary are designs inside
+azielcorpuslibrary.net (hash-absolute `/design-packs/*`) and stay
+`public_icann: false`. Growth-ON. CROSS-NETWORK-SURVIVAL + NO-LIE.
+Re-expand is archive, not index. Named app Worker is
 `miragegrid.vibelock.workers.dev` (Cap-7 LIVE shuffle). Download plane
 is `miragegrid-download-tracker.vibelock.workers.dev`. Historical CF
 1042 is closed by creating Worker `miragegrid`.

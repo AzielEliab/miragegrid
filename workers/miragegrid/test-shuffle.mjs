@@ -1,5 +1,5 @@
 import worker from "./src/index.js";
-import { CAP7_FACTORY_SITES, FACTORY_LABELS, PUBLIC_PAIR, hostedBridgeDoors, publicGateway } from "./src/cap7.js";
+import { CAP7_FACTORY_SITES, FACTORY_LABELS, FALSE_SITES, REAL_HUB_DUPLICATIONS, hostedBridgeDoors, publicGateway } from "./src/cap7.js";
 import { applyUpdate, landIndex, ping, shuffleCite, shuffleSeed } from "./src/shuffle.js";
 import { applyGridShift, attachQnsCd } from "../download-tracker/src/mesh.js";
 
@@ -19,17 +19,24 @@ async function call(path, init = {}) {
 
 assert(CAP7_FACTORY_SITES.length === 7, "cap 7");
 assert(new Set(FACTORY_LABELS).size === 7, "distinct labels");
-assert(PUBLIC_PAIR[0] === "azgrid" && PUBLIC_PAIR[1] === "azbooth", "public pair");
+assert(REAL_HUB_DUPLICATIONS.length === 4 && FALSE_SITES.length === 3, "four real three decoy");
+assert(REAL_HUB_DUPLICATIONS.includes("azgrid") && FALSE_SITES.includes("azbooth"), "azgrid real azbooth decoy");
 
 const bridge = hostedBridgeDoors();
 assert(bridge.code === "BRIDGE-CAP7-SHUFFLE", "bridge code");
 assert(bridge.app_worker.status === "live-app", "app live");
-assert(bridge.honesty.aznet_side_https === "SLOT", "aznet slot");
-assert(bridge.public_icann === false, "no icann");
-assert(bridge.resolves_to_hub === false, "no hub resolve");
+assert(bridge.honesty.factory === "LIVE", "factory live");
+assert(bridge.honesty.az_domains === "LIVE", "az domains live");
+assert(bridge.public_icann === false, "cap7 not icann dns");
+assert(bridge.internet_reaches === "az-domains", "internet is az domains");
+assert(bridge.false_site_count === 3, "three decoys");
+assert(bridge.real_duplication_count === 4, "four real");
 assert(bridge.radio_phy === false, "no radio");
-assert(publicGateway("azgrid").ok === true, "azgrid live");
-assert(publicGateway("azcloak").ok === false, "azcloak slot");
+assert(bridge.az_domains.length === 4, "four az doors");
+assert(bridge.az_domains.every((row) => row.public_icann === true && row.internet_reachable === true), "az doors public");
+assert(publicGateway("azgrid").ok === true && publicGateway("azgrid").hub_duplication === true, "azgrid real");
+assert(publicGateway("azbooth").ok === true && publicGateway("azbooth").false_site === true, "azbooth decoy");
+assert(publicGateway("azcloak").internet_reachable === false, "cap7 not internet");
 
 const seed = await shuffleSeed({ round_id: "r1" });
 assert(seed && seed.length === 64, "seed");
@@ -42,7 +49,9 @@ const landB = await ping({ node_id: "node-25", round_id: "r1" });
 assert(landA.code === "CAP7-LAND", "land");
 assert(landA.land.label === landB.land.label, "same seed same land");
 assert(landA.hardcoded_host === false, "no hardcoded host");
-assert(landA.resolves_to_hub === false, "land no hub resolve");
+assert(landA.internet_reachable === false, "land not internet");
+assert(landA.factory_honesty === "LIVE", "land factory live");
+assert(typeof landA.resolves_to_hub === "boolean", "land resolve stamp");
 const seen = new Set();
 for (let i = 0; i < 32; i++) {
   const s = await shuffleSeed({ round_id: "round-" + i });
@@ -55,7 +64,8 @@ assert(shuffleCite().code === "CAP7-SHUFFLE-CITE", "cite");
 const upd = await applyUpdate({ node_id: "node-07", prev: "p", lockset: "l" });
 assert(upd.code === "CAP7-UPDATE" && upd.phase === "update", "update hop");
 assert(upd.update_endpoint === update.update_endpoint, "same land update");
-assert(upd.resolves_to_hub === false, "update no hub resolve");
+assert(upd.internet_reachable === false, "update not internet");
+assert(upd.hosted_update === "LIVE", "update hosted live");
 const wait = await applyUpdate({ node_id: "node-07" });
 assert(wait.continue === true && wait.phase === "ping", "update waits on land");
 
@@ -89,9 +99,11 @@ const pingBody = await pingRes.json();
 assert(pingBody.code === "CAP7-LAND", "worker ping land " + pingBody.code);
 
 const slot = await call("/cap7/azcloak");
-assert(slot.status === 403, "slot not live https");
+assert(slot.status === 200, "factory cite live");
+const slotBody = await slot.json();
+assert(slotBody.internet_reachable === false && slotBody.factory_honesty === "LIVE", "cloak factory live not icann");
 const livePair = await call("/cap7/azgrid");
-assert(livePair.status === 200, "public pair live");
+assert(livePair.status === 200, "azgrid factory live");
 
 const azg = await call("/v1/az-generator");
 assert(azg.status === 403, "azg not callable");
@@ -114,7 +126,8 @@ const updRes = await call("/v1/shuffle/update", {
 });
 const updBody = await updRes.json();
 assert(updRes.status === 200 && updBody.code === "CAP7-UPDATE", "worker update " + updBody.code);
-assert(updBody.resolves_to_hub === false, "worker update resolves_to_hub false");
+assert(updBody.internet_reachable === false, "worker update not internet");
+assert(updBody.hosted_update === "LIVE", "worker update live");
 const getUpd = await call("/v1/shuffle/update");
 const getUpdBody = await getUpd.json();
 assert(getUpd.status === 403 && getUpdBody.code === "MESH-GET-NO-ENABLE", "GET update refuses");
@@ -142,17 +155,20 @@ assert(stamped.enabled === true, "enabled status preserved");
 assert(stamped.channel_plane_is_vpn === false, "overlay not vpn");
 assert(stamped.second_door === false, "overlay no second door");
 assert(stamped.open_proxy === false, "overlay no open proxy");
-assert(stamped.hosted_endpoints === "SLOT", "overlay hosted endpoints slot");
+assert(stamped.hosted_endpoints === "LIVE", "overlay hosted endpoints live");
+assert(stamped.factory_honesty === "LIVE", "overlay factory live");
+assert(stamped.anchored_by_live_nodes === true, "overlay live-node anchor");
+assert(stamped.internet_reaches === "az-domains", "overlay internet az domains");
 assert(stamped.aznet_payload_host === false, "overlay no aznet payload host");
 
 const applyShift = applyGridShift({ name: "foo.az" });
 assert(applyShift.ok === false && applyShift.code === "MGS-NO-HOSTED-APPLY", "hosted grid-shift apply refuses " + applyShift.code);
 
-assert(updBody.hosted_update === "SLOT", "update hosted SLOT");
+assert(updBody.hosted_update === "LIVE", "update hosted LIVE");
 assert(updBody.channel_plane_is_vpn === false, "update not vpn");
 assert(updBody.second_door === false, "update no second door");
-assert(landA.public_shuffle_land_exec === "SLOT", "land exec SLOT");
-assert(bridge.honesty.hosted_update === "SLOT", "bridge hosted update slot");
+assert(landA.public_shuffle_land_exec === "LIVE", "land exec LIVE");
+assert(bridge.honesty.hosted_update === "LIVE", "bridge hosted update live");
 assert(bridge.channel_plane_is_vpn === false, "bridge not vpn");
 
 const vpnLie = await ping({ node_id: "node-01", round_id: "r1", channel_plane_is_vpn: true });
@@ -160,7 +176,8 @@ assert(vpnLie.code === "CAP7-NO-VPN-LIE", "vpn lie refuse " + vpnLie.code);
 
 const slotHonesty = await call("/cap7/azcloak");
 const slotHonestyBody = await slotHonesty.json();
-assert(slotHonestyBody.resolves_to_hub === false, "slot r2h");
+assert(slotHonestyBody.internet_reachable === false, "slot not internet");
+assert(slotHonestyBody.hub_duplication === true, "azcloak real duplication");
 assert(slotHonestyBody.radio_phy === false, "slot radio");
 
 const healthHonesty = await call("/v1/health");

@@ -1,7 +1,8 @@
 /**
  * CAP7-SHUFFLE-1.0 — MirageGrid-only factory roster.
- * Different names. Hub design DNA only. resolves_to_hub false.
- * name_may_change true. public_icann false. radio_phy false.
+ * Cap-7 auto-generates .az hub duplications and shifts them with
+ * StaticLock + MirageGrid cloak and VPN. Four real, three decoys.
+ * Not typed on ICANN DNS. Internet reaches AZ domains only.
  * Author: Aziel Eliab only.
  */
 
@@ -17,13 +18,46 @@ export const RUNTIME = "https://aziel-runtime.vibelock.workers.dev";
 export const CAP_7 = 7;
 export const PUBLIC_HOST_PAIR = 2;
 export const FIRST_FLAG = "www.survivalnetwork.az";
-export const PUBLIC_PAIR = Object.freeze(["azgrid", "azbooth"]);
-export const AZNET_SIDE = Object.freeze(["azcloak", "azvault", "azshift", "azflag", "azstandby"]);
 
 export const HUB_AE = "https://www.azieleliab.com/";
 export const HUB_CORPUS = "https://www.azielcorpuslibrary.net/";
 export const HUB_GODLOCK = "https://godlock.uk/";
 export const HUB_HDJ = "https://hedidntjump.com/";
+
+export const AZ_DOMAIN_DROP_INS = Object.freeze([
+  { display_name: "AZ.AzielEliab.AZ", mirror_host: "azieleliab.com", canonical_hub: HUB_AE },
+  { display_name: "AZ.AzielCorpusLibrary.AZ", mirror_host: "azielcorpuslibrary.net", canonical_hub: HUB_CORPUS },
+  { display_name: "AZ.Godlock.AZ", mirror_host: "godlock.uk", canonical_hub: HUB_GODLOCK },
+  { display_name: "AZ.HeDidntJump.AZ", mirror_host: "hedidntjump.com", canonical_hub: HUB_HDJ },
+]);
+export const REAL_HUB_DUPLICATIONS = Object.freeze(["azgrid", "azcloak", "azvault", "azshift"]);
+export const FALSE_SITES = Object.freeze(["azbooth", "azflag", "azstandby"]);
+export const SHIFT_STACK = Object.freeze(["staticlock", "miragegrid-cloak", "miragegrid-vpn"]);
+
+export function azDomainRows() {
+  return AZ_DOMAIN_DROP_INS.map((row) => ({
+    display_name: row.display_name,
+    mirror_host: row.mirror_host,
+    canonical_hub: row.canonical_hub,
+    internet_url: row.canonical_hub,
+    public_icann: true,
+    resolves_to_hub: true,
+    internet_reachable: true,
+    honesty: "LIVE",
+    shuffle_once: true,
+    pool: 4,
+    mirrors_while_up: true,
+    stands_alone: true,
+    immutable_after_hub_down: true,
+    anchored_by_live_nodes: true,
+    domain_anchor: "live-nodes",
+    softwares_tab: false,
+    cap7: false,
+    icann_registrar_purchase: false,
+    cctld_purchase: false,
+    author: IDENTITY,
+  }));
+}
 
 export const CAP7_FACTORY_SITES = Object.freeze([
   {
@@ -131,8 +165,10 @@ export function downloadWorker() {
 
 export function siteRecord(site) {
   const label = site.label;
-  const publicPair = !!site.browser_reachable;
-  const path = publicPair ? "/cap7/" + label : "/aznet/cap7/" + label;
+  const real = REAL_HUB_DUPLICATIONS.includes(label);
+  const falseSite = FALSE_SITES.includes(label);
+  const path = "/cap7/" + label;
+  const drop = AZ_DOMAIN_DROP_INS.find((row) => row.canonical_hub === site.canonical_hub);
   return {
     label,
     mesh_name: label + ".az",
@@ -140,24 +176,41 @@ export function siteRecord(site) {
     design: site.design,
     canonical_hub: site.canonical_hub,
     design_of: site.design_of,
-    resolves_to_hub: false,
+    layer: "cap7-az-duplication",
+    generates: "auto-.az-hub-duplication",
+    hub_duplication: real,
+    false_site: falseSite,
+    decoy: falseSite,
+    resolves_to_hub: real,
     name_may_change: true,
     public_icann: false,
+    typed_on_icann_dns: false,
+    internet_reachable: false,
+    public_internet_door: false,
     icann: false,
     fifth_product: false,
     radio_phy: false,
-    reach: site.reach,
-    honesty_public: publicPair ? "LIVE" : "SLOT",
-    browser_reachable: publicPair,
+    reach: "cap7-shift",
+    honesty_public: "LIVE",
+    factory_honesty: "LIVE",
+    browser_reachable: false,
     aznet: true,
     azbrowser: true,
     merge: false,
-    mesh_name_icann: "SLOT",
     worker_path: APP_HOST + path,
     aznet_endpoint: "aznet://cap7/" + label,
-    update_path: publicPair ? APP_HOST + path + "/update" : "aznet://cap7/" + label + "/update",
-    hosted_status: "SLOT",
-    hosted_update: "SLOT",
+    update_path: APP_HOST + "/v1/shuffle/update",
+    hosted_status: "LIVE",
+    hosted_update: "LIVE",
+    hosted_mcp: "LIVE",
+    public_shuffle_land_exec: "LIVE",
+    anchored_by_live_nodes: true,
+    domain_anchor: "live-nodes",
+    shift_stack: SHIFT_STACK.slice(),
+    staticlock: true,
+    miragegrid_cloak: true,
+    miragegrid_vpn: true,
+    internet_door: drop ? drop.display_name : null,
     is_live_door: false,
     aznet_payload_host: false,
     channel_plane_is_vpn: false,
@@ -184,23 +237,31 @@ export function cap7ShuffleDict() {
     person: personId(),
     cap: CAP_7,
     public_host_pair: PUBLIC_HOST_PAIR,
-    public_pair: PUBLIC_PAIR.slice(),
-    aznet_side: AZNET_SIDE.slice(),
     labels: FACTORY_LABELS.slice(),
     sites: cap7Roster(),
-    resolves_to_hub: false,
+    real_hub_duplications: REAL_HUB_DUPLICATIONS.slice(),
+    false_sites: FALSE_SITES.slice(),
+    real_duplication_count: 4,
+    false_site_count: 3,
+    az_domains: azDomainRows(),
+    internet_reaches: "az-domains",
+    typed_on_icann_dns: false,
+    internet_reachable: false,
     name_may_change: true,
-    public_icann: false,
     fifth_product: false,
     radio_phy: false,
     hardcoded_host: false,
     update_is_proof: true,
+    shift_stack: SHIFT_STACK.slice(),
+    staticlock: true,
+    miragegrid_cloak: true,
+    miragegrid_vpn: true,
     az_generator: {
       callable: false,
       lives: "deep-node",
       exit: "node-gate-front",
       radio_phy: false,
-      public_icann: false,
+      typed_on_icann_dns: false,
     },
     access: { aznet: true, azbrowser: true, merge: false, naked_public_dns: false },
     app_worker: appWorker(),
@@ -210,7 +271,7 @@ export function cap7ShuffleDict() {
     canonical_hubs: [HUB_AE, HUB_CORPUS, HUB_GODLOCK, HUB_HDJ],
     named_mesh_designs: ["azcorpus", "azlibrary"],
     ...outlastHonesty(),
-    note: "Nodes ping the app Worker until they land on one Cap-7 site. That land is the update endpoint for the round. No single hard-coded Cap-7 host. Public land/update is cite/coordination (SLOT exec). FragGate stays THE door.",
+    note: "Cap-7 auto-generates .az duplications of the four hubs and shifts them with StaticLock + MirageGrid cloak and VPN. Four names are real hub duplications; three are false sites. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door.",
   };
 }
 
@@ -225,7 +286,9 @@ export function hostedBridgeDoors() {
     identity: IDENTITY,
     person: personId(),
     public_icann: false,
-    resolves_to_hub: false,
+    typed_on_icann_dns: false,
+    internet_reachable: false,
+    internet_reaches: "az-domains",
     name_may_change: true,
     fifth_product: false,
     radio_phy: false,
@@ -237,8 +300,12 @@ export function hostedBridgeDoors() {
     azbrowser: "azbrowser",
     merge: false,
     cap7: law.sites,
-    public_pair: PUBLIC_PAIR.slice(),
-    aznet_side: AZNET_SIDE.slice(),
+    real_hub_duplications: REAL_HUB_DUPLICATIONS.slice(),
+    false_sites: FALSE_SITES.slice(),
+    real_duplication_count: 4,
+    false_site_count: 3,
+    az_domains: azDomainRows(),
+    shift_stack: SHIFT_STACK.slice(),
     doors: {
       bridge: APP_HOST + "/bridge",
       bridge_json: APP_HOST + "/bridge.json",
@@ -254,13 +321,14 @@ export function hostedBridgeDoors() {
     honesty: {
       app_worker: "LIVE",
       download_worker: "LIVE",
-      public_pair_https: "LIVE",
-      aznet_side_https: "SLOT",
-      mesh_az_icann: "SLOT",
-      first_flag_https: "SLOT",
-      hosted_endpoints: "SLOT",
-      hosted_update: "SLOT",
-      public_shuffle_land_exec: "SLOT",
+      factory: "LIVE",
+      az_domains: "LIVE",
+      cap7_icann_dns: false,
+      hosted_endpoints: "LIVE",
+      hosted_update: "LIVE",
+      hosted_mcp: "LIVE",
+      public_shuffle_land_exec: "LIVE",
+      anchored_by_live_nodes: true,
       channel_plane_is_vpn: false,
       second_door: false,
     },
@@ -284,37 +352,15 @@ export function publicGateway(label) {
     };
   }
   const row = siteRecord(site);
-  if (!row.browser_reachable) {
-    return {
-      ok: false,
-      code: "CAP7-SLOT-NOT-LIVE",
-      verdict: "refuse",
-      yes: false,
-      message: "this Cap-7 slot is AZNet-side; do not invent public HTTPS LIVE",
-      label: row.label,
-      honesty_public: "SLOT",
-      browser_reachable: false,
-      aznet: true,
-      aznet_endpoint: row.aznet_endpoint,
-      public_icann: false,
-      resolves_to_hub: false,
-      radio_phy: false,
-      hosted_endpoints: "SLOT",
-      aznet_payload_host: false,
-      is_live_door: false,
-      spec: CAP7_SHUFFLE_SPEC,
-      author: IDENTITY,
-    };
-  }
   return {
     ok: true,
-    code: "CAP7-GATEWAY-LIVE",
+    code: "CAP7-FACTORY-LIVE",
     verdict: "yes",
     yes: true,
-    message: "browser-reachable Cap-7 public pair mirror on the app Worker (not ICANN .az)",
+    message: "LIVE Cap-7 factory site (duplication/shift/cloak). Not an ICANN public door. Internet reaches AZ domains via hub HTTPS.",
     ...row,
     spec: CAP7_SHUFFLE_SPEC,
-    public_icann: false,
+    az_domains: azDomainRows(),
   };
 }
 
@@ -334,19 +380,20 @@ export function aznetCite(label) {
   const row = siteRecord(site);
   return {
     ok: true,
-    code: row.browser_reachable ? "CAP7-AZNET-AND-HTTPS" : "CAP7-AZNET-SLOT",
+    code: "CAP7-FACTORY-LIVE",
     verdict: "yes",
     yes: true,
-    message: row.browser_reachable
-      ? "public pair is Worker HTTPS + AZNet; mesh .az stays SLOT on ICANN"
-      : "AZNet-hosted survival endpoint; public HTTPS is SLOT; not browser-reachable",
+    message: "LIVE Cap-7 factory cite on the AZNet plane. Not typed on ICANN DNS. Internet reaches AZ domains via hub HTTPS.",
     ...row,
-    honesty_public: row.honesty_public,
-    public_https: row.browser_reachable,
+    honesty_public: "LIVE",
+    factory_honesty: "LIVE",
+    public_https: false,
     aznet_plane: true,
-    hosted_endpoints: "SLOT",
+    hosted_endpoints: "LIVE",
     aznet_payload_host: false,
     is_live_door: false,
+    internet_reachable: false,
+    typed_on_icann_dns: false,
     spec: CAP7_SHUFFLE_SPEC,
   };
 }
