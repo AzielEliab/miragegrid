@@ -19,7 +19,9 @@ class MirageApp extends StatelessWidget {
     return MaterialApp(
       title: 'MirageGrid',
       debugShowCheckedModeBanner: false,
-      theme: buildAppTheme(),
+      theme: buildLightTheme(),
+      darkTheme: buildDarkTheme(),
+      themeMode: ThemeMode.system,
       home: const AssignPage(),
     );
   }
@@ -56,7 +58,7 @@ class AssignPage extends StatefulWidget {
 class _AssignPageState extends State<AssignPage> {
   Receipt? _live;
   bool _closed = false;
-  String _note = 'no session';
+  String _status = 'No circuit yet. Open one to start.';
 
   void _assign() {
     final rng = Random.secure();
@@ -83,7 +85,7 @@ class _AssignPageState extends State<AssignPage> {
         integrity: integrity,
         hash: digest(sid, number, ts, integrity),
       );
-      _note = 'assigned entry node-$number. Circuit hops held in RAM.';
+      _status = 'Circuit is open. Entry peer is node-${number.toString().padLeft(2, '0')}.';
     });
   }
 
@@ -91,71 +93,121 @@ class _AssignPageState extends State<AssignPage> {
     setState(() {
       _closed = true;
       _live = null;
-      _note = 'session ended. Mapping destroyed. node is no longer readable.';
+      _status = 'Session ended. The mapping on this phone is gone.';
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final live = _live != null && !_closed;
+    final nodeLabel = live
+        ? 'node-${_live!.node.toString().padLeft(2, '0')}'
+        : '—';
     return Scaffold(
-      appBar: AppBar(title: const Text('MirageGrid')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Card(
-            color: const Color(0xFF2A1515),
-            child: const Padding(
-              padding: EdgeInsets.all(12),
-              child: Text(
-                'MirageGrid is a node-mesh VPN and anonymity network. '
-                'This app assigns a 25-node mesh circuit (entry + hops). '
-                'The desktop package runs the userspace SOCKS5 VPN. '
-                'Lawful privacy tool. Author Aziel Eliab.',
-                style: TextStyle(height: 1.4),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'You enter the booth. The system selects a booth. The call is attributed '
-            'to that booth. You leave with no persistent booth identity.',
-            style: TextStyle(color: kGold, fontStyle: FontStyle.italic),
-          ),
-          const SizedBox(height: 16),
-          Text(_note),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            children: [
-              FilledButton(onPressed: _assign, child: const Text('Assign node')),
-              OutlinedButton(onPressed: _end, child: const Text('End session')),
-            ],
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Selection: SHA-256(entropy || timestamp) as big-endian int % 25. '
-            'Not random.choice. Extra hops use SHA-256(...|hop|salt).',
-            style: TextStyle(color: kGoldDim, fontSize: 12),
-          ),
-          if (_live != null && !_closed) ...[
-            const SizedBox(height: 16),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: SelectableText(
-                  [
-                    'session_id: ${_live!.sessionId}',
-                    'mirage_node: ${_live!.node}',
-                    'node_id: node-${_live!.node.toString().padLeft(2, '0')}',
-                    'timestamp: ${_live!.timestamp}',
-                    'integrity: ${_live!.integrity}',
-                    'hash: ${_live!.hash}',
-                  ].join('\n'),
-                  style: const TextStyle(fontFamily: 'monospace', fontSize: 13, height: 1.45),
+      appBar: AppBar(
+        title: const Text('MirageGrid'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              showDialog<void>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('About'),
+                  content: const Text(
+                    'MirageGrid opens a circuit on this phone across 25 mesh peers. '
+                    'Cap-7 is the mesh DNS factory: four hub mirrors and three decoys. '
+                    'It keeps those names on the mesh and does not register names at a public ICANN registrar. '
+                    'The SOCKS5 proxy stays in the desktop package. '
+                    'Author: Aziel Eliab.',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Close'),
+                    ),
+                  ],
                 ),
+              );
+            },
+            child: const Text('About'),
+          ),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          Text(
+            'Open a circuit',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'MirageGrid opens a private circuit through 25 mesh peers on this phone.',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.75),
+                ),
+          ),
+          const SizedBox(height: 20),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(_status, style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: 12),
+                  Text('Entry peer', style: Theme.of(context).textTheme.labelMedium),
+                  const SizedBox(height: 4),
+                  Text(nodeLabel, style: const TextStyle(fontFamily: 'monospace', fontSize: 16)),
+                  const SizedBox(height: 16),
+                  FilledButton(
+                    onPressed: _assign,
+                    child: const Text('Open a circuit'),
+                  ),
+                  if (live) ...[
+                    const SizedBox(height: 8),
+                    OutlinedButton(
+                      onPressed: _end,
+                      child: const Text('End session'),
+                    ),
+                  ],
+                ],
               ),
             ),
-          ],
+          ),
+          const SizedBox(height: 12),
+          if (live)
+            Card(
+              child: ExpansionTile(
+                title: const Text('Advanced'),
+                childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                children: [
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Selection uses SHA-256(entropy and timestamp) modulo 25.',
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SelectableText(
+                    [
+                      'session_id: ${_live!.sessionId}',
+                      'mirage_node: ${_live!.node}',
+                      'node_id: $nodeLabel',
+                      'timestamp: ${_live!.timestamp}',
+                      'integrity: Passed',
+                      'hash: ${_live!.hash}',
+                    ].join('\n'),
+                    style: const TextStyle(fontFamily: 'monospace', fontSize: 13, height: 1.45),
+                  ),
+                ],
+              ),
+            ),
+          const SizedBox(height: 24),
+          Text(
+            'Aziel Eliab',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
         ],
       ),
     );

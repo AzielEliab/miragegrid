@@ -26,8 +26,8 @@ python -m pip install -U pip
 python -m pip install -e .
 
 echo
-echo "Installed MirageGrid node-mesh VPN."
-echo "Run:  miragegrid ui"
-echo "Or:   miragegrid vpn"
-echo "Then open http://127.0.0.1:8080  (loopback mesh-VPN console)"
+echo "MirageGrid is installed."
+echo "Open the console:"
+echo "  miragegrid ui"
+echo "Then choose Open a circuit at http://127.0.0.1:8080/"
 echo "Author: Aziel Eliab."

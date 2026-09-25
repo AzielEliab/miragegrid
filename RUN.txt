@@ -1,0 +1,9 @@
+MirageGrid
+Author: Aziel Eliab
+
+1. python -m venv .venv && . .venv/bin/activate && pip install -e .
+2. miragegrid ui
+3. Open http://127.0.0.1:8080/ and choose Open a circuit.
+
+miragegrid doctor checks the install. miragegrid --help lists commands.
+Machines: add --json.
