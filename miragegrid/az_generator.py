@@ -13,11 +13,11 @@ stamp, refuse, and cite law. It must not run the generator.
 This is a **Cap-7 mesh DNS factory**: the generator authors at most
 seven ``.az`` names per node into a mesh-authoritative / node-local
 zone (zone records + claim receipts + tip/hash continuity). All
-resolution / browsing goes through **AZNet** and **AZBrowser**
+resolution / browsing goes through **AZnet** and **AZ Browser**
 (separate Softwares products; functional pairing only — never merged).
 Exactly **2** of the Cap-7 names become hosted public HTTPS
 mirrors/gateways for standard browsers. The other slots stay
-mesh/AZNet-side. Mesh tip remains authoritative. It is **not** a
+mesh/AZnet-side. Mesh tip remains authoritative. It is **not** a
 public unbounded registrar and does **not** invent ICANN writes or
 claim the public ``.az`` ccTLD. ``public_icann`` stays false.
 
@@ -184,7 +184,7 @@ def refuse_product_merge() -> dict[str, Any]:
         False,
         "AZG-NO-MERGE-PRODUCTS",
         verdict=REFUSE,
-        message="AZNet and AZBrowser stay separate Softwares products; functional pairing only",
+        message="AZnet and AZ Browser stay separate Softwares products; functional pairing only",
         extra={
             "aznet": AZNET_PRODUCT,
             "azbrowser": AZBROWSER_PRODUCT,
@@ -199,7 +199,7 @@ def refuse_naked_dns() -> dict[str, Any]:
         False,
         "AZG-NO-NAKED-DNS",
         verdict=REFUSE,
-        message="resolution/browsing goes through AZNet + AZBrowser; not a naked public DNS story",
+        message="resolution/browsing goes through AZnet + AZ Browser; not a naked public DNS story",
         extra={
             "access": sorted(ACCESS_CLIENTS),
             "naked_public_dns": False,
@@ -455,7 +455,7 @@ class MeshDnsZone:
                     True,
                     "AZG-ZONE-HIT",
                     verdict=YES,
-                    message="mesh-authoritative .az resolve via AZNet/AZBrowser",
+                    message="mesh-authoritative .az resolve via AZnet/AZ Browser",
                     extra={
                         "name": host,
                         "record": dict(rec),
@@ -563,7 +563,7 @@ class MeshDnsZone:
             verdict=YES,
             message=(
                 "authored into mesh-authoritative .az zone (not ICANN); "
-                + ("hosted public gateway/mirror of mesh tip" if public_host else "mesh/AZNet-side only")
+                + ("hosted public gateway/mirror of mesh tip" if public_host else "mesh/AZnet-side only")
             ),
             extra={
                 "name": host,
@@ -676,7 +676,7 @@ def access_name(
     naked_dns: bool = False,
     cctld_takeover: bool = False,
 ) -> dict[str, Any]:
-    """All names via AZNet/AZBrowser. Standard browsers reach only the public pair."""
+    """All names via AZnet/AZ Browser. Standard browsers reach only the public pair."""
     if merge_products:
         return refuse_product_merge()
     if cctld_takeover:
@@ -697,7 +697,7 @@ def access_name(
             True,
             "AZG-ACCESS-MESH",
             verdict=YES,
-            message="name accessible via AZNet/AZBrowser (separate Softwares; pairing only)",
+            message="name accessible via AZnet/AZ Browser (separate Softwares; pairing only)",
             extra={
                 "name": host,
                 "client": key,
@@ -729,7 +729,7 @@ def access_name(
             False,
             "AZG-PUBLIC-PAIR",
             verdict=REFUSE,
-            message="standard browsers reach exactly 2 hosted public gateways; this name stays mesh/AZNet-side",
+            message="standard browsers reach exactly 2 hosted public gateways; this name stays mesh/AZnet-side",
             extra={
                 "name": host,
                 "client": key,

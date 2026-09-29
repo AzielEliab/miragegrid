@@ -1,4 +1,4 @@
-"""AZNet pairing: Cap-7 mesh DNS, sidenet = AZNet, no public ICANN.
+"""AZnet pairing: Cap-7 mesh DNS, sidenet = AZnet, no public ICANN.
 
 Author: Aziel Eliab only.
 """
@@ -32,10 +32,11 @@ def test_sidenet_cite_is_not_icann_and_softwares_stay_frozen() -> None:
     law = sidenet_dict()
     assert law["code"] == "AZN-CAP7-CITE"
     assert law["spec"] == "AZN-CAP7-PAIR"
-    assert law["name"] == "AZNet"
-    assert law["naming_lock"] == "sidenet=AZNet"
-    assert law["sidenet"] == "AZNet"
-    assert law["pairs_with"] == ["AZNet", "AZBrowser"]
+    assert law["name"] == "AZnet"
+    assert law["naming_lock"] == "sidenet=AZnet"
+    assert law["sidenet"] == "AZnet"
+    assert law["browser_name"] == "AZ Browser"
+    assert law["pairs_with"] == ["AZnet", "AZ Browser"]
     assert law["layer"] == "P2"
     assert law["l0_public_path_changed"] is False
     assert law["l0"]["changed"] is False
@@ -55,7 +56,7 @@ def test_sidenet_cite_is_not_icann_and_softwares_stay_frozen() -> None:
     assert law["hosted_node_gate_exec"] is False
     mesh = mesh_law_dict()
     assert mesh["aznet"]["public_icann"] is False
-    assert mesh["aznet"]["name"] == "AZNet"
+    assert mesh["aznet"]["name"] == "AZnet"
     assert mesh["aznet"]["l0_public_path_changed"] is False
 
 

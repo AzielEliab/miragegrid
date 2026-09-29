@@ -100,7 +100,7 @@ hash-absolute). Website designs ship as Worker packs:
 | `azlibrary` (`azlibrary.az`) | Aziel Library (Plane-A token upload) | `token` | `/design-packs/azlibrary.json` |
 
 Both have `download_open: true`, `public_icann: false`, access
-AZNet + AZBrowser. They live **inside**
+AZnet + AZ Browser. They live **inside**
 https://www.azielcorpuslibrary.net/ — not separate ICANN sites.
 Do **not** type a Cap-7 `mesh_name` onto ICANN DNS. The AZ domain is the internet door.
 
@@ -162,7 +162,7 @@ Locked fields:
 - `typed_on_icann_dns` — `false` for Cap-7
 - `internet_reaches` — `az-domains`
 - `resolves_to_hub` — `true` on AZ domain doors and on the four real hub duplications
-- AZNet / AZBrowser access (pair, never merge; not naked public DNS)
+- AZnet / AZ Browser access (pair, never merge; not naked public DNS)
 - link to `/v1/mesh/az-generator`
 - Person `@id` https://www.azieleliab.com/#aziel
 
@@ -177,7 +177,7 @@ Locked fields:
 | `tip` / `tip_sha256` | required; real hex (named sites use pack sha256) |
 | `design_pack` / `design_pack_sha256` | hash-absolute pack URL + sha256 when real |
 | `public_gateway_url` | present only when that name is a hosted public gateway |
-| `access` | AZNet + AZBrowser (named sites) or `aznet` \| `azbrowser` \| `https-gateway` |
+| `access` | AZnet + AZ Browser (named sites) or `aznet` \| `azbrowser` \| `https-gateway` |
 | `icann` / `public_icann` | `false` |
 | `canonical_hub` / `design_of` | hub URL, design provenance only |
 | `download_open` | `true` for azcorpus / azlibrary |
@@ -193,7 +193,7 @@ row.
 ## Access
 
 All generated names, including the public pair, are resolved / browsed
-through **AZNet** and **AZBrowser** (functional pairing only). Standard
+through **AZnet** and **AZ Browser** (functional pairing only). Standard
 browsers reach only the two public gateways. AI agents pull **design
 packs + mesh tips** from the bridge. They do not treat a mesh name as
 “opens azieleliab.com”.

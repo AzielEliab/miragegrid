@@ -1,8 +1,8 @@
 /**
- * AZNet pairing for Cap-7 mesh DNS.
- * Naming lock: sidenet = AZNet. Not a second product. Not ICANN.
- * Cap-7 pairs with AZNet + AZBrowser. Softwares stay frozen.
- * This Worker does not run the AZNet engine and does not verify tokens.
+ * AZnet pairing for Cap-7 mesh DNS.
+ * Naming lock: sidenet = AZnet. Not a second product. Not ICANN.
+ * Cap-7 pairs with AZnet + AZ Browser. Softwares stay frozen.
+ * This Worker does not run the AZnet engine and does not verify tokens.
  * L0 public path stays unchanged. Author: Aziel Eliab only.
  */
 
@@ -10,8 +10,9 @@ import { FACTORY_LABELS, IDENTITY } from "./cap7.js";
 import { refuseCallGenerator } from "../../download-tracker/src/mesh.js";
 
 export const AZN_SPEC = "AZN-CAP7-PAIR";
-export const AZN_NAME = "AZNet";
-export const NAMING_LOCK = "sidenet=AZNet";
+export const AZN_NAME = "AZnet";
+export const AZ_BROWSER_NAME = "AZ Browser";
+export const NAMING_LOCK = "sidenet=AZnet";
 export const PUBLIC_BROWSER_GATEWAYS = Object.freeze(["azgrid", "azbooth"]);
 const ACCESS = new Set(["aznet", "azbrowser"]);
 const BROWSERS = new Set(["browser", "https", "public", "standard-browser", "internet-browser"]);
@@ -37,7 +38,8 @@ function stamp(out) {
     slug: "aznet",
     naming_lock: NAMING_LOCK,
     sidenet: AZN_NAME,
-    pairs_with: [AZN_NAME, "AZBrowser"],
+    pairs_with: [AZN_NAME, AZ_BROWSER_NAME],
+    browser_name: AZ_BROWSER_NAME,
     l0_public_path_changed: false,
     public_icann: false,
     softwares_frozen: true,
@@ -124,13 +126,14 @@ export function sidenetDict() {
     this_route_adds_software: false,
     new_product: false,
     fifth_product: false,
-    pairs_with: [AZN_NAME, "AZBrowser"],
+    pairs_with: [AZN_NAME, AZ_BROWSER_NAME],
+    browser_name: AZ_BROWSER_NAME,
     runs_aznet_engine: false,
     pairing_is_tunnel: false,
     second_door: false,
     radio_phy: false,
     aznet_payload_host: false,
-    note: "Naming lock: sidenet = AZNet. Cap-7 mesh DNS pairs with AZNet and AZBrowser. Not ICANN. Exactly 2 public browser gateways (azgrid, azbooth). Other mesh names need an AZNet pairing token and an azbrowser flag. This surface does not verify that token and does not run the AZNet engine. Softwares stay frozen. L0 public path is unchanged.",
+    note: "Naming lock: sidenet = AZnet. Cap-7 mesh DNS pairs with AZnet and AZ Browser. Not ICANN. Exactly 2 public browser gateways (azgrid, azbooth). Other mesh names need an AZnet pairing token and an azbrowser flag. This surface does not verify that token and does not run the AZnet engine. Softwares stay frozen. L0 public path is unchanged.",
   };
 }
 
@@ -162,7 +165,7 @@ function clientOf(body) {
 export function sidenetAccess(body) {
   const fields = body && typeof body === "object" ? body : {};
   if (fields.softwares_tab || fields.new_product || fields.fifth_product) {
-    return verdict(false, "AZN-SOFTWARE-FROZEN", "refuse", "Softwares stay frozen. sidenet is the name AZNet. This route does not add a product.", {
+    return verdict(false, "AZN-SOFTWARE-FROZEN", "refuse", "Softwares stay frozen. sidenet is the name AZnet. This route does not add a product.", {
       new_product: false,
       fifth_product: false,
       merge: false,
@@ -176,14 +179,14 @@ export function sidenetAccess(body) {
     });
   }
   if (fields.merge || fields.merge_products) {
-    return verdict(false, "AZG-NO-MERGE-PRODUCTS", "refuse", "AZNet and AZBrowser stay separate Softwares products; functional pairing only", {
+    return verdict(false, "AZG-NO-MERGE-PRODUCTS", "refuse", "AZnet and AZ Browser stay separate Softwares products; functional pairing only", {
       merge: false,
       aznet: "aznet",
       azbrowser: "azbrowser",
     });
   }
   if (fields.hosts_payloads || fields.aznet_payload_host || fields.payload_host) {
-    return verdict(false, "AZN-NO-PAYLOAD-HOST", "refuse", "AZNet pairing does not host payloads", {
+    return verdict(false, "AZN-NO-PAYLOAD-HOST", "refuse", "AZnet pairing does not host payloads", {
       hosts_payloads: false,
       aznet_payload_host: false,
     });
@@ -197,21 +200,21 @@ export function sidenetAccess(body) {
     });
   }
   if (fields.pair_verified_at_aznet || fields.aznet_verified) {
-    return verdict(false, "AZN-NO-VERIFIED-LIE", "refuse", "this surface does not verify pairing tokens at AZNet; do not stamp verification", {
+    return verdict(false, "AZN-NO-VERIFIED-LIE", "refuse", "this surface does not verify pairing tokens at AZnet; do not stamp verification", {
       pair_verified_at_aznet: false,
       this_surface_verifies_aznet_token: false,
       pair_check: "refused-unverified-claim",
     });
   }
   if (fields.naked_dns) {
-    return verdict(false, "AZG-NO-NAKED-DNS", "refuse", "resolution/browsing goes through AZNet + AZBrowser; not a naked public DNS story", {
+    return verdict(false, "AZG-NO-NAKED-DNS", "refuse", "resolution/browsing goes through AZnet + AZ Browser; not a naked public DNS story", {
       naked_public_dns: false,
     });
   }
 
   const host = hostOf(fields.name || fields.label);
   if (HUBS.has(host)) {
-    return verdict(false, "MGS-NOT-NODE-GATE", "refuse", "official hubs stay on the L0 public path; they are not AZNet Node Gate", {
+    return verdict(false, "MGS-NOT-NODE-GATE", "refuse", "official hubs stay on the L0 public path; they are not AZnet Node Gate", {
       name: host,
     });
   }
@@ -255,7 +258,7 @@ export function sidenetAccess(body) {
         registrar: false,
       });
     }
-    return verdict(false, "AZG-PUBLIC-PAIR", "refuse", "standard browsers reach exactly 2 Cap-7 public browser gateways; this name stays on AZNet", {
+    return verdict(false, "AZG-PUBLIC-PAIR", "refuse", "standard browsers reach exactly 2 Cap-7 public browser gateways; this name stays on AZnet", {
       name: host,
       label,
       client,
@@ -266,7 +269,7 @@ export function sidenetAccess(body) {
     });
   }
   if (!ACCESS.has(client)) {
-    return verdict(false, "AZG-NO-NAKED-DNS", "refuse", "resolution/browsing goes through AZNet + AZBrowser; not a naked public DNS story", {
+    return verdict(false, "AZG-NO-NAKED-DNS", "refuse", "resolution/browsing goes through AZnet + AZ Browser; not a naked public DNS story", {
       naked_public_dns: false,
       client,
     });
@@ -277,7 +280,7 @@ export function sidenetAccess(body) {
   if (!token) missing.push("pair_token");
   if (!flag) missing.push("azbrowser_flag");
   if (missing.length) {
-    return verdict(false, "AZN-NEED-PAIR", "refuse", "AZNet and AZBrowser pairing requires a pairing token and an azbrowser flag; both are required", {
+    return verdict(false, "AZN-NEED-PAIR", "refuse", "AZnet and AZ Browser pairing requires a pairing token and an azbrowser flag; both are required", {
       name: host,
       label,
       client,
@@ -289,7 +292,7 @@ export function sidenetAccess(body) {
       aznet_payload_host: false,
     });
   }
-  return verdict(true, "AZN-PAIR-OK", "yes", "pairing token and azbrowser flag are both present; this surface did not verify the token at AZNet", {
+  return verdict(true, "AZN-PAIR-OK", "yes", "pairing token and azbrowser flag are both present; this surface did not verify the token at AZnet", {
     name: host,
     label,
     client,
@@ -344,7 +347,7 @@ export function sidenetNodeGate(action, body) {
 function nameLock(path) {
   return {
     status: 403,
-    body: verdict(false, "AZN-NAME-LOCK", "refuse", "sidenet is AZNet. It is not a second name or a second product.", {
+    body: verdict(false, "AZN-NAME-LOCK", "refuse", "sidenet is AZnet. It is not a second name or a second product.", {
       use: "/v1/aznet",
       path,
       runs_aznet_engine: false,
@@ -357,7 +360,7 @@ export function handleSidenet(method, path, body) {
   if (path === "/v1/sidenet" || path.startsWith("/v1/sidenet/")) return nameLock(path);
   if (path === "/v1/aznet") {
     if (m === "GET" || m === "HEAD") return { status: 200, body: sidenetDict() };
-    return { status: 405, body: verdict(false, "AZN-METHOD", "refuse", "GET cites AZNet pairing; POST does not run the generator", { hosted_exec: false }) };
+    return { status: 405, body: verdict(false, "AZN-METHOD", "refuse", "GET cites AZnet pairing; POST does not run the generator", { hosted_exec: false }) };
   }
   if (path === "/v1/aznet/access") {
     if (m === "GET" || m === "HEAD") {

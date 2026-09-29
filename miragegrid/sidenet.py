@@ -1,21 +1,21 @@
-"""AZNet pairing for Cap-7 mesh DNS.
+"""AZnet pairing for Cap-7 mesh DNS.
 
-Naming lock: sidenet = AZNet. Sidenet is not a second product and not a
-second plane. Cap-7 mesh DNS pairs with AZNet and AZBrowser. Softwares
+Naming lock: sidenet = AZnet. Sidenet is not a second product and not a
+second plane. Cap-7 mesh DNS pairs with AZnet and AZ Browser. Softwares
 stay frozen. ``public_icann`` stays false.
 
 L0, the public path, stays as it is: AZ-domain doors, hub HTTPS, and the
 existing Cap-7 shuffle cite. This module does not rewrite those responses
-and it does not run the AZNet engine (garden, stamp, memorial). FragGate
+and it does not run the AZnet engine (garden, stamp, memorial). FragGate
 remains that door.
 
 MirageGrid remains the Cap-7 mesh DNS factory. It is not an ICANN
 registrar. AZ Generator is not callable from outside
 (``AZG-NOT-CALLABLE``). Exactly two Cap-7 factory labels are public
 browser gateways (``azgrid``, ``azbooth``). Every other mesh name needs
-an AZNet pairing token and an ``azbrowser`` flag. Pairing is order/token.
+an AZnet pairing token and an ``azbrowser`` flag. Pairing is order/token.
 It is not a tunnel and it does not host payloads. This surface does not
-verify the token at AZNet.
+verify the token at AZnet.
 
 Author: Aziel Eliab only.
 """
@@ -48,9 +48,10 @@ from miragegrid.mesh import (
 )
 
 AZN_SPEC = "AZN-CAP7-PAIR"
-AZN_NAME = "AZNet"
+AZN_NAME = "AZnet"
+AZ_BROWSER_NAME = "AZ Browser"
 AZN_SLUG = "aznet"
-NAMING_LOCK = "sidenet=AZNet"
+NAMING_LOCK = "sidenet=AZnet"
 AZN_LAYER = "P2"
 L0_PLANE = "public-path"
 PUBLIC_BROWSER_GATEWAYS: tuple[str, ...] = ("azgrid", "azbooth")
@@ -77,7 +78,8 @@ def _stamp(out: dict[str, Any]) -> dict[str, Any]:
     out["slug"] = AZN_SLUG
     out["naming_lock"] = NAMING_LOCK
     out["sidenet"] = AZN_NAME
-    out["pairs_with"] = [AZN_NAME, "AZBrowser"]
+    out["pairs_with"] = [AZN_NAME, AZ_BROWSER_NAME]
+    out["browser_name"] = AZ_BROWSER_NAME
     if not out.get("name"):
         out["name"] = AZN_NAME
     if "plane" not in out:
@@ -95,7 +97,7 @@ def _stamp(out: dict[str, Any]) -> dict[str, Any]:
 
 
 def sidenet_dict() -> dict[str, Any]:
-    """Cite AZNet pairing. L0 AZ-domain doors stay public_icann true."""
+    """Cite AZnet pairing. L0 AZ-domain doors stay public_icann true."""
     return _stamp(
         {
             "ok": True,
@@ -147,10 +149,10 @@ def sidenet_dict() -> dict[str, Any]:
             "aznet_payload_host": False,
             "runs_aznet_engine": False,
             "note": (
-                "Naming lock: sidenet = AZNet. Cap-7 mesh DNS pairs with AZNet and AZBrowser. "
+                "Naming lock: sidenet = AZnet. Cap-7 mesh DNS pairs with AZnet and AZ Browser. "
                 "Not ICANN. Exactly 2 public browser gateways (azgrid, azbooth). "
-                "Other mesh names need an AZNet pairing token and an azbrowser flag. "
-                "This surface does not verify that token and does not run the AZNet engine. "
+                "Other mesh names need an AZnet pairing token and an azbrowser flag. "
+                "This surface does not verify that token and does not run the AZnet engine. "
                 "Softwares stay frozen. L0 public path is unchanged."
             ),
         }
@@ -198,8 +200,8 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
     """Admit a mesh name on P2, or refuse with an honest stamp.
 
     Standard browsers reach only the two public browser gateways.
-    AZNet and AZBrowser reach mesh names only when a pairing token and an
-    azbrowser flag are both present. Presence is not AZNet verification.
+    AZnet and AZ Browser reach mesh names only when a pairing token and an
+    azbrowser flag are both present. Presence is not AZnet verification.
     """
     fields: dict[str, Any] = dict(body or {})
     fields.update(kwargs)
@@ -209,7 +211,7 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
                 False,
                 "AZN-SOFTWARE-FROZEN",
                 verdict=REFUSE,
-                message="Softwares stay frozen. sidenet is the name AZNet. This route does not add a product.",
+                message="Softwares stay frozen. sidenet is the name AZnet. This route does not add a product.",
                 extra={"new_product": False, "fifth_product": False, "merge": False},
             )
         )
@@ -223,7 +225,7 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
                 False,
                 "AZN-NO-PAYLOAD-HOST",
                 verdict=REFUSE,
-                message="AZNet pairing does not host payloads",
+                message="AZnet pairing does not host payloads",
                 extra={"hosts_payloads": False, "aznet_payload_host": False},
             )
         )
@@ -254,7 +256,7 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
                 False,
                 "AZN-NO-VERIFIED-LIE",
                 verdict=REFUSE,
-                message="this surface does not verify pairing tokens at AZNet; do not stamp verification",
+                message="this surface does not verify pairing tokens at AZnet; do not stamp verification",
                 extra={
                     "pair_verified_at_aznet": False,
                     "this_surface_verifies_aznet_token": False,
@@ -272,7 +274,7 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
                 False,
                 "MGS-NOT-NODE-GATE",
                 verdict=REFUSE,
-                message="official hubs stay on the L0 public path; they are not AZNet Node Gate",
+                message="official hubs stay on the L0 public path; they are not AZnet Node Gate",
                 extra={"name": host, "l0_public_path_changed": False},
             )
         )
@@ -321,7 +323,7 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
                 False,
                 "AZG-PUBLIC-PAIR",
                 verdict=REFUSE,
-                message="standard browsers reach exactly 2 Cap-7 public browser gateways; this name stays on AZNet",
+                message="standard browsers reach exactly 2 Cap-7 public browser gateways; this name stays on AZnet",
                 extra={
                     "name": host,
                     "label": label,
@@ -350,7 +352,7 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
                 False,
                 "AZN-NEED-PAIR",
                 verdict=REFUSE,
-                message="AZNet and AZBrowser pairing requires a pairing token and an azbrowser flag; both are required",
+                message="AZnet and AZ Browser pairing requires a pairing token and an azbrowser flag; both are required",
                 extra={
                     "name": host,
                     "label": label,
@@ -369,7 +371,7 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
             True,
             "AZN-PAIR-OK",
             verdict=YES,
-            message="pairing token and azbrowser flag are both present; this surface did not verify the token at AZNet",
+            message="pairing token and azbrowser flag are both present; this surface did not verify the token at AZnet",
             extra={
                 "name": host,
                 "label": label,

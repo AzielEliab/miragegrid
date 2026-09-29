@@ -37,7 +37,7 @@ curl -sS -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/v1/health
 | `POST /v1/shuffle/update` | Third hop: update via the landed Cap-7 site (GET 403) |
 | `GET /v1/cap7` | Seven factory sites: four real hub duplications, three false sites, honesty LIVE |
 | `GET /cap7/{label}` | LIVE factory cite. Not typed on ICANN DNS |
-| `GET /aznet/cap7/{label}` | AZNet-plane factory cite (LIVE). Not a public internet door |
+| `GET /aznet/cap7/{label}` | AZnet-plane factory cite (LIVE). Not a public internet door |
 | `GET /v1/health` `/v1/skill` `/v1/nodes` `/v1/doctor` | FragGate LIVE_OPS |
 | `POST /v1/assign` `/v1/verify-receipt` | Session assignment |
 | `GET /v1/mesh` | PROXY (default OFF). GET never enables. |

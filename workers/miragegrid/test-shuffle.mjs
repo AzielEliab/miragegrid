@@ -204,14 +204,16 @@ const locked = await call("/v1/sidenet");
 assert(locked.status === 403, "old sidenet name refuses");
 const lockedBody = await locked.json();
 assert(lockedBody.code === "AZN-NAME-LOCK", "name lock " + lockedBody.code);
-assert(lockedBody.name === "AZNet" && lockedBody.sidenet === "AZNet", "sidenet equals AZNet");
+assert(lockedBody.name === "AZnet" && lockedBody.sidenet === "AZnet", "sidenet equals AZnet");
+assert(lockedBody.browser_name === "AZ Browser", "browser display name");
 assert(lockedBody.public_icann === false && lockedBody.softwares_frozen === true, "lock not icann frozen");
 
 const sidenet = await call("/v1/aznet");
 assert(sidenet.status === 200, "aznet cite");
 const sidenetBody = await sidenet.json();
 assert(sidenetBody.code === "AZN-CAP7-CITE", "aznet code");
-assert(sidenetBody.naming_lock === "sidenet=AZNet", "naming lock");
+assert(sidenetBody.naming_lock === "sidenet=AZnet", "naming lock");
+assert(sidenetBody.browser_name === "AZ Browser" && sidenetBody.pairs_with.join("|") === "AZnet|AZ Browser", "pair display names");
 assert(sidenetBody.l0_public_path_changed === false, "l0 unchanged");
 assert(sidenetBody.l0.az_domains_public_icann === true, "l0 az domains stay public");
 assert(sidenetBody.public_icann === false, "aznet pair not icann");

@@ -314,7 +314,7 @@ Every **7 minutes and 77 seconds** (period **497s**) the local tick
 attempts a claim and exits the FRONT Node Gate. Cap-7 mesh DNS
 factory (not ICANN). Suffix order `.az` → `.aziel` → honest pivot.
 First flag `www.survivalnetwork.<active-suffix>`. Exactly 2 of Cap-7
-are public browser gateways; access is AZNet + AZBrowser.
+are public browser gateways; access is AZnet + AZ Browser.
 
 Restore a broken chain at its most active guaranteed point. Restore
 requires **at least 49 Aziel Eliab papers** from the node’s **local

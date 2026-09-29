@@ -38,7 +38,7 @@ MirageGrid’s public stack is now three named pieces:
 
 AZ Generator serves Node Gate (claim / plant / restore) on the 7m77s
 clock. It is not GodLock, not AZBot, and not a hub. It is not a
-Softwares-tab product. AZNet and AZBrowser are **separate** Softwares
+Softwares-tab product. AZnet and AZ Browser are **separate** Softwares
 products; they pair for access only and are never merged into the
 generator.
 
@@ -98,13 +98,13 @@ AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Those
 doors shuffle once, mirror the hubs while up, stand alone, and stay
 immutable after the hubs die.
 
-### Access (AZNet + AZBrowser)
+### Access (AZnet + AZ Browser)
 
-Cap-7 names are reached through **AZNet** and **AZBrowser** (functional
+Cap-7 names are reached through **AZnet** and **AZ Browser** (functional
 pairing only) plus the StaticLock shift stack. This is not a naked
 public DNS story and not an ICANN type. Standard browsers reach the
-four AZ domain doors via the hub websites. Do not merge AZNet,
-AZBrowser, and MirageGrid into one product.
+four AZ domain doors via the hub websites. Do not merge AZnet,
+AZ Browser, and MirageGrid into one product.
 
 ## Flag / repost / restore
 
@@ -232,7 +232,7 @@ hedidntjump.com) remain named public hosts. They are **not** Node Gate.
 - Faking an ICANN registrar purchase of a ccTLD
 - Claiming Cap-7 is publicly typed on ICANN DNS
 - Hosting a factory count other than 4 real hub duplications and 3 false sites
-- Merging AZNet / AZBrowser / generator into one product
+- Merging AZnet / AZ Browser / generator into one product
 - Naked public DNS as the access story for Cap-7 names
 - Calling the AZ domain doors a Cap-7 product (internet reaches AZ domains via hub HTTPS; see [SEMANTIC-BRIDGE-1.0](SEMANTIC-BRIDGE-1.0.md))
 - Claiming `.com` / `.net` / other ICANN TLDs

@@ -40,7 +40,7 @@ See [RUN.txt](RUN.txt), the spec [docs/whitepaper.md](docs/whitepaper.md), and [
 
 This is a lawful privacy tool for personal privacy, journalism, and research where you have the right to use it.
 
-The public stack is three pieces: the anonymity network (this local mesh VPN), Node Gate (the admission surface for mesh `.az` names; the hub websites stay the hub websites), and auto-heal (REHEAL-1.0 / MESH-REHEAL: own last good tip plus a verified trusted pull, or phoenix-WAIT). AZ Generator and Node Gate are MirageGrid subsystems. AZ Generator is the Cap-7 mesh DNS factory. It lives deep in the node and exits through the front Node Gate. A node may publish two hosted HTTPS mirrors of the mesh tip; the other Cap-7 names stay on the mesh. Access for mesh names is AZNet and AZBrowser, which stay separate products. See [docs/AZ-GENERATOR-1.0.md](docs/AZ-GENERATOR-1.0.md), [docs/MIRAGE-GRID-SHIFT-1.0.md](docs/MIRAGE-GRID-SHIFT-1.0.md), and [docs/AIRGAP-1.0.md](docs/AIRGAP-1.0.md).
+The public stack is three pieces: the anonymity network (this local mesh VPN), Node Gate (the admission surface for mesh `.az` names; the hub websites stay the hub websites), and auto-heal (REHEAL-1.0 / MESH-REHEAL: own last good tip plus a verified trusted pull, or phoenix-WAIT). AZ Generator and Node Gate are MirageGrid subsystems. AZ Generator is the Cap-7 mesh DNS factory. It lives deep in the node and exits through the front Node Gate. A node may publish two hosted HTTPS mirrors of the mesh tip; the other Cap-7 names stay on the mesh. Access for mesh names is AZnet and AZ Browser, which stay separate products. See [docs/AZ-GENERATOR-1.0.md](docs/AZ-GENERATOR-1.0.md), [docs/MIRAGE-GRID-SHIFT-1.0.md](docs/MIRAGE-GRID-SHIFT-1.0.md), and [docs/AIRGAP-1.0.md](docs/AIRGAP-1.0.md).
 
 
 ## One-click install
@@ -128,8 +128,8 @@ public ICANN registrar. 7m77s (497s) local tick exits the front Node
 Gate only (the generator is not called from outside). Honest suffix
 order `.az` → `.aziel` → pivot. First flag
 `www.survivalnetwork.<active-suffix>`. Two of a node's Cap-7 names
-may be hosted HTTPS mirrors of the mesh tip; the rest stay mesh/AZNet.
-Access via AZNet + AZBrowser (naming lock: sidenet = AZNet; pairing token and azbrowser flag;
+may be hosted HTTPS mirrors of the mesh tip; the rest stay mesh/AZnet.
+Access via AZnet + AZ Browser (naming lock: sidenet = AZnet; pairing token and azbrowser flag;
 exactly 2 public browser gateways; L0 public path unchanged). Restore needs ≥49 local vault papers
 (vault multiply onto each node as cold copies; no paper-body fan-out
 on the 1s tip tick). Incomplete vault refuses (AZG-UNVERIFIED-TIP /
