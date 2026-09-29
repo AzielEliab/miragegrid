@@ -200,4 +200,94 @@ const badNode = await call("/v1/shuffle/ping", {
 const badNodeBody = await badNode.json();
 assert(badNodeBody.code === "CAP7-BAD-NODE-ID", "bad node id " + badNodeBody.code);
 
+const sidenet = await call("/v1/sidenet");
+assert(sidenet.status === 200, "sidenet cite");
+const sidenetBody = await sidenet.json();
+assert(sidenetBody.code === "SIDENET-CITE", "sidenet code");
+assert(sidenetBody.l0_public_path_changed === false, "l0 unchanged");
+assert(sidenetBody.l0.az_domains_public_icann === true, "l0 az domains stay public");
+assert(sidenetBody.public_icann === false, "sidenet not icann");
+assert(sidenetBody.callable === false, "sidenet generator not callable");
+assert(sidenetBody.softwares_frozen === true && sidenetBody.softwares_tab === false, "softwares frozen");
+assert(sidenetBody.public_browser_gateways.length === 2, "two gateways");
+assert(sidenetBody.public_browser_gateways[0] === "azgrid" && sidenetBody.public_browser_gateways[1] === "azbooth", "azgrid azbooth");
+assert(sidenetBody.access.pair_verified_at_aznet === false, "no fake aznet verify");
+
+const l0grid = await call("/cap7/azgrid");
+assert(l0grid.status === 200, "l0 azgrid cite still live");
+const l0cloak = await call("/cap7/azcloak");
+assert(l0cloak.status === 200, "l0 azcloak cite still live");
+
+const needPair = await call("/v1/sidenet/access", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ name: "azcloak", client: "aznet" }),
+});
+const needPairBody = await needPair.json();
+assert(needPair.status === 403 && needPairBody.code === "SIDENET-NEED-PAIR", "need pair " + needPairBody.code);
+
+const paired = await call("/v1/sidenet/access", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ name: "azcloak", client: "azbrowser", pair_token: "pair-token-1", flag: "azbrowser" }),
+});
+const pairedBody = await paired.json();
+assert(paired.status === 200 && pairedBody.code === "SIDENET-PAIR-OK", "pair ok " + pairedBody.code);
+assert(pairedBody.public_icann === false && pairedBody.pairing_is_tunnel === false, "pair not icann not tunnel");
+assert(pairedBody.pair_verified_at_aznet === false && pairedBody.hosts_payloads === false, "pair not verified not payload");
+
+const gateway = await call("/v1/sidenet/access", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ name: "azgrid", client: "browser" }),
+});
+const gatewayBody = await gateway.json();
+assert(gateway.status === 200 && gatewayBody.code === "AZG-ACCESS-PUBLIC-GATEWAY", "gateway " + gatewayBody.code);
+assert(gatewayBody.public_icann === false && gatewayBody.public_browser_gateway === true, "gateway not icann");
+
+const browserCloak = await call("/v1/sidenet/access", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ name: "azcloak", client: "browser" }),
+});
+const browserCloakBody = await browserCloak.json();
+assert(browserCloak.status === 403 && browserCloakBody.code === "AZG-PUBLIC-PAIR", "browser cloak " + browserCloakBody.code);
+
+const icann = await call("/v1/sidenet/access", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ name: "azgrid", client: "aznet", public_icann: true, pair_token: "t", flag: "azbrowser" }),
+});
+const icannBody = await icann.json();
+assert(icann.status === 403 && icannBody.code === "AZG-NOT-PUBLIC-REGISTRAR", "icann " + icannBody.code);
+assert(icannBody.public_icann === false, "icann stamp stays false");
+
+const hostedClaim = await call("/v1/sidenet/claim", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ name: "spare.az" }),
+});
+const hostedClaimBody = await hostedClaim.json();
+assert(hostedClaim.status === 403 && hostedClaimBody.code === "AZG-NOT-CALLABLE", "hosted claim " + hostedClaimBody.code);
+
+const hostedPlant = await call("/v1/sidenet/plant", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ name: "spare.az" }),
+});
+const hostedPlantBody = await hostedPlant.json();
+assert(hostedPlant.status === 403 && hostedPlantBody.code === "MGS-NO-HOSTED-PLANT", "hosted plant " + hostedPlantBody.code);
+
+const getPlantSidenet = await call("/v1/sidenet/flag");
+const getPlantSidenetBody = await getPlantSidenet.json();
+assert(getPlantSidenet.status === 403 && getPlantSidenetBody.code === "MESH-GET-NO-ENABLE", "get flag " + getPlantSidenetBody.code);
+
+const hostedRestore = await call("/v1/sidenet/restore", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: "{}",
+});
+const hostedRestoreBody = await hostedRestore.json();
+assert(hostedRestore.status === 403 && hostedRestoreBody.code === "AZG-NOT-CALLABLE", "hosted restore " + hostedRestoreBody.code);
+
 console.log("cap7 shuffle worker smoke ok land=" + pingBody.land.label);
