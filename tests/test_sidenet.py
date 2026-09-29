@@ -1,4 +1,4 @@
-"""SIDENET-P2: Cap-7 mesh DNS, pairing-only, L0 public path unchanged.
+"""AZNet pairing: Cap-7 mesh DNS, sidenet = AZNet, no public ICANN.
 
 Author: Aziel Eliab only.
 """
@@ -30,27 +30,33 @@ def test_l0_public_path_stays_az_domains_and_cap7_cite() -> None:
 
 def test_sidenet_cite_is_not_icann_and_softwares_stay_frozen() -> None:
     law = sidenet_dict()
-    assert law["code"] == "SIDENET-CITE"
-    assert law["spec"] == "SIDENET-P2"
+    assert law["code"] == "AZN-CAP7-CITE"
+    assert law["spec"] == "AZN-CAP7-PAIR"
+    assert law["name"] == "AZNet"
+    assert law["naming_lock"] == "sidenet=AZNet"
+    assert law["sidenet"] == "AZNet"
+    assert law["pairs_with"] == ["AZNet", "AZBrowser"]
     assert law["layer"] == "P2"
     assert law["l0_public_path_changed"] is False
     assert law["l0"]["changed"] is False
     assert law["l0"]["az_domains_public_icann"] is True
     assert law["public_icann"] is False
     assert law["callable"] is False
+    assert law["runs_aznet_engine"] is False
     assert law["public_browser_gateways"] == list(PUBLIC_BROWSER_GATEWAYS)
     assert law["public_browser_gateways"] == ["azgrid", "azbooth"]
     assert len(law["public_browser_gateways"]) == 2
     assert law["softwares_frozen"] is True
-    assert law["softwares_tab"] is False
+    assert law["this_route_adds_software"] is False
     assert law["new_product"] is False
     assert law["access"]["pairing_only"] is True
     assert law["access"]["pairing_is_tunnel"] is False
     assert law["access"]["pair_verified_at_aznet"] is False
     assert law["hosted_node_gate_exec"] is False
     mesh = mesh_law_dict()
-    assert mesh["sidenet"]["public_icann"] is False
-    assert mesh["sidenet"]["l0_public_path_changed"] is False
+    assert mesh["aznet"]["public_icann"] is False
+    assert mesh["aznet"]["name"] == "AZNet"
+    assert mesh["aznet"]["l0_public_path_changed"] is False
 
 
 def test_only_two_factory_labels_are_public_browser_gateways() -> None:
@@ -73,13 +79,13 @@ def test_only_two_factory_labels_are_public_browser_gateways() -> None:
 
 def test_pairing_requires_token_and_azbrowser_flag() -> None:
     missing = sidenet_access(name="azcloak", client="aznet")
-    assert missing["code"] == "SIDENET-NEED-PAIR"
+    assert missing["code"] == "AZN-NEED-PAIR"
     assert "pair_token" in missing["missing"]
     assert "azbrowser_flag" in missing["missing"]
     word = sidenet_access(name="azcloak", client="aznet", pair_token="true", flag="azbrowser")
-    assert word["code"] == "SIDENET-NEED-PAIR"
+    assert word["code"] == "AZN-NEED-PAIR"
     one = sidenet_access(name="azvault.az", client="azbrowser", pair_token="pair-token-1")
-    assert one["code"] == "SIDENET-NEED-PAIR"
+    assert one["code"] == "AZN-NEED-PAIR"
     assert one["missing"] == ["azbrowser_flag"]
     paired = sidenet_access(
         name="azcloak",
@@ -87,7 +93,7 @@ def test_pairing_requires_token_and_azbrowser_flag() -> None:
         pair_token="pair-token-1",
         flag="azbrowser",
     )
-    assert paired["code"] == "SIDENET-PAIR-OK"
+    assert paired["code"] == "AZN-PAIR-OK"
     assert paired["public_icann"] is False
     assert paired["pairing_is_tunnel"] is False
     assert paired["pair_verified_at_aznet"] is False
@@ -101,7 +107,7 @@ def test_pairing_requires_token_and_azbrowser_flag() -> None:
         pairing_token="pair-token-2",
         pair_peer="azbrowser",
     )
-    assert mesh_name["code"] == "SIDENET-PAIR-OK"
+    assert mesh_name["code"] == "AZN-PAIR-OK"
     assert mesh_name["public_browser_gateway"] is False
 
 
@@ -121,12 +127,12 @@ def test_honest_refuses_for_icann_merge_tunnel_and_fake_verification() -> None:
         flag="azbrowser",
         pair_verified_at_aznet=True,
     )
-    assert lie["code"] == "SIDENET-NO-VERIFIED-LIE"
+    assert lie["code"] == "AZN-NO-VERIFIED-LIE"
     assert lie["pair_verified_at_aznet"] is False
     payload = sidenet_access(name="azcloak", client="aznet", hosts_payloads=True, pair_token="t", flag="azbrowser")
-    assert payload["code"] == "SIDENET-NO-PAYLOAD-HOST"
+    assert payload["code"] == "AZN-NO-PAYLOAD-HOST"
     frozen = sidenet_access(name="azgrid", client="browser", new_product=True)
-    assert frozen["code"] == "SIDENET-SOFTWARE-FROZEN"
+    assert frozen["code"] == "AZN-SOFTWARE-FROZEN"
     hub = sidenet_access(name="godlock.uk", client="aznet", pair_token="t", flag="azbrowser")
     assert hub["code"] == "MGS-NOT-NODE-GATE"
     tld = sidenet_access(name="spare.com", client="aznet", pair_token="t", flag="azbrowser")
@@ -175,7 +181,7 @@ def test_hosted_node_gate_refuses_and_local_claim_plant_flag_restore() -> None:
         name="not-yet.az",
         zone_names=["www.survivalnetwork.az"],
     )
-    assert invented["code"] == "SIDENET-PLANT-NEEDS-CLAIM"
+    assert invented["code"] == "AZN-PLANT-NEEDS-CLAIM"
     planted = sidenet_node_gate(
         action="plant",
         hosted=False,

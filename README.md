@@ -129,7 +129,7 @@ Gate only (the generator is not called from outside). Honest suffix
 order `.az` → `.aziel` → pivot. First flag
 `www.survivalnetwork.<active-suffix>`. Two of a node's Cap-7 names
 may be hosted HTTPS mirrors of the mesh tip; the rest stay mesh/AZNet.
-Access via AZNet + AZBrowser (SIDENET-P2: pairing token and azbrowser flag;
+Access via AZNet + AZBrowser (naming lock: sidenet = AZNet; pairing token and azbrowser flag;
 exactly 2 public browser gateways; L0 public path unchanged). Restore needs ≥49 local vault papers
 (vault multiply onto each node as cold copies; no paper-body fan-out
 on the 1s tip tick). Incomplete vault refuses (AZG-UNVERIFIED-TIP /

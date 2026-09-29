@@ -1,7 +1,7 @@
 # MirageGrid mesh law
 
 **Author:** Aziel Eliab only  
-**Locked:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0 / REHEAL-1.0 / MESH-REHEAL) · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · SEMANTIC-BRIDGE-1.0 · CAP7-SHUFFLE-1.0 · SIDENET-P2 · CROSS-NETWORK-SURVIVAL-1.0 · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD (NO-FAN-1.0)
+**Locked:** SPLIT THE WIRES (STW-1.0) · COLD-COPY SURVIVAL (CCS-1.0) · REHEAL (RH-1.0 / REHEAL-1.0 / MESH-REHEAL) · AZ-GENERATOR-1.0 · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · SEMANTIC-BRIDGE-1.0 · CAP7-SHUFFLE-1.0 · AZNet pairing (sidenet = AZNet) · CROSS-NETWORK-SURVIVAL-1.0 · NO-LIE · NO-REWRITE · NO-FALSIFY · NO-AMBIGUITY · NO-MISLEAD (NO-FAN-1.0)
 
 Hosted `/v1/assign` stays live. Hosted mesh / vpn-hop / tunnel stubs remain refuse.
 
@@ -14,7 +14,7 @@ Next-generation papers: [AZ-GENERATOR-1.0.md](AZ-GENERATOR-1.0.md) ·
 [AIRGAP-1.0.md](AIRGAP-1.0.md) ·
 [SEMANTIC-BRIDGE-1.0.md](SEMANTIC-BRIDGE-1.0.md) ·
 [CAP7-SHUFFLE-1.0.md](CAP7-SHUFFLE-1.0.md) ·
-[SIDENET-P2.md](SIDENET-P2.md) ·
+[AZNet pairing](AZNET-CAP7-PAIR.md) ·
 [REDLINE-1.0.md](REDLINE-1.0.md).
 
 ## Public stack (locked wording)
@@ -102,13 +102,15 @@ hosted public HTTPS gateways; the rest stay mesh/AZNet-side. Access
 is AZNet + AZBrowser (separate Softwares; pairing only). If the first
 flag cannot be claimed, resume the 7m77s clock — do not fake the flag.
 
-**SIDENET-P2** is that pairing plane. L0 (AZ-domain doors and the existing
-public Cap-7 cite) stays unchanged. P2 is not ICANN (`public_icann` false).
-The generator stays `AZG-NOT-CALLABLE` from outside. Exactly two factory
-labels (`azgrid`, `azbooth`) are public browser gateways. Every other mesh
-name needs an AZNet pairing token and an `azbrowser` flag. This surface
-does not verify that token at AZNet and does not host payloads. Hosted
-claim / plant / flag / restore refuse. Softwares stay frozen.
+**Naming lock: sidenet = AZNet.** Sidenet is not a second product. Cap-7
+mesh DNS pairs with AZNet and AZBrowser. L0 (AZ-domain doors and the
+existing public Cap-7 cite) stays unchanged. The pair is not ICANN
+(`public_icann` false). The generator stays `AZG-NOT-CALLABLE` from
+outside. Exactly two factory labels (`azgrid`, `azbooth`) are public
+browser gateways. Every other mesh name needs an AZNet pairing token and
+an `azbrowser` flag. This surface does not verify that token, does not
+run the AZNet engine, and does not host payloads. Hosted claim / plant /
+flag / restore refuse. Softwares stay frozen.
 
 Constantly plant a flag and repost current known sites. Broken chain →
 restore at the most active guaranteed point. Restore needs **at least

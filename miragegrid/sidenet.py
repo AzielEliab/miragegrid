@@ -1,20 +1,21 @@
-"""SIDENET-P2 — Cap-7 mesh DNS on the side-net.
+"""AZNet pairing for Cap-7 mesh DNS.
+
+Naming lock: sidenet = AZNet. Sidenet is not a second product and not a
+second plane. Cap-7 mesh DNS pairs with AZNet and AZBrowser. Softwares
+stay frozen. ``public_icann`` stays false.
 
 L0, the public path, stays as it is: AZ-domain doors, hub HTTPS, and the
-existing Cap-7 shuffle cite. This module does not rewrite those responses.
+existing Cap-7 shuffle cite. This module does not rewrite those responses
+and it does not run the AZNet engine (garden, stamp, memorial). FragGate
+remains that door.
 
-P2 is the side-net. MirageGrid remains the Cap-7 mesh DNS factory. It is
-not an ICANN registrar (``public_icann`` false). AZ Generator is not
-callable from outside (``AZG-NOT-CALLABLE``). Exactly two Cap-7 factory
-labels are public browser gateways (``azgrid``, ``azbooth``). Every other
-mesh name is reached only through AZNet and AZBrowser together: a pairing
-token and an ``azbrowser`` flag, both present. Pairing is order/token. It
-is not a tunnel and it does not host payloads. This surface does not
+MirageGrid remains the Cap-7 mesh DNS factory. It is not an ICANN
+registrar. AZ Generator is not callable from outside
+(``AZG-NOT-CALLABLE``). Exactly two Cap-7 factory labels are public
+browser gateways (``azgrid``, ``azbooth``). Every other mesh name needs
+an AZNet pairing token and an ``azbrowser`` flag. Pairing is order/token.
+It is not a tunnel and it does not host payloads. This surface does not
 verify the token at AZNet.
-
-Node Gate claim / plant / flag / restore run on the local node. The hosted
-Worker cites that law and refuses to execute it. Softwares stay frozen:
-no new product, no merge of AZNet, AZBrowser, and MirageGrid.
 
 Author: Aziel Eliab only.
 """
@@ -46,8 +47,11 @@ from miragegrid.mesh import (
     restore_chain,
 )
 
-SIDENET_SPEC = "SIDENET-P2"
-SIDENET_LAYER = "P2"
+AZN_SPEC = "AZN-CAP7-PAIR"
+AZN_NAME = "AZNet"
+AZN_SLUG = "aznet"
+NAMING_LOCK = "sidenet=AZNet"
+AZN_LAYER = "P2"
 L0_PLANE = "public-path"
 PUBLIC_BROWSER_GATEWAYS: tuple[str, ...] = ("azgrid", "azbooth")
 NODE_GATE_ACTIONS: frozenset[str] = frozenset({"claim", "plant", "flag", "restore"})
@@ -67,12 +71,23 @@ _HUB_HOSTS: frozenset[str] = frozenset(
 
 
 def _stamp(out: dict[str, Any]) -> dict[str, Any]:
-    out["layer"] = SIDENET_LAYER
-    out["spec"] = SIDENET_SPEC
+    out["layer"] = AZN_LAYER
+    out["spec"] = AZN_SPEC
+    out["aznet_name"] = AZN_NAME
+    out["slug"] = AZN_SLUG
+    out["naming_lock"] = NAMING_LOCK
+    out["sidenet"] = AZN_NAME
+    out["pairs_with"] = [AZN_NAME, "AZBrowser"]
+    if not out.get("name"):
+        out["name"] = AZN_NAME
+    if "plane" not in out:
+        out["plane"] = AZN_SLUG
     out["l0_public_path_changed"] = False
     out["public_icann"] = False
-    out["softwares_tab"] = False
     out["softwares_frozen"] = True
+    out["new_product"] = False
+    out["this_route_adds_software"] = False
+    out["merge"] = False
     out["pairing_is_tunnel"] = False
     out["second_door"] = False
     out["callable"] = False
@@ -80,70 +95,66 @@ def _stamp(out: dict[str, Any]) -> dict[str, Any]:
 
 
 def sidenet_dict() -> dict[str, Any]:
-    """Cite P2. L0 AZ-domain doors stay public_icann true; this layer does not."""
-    return {
-        "ok": True,
-        "code": "SIDENET-CITE",
-        "verdict": YES,
-        "yes": True,
-        "spec": SIDENET_SPEC,
-        "layer": SIDENET_LAYER,
-        "author": MESH_LAW_AUTHOR,
-        "identity": MESH_LAW_AUTHOR,
-        "l0_public_path_changed": False,
-        "l0": {
-            "changed": False,
-            "plane": L0_PLANE,
-            "internet_reaches": "az-domains",
-            "az_domains_public_icann": True,
-            "note": "AZ-domain doors and existing public routes stay as they are.",
-        },
-        "p2": {
-            "plane": "sidenet",
-            "public_icann": False,
+    """Cite AZNet pairing. L0 AZ-domain doors stay public_icann true."""
+    return _stamp(
+        {
+            "ok": True,
+            "code": "AZN-CAP7-CITE",
+            "verdict": YES,
+            "yes": True,
+            "author": MESH_LAW_AUTHOR,
+            "identity": MESH_LAW_AUTHOR,
+            "l0": {
+                "changed": False,
+                "plane": L0_PLANE,
+                "internet_reaches": "az-domains",
+                "az_domains_public_icann": True,
+                "note": "AZ-domain doors and existing public routes stay as they are.",
+            },
+            "p2": {
+                "name": AZN_NAME,
+                "plane": AZN_SLUG,
+                "naming_lock": NAMING_LOCK,
+                "public_icann": False,
+                "dns_factory": "cap-7-mesh-authoritative",
+                "callable": False,
+                "exit": "node-gate-front",
+                "public_browser_gateways": list(PUBLIC_BROWSER_GATEWAYS),
+                "public_host_pair": PUBLIC_HOST_PAIR,
+                "runs_aznet_engine": False,
+            },
             "dns_factory": "cap-7-mesh-authoritative",
-            "callable": False,
+            "lives": "deep-node",
             "exit": "node-gate-front",
             "public_browser_gateways": list(PUBLIC_BROWSER_GATEWAYS),
             "public_host_pair": PUBLIC_HOST_PAIR,
-        },
-        "public_icann": False,
-        "dns_factory": "cap-7-mesh-authoritative",
-        "callable": False,
-        "lives": "deep-node",
-        "exit": "node-gate-front",
-        "public_browser_gateways": list(PUBLIC_BROWSER_GATEWAYS),
-        "public_host_pair": PUBLIC_HOST_PAIR,
-        "cap": 7,
-        "access": {
-            "aznet": True,
-            "azbrowser": True,
-            "merge": False,
-            "pairing_only": True,
-            "pairing_is_tunnel": False,
-            "pair_token_and_azbrowser_flag": True,
-            "pair_verified_at_aznet": False,
-            "this_surface_verifies_aznet_token": False,
-            "hosts_payloads": False,
-        },
-        "node_gate_actions": sorted(NODE_GATE_ACTIONS),
-        "hosted_node_gate_exec": False,
-        "softwares_tab": False,
-        "softwares_frozen": True,
-        "new_product": False,
-        "fifth_product": False,
-        "pairing_is_tunnel": False,
-        "second_door": False,
-        "radio_phy": False,
-        "aznet_payload_host": False,
-        "note": (
-            "P2 side-net. Cap-7 mesh DNS factory, not ICANN. "
-            "Exactly 2 public browser gateways (azgrid, azbooth). "
-            "Other mesh names need an AZNet pairing token and an azbrowser flag. "
-            "This surface does not verify that token at AZNet. "
-            "L0 public path is unchanged."
-        ),
-    }
+            "cap": 7,
+            "access": {
+                "aznet": True,
+                "azbrowser": True,
+                "merge": False,
+                "pairing_only": True,
+                "pairing_is_tunnel": False,
+                "pair_token_and_azbrowser_flag": True,
+                "pair_verified_at_aznet": False,
+                "this_surface_verifies_aznet_token": False,
+                "hosts_payloads": False,
+            },
+            "node_gate_actions": sorted(NODE_GATE_ACTIONS),
+            "hosted_node_gate_exec": False,
+            "fifth_product": False,
+            "radio_phy": False,
+            "aznet_payload_host": False,
+            "runs_aznet_engine": False,
+            "note": (
+                "Naming lock: sidenet = AZNet. Cap-7 mesh DNS pairs with AZNet and AZBrowser. "
+                "Not ICANN. Exactly 2 public browser gateways (azgrid, azbooth). "
+                "Other mesh names need an AZNet pairing token and an azbrowser flag. "
+                "This surface does not verify that token and does not run the AZNet engine. "
+                "Softwares stay frozen. L0 public path is unchanged."
+            ),
+        }
+    )
 
 
 def _host(name: str | None) -> str:
@@ -196,21 +207,21 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
         return _stamp(
             _verdict(
                 False,
-                "SIDENET-SOFTWARE-FROZEN",
+                "AZN-SOFTWARE-FROZEN",
                 verdict=REFUSE,
-                message="Softwares stay frozen; sidenet is a MirageGrid subsystem, not a new product",
+                message="Softwares stay frozen. sidenet is the name AZNet. This route does not add a product.",
                 extra={"new_product": False, "fifth_product": False, "merge": False},
             )
         )
     if fields.get("public_icann") or fields.get("cctld_takeover") or fields.get("registrar"):
-        return _stamp(refuse_public_registrar(kind="sidenet"))
+        return _stamp(refuse_public_registrar(kind="aznet"))
     if fields.get("merge") or fields.get("merge_products"):
         return _stamp(refuse_product_merge())
     if fields.get("hosts_payloads") or fields.get("aznet_payload_host") or fields.get("payload_host"):
         return _stamp(
             _verdict(
                 False,
-                "SIDENET-NO-PAYLOAD-HOST",
+                "AZN-NO-PAYLOAD-HOST",
                 verdict=REFUSE,
                 message="AZNet pairing does not host payloads",
                 extra={"hosts_payloads": False, "aznet_payload_host": False},
@@ -241,7 +252,7 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
         return _stamp(
             _verdict(
                 False,
-                "SIDENET-NO-VERIFIED-LIE",
+                "AZN-NO-VERIFIED-LIE",
                 verdict=REFUSE,
                 message="this surface does not verify pairing tokens at AZNet; do not stamp verification",
                 extra={
@@ -261,7 +272,7 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
                 False,
                 "MGS-NOT-NODE-GATE",
                 verdict=REFUSE,
-                message="official hubs stay on the L0 public path; they are not sidenet Node Gate",
+                message="official hubs stay on the L0 public path; they are not AZNet Node Gate",
                 extra={"name": host, "l0_public_path_changed": False},
             )
         )
@@ -310,7 +321,7 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
                 False,
                 "AZG-PUBLIC-PAIR",
                 verdict=REFUSE,
-                message="standard browsers reach exactly 2 Cap-7 public browser gateways; this name stays on the sidenet",
+                message="standard browsers reach exactly 2 Cap-7 public browser gateways; this name stays on AZNet",
                 extra={
                     "name": host,
                     "label": label,
@@ -337,7 +348,7 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
         return _stamp(
             _verdict(
                 False,
-                "SIDENET-NEED-PAIR",
+                "AZN-NEED-PAIR",
                 verdict=REFUSE,
                 message="AZNet and AZBrowser pairing requires a pairing token and an azbrowser flag; both are required",
                 extra={
@@ -356,7 +367,7 @@ def sidenet_access(body: Mapping[str, Any] | None = None, **kwargs: Any) -> dict
     return _stamp(
         _verdict(
             True,
-            "SIDENET-PAIR-OK",
+            "AZN-PAIR-OK",
             verdict=YES,
             message="pairing token and azbrowser flag are both present; this surface did not verify the token at AZNet",
             extra={
@@ -400,12 +411,12 @@ def sidenet_node_gate(
     """
     act = str(action or "").strip().lower().replace("_", "-")
     if public_icann:
-        return _stamp(refuse_public_registrar(kind="sidenet-node-gate"))
+        return _stamp(refuse_public_registrar(kind="aznet-node-gate"))
     if act not in NODE_GATE_ACTIONS:
         return _stamp(
             _verdict(
                 False,
-                "SIDENET-NODE-GATE",
+                "AZN-NODE-GATE",
                 verdict=REFUSE,
                 message="Node Gate actions are claim, plant, flag, and restore",
                 extra={"action": act, "actions": sorted(NODE_GATE_ACTIONS), "hosted_exec": False},
@@ -415,7 +426,7 @@ def sidenet_node_gate(
         if fake_flag:
             return _stamp(refuse_falsify(kind="fake-flag"))
         if act in {"claim", "restore"}:
-            refused = refuse_call_generator(path=f"sidenet/{act}")
+            refused = refuse_call_generator(path=f"aznet/{act}")
             refused["action"] = act
             refused["hosted_exec"] = False
             return _stamp(refused)
@@ -469,7 +480,7 @@ def sidenet_node_gate(
             return _stamp(
                 _verdict(
                     False,
-                    "SIDENET-PLANT-NEEDS-CLAIM",
+                    "AZN-PLANT-NEEDS-CLAIM",
                     verdict=REFUSE,
                     message="plant does not invent a Cap-7 name; claim it on the local 7m77s clock first",
                     extra={"name": "", "zone_names": known, "hosted_exec": False},
@@ -479,7 +490,7 @@ def sidenet_node_gate(
             return _stamp(
                 _verdict(
                     False,
-                    "SIDENET-PLANT-NEEDS-CLAIM",
+                    "AZN-PLANT-NEEDS-CLAIM",
                     verdict=REFUSE,
                     message="plant does not invent a Cap-7 name; claim it on the local 7m77s clock first",
                     extra={"name": host, "zone_names": known, "hosted_exec": False},

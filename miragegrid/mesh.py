@@ -2522,7 +2522,7 @@ def mesh_law_dict() -> dict[str, Any]:
         "completeness_claim": False,
         "redline": _redline_stamp(),
         "cap7_shuffle": _cap7_shuffle_stamp(),
-        "sidenet": _sidenet_stamp(),
+        "aznet": _sidenet_stamp(),
     }
 
 

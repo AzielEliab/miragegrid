@@ -1,17 +1,17 @@
 /**
- * SIDENET-P2 — Cap-7 mesh DNS side-net.
- * L0 public path stays unchanged. This module only serves /v1/sidenet.
- * public_icann false. AZ Generator is not callable. Exactly 2 public
- * browser gateways (azgrid, azbooth). Other mesh names need an AZNet
- * pairing token and an azbrowser flag. This Worker does not verify that
- * token at AZNet and does not host payloads. Softwares stay frozen.
- * Author: Aziel Eliab only.
+ * AZNet pairing for Cap-7 mesh DNS.
+ * Naming lock: sidenet = AZNet. Not a second product. Not ICANN.
+ * Cap-7 pairs with AZNet + AZBrowser. Softwares stay frozen.
+ * This Worker does not run the AZNet engine and does not verify tokens.
+ * L0 public path stays unchanged. Author: Aziel Eliab only.
  */
 
 import { FACTORY_LABELS, IDENTITY } from "./cap7.js";
 import { refuseCallGenerator } from "../../download-tracker/src/mesh.js";
 
-export const SIDENET_SPEC = "SIDENET-P2";
+export const AZN_SPEC = "AZN-CAP7-PAIR";
+export const AZN_NAME = "AZNet";
+export const NAMING_LOCK = "sidenet=AZNet";
 export const PUBLIC_BROWSER_GATEWAYS = Object.freeze(["azgrid", "azbooth"]);
 const ACCESS = new Set(["aznet", "azbrowser"]);
 const BROWSERS = new Set(["browser", "https", "public", "standard-browser", "internet-browser"]);
@@ -29,20 +29,30 @@ const HUBS = new Set([
 const ICANN = [".com", ".net", ".org", ".uk", ".io", ".dev", ".app", ".info", ".co"];
 
 function stamp(out) {
-  return {
+  const next = {
     ...out,
     layer: "P2",
-    spec: SIDENET_SPEC,
+    spec: AZN_SPEC,
+    aznet_name: AZN_NAME,
+    slug: "aznet",
+    naming_lock: NAMING_LOCK,
+    sidenet: AZN_NAME,
+    pairs_with: [AZN_NAME, "AZBrowser"],
     l0_public_path_changed: false,
     public_icann: false,
-    softwares_tab: false,
     softwares_frozen: true,
+    new_product: false,
+    this_route_adds_software: false,
+    merge: false,
     pairing_is_tunnel: false,
     second_door: false,
     callable: false,
     author: IDENTITY,
     identity: IDENTITY,
   };
+  if (!next.name) next.name = AZN_NAME;
+  if (!next.plane) next.plane = "aznet";
+  return next;
 }
 
 function verdict(ok, code, verdictName, message, extra) {
@@ -59,10 +69,14 @@ function verdict(ok, code, verdictName, message, extra) {
 export function sidenetDict() {
   return {
     ok: true,
-    code: "SIDENET-CITE",
+    code: "AZN-CAP7-CITE",
     verdict: "yes",
     yes: true,
-    spec: SIDENET_SPEC,
+    spec: AZN_SPEC,
+    name: AZN_NAME,
+    slug: "aznet",
+    naming_lock: NAMING_LOCK,
+    sidenet: AZN_NAME,
     layer: "P2",
     author: IDENTITY,
     identity: IDENTITY,
@@ -75,7 +89,9 @@ export function sidenetDict() {
       note: "AZ-domain doors and existing public routes stay as they are.",
     },
     p2: {
-      plane: "sidenet",
+      name: AZN_NAME,
+      plane: "aznet",
+      naming_lock: NAMING_LOCK,
       public_icann: false,
       dns_factory: "cap-7-mesh-authoritative",
       callable: false,
@@ -104,15 +120,17 @@ export function sidenetDict() {
     },
     node_gate_actions: ["claim", "flag", "plant", "restore"],
     hosted_node_gate_exec: false,
-    softwares_tab: false,
     softwares_frozen: true,
+    this_route_adds_software: false,
     new_product: false,
     fifth_product: false,
+    pairs_with: [AZN_NAME, "AZBrowser"],
+    runs_aznet_engine: false,
     pairing_is_tunnel: false,
     second_door: false,
     radio_phy: false,
     aznet_payload_host: false,
-    note: "P2 side-net. Cap-7 mesh DNS factory, not ICANN. Exactly 2 public browser gateways (azgrid, azbooth). Other mesh names need an AZNet pairing token and an azbrowser flag. This surface does not verify that token at AZNet. L0 public path is unchanged.",
+    note: "Naming lock: sidenet = AZNet. Cap-7 mesh DNS pairs with AZNet and AZBrowser. Not ICANN. Exactly 2 public browser gateways (azgrid, azbooth). Other mesh names need an AZNet pairing token and an azbrowser flag. This surface does not verify that token and does not run the AZNet engine. Softwares stay frozen. L0 public path is unchanged.",
   };
 }
 
@@ -144,7 +162,7 @@ function clientOf(body) {
 export function sidenetAccess(body) {
   const fields = body && typeof body === "object" ? body : {};
   if (fields.softwares_tab || fields.new_product || fields.fifth_product) {
-    return verdict(false, "SIDENET-SOFTWARE-FROZEN", "refuse", "Softwares stay frozen; sidenet is a MirageGrid subsystem, not a new product", {
+    return verdict(false, "AZN-SOFTWARE-FROZEN", "refuse", "Softwares stay frozen. sidenet is the name AZNet. This route does not add a product.", {
       new_product: false,
       fifth_product: false,
       merge: false,
@@ -165,7 +183,7 @@ export function sidenetAccess(body) {
     });
   }
   if (fields.hosts_payloads || fields.aznet_payload_host || fields.payload_host) {
-    return verdict(false, "SIDENET-NO-PAYLOAD-HOST", "refuse", "AZNet pairing does not host payloads", {
+    return verdict(false, "AZN-NO-PAYLOAD-HOST", "refuse", "AZNet pairing does not host payloads", {
       hosts_payloads: false,
       aznet_payload_host: false,
     });
@@ -179,7 +197,7 @@ export function sidenetAccess(body) {
     });
   }
   if (fields.pair_verified_at_aznet || fields.aznet_verified) {
-    return verdict(false, "SIDENET-NO-VERIFIED-LIE", "refuse", "this surface does not verify pairing tokens at AZNet; do not stamp verification", {
+    return verdict(false, "AZN-NO-VERIFIED-LIE", "refuse", "this surface does not verify pairing tokens at AZNet; do not stamp verification", {
       pair_verified_at_aznet: false,
       this_surface_verifies_aznet_token: false,
       pair_check: "refused-unverified-claim",
@@ -193,7 +211,7 @@ export function sidenetAccess(body) {
 
   const host = hostOf(fields.name || fields.label);
   if (HUBS.has(host)) {
-    return verdict(false, "MGS-NOT-NODE-GATE", "refuse", "official hubs stay on the L0 public path; they are not sidenet Node Gate", {
+    return verdict(false, "MGS-NOT-NODE-GATE", "refuse", "official hubs stay on the L0 public path; they are not AZNet Node Gate", {
       name: host,
     });
   }
@@ -237,7 +255,7 @@ export function sidenetAccess(body) {
         registrar: false,
       });
     }
-    return verdict(false, "AZG-PUBLIC-PAIR", "refuse", "standard browsers reach exactly 2 Cap-7 public browser gateways; this name stays on the sidenet", {
+    return verdict(false, "AZG-PUBLIC-PAIR", "refuse", "standard browsers reach exactly 2 Cap-7 public browser gateways; this name stays on AZNet", {
       name: host,
       label,
       client,
@@ -259,7 +277,7 @@ export function sidenetAccess(body) {
   if (!token) missing.push("pair_token");
   if (!flag) missing.push("azbrowser_flag");
   if (missing.length) {
-    return verdict(false, "SIDENET-NEED-PAIR", "refuse", "AZNet and AZBrowser pairing requires a pairing token and an azbrowser flag; both are required", {
+    return verdict(false, "AZN-NEED-PAIR", "refuse", "AZNet and AZBrowser pairing requires a pairing token and an azbrowser flag; both are required", {
       name: host,
       label,
       client,
@@ -271,7 +289,7 @@ export function sidenetAccess(body) {
       aznet_payload_host: false,
     });
   }
-  return verdict(true, "SIDENET-PAIR-OK", "yes", "pairing token and azbrowser flag are both present; this surface did not verify the token at AZNet", {
+  return verdict(true, "AZN-PAIR-OK", "yes", "pairing token and azbrowser flag are both present; this surface did not verify the token at AZNet", {
     name: host,
     label,
     client,
@@ -298,7 +316,7 @@ export function sidenetNodeGate(action, body) {
     });
   }
   if (!["claim", "plant", "flag", "restore"].includes(act)) {
-    return verdict(false, "SIDENET-NODE-GATE", "refuse", "Node Gate actions are claim, plant, flag, and restore", {
+    return verdict(false, "AZN-NODE-GATE", "refuse", "Node Gate actions are claim, plant, flag, and restore", {
       action: act,
       hosted_exec: false,
     });
@@ -311,7 +329,7 @@ export function sidenetNodeGate(action, body) {
     });
   }
   if (act === "claim" || act === "restore") {
-    const refused = refuseCallGenerator("sidenet/" + act);
+    const refused = refuseCallGenerator("aznet/" + act);
     return stamp({ ...refused, action: act, hosted_exec: false, public_icann: false });
   }
   return verdict(false, "MGS-NO-HOSTED-PLANT", "refuse", "flag and plant stay on the local Node Gate; the hosted Worker does not plant a name", {
@@ -323,13 +341,25 @@ export function sidenetNodeGate(action, body) {
   });
 }
 
+function nameLock(path) {
+  return {
+    status: 403,
+    body: verdict(false, "AZN-NAME-LOCK", "refuse", "sidenet is AZNet. It is not a second name or a second product.", {
+      use: "/v1/aznet",
+      path,
+      runs_aznet_engine: false,
+    }),
+  };
+}
+
 export function handleSidenet(method, path, body) {
   const m = String(method || "GET").toUpperCase();
-  if (path === "/v1/sidenet") {
+  if (path === "/v1/sidenet" || path.startsWith("/v1/sidenet/")) return nameLock(path);
+  if (path === "/v1/aznet") {
     if (m === "GET" || m === "HEAD") return { status: 200, body: sidenetDict() };
-    return { status: 405, body: verdict(false, "SIDENET-METHOD", "refuse", "GET cites sidenet; POST does not run the generator", { hosted_exec: false }) };
+    return { status: 405, body: verdict(false, "AZN-METHOD", "refuse", "GET cites AZNet pairing; POST does not run the generator", { hosted_exec: false }) };
   }
-  if (path === "/v1/sidenet/access") {
+  if (path === "/v1/aznet/access") {
     if (m === "GET" || m === "HEAD") {
       return {
         status: 403,
@@ -340,11 +370,11 @@ export function handleSidenet(method, path, body) {
         }),
       };
     }
-    if (m !== "POST") return { status: 405, body: verdict(false, "SIDENET-METHOD", "refuse", "POST the pairing check", {}) };
+    if (m !== "POST") return { status: 405, body: verdict(false, "AZN-METHOD", "refuse", "POST the pairing check", {}) };
     const out = sidenetAccess(body);
     return { status: out.ok ? 200 : 403, body: out };
   }
-  const gate = path.match(/^\/v1\/sidenet\/(claim|plant|flag|restore)$/);
+  const gate = path.match(/^\/v1\/aznet\/(claim|plant|flag|restore)$/);
   if (gate) {
     if (m === "GET" || m === "HEAD") {
       return {
@@ -357,11 +387,11 @@ export function handleSidenet(method, path, body) {
         }),
       };
     }
-    if (m !== "POST") return { status: 405, body: verdict(false, "SIDENET-METHOD", "refuse", "hosted Node Gate does not execute", { action: gate[1] }) };
+    if (m !== "POST") return { status: 405, body: verdict(false, "AZN-METHOD", "refuse", "hosted Node Gate does not execute", { action: gate[1] }) };
     const out = sidenetNodeGate(gate[1], body);
     return { status: 403, body: out };
   }
-  if (path === "/v1/sidenet/call-generator" || path === "/v1/sidenet/run-generator") {
+  if (path === "/v1/aznet/call-generator" || path === "/v1/aznet/run-generator") {
     const refused = refuseCallGenerator(path);
     return { status: 403, body: stamp({ ...refused, hosted_exec: false, public_icann: false }) };
   }
