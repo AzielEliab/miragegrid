@@ -785,7 +785,7 @@ export function llmsTxt() {
     "Cap-7 factory: deep-node → FRONT Node Gate. Not callable.",
     "Suffix order: .az → .aziel → pivot. public_host_pair: 2.",
     "Preferred public pair labels: azcorpus + azlibrary (designs, not ICANN sites).",
-    "Access: AZNet + AZBrowser pairing. Not naked public DNS.",
+    "Access: AZnet + AZ Browser pairing. Not naked public DNS.",
     "",
     "## Named mesh sites (designs inside azielcorpuslibrary.net)",
     "- azcorpus.az — public Corpus shelf. download_open. upload_auth:none.",

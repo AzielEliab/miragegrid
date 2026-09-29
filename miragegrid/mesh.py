@@ -2494,6 +2494,12 @@ def _cap7_shuffle_stamp() -> dict[str, Any]:
     return cap7_shuffle_dict()
 
 
+def _sidenet_stamp() -> dict[str, Any]:
+    from miragegrid.sidenet import sidenet_dict
+
+    return sidenet_dict()
+
+
 def mesh_law_dict() -> dict[str, Any]:
     return {
         "author": MESH_LAW_AUTHOR,
@@ -2516,6 +2522,7 @@ def mesh_law_dict() -> dict[str, Any]:
         "completeness_claim": False,
         "redline": _redline_stamp(),
         "cap7_shuffle": _cap7_shuffle_stamp(),
+        "aznet": _sidenet_stamp(),
     }
 
 

@@ -383,7 +383,7 @@ export function aznetCite(label) {
     code: "CAP7-FACTORY-LIVE",
     verdict: "yes",
     yes: true,
-    message: "LIVE Cap-7 factory cite on the AZNet plane. Not typed on ICANN DNS. Internet reaches AZ domains via hub HTTPS.",
+    message: "LIVE Cap-7 factory cite on the AZnet plane. Not typed on ICANN DNS. Internet reaches AZ domains via hub HTTPS.",
     ...row,
     honesty_public: "LIVE",
     factory_honesty: "LIVE",

@@ -29,6 +29,7 @@ import {
   publicGateway,
 } from "./cap7.js";
 import { applyUpdate, ping, shuffleCite } from "./shuffle.js";
+import { handleSidenet } from "./sidenet.js";
 import { citeDocument, renderIndexHtml } from "./homepage.js";
 
 const SKILL = `---
@@ -53,6 +54,8 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | POST | \`/v1/shuffle/ping\` | Ping until land. |
 | POST | \`/v1/shuffle/update\` | Update via the landed Cap-7 site. |
 | GET | \`/v1/cap7\` | Seven factory sites. Four real hub duplications, three decoys. LIVE. |
+| GET | \`/v1/aznet\` | AZnet pairing cite. sidenet = AZnet. Not ICANN. |
+| POST | \`/v1/aznet/access\` | AZnet token + AZ Browser flag, or one of 2 browser gateways. |
 | GET | \`/v1/health\` | Liveness. |
 | GET | \`/stats\` / \`/v1/stats\` | Honest app/download-plane stats. |
 | GET | \`/v1/skill\` | This markdown. |
@@ -62,7 +65,7 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | POST | \`/v1/verify-receipt\` | Verify receipt. |
 | GET | \`/v1/mesh\` | PROXY. Default OFF. GET never enables. |
 
-AZ Generator is not callable. \`radio_phy: false\`. Cap-7 is not typed on ICANN DNS. Internet reaches AZ domains only (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Factory honesty is LIVE. Live nodes anchor the factory and those doors. FragGate is THE exec door.
+Naming lock: sidenet = AZnet. Cap-7 mesh DNS pairs with AZnet and AZ Browser. Softwares stay frozen. \`public_icann\` stays false. AZ Generator is not callable (\`AZG-NOT-CALLABLE\`). Exactly 2 Cap-7 names are public browser gateways (\`azgrid\`, \`azbooth\`). Other mesh names need an AZnet pairing token and an azbrowser flag. This Worker does not verify that token, does not run the AZnet engine, and does not run Node Gate claim/plant/flag/restore. \`radio_phy: false\`. Cap-7 is not typed on ICANN DNS. Internet reaches AZ domains only (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Factory honesty is LIVE. Live nodes anchor the factory and those doors. FragGate is THE exec door.
 `;
 
 function corsHeaders() {
@@ -129,6 +132,8 @@ function openapiSpec() {
       "/v1/shuffle/ping": { post: { operationId: "miragegrid_shuffle_ping", summary: "Ping until land." } },
       "/v1/shuffle/update": { post: { operationId: "miragegrid_shuffle_update", summary: "Update via the landed Cap-7 site. No hard-coded host." } },
       "/v1/cap7": { get: { operationId: "miragegrid_cap7", summary: "Factory roster. Four real hub duplications, three false sites. LIVE. Not ICANN DNS." } },
+      "/v1/aznet": { get: { operationId: "miragegrid_aznet_pair", summary: "AZnet pairing cite. sidenet = AZnet. Not ICANN. Softwares frozen." } },
+      "/v1/aznet/access": { post: { operationId: "miragegrid_aznet_access", summary: "AZnet + AZ Browser pair, or one of two public browser gateways." } },
       "/v1/health": { get: { operationId: "health", summary: "Liveness." } },
       "/stats": { get: { operationId: "stats", summary: "Honest app/download-plane stats." } },
       "/v1/stats": { get: { operationId: "v1Stats", summary: "Honest app/download-plane stats alias." } },
@@ -344,6 +349,23 @@ export default {
       }
       if (method === "GET" || method === "HEAD") {
         return json(aznetCite(aznetMatch[1]));
+      }
+    }
+
+    const sidenet = path === "/v1/aznet" || path.startsWith("/v1/aznet/") || path === "/v1/sidenet" || path.startsWith("/v1/sidenet/");
+    if (sidenet) {
+      let sidenetBody = {};
+      if (method === "POST") {
+        const parsed = await readJsonBody(request);
+        if (parsed.error) return json(parsed.error, parsed.status);
+        sidenetBody = parsed.body;
+      }
+      const handled = handleSidenet(method, path, sidenetBody);
+      if (handled) {
+        if (method === "HEAD" && handled.status === 200) {
+          return new Response(null, { status: 200, headers: corsHeaders() });
+        }
+        return json(handled.body, handled.status);
       }
     }
 

@@ -97,9 +97,9 @@ for that round**.
   invent a land.
 - Same seed → same land for every node. GET never plants a claim.
 
-## AZNet survival surface
+## AZnet survival surface
 
-Cap-7 is the duplication/shift/cloak layer. AZNet and AZBrowser stay
+Cap-7 is the duplication/shift/cloak layer. AZnet and AZ Browser stay
 **separate Softwares** (pairing only; never merge). The hosted HTTP
 channel is not a packet VPN. The shift stack still cites MirageGrid VPN.
 
@@ -127,7 +127,7 @@ FragGate LIVE_OPS stay `health`, `assign`, `verify-receipt`, `bridge`,
 - GET enable / GET radio-on / GET claim plant / GET `prev`+`lockset` update plant
 - Hosted cloak-burst name plant (`MGS-NO-HOSTED-PLANT`)
 - Invented radio PHY
-- Merging AZNet / AZBrowser / MirageGrid into one product
+- Merging AZnet / AZ Browser / MirageGrid into one product
 - SLOT hedges on factory honesty, hosted update, hosted MCP, or shuffle land
 - Citing the named Worker as CF 1042 dead after this deploy
 
