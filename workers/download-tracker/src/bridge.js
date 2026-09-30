@@ -776,7 +776,7 @@ export function llmsTxt() {
     "Cap-7 mesh names are relocatable labels (mesh_name ≠ new product).",
     "Cap-7 is a mesh DNS factory, not a public ICANN registrar (public_icann:false on factory names). Four hub mirrors, three decoys, separate from per-node .aziel slots.",
     "Not a VPN. Not an anonymity network. Not AZVPN. packet_forwarding is false.",
-    "geo-target, session-stick, and egress-rotate are planned, not LIVE. Not ICANN publish. Not a packet hop.",
+    "geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane (region label, sticky mesh, land rotate). Not a public egress IP. Not a Cloudflare geo-exit pool. Not ICANN publish. Not a packet hop.",
     "Internet reaches AZ domains only: AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ via the four hub websites.",
     "Those AZ doors are public_icann:true and resolves_to_hub:true. Shuffle once. Stand alone. Immutable after the hubs die. Anchored by live nodes.",
     "Ultimately the original 4 websites. Not a fifth public product.",

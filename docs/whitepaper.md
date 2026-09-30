@@ -257,7 +257,7 @@ an anonymity network, and not AZVPN. Hosted packet forwarding is false.
 It does not guarantee anonymity against a global adversary. It is not
 a crime tool. Hosted geo targeting, sticky public IPs, and egress IP
 rotation refuse until a real pool exists ([MG-EGRESS-1.0.md](MG-EGRESS-1.0.md)).
-`POST /v1/session/sticky` sticks a mesh node label only.
+`POST /v1/session/sticky` binds a mesh node and a Cap-7 land. It is not a sticky public IP. Package 0.3.0 makes geo-target, session-stick, and egress-rotate LIVE on that control plane.
 
 The Worker homepage shows a suite Live Nodes strip. `/v1/mesh/*` PROXY
 to aziel-runtime. Suite mesh default OFF. QNM rollup is
@@ -397,11 +397,11 @@ bridge. Internet reaches AZ domains only
 AZ.HeDidntJump.AZ) via the four hub websites
 (`public_icann: true`, `resolves_to_hub: true`). Cap-7 auto-generates
 `.az` mirrors of those hubs and shifts them with StaticLock +
-MirageGrid cloak + planned-egress. Four factory names are hub mirrors.
+MirageGrid cloak + cap7-egress. Four factory names are hub mirrors.
 Three are decoys, separate from per-node `.aziel` slots. Factory honesty
 is LIVE. Cap-7 is not a public ICANN registrar and is not typed on
 ICANN DNS. Not a VPN. Not AZVPN. geo-target, session-stick, and
-egress-rotate are planned, not LIVE. Named sites azcorpus + azlibrary are designs inside
+egress-rotate are LIVE on the Cap-7 control plane (region label, sticky mesh, land rotate) and are not a public egress IP. Named sites azcorpus + azlibrary are designs inside
 azielcorpuslibrary.net (hash-absolute `/design-packs/*`) and stay
 `public_icann: false`. Growth-ON. CROSS-NETWORK-SURVIVAL + NO-LIE.
 Re-expand is archive, not index. Named app Worker is

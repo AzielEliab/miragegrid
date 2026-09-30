@@ -5,11 +5,22 @@
  * /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME (handled in index.js before this catch-all).
  */
 import { meshOpenApiPaths, meshPointer, plannedAdaptation, refuseCallGenerator } from "./mesh.js";
-import { assignLiveStamps, refusalForAssign, routeEgress } from "../../miragegrid/src/egress.js";
+import {
+  assignLiveStamps,
+  geoBinding,
+  honestyStamps,
+  noIpFlags,
+  prepareRotate,
+  refusalForAssign,
+  regionLabel,
+  rotateNodeIndex,
+  routeEgress,
+  stickBinding,
+} from "../../miragegrid/src/egress.js";
 const PRODUCT = "miragegrid";
-const VERSION = "0.2.0";
+const VERSION = "0.3.0";
 const MOTTO = "You enter the booth. The mesh selects a booth and builds a circuit. You leave with no persistent booth identity.";
-const BANNER = "MirageGrid is not a VPN, not an anonymity network, and not AZVPN. Ephemeral session node assignment with receipts. Packet forwarding is not hosted. Cap-7 is a mesh DNS factory, not a public ICANN registrar. geo-target, session-stick, and egress-rotate are planned, not LIVE. Author Aziel Eliab.";
+const BANNER = "MirageGrid is not a VPN, not an anonymity network, and not AZVPN. Ephemeral session node assignment with receipts. Packet forwarding is not hosted. Cap-7 is a mesh DNS factory, not a public ICANN registrar. geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane (region label, sticky mesh, land rotate). They are not a public egress IP, not a Cloudflare geo-exit pool, and not packet forwarding. Author Aziel Eliab.";
 const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
 const SKILL = `---
 name: MirageGrid
@@ -42,9 +53,12 @@ Host: \`https://miragegrid-download-tracker.vibelock.workers.dev\`
 | GET | \`/v1/mesh/nodes\` | PROXY Live Nodes roster (5-minute presence). Same QNS-CD-1.0 cross-map. |
 | POST | \`/v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}\` | PROXY. Bearer required to enable. No auto-heal. |
 | POST | \`/v1/route\` | Shortest peer path between two nodes. |
-| POST | \`/v1/assign\` | Assign a session circuit (entry + hops + path). Geo, sticky IP, rotation, and painted endpoints refuse. |
-| GET | \`/v1/egress\` | Cite geo / sticky IP / egress rotation. Those pools are not live. |
-| POST | \`/v1/session/sticky\` | Stick a mesh node label to sticky_key. Not an IP. |
+| POST | \`/v1/assign\` | Assign a session circuit (entry + hops + path). A region label, sticky_key, or Cap-7 land rotate may stamp the control plane. Public egress IPs, painted endpoints, and VPN hops refuse. |
+| GET | \`/v1/egress\` | Cite the Cap-7 control plane. Region label, sticky mesh, and land rotate are LIVE. Public egress IP is not. |
+| POST | \`/v1/egress/geo\` | LIVE geo-target. Region label on a mesh node and a Cap-7 land. Not an IP exit. |
+| POST | \`/v1/egress/sticky\` | LIVE session-stick. Same door as \`/v1/session/sticky\`. Not a sticky public IP. |
+| POST | \`/v1/egress/rotate\` | LIVE egress-rotate. Next Cap-7 factory land. Not packet egress. |
+| POST | \`/v1/session/sticky\` | Bind sticky_key to one mesh node and one Cap-7 site. Optional TTL is a time-bucket hash. Not an IP. |
 | POST | \`/v1/circuit\` | Build circuit hops from entropy/timestamp (or fresh). |
 | POST | \`/v1/verify-receipt\` | Verify an internal receipt. |
 
@@ -78,11 +92,17 @@ miragegrid doctor
 
 Then open http://127.0.0.1:8080 (loopback console). Hosted MirageGrid is not a VPN, not an anonymity network, and not AZVPN. \`packet_forwarding\` is false.
 
-## Planned (not LIVE)
+## Cap-7 control plane (LIVE)
 
-\`geo-target\`, \`session-stick\`, and \`egress-rotate\` stay **planned**. They are not ICANN DNS publish and not a packet hop.
+\`geo-target\`, \`session-stick\`, and \`egress-rotate\` are **LIVE** on the Cap-7 plane.
 
-FragGate ops \`vpn-hop\`, \`hop\`, \`tunnel\`, \`mesh\`, \`geo-target\`, \`session-stick\`, and \`egress-rotate\` stay non-executable (runtime \`FG-STUB\`). The FragGate \`mesh\` op is not QNM suite \`mesh_*\` and it is not \`GET /v1/mesh\` status. Cap-7 is four hub mirrors plus three decoys, separate from per-node \`.aziel\` slots, and not a public ICANN registrar. AZVPN is not MirageGrid.
+- \`geo-target\` records a region label on the assign or shuffle land. \`ip_exit\` is false. There is no Cloudflare geo-exit pool.
+- \`session-stick\` binds \`sticky_key\` to the same mesh node id and the same Cap-7 site. A TTL is a time-bucket hash (\`floor(now/ttl)\` in the digest), not a KV store and not a public address. \`sticky_public_ip\` is false.
+- \`egress-rotate\` moves the hosted update **land label** among the seven factory sites. The update URL stays this Worker. \`ip_rotated\` is false.
+
+They do not publish Cap-7 names on ICANN DNS and they do not hop packets. Worker health may show them \`live: true\`. Softwares \`one_line\` and catalog unstub are the runtime companion, after deploy and AZBot CLEAR.
+
+FragGate ops \`vpn-hop\`, \`hop\`, \`tunnel\`, and \`mesh\` stay non-executable (runtime \`FG-STUB\`). The FragGate \`mesh\` op is not QNM suite \`mesh_*\` and it is not \`GET /v1/mesh\` status. Cap-7 is four hub mirrors plus three decoys, separate from per-node \`.aziel\` slots, and not a public ICANN registrar. Not AZVPN. Not WireGuard.
 
 Apache-2.0 (or the repo LICENSE). Forks are welcome and always allowed.
 `;
@@ -381,7 +401,7 @@ async function assign(body) {
     receipt_covers: "entry-node",
     listen_targets: "loopback-defaults",
     endpoints_applied: false,
-    note: "Control-plane assignment. Hosted packet forwarding is false. Not a VPN, not an anonymity network, not AZVPN. The receipt covers the entry node. Listen targets stay loopback defaults. This is not an egress IP.",
+    note: "Control-plane assignment. Hosted packet forwarding is false. Not a VPN, not an anonymity network, not AZVPN. The receipt covers the entry node. Listen targets stay loopback defaults. This is not an egress IP. A region label, when present, is Cap-7 metadata only.",
     packet_forwarding: false,
     hosted_vpn: false,
     anonymity_network: false,
@@ -390,21 +410,15 @@ async function assign(body) {
   };
 }
 
-async function assignStickyMesh(stickyKey) {
-  const pool = makePool();
-  const digestHex = await sha256Hex("mg-sticky-v1|" + stickyKey);
-  const index = Number(BigInt("0x" + digestHex) % BigInt(POOL_SIZE));
-  const node = pool.byIndex(index);
-  const timestamp = utcNow();
-  const session_id = hex32();
-  const receipt = await mintReceipt(session_id, node, timestamp, pool, false);
+function receiptEnvelope(node, session_id, timestamp, receipt, extra) {
   return {
     product: PRODUCT,
     version: VERSION,
     motto: MOTTO,
     banner: BANNER,
-    kind: "sticky-mesh-node",
-    hosted_kind: "sticky-mesh-node",
+    ok: true,
+    verdict: "yes",
+    yes: true,
     session_id,
     node_id: node.id,
     node_label: node.label,
@@ -412,32 +426,152 @@ async function assignStickyMesh(stickyKey) {
     timestamp,
     receipt,
     receipt_covers: "entry-node",
+    listen_targets: "loopback-defaults",
+    endpoints_applied: false,
+    circuit_built: false,
+    session_id_sticky: false,
+    spec: "MG-EGRESS-1.0",
+    ...honestyStamps(),
+    ...noIpFlags(),
+    ...extra,
+  };
+}
+
+async function assignStickyMesh(routed, nowMs) {
+  const stickyKey = typeof routed === "string" ? routed : routed.sticky_key;
+  const ttlSeconds = typeof routed === "object" && routed ? routed.ttl_seconds : null;
+  const region = typeof routed === "object" && routed ? routed.region_label : null;
+  const binding = await stickBinding(stickyKey, ttlSeconds, nowMs);
+  const pool = makePool();
+  const node = pool.byIndex(binding.node_index);
+  const timestamp = utcNow();
+  const session_id = hex32();
+  const receipt = await mintReceipt(session_id, node, timestamp, pool, false);
+  return receiptEnvelope(node, session_id, timestamp, receipt, {
+    code: "MG-SESSION-STICK",
+    kind: "cap7-session-stick",
+    hosted_kind: "cap7-session-stick",
+    message: "sticky_key is bound to one mesh node and one Cap-7 factory site. sticky_public_ip is false. No public egress address was allocated.",
     sticky_key_accepted: true,
     sticky_mesh_node: true,
-    sticky_ip: false,
-    session_id_sticky: false,
-    ttl_enforced: false,
-    durable: "deterministic-hash",
-    circuit_built: false,
-    egress_ip: null,
-    geo_applied: false,
-    residential: false,
-    ip_rotated: false,
-    vpn_hosted_live: false,
-    azvpn_separate: true,
-    packet_forwarding: false,
-    anonymity_network: false,
-    listen_targets: "loopback-defaults",
-    spec: "MG-EGRESS-1.0",
-    note: "Same sticky_key selects the same mesh node label. This is not a sticky public IP, not geo, and not egress rotation.",
-  };
+    sticky_public_ip_requested: !!(routed && routed.sticky_public_ip_requested),
+    public_ip_applied: false,
+    ttl_enforced: binding.ttl_enforced,
+    ttl_seconds: binding.ttl_seconds,
+    ttl_window: binding.window,
+    expires_at: binding.expires_at,
+    ttl_mechanism: binding.ttl_mechanism,
+    durable_store: false,
+    durable: binding.ttl_mechanism,
+    land_stick: true,
+    land_label: binding.land_label,
+    land: binding.site,
+    stick_id: binding.stick_id,
+    region_label: region,
+    geo_applied: !!region,
+    geo_means: region ? "region-label" : null,
+    note: "Cap-7 session-stick. Same sticky_key (and same TTL window, when set) selects the same node id and the same factory land. This is not a sticky public IP. The TTL is a time-bucket hash, not a KV session.",
+  });
+}
+
+async function assignGeoLabel(routed) {
+  const binding = await geoBinding(routed.region_label);
+  const pool = makePool();
+  const node = pool.byIndex(binding.node_index);
+  const timestamp = utcNow();
+  const session_id = hex32();
+  const receipt = await mintReceipt(session_id, node, timestamp, pool, false);
+  return receiptEnvelope(node, session_id, timestamp, receipt, {
+    code: "MG-GEO-TARGET",
+    kind: "cap7-geo-target",
+    hosted_kind: "cap7-geo-target",
+    message: "Region label recorded on a mesh node and a Cap-7 land. The node is a stable hash of the label. It is not an IP exit and not a Cloudflare geo-exit pool.",
+    region_label: routed.region_label,
+    geo_applied: true,
+    geo_means: "region-label",
+    land_label: binding.land_label,
+    land: binding.site,
+    land_stick: false,
+    note: "Cap-7 geo-target. Metadata only. ip_exit is false. public_egress_ip is false. cf_geo_exit_pool is false.",
+  });
+}
+
+async function assignLandRotate(routed) {
+  const pool = makePool();
+  const node = pool.byIndex(await rotateNodeIndex(routed.land_label));
+  const timestamp = utcNow();
+  const session_id = hex32();
+  const receipt = await mintReceipt(session_id, node, timestamp, pool, false);
+  return receiptEnvelope(node, session_id, timestamp, receipt, {
+    code: "MG-EGRESS-ROTATE",
+    kind: "cap7-egress-rotate",
+    hosted_kind: "cap7-egress-rotate",
+    message: "Rotated the Cap-7 factory land label. The update URL stays this Worker. No packet egress and no public IP rotated.",
+    land_rotated: true,
+    land_label: routed.land_label,
+    previous_land: routed.previous_land,
+    rotate_mechanism: routed.mechanism,
+    land: routed.site,
+    update_endpoint: routed.site.update_path,
+    update_endpoint_varies_by_land: false,
+    region_label: routed.region_label,
+    geo_applied: !!routed.region_label,
+    geo_means: routed.region_label ? "region-label" : null,
+    note: "Cap-7 egress-rotate. Land hop among factory sites (azgrid, azbooth, azcloak, azvault, azshift, azflag, azstandby). Not an AZVPN hop. Not WireGuard. Not ICANN publish.",
+  });
 }
 
 async function hostedAssign(body) {
   const refused = refusalForAssign(body);
   if (refused) return refused;
-  const assigned = await assign(body && typeof body === "object" ? body : {});
-  return { status: 200, body: { ...assigned, ...assignLiveStamps() } };
+  const fields = body && typeof body === "object" ? body : {};
+  const region = regionLabel(fields);
+  const key = String(fields.sticky_key || fields.session_key || "").trim();
+  let assigned;
+  if (key) {
+    const ttl = fields.ttl_seconds ?? fields.ttl ?? fields.session_ttl ?? fields.duration;
+    assigned = await assignStickyMesh({
+      sticky_key: key,
+      ttl_seconds: ttl == null || ttl === "" || ttl === false ? null : Number(ttl),
+      region_label: region,
+      sticky_public_ip_requested: fields.sticky_ip === true,
+    });
+  } else {
+    assigned = await assign(fields);
+    if (region) {
+      assigned.region_label = region;
+      assigned.geo_applied = true;
+      assigned.geo_means = "region-label";
+    }
+  }
+  const wantsRotate = presentControl(fields.rotate) || presentControl(fields.rotation) || presentControl(fields.from_label) || presentControl(fields.land_label);
+  if (wantsRotate) {
+    const rot = await prepareRotate(fields);
+    if (rot.status) return rot;
+    assigned.land_label = rot.land_label;
+    assigned.land = rot.site;
+    assigned.land_rotated = true;
+    assigned.previous_land = rot.previous_land;
+    assigned.rotate_mechanism = rot.mechanism;
+    assigned.ip_rotated = false;
+    assigned.update_endpoint_varies_by_land = false;
+  }
+  return {
+    status: 200,
+    body: {
+      ...assignLiveStamps(),
+      ...assigned,
+      ...noIpFlags(),
+      geo_applied: !!(assigned.geo_applied || region),
+      sticky_mesh_node: !!key,
+    },
+  };
+}
+
+function presentControl(value) {
+  if (value == null || value === false || value === "") return false;
+  if (typeof value === "string" && ["false", "0", "no", "off"].includes(value.trim().toLowerCase())) return false;
+  return true;
 }
 
 async function readObjectBody(request) {
@@ -515,7 +649,7 @@ function openapiSpec() {
     info: {
       title: "MirageGrid runtime",
       version: VERSION,
-      description: BANNER + " " + MOTTO + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Not AZVPN. packet_forwarding false. geo-target, session-stick, and egress-rotate are planned, not LIVE. Aziel Eliab only. Apache-2.0.",
+      description: BANNER + " " + MOTTO + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Not AZVPN. packet_forwarding false. geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane and are not a public egress IP. Aziel Eliab only. Apache-2.0.",
     },
     servers: [{ url: HOST }],
     paths: {
@@ -555,7 +689,7 @@ function openapiSpec() {
       "/v1/assign": {
         post: {
           operationId: "assign",
-          summary: "Assign a mesh circuit for a session and mint a receipt.",
+          summary: "Assign a mesh circuit. Optional Cap-7 region label, sticky_key, or land rotate. Not a public egress IP.",
           requestBody: { required: false, content: { "application/json": { schema: { type: "object" } } } },
           responses: { "200": { description: "assignment", content: { "application/json": { schema: { type: "object" } } } } },
         },
@@ -635,11 +769,11 @@ export {
 };
 
 export async function handleEgressRequest(method, path, body) {
-  const routed = routeEgress(method, path, body);
+  const routed = await routeEgress(method, path, body);
   if (!routed) return null;
-  if (routed.sticky) {
-    return { status: 200, body: await assignStickyMesh(routed.sticky_key) };
-  }
+  if (routed.sticky) return { status: 200, body: await assignStickyMesh(routed) };
+  if (routed.geo) return { status: 200, body: await assignGeoLabel(routed) };
+  if (routed.rotate) return { status: 200, body: await assignLandRotate(routed) };
   return routed;
 }
 
@@ -665,6 +799,26 @@ export async function handleRuntimeApi(request, url) {
         public_icann: false,
         public_icann_registrar: false,
         azvpn: false,
+        wireguard: false,
+        openvpn: false,
+        l3_exit: false,
+        public_egress_ip: false,
+        sticky_public_ip: false,
+        cf_geo_exit_pool: false,
+        cap7_control_plane: {
+          geo_target: true,
+          session_stick: true,
+          egress_rotate: true,
+          live: true,
+          ip_exit: false,
+          sticky_public_ip: false,
+          cf_geo_exit_pool: false,
+          public_egress_ip: false,
+          packet_forwarding: false,
+          hosted_vpn: false,
+          azvpn: false,
+          public_icann: false,
+        },
         planned: plannedAdaptation(),
         mesh: meshPointer(),
       });
@@ -688,7 +842,7 @@ export async function handleRuntimeApi(request, url) {
       const dst = (body && (body.to || body.dst)) || "node-13";
       return json(routeView(src, dst));
     }
-    if (path === "/v1/egress" || path.startsWith("/v1/egress/") || path === "/v1/session" || path.startsWith("/v1/session/")) {
+    if (path === "/v1/egress" || path.startsWith("/v1/egress/") || path === "/v1/session" || path.startsWith("/v1/session/") || path === "/v1/geo-target" || path === "/v1/session-stick" || path === "/v1/egress-rotate") {
       const parsed = await readObjectBody(request);
       if (parsed.error) return json(parsed.error, parsed.status);
       const egress = await handleEgressRequest(request.method, path, parsed.body);

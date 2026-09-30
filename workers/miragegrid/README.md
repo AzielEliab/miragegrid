@@ -36,7 +36,10 @@ curl -sS -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/v1/health
 | `GET /v1/shuffle/land?round_id=` | Cite land for a round (GET never plants) |
 | `POST /v1/shuffle/update` | Third hop: update via the landed Cap-7 site (GET 403) |
 | `GET /v1/cap7` | Seven factory sites: four hub mirrors, three decoys, honesty LIVE, not an ICANN registrar |
-| `GET /v1/planned` | geo-target, session-stick, egress-rotate. Planned. Not LIVE. Not a packet hop |
+| `GET /v1/planned` | geo-target, session-stick, egress-rotate. LIVE control plane. Not a public egress IP. Not a packet hop |
+| `POST /v1/egress/geo` `/v1/geo-target` | LIVE region label. `ip_exit: false` |
+| `POST /v1/session/sticky` `/v1/session-stick` `/v1/egress/sticky` | LIVE sticky mesh + Cap-7 land. Not a sticky public IP |
+| `POST /v1/egress/rotate` `/v1/egress-rotate` | LIVE land rotation among the seven sites. Not packet egress |
 | `GET /cap7/{label}` | LIVE factory cite. Not typed on ICANN DNS |
 | `GET /aznet/cap7/{label}` | AZnet-plane factory cite (LIVE). Not a public internet door |
 | `GET /v1/health` `/v1/skill` `/v1/nodes` `/v1/doctor` | FragGate LIVE_OPS |
@@ -49,6 +52,6 @@ and `resolves_to_hub: true`. `radio_phy: false`. No hard-coded Cap-7 host.
 Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors.
 The seven factory names are separate from per-node `.aziel` slots.
 Not a VPN. Not an anonymity network. Not AZVPN. `packet_forwarding: false`.
-geo-target, session-stick, and egress-rotate are planned, not LIVE.
+geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane (region label, sticky mesh, land rotate). Not a public egress IP. Not a Cloudflare geo-exit pool.
 
 Author: Aziel Eliab only.

@@ -435,37 +435,43 @@ export const REDLINE = Object.freeze({
   smaller_door: true,
 });
 
-/** Cap-7 FragGate stubs. Not LIVE. Match Softwares stub_ops. Runtime FG-STUB. */
-export const FRAGGATE_CAP7_STUBS = Object.freeze([
-  "vpn-hop",
-  "hop",
-  "tunnel",
-  "mesh",
-  "geo-target",
-  "session-stick",
-  "egress-rotate",
-]);
+/**
+ * Packet hops that stay FG-STUB on this Worker.
+ * geo-target, session-stick, and egress-rotate execute here.
+ * Softwares catalog unstub is the runtime companion, not this file.
+ */
+export const FRAGGATE_CAP7_STUBS = Object.freeze(["vpn-hop", "hop", "tunnel", "mesh"]);
 
-/** Design-only adaptation. Not executable. Not ICANN publish. Not AZVPN. */
+/**
+ * Cap-7 control plane. geo-target, session-stick, and egress-rotate are
+ * executable factory metadata. Not a public egress IP. Not AZVPN. Not ICANN.
+ * Packet ops vpn-hop / hop / tunnel / mesh stay FG-STUB.
+ */
 export function plannedAdaptation() {
-  const slot = (name, note) => ({
+  const live = (name, note) => ({
     name,
-    status: "planned",
-    live: false,
-    hosted: false,
+    status: "live",
+    live: true,
+    hosted: true,
+    executable: true,
     packet_forwarding: false,
     packet_hop: false,
     public_icann: false,
     typed_on_icann_dns: false,
     icann_publish: false,
     ip_exit: false,
+    public_egress_ip: false,
+    sticky_public_ip: false,
+    cf_geo_exit_pool: false,
     azvpn: false,
+    hosted_vpn: false,
     note,
   });
   return {
-    status: "planned",
-    live: false,
-    executable: false,
+    status: "live",
+    live: true,
+    hosted: true,
+    executable: true,
     hosted_vpn: false,
     packet_forwarding: false,
     packet_hop: false,
@@ -475,23 +481,37 @@ export function plannedAdaptation() {
     anonymity_network: false,
     azvpn_softwares: false,
     not_azvpn: true,
+    ip_exit: false,
+    public_egress_ip: false,
+    sticky_public_ip: false,
+    cf_geo_exit_pool: false,
+    wireguard: false,
+    openvpn: false,
+    l3_exit: false,
     fraggate_stubs: FRAGGATE_CAP7_STUBS.slice(),
+    worker_live_ops: ["geo-target", "session-stick", "egress-rotate"],
+    softwares_catalog_live: false,
+    softwares_note:
+      "Worker doors for geo-target, session-stick, and egress-rotate are live. Softwares public_door_ops and one_line stay on the runtime companion until AZBot CLEAR after deploy.",
     fraggate_stub_code: "FG-STUB",
-    fraggate_executable: false,
+    fraggate_stub_executable: false,
+    control_plane_executable: true,
     mesh_op_is_qnm_suite_mesh: false,
     mesh_op_note:
-      "FragGate op mesh stays non-executable (runtime FG-STUB). It is not QNM suite mesh_* and it is not GET /v1/mesh status.",
-    geo_target: slot(
+      "FragGate op mesh stays non-executable (runtime FG-STUB). It is not QNM suite mesh_* and it is not GET /v1/mesh status. Cap-7 geo-target, session-stick, and egress-rotate are control-plane LIVE (region label, sticky mesh, land rotate). They are not packet hops.",
+    sticky_ip_means:
+      "session/land stick on the Cap-7 plane. sticky_public_ip is false. MirageGrid does not host a sticky public egress address or a Cloudflare geo-exit pool.",
+    geo_target: live(
       "geo-target",
-      "Optional region label on assign or shuffle land. Metadata only. No IP geo-exit.",
+      "Optional region label on assign or shuffle land. Metadata only. No IP geo-exit. No Cloudflare geo-exit pool.",
     ),
-    session_stick: slot(
+    session_stick: live(
       "session-stick",
-      "Bind a session or land to the same Cap-7 site or node id for a TTL. Not implemented.",
+      "Bind a session or land to the same Cap-7 site and node id for a TTL. Sticky mesh label, not a public IP. TTL is a time-bucket hash.",
     ),
-    egress_rotate: slot(
+    egress_rotate: live(
       "egress-rotate",
-      "Rotate the hosted update land among Cap-7 sites. Not ICANN publish. Not a packet hop.",
+      "Rotate the hosted update land among Cap-7 sites. Not ICANN publish. Not a packet hop. Not a public egress IP.",
     ),
   };
 }

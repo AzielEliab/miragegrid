@@ -1,59 +1,66 @@
-# MG-EGRESS-1.0 — geo, sticky session, egress (honest slice)
+# MG-EGRESS-1.0 — Cap-7 geo, sticky mesh, land rotate
 
 **Author:** Aziel Eliab only  
-**Status:** First adaptation slice. Refuse-until-ready except one real label.  
+**Status:** Control plane LIVE (package 0.3.0). Not a public egress IP.  
 **Not a Softwares-tab product of its own.** It is a MirageGrid surface.
 
 anyIP-style questions (geo target, sticky session, IP rotation) map to
 MirageGrid. This paper says what that mapping is allowed to claim.
 
-## Live today
+## LIVE on the Cap-7 plane
 
 | Surface | What it does |
 | --- | --- |
-| `POST /v1/assign` | Fresh mesh node label `node-01` … `node-25`, circuit cite, receipt over the **entry node** only. Listen targets stay `127.0.0.1`. |
-| `POST /v1/session/sticky` | `SHA-256("mg-sticky-v1\|" + sticky_key) mod 25`. Same key, same label. Vector: `booth-1` → `node-21`. Receipt session id is fresh. No circuit. |
-| Cap-7 shuffle | Factory cite/land. Not ICANN `.az`. Update URL does not change per land label. |
-| FragGate `assign` | Still the catalog live op. |
+| `POST /v1/egress/geo` and `POST /v1/geo-target` | Records a region label. Stable hash picks a mesh node and a Cap-7 land. Receipt over that node. `ip_exit: false`. Code `MG-GEO-TARGET`. |
+| `POST /v1/session/sticky`, `POST /v1/session-stick`, `POST /v1/egress/sticky` | Same `sticky_key` selects the same mesh node and the same Cap-7 site. Vector without a TTL: `booth-1` → `node-21`. A `ttl_seconds` value (60..86400) folds `floor(unix/ttl)` into the digest. Code `MG-SESSION-STICK`. |
+| `POST /v1/egress/rotate` and `POST /v1/egress-rotate` | Moves the factory land to the next roster label (`from_label`) or a seed hash. Update URL stays this Worker. Code `MG-EGRESS-ROTATE`. `ip_rotated: false`. |
+| `POST /v1/assign` | Fresh circuit, unless `sticky_key` binds the node. A region label is stamped when present. |
+| FragGate names | `geo-target`, `session-stick`, `egress-rotate` are the control-plane ops. The runtime catalog unstub is a companion PR. This Worker executes the HTTP doors. |
 
-The Cap-7 shift stack is `staticlock`, `miragegrid-cloak`, `planned-egress`.
-`planned-egress` is `status: planned` and `hosted: false`. AZVPN (`slug: azvpn`)
-is a different product. Cap-7 JSON does not carry a VPN shift-stack label.
+The Cap-7 shift stack is `staticlock`, `miragegrid-cloak`, `cap7-egress`
+(former label `planned-egress`). `cap7-egress` is `status: live` and
+`hosted: true`. It rotates a land label. AZVPN (`slug: azvpn`) is a
+different product.
 
-## Refuse until a real pool exists
+## What “sticky IP” means here
+
+The path `POST /v1/egress/sticky` is the session/land stick. It does
+**not** allocate a public address. `sticky_public_ip` stays false.
+`egress_ip` stays null. A caller-supplied address, `residential`,
+`socks`, or a Cloudflare geo-exit flag refuses `MG-NO-IP-EXIT`.
+
+IP exit and a geo-exit pool stay on AZVPN, or on a future Cloudflare
+egress binding this Worker does not claim. MirageGrid does not host a
+VPN exit.
+
+## Still refuse
 
 | Ask | Code | Why |
 | --- | --- | --- |
-| Country, city, region, ASN | `MG-GEO-NOT-READY` | No geo pool. No exit address is chosen. |
-| Sticky public IP | `MG-STICKY-IP-NOT-READY` | A mesh label is not an address. |
-| Rotate / residential / proxy / SOCKS egress | `MG-EGRESS-IP-NOT-READY` | Nothing to rotate. |
-| TTL on a sticky key | `MG-STICKY-TTL-NOT-READY` | No session store. Ignoring the expiry would be a lie. |
-| Caller `endpoints` | `MG-NO-EGRESS-PAINT` | Callers cannot write listen addresses onto the pool. |
-| `vpn` / `hop` / `tunnel` on assign | `MG-NOT-VPN` | Hosted MirageGrid is not a VPN. |
-| `hops` outside 1..25 | `MG-BAD-HOPS` | Matches the local selector. Stops a 500. |
+| Public egress IP, sticky address, residential, SOCKS, CF geo pool | `MG-NO-IP-EXIT` | Not hosted. The control plane does not invent one. |
+| `vpn` / `hop` / `tunnel` on assign | `MG-NOT-VPN` | Hosted MirageGrid is not a VPN. Cap-7 land hop is `egress-rotate`. |
+| Caller `endpoints` | `MG-NO-EGRESS-PAINT` | Listen addresses stay loopback defaults. |
+| `hops` outside 1..25 | `MG-BAD-HOPS` | Matches the selector. |
+| TTL outside 60..86400 | `MG-BAD-TTL` | A bad window is not silently ignored. |
+| Missing `sticky_key` when sticking | `MG-STICKY-NEED-KEY` | A stick needs a key. |
 | Malformed JSON | `MG-BAD-JSON` | A bad body is not an empty success. |
 
-These doors do not mint a receipt and do not return `node_id`.
+`MG-GEO-NOT-READY`, `MG-STICKY-IP-NOT-READY`, `MG-EGRESS-IP-NOT-READY`,
+and `MG-STICKY-TTL-NOT-READY` are retired. Those doors return 200 for
+the control-plane ask.
 
-FragGate stub ops stay stub: `vpn-hop`, `hop`, `tunnel`, `mesh`, `geo-target`,
-`session-stick`, `egress-rotate`. This slice does not add catalog LIVE_OPS.
-Cap-7 is not an ICANN registrar. AZVPN is not MirageGrid.
+FragGate stub ops stay stub: `vpn-hop`, `hop`, `tunnel`, `mesh`.
+WireGuard, OpenVPN, and L3 exit stay false. This Worker does not mark the Softwares catalog live. Cap-7 is not an ICANN registrar. AZVPN is not MirageGrid.
 
-## Still planned
+## TTL without a session store
 
-- A real egress pool (addresses that exist, with a geo attribute that was measured).
-- Durable sticky sessions with an enforced TTL (needs a store; not an in-memory isolate map).
-- Per-land update hosts. Today every land cites the same app Worker URL.
-- Attested `prev|lockset` (ChainLock / zkattest). Syntactic proof only today.
+The TTL is a time-bucket hash, not a Workers KV session. Same key inside
+one window returns the same node id, the same Cap-7 land, and the same
+`stick_id`. The next window is a different digest. `durable_store` is
+false. That is enforcement, not an ignored expiry.
 
 ## GitBaby / AZBot
 
-No runtime catalog PR is required for this slice. Leave the Softwares
-`one_line` as: assign a short-lived session node and cite mesh-name
-metadata. Do not rewrite it to claim residential geo, sticky IPs, or
-egress rotation. Do not unstub `vpn-hop`, `hop`, `tunnel`, `mesh`, `geo-target`,
-`session-stick`, or `egress-rotate`.
-Do not merge MirageGrid into AZVPN. Do not enable `GET /v1/mesh` radios.
-Do not invent a Zenodo DOI.
+Softwares `one_line` is the runtime companion’s job. This repo’s health may show the three Worker ops `live: true`. Do not claim Softwares LIVE until that companion lands and AZBot CLEAR follows deploy. Do not unstub `vpn-hop`, `hop`, `tunnel`, or `mesh`. Do not merge MirageGrid into AZVPN. Do not enable `GET /v1/mesh` radios. Do not invent a Zenodo DOI. Do not claim ICANN publish. Do not claim a public egress IP.
 
 Identity: **Aziel Eliab** only.

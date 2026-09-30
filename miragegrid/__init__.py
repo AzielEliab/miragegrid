@@ -1,6 +1,6 @@
 """MirageGrid: session assignment and Cap-7 mesh DNS factory for AZ-OS.
 
-Version 0.2.0 — persistent 25-node mesh and session circuits.
+Version 0.3.0 — Cap-7 control plane (region label, sticky mesh, land rotate) plus the 25-node session mesh.
 Not a VPN, not an anonymity network, and not AZVPN.
 Hosted packet forwarding is false. Author: Aziel Eliab (2026).
 
@@ -36,7 +36,7 @@ from miragegrid.receipt import Receipt
 from miragegrid.rng import select_index
 from miragegrid.session import MirageSession
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 __author__ = "Aziel Eliab"
 __all__ = [
     "Circuit",

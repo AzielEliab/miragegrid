@@ -26,7 +26,7 @@ People get short text. Machines use `--json`.
 
 Cap-7 is the mesh DNS factory: four hub mirrors and three decoys, separate from per-node `.aziel` slots. It keeps those names on the mesh. It is not a public ICANN registrar.
 
-MirageGrid is not a VPN, not an anonymity network, and not the AZVPN Softwares product. Hosted packet forwarding is false. geo-target, session-stick, and egress-rotate are planned, not LIVE.
+MirageGrid is not a VPN, not an anonymity network, and not the AZVPN Softwares product. Hosted packet forwarding is false. geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane (region label, sticky mesh, land rotate). They are not a public egress IP and not a Cloudflare geo-exit pool.
 
 The historical `vpn` command is a loopback listener on this computer. It is not hosted egress:
 
@@ -36,7 +36,7 @@ miragegrid vpn
 
 It listens at `127.0.0.1:1080`.
 
-See [RUN.txt](RUN.txt), the spec [docs/whitepaper.md](docs/whitepaper.md), and [CONTRIBUTING.md](CONTRIBUTING.md). License: [Apache-2.0](LICENSE). Version 0.2.0.
+See [RUN.txt](RUN.txt), the spec [docs/whitepaper.md](docs/whitepaper.md), and [CONTRIBUTING.md](CONTRIBUTING.md). License: [Apache-2.0](LICENSE). Version 0.3.0. The counted tarball filename remains `miragegrid-0.2.0.tar.gz` until a new archive is published.
 
 ## Notes
 
@@ -71,7 +71,7 @@ The Worker serves the gzip itself (HTTP 200, no 302 to GitHub).
 - Suite mesh proxy: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh](https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated; QNS-CD-1.0 photon QNS1 cross-map (no public qnsd). Locked law: **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0**, **AIRGAP-1.0** ([docs/mesh-law.md](docs/mesh-law.md))
 - OpenAPI: [https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json](https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json)
 - Named app Worker (Cap-7 LIVE shuffle): [https://miragegrid.vibelock.workers.dev/](https://miragegrid.vibelock.workers.dev/) — `GET /bridge` · `GET /v1/shuffle` · `POST /v1/shuffle/ping` · `GET /v1/cap7`. Nodes ping until they land on one factory site. That land is the update endpoint for the round. No hard-coded Cap-7 host. Historical CF 1042 is closed by Worker `miragegrid`.
-- Semantic bridge (Growth-ON): [app /bridge](https://miragegrid.vibelock.workers.dev/bridge) · [download llms.txt](https://miragegrid-download-tracker.vibelock.workers.dev/llms.txt) · [download bridge.json](https://miragegrid-download-tracker.vibelock.workers.dev/v1/bridge) · [cite.json](https://miragegrid-download-tracker.vibelock.workers.dev/cite.json) · [azcorpus pack](https://miragegrid-download-tracker.vibelock.workers.dev/design-packs/azcorpus.json) · [azlibrary pack](https://miragegrid-download-tracker.vibelock.workers.dev/design-packs/azlibrary.json) · [shelves cite](https://miragegrid-download-tracker.vibelock.workers.dev/shelves) — Internet reaches AZ domains only (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node `.aziel` slots. The shift stack is StaticLock + MirageGrid cloak + planned-egress. Factory honesty is LIVE. Cap-7 is not a public ICANN registrar and is not typed on ICANN DNS. geo-target, session-stick, and egress-rotate are planned, not LIVE. Not a VPN. Not AZVPN. Named mesh sites azcorpus + azlibrary remain designs inside azielcorpuslibrary.net. REDLINE-1.0: GET never enables radios or plants claims.
+- Semantic bridge (Growth-ON): [app /bridge](https://miragegrid.vibelock.workers.dev/bridge) · [download llms.txt](https://miragegrid-download-tracker.vibelock.workers.dev/llms.txt) · [download bridge.json](https://miragegrid-download-tracker.vibelock.workers.dev/v1/bridge) · [cite.json](https://miragegrid-download-tracker.vibelock.workers.dev/cite.json) · [azcorpus pack](https://miragegrid-download-tracker.vibelock.workers.dev/design-packs/azcorpus.json) · [azlibrary pack](https://miragegrid-download-tracker.vibelock.workers.dev/design-packs/azlibrary.json) · [shelves cite](https://miragegrid-download-tracker.vibelock.workers.dev/shelves) — Internet reaches AZ domains only (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node `.aziel` slots. The shift stack is StaticLock + MirageGrid cloak + cap7-egress. Factory honesty is LIVE. Cap-7 is not a public ICANN registrar and is not typed on ICANN DNS. geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane and are not a public egress IP. Not a VPN. Not AZVPN. Named mesh sites azcorpus + azlibrary remain designs inside azielcorpuslibrary.net. REDLINE-1.0: GET never enables radios or plants claims.
 - GitHub: [https://github.com/AzielEliab/miragegrid](https://github.com/AzielEliab/miragegrid)
 
 Isolated counter: Worker `miragegrid-download-tracker`, KV `MIRAGEGRID_DOWNLOADS`. `/v1` does not increment downloads.

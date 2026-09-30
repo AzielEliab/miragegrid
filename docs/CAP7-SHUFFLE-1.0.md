@@ -28,7 +28,7 @@ the download-tracker *is* the app Worker.
 
 Exactly **7** factory sites. Cap-7 **auto-generates `.az` mirrors
 of all 4 hubs** and **shifts** them with **StaticLock** + **MirageGrid
-cloak** + **planned-egress**. planned-egress is not a hosted packet VPN
+cloak** + **cap7-egress**. cap7-egress rotates a factory land. It is not a hosted packet VPN
 and not AZVPN.
 
 **Exactly 4** are hub mirrors (one per hub). **Exactly 3**
@@ -56,7 +56,7 @@ Stamps on every factory site:
 - `internet_reachable: false`
 - `hosted_update` / `hosted_mcp` / `public_shuffle_land_exec`: **LIVE**
 - `anchored_by_live_nodes: true`
-- `shift_stack`: `staticlock`, `miragegrid-cloak`, `planned-egress`
+- `shift_stack`: `staticlock`, `miragegrid-cloak`, `cap7-egress`
 - `planned_egress.status`: `planned` (`hosted: false`, `packet_forwarding: false`, `live: false`)
 - `public_icann_registrar: false`
 - `separate_from_per_node_aziel_slots: true`
@@ -107,19 +107,19 @@ for that round**.
 Cap-7 is the duplication/shift/cloak layer. AZnet and AZ Browser stay
 **separate Softwares** (pairing only; never merge). The hosted HTTP
 channel is not a packet VPN and not AZVPN. The third shift-stack name
-is `planned-egress`.
+is `cap7-egress` (former label `planned-egress`).
 
-## Planned adaptation (not LIVE)
+## Cap-7 control plane (LIVE)
 
-These are design intent only. No LIVE flag. No ICANN publish. No packet hop.
+These ops execute on the factory. They are not ICANN publish and not a packet hop. `ip_exit` stays false. There is no Cloudflare geo-exit pool and no sticky public IP.
 
 | Name | Meaning | Honesty |
 | --- | --- | --- |
-| `geo-target` | Optional region label on assign or shuffle land | metadata only; `ip_exit: false`. Worker door `MG-GEO-NOT-READY`. |
-| `session-stick` | Bind a session or land for a TTL | `status: planned`. A TTL refuses `MG-STICKY-TTL-NOT-READY`. |
-| `egress-rotate` | Rotate the hosted update land among the Cap-7 roster | not ICANN DNS; not a packet hop. Worker door `MG-EGRESS-IP-NOT-READY`. |
+| `geo-target` | Optional region label on assign or shuffle land | metadata only; `ip_exit: false`. `POST /v1/egress/geo` returns `MG-GEO-TARGET`. |
+| `session-stick` | Bind a session to the same node id and Cap-7 site for a TTL | `live: true`. TTL is a time-bucket hash. `sticky_public_ip: false`. |
+| `egress-rotate` | Rotate the hosted update land among the Cap-7 roster | not ICANN DNS; not a packet hop. `POST /v1/egress/rotate` returns `MG-EGRESS-ROTATE`. |
 
-`POST /v1/session/sticky` is a separate live mesh-node label (`SHA-256` of the key). It is not an IP and not the planned TTL stick. Sticky public IPs refuse `MG-STICKY-IP-NOT-READY`. See [MG-EGRESS-1.0.md](MG-EGRESS-1.0.md).
+`POST /v1/session/sticky` binds `sticky_key` to a mesh node (`SHA-256` of the key, `node-21` for `booth-1` when no TTL) and a Cap-7 land. A public address refuses `MG-NO-IP-EXIT`. See [MG-EGRESS-1.0.md](MG-EGRESS-1.0.md).
 
 FragGate ops `vpn-hop`, `hop`, `tunnel`, `mesh`, `geo-target`, `session-stick`,
 and `egress-rotate` stay non-executable (runtime `FG-STUB`). The FragGate
@@ -151,7 +151,7 @@ FragGate LIVE_OPS stay `health`, `assign`, `verify-receipt`, `bridge`,
 - Hosted cloak-burst name plant (`MGS-NO-HOSTED-PLANT`)
 - Invented radio PHY
 - Merging AZnet / AZ Browser / AZVPN / MirageGrid into one product
-- Treating geo, sticky public IP, or egress rotation as live ([MG-EGRESS-1.0.md](MG-EGRESS-1.0.md))
+- Claiming a public egress IP, a sticky public address, or a Cloudflare geo-exit pool (`MG-NO-IP-EXIT`) ([MG-EGRESS-1.0.md](MG-EGRESS-1.0.md))
 - SLOT hedges on factory honesty, hosted update, hosted MCP, or shuffle land
 - Citing the named Worker as CF 1042 dead after this deploy
 

@@ -75,11 +75,11 @@ a Cap-7 name is not “opens azieleliab.com”. The public internet door
 is the AZ domain for that hub. Do **not** invent a ccTLD purchase.
 
 Cap-7 **auto-generates `.az` mirrors of all 4 hubs** and shifts
-them with StaticLock + MirageGrid cloak + planned-egress. Four factory
+them with StaticLock + MirageGrid cloak + cap7-egress. Four factory
 names are hub mirrors. Three are decoys. That layer is not the public
 internet, not a public ICANN registrar, and not per-node `.aziel` slots.
 It is not a hosted VPN and not AZVPN. geo-target, session-stick, and
-egress-rotate are planned, not LIVE. The public doors are the AZ domains:
+egress-rotate are LIVE on the Cap-7 control plane and are not a public egress IP. The public doors are the AZ domains:
 
 | Hub | Design provenance |
 | --- | --- |
