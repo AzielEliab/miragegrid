@@ -66,12 +66,12 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | GET | \`/v1/skill\` | This markdown. |
 | GET | \`/v1/nodes\` | 25 mesh nodes. |
 | GET | \`/v1/doctor\` | Law stamp + Worker role. |
-| POST | \`/v1/assign\` | Session circuit. Geo, sticky IP, rotation, and painted endpoints refuse. |
-| GET | \`/v1/egress\` | MG-EGRESS-1.0 cite. Geo, sticky IP, and egress rotation are not live. |
-| POST | \`/v1/egress/geo\` | Refuse. No country/city/ASN pool. |
-| POST | \`/v1/egress/sticky\` | Refuse. No sticky public IP. |
-| POST | \`/v1/egress/rotate\` | Refuse. No egress address to rotate. |
-| POST | \`/v1/session/sticky\` | Same sticky_key, same mesh node label. Not an IP. No TTL. |
+| POST | \`/v1/assign\` | Session circuit. Region label, sticky_key, and Cap-7 land rotate stamp the control plane. Public egress IPs and painted endpoints refuse. |
+| GET | \`/v1/egress\` | MG-EGRESS-1.0 cite. Cap-7 geo / sticky mesh / land rotate are LIVE. Public egress IP is not. |
+| POST | \`/v1/egress/geo\` | LIVE geo-target. Region label on a mesh node and a Cap-7 land. Not an IP exit. Alias: \`POST /v1/geo-target\`. |
+| POST | \`/v1/egress/sticky\` | LIVE session-stick. Not a sticky public IP. Alias of \`POST /v1/session/sticky\`. |
+| POST | \`/v1/egress/rotate\` | LIVE egress-rotate. Next Cap-7 factory land. Not packet egress. Alias: \`POST /v1/egress-rotate\`. |
+| POST | \`/v1/session/sticky\` | Bind sticky_key to one mesh node and one Cap-7 site. Optional TTL is a time-bucket hash. Not an IP. Alias: \`POST /v1/session-stick\`. |
 | POST | \`/v1/verify-receipt\` | Verify receipt. |
 | GET | \`/v1/mesh\` | PROXY. Default OFF. GET never enables. |
 
@@ -79,11 +79,17 @@ Naming lock: sidenet = AZnet. Cap-7 mesh DNS pairs with AZnet and AZ Browser. So
 
 **THIS IS NOT:** a VPN, an anonymity network, AZVPN, or hosted packet forwarding (\`packet_forwarding: false\`).
 
-## Planned (not LIVE)
+## Cap-7 control plane (LIVE)
 
-\`geo-target\`, \`session-stick\`, and \`egress-rotate\` are **planned**. \`live: false\`. They do not publish Cap-7 names on ICANN DNS and they do not hop packets.
+\`geo-target\`, \`session-stick\`, and \`egress-rotate\` are **LIVE**. \`live: true\`. They do not publish Cap-7 names on ICANN DNS and they do not hop packets.
 
-FragGate ops \`vpn-hop\`, \`hop\`, \`tunnel\`, \`mesh\`, \`geo-target\`, \`session-stick\`, and \`egress-rotate\` stay non-executable (runtime \`FG-STUB\`). The FragGate \`mesh\` op is not QNM suite \`mesh_*\` and it is not \`GET /v1/mesh\` status. Cap-7 is not an ICANN registrar. AZVPN is not MirageGrid.
+- \`geo-target\` — region label metadata on assign or shuffle land. \`ip_exit: false\`. No Cloudflare geo-exit pool.
+- \`session-stick\` — same \`sticky_key\` keeps the same node id and the same Cap-7 site. A TTL is \`floor(unix/ttl)\` inside the digest. \`sticky_public_ip: false\`.
+- \`egress-rotate\` — rotate the factory land label. The update URL does not change. \`ip_rotated: false\`.
+
+These three are live on this Worker. Softwares \`public_door_ops\` and \`one_line\` stay on the runtime companion until AZBot CLEAR after deploy.
+
+FragGate ops \`vpn-hop\`, \`hop\`, \`tunnel\`, and \`mesh\` stay non-executable (runtime \`FG-STUB\`). The FragGate \`mesh\` op is not QNM suite \`mesh_*\` and it is not \`GET /v1/mesh\` status. A Cap-7 land hop is \`egress-rotate\`, not \`vpn-hop\`. Cap-7 is not an ICANN registrar. AZVPN is not MirageGrid.
 `;
 
 function corsHeaders() {
@@ -145,7 +151,7 @@ function openapiSpec() {
       version: VERSION,
       description:
         BANNER +
-        " Cap-7 is a mesh DNS factory (4 hub mirrors + 3 decoys), not a public ICANN registrar. Not a VPN. Not AZVPN. packet_forwarding false. geo-target, session-stick, and egress-rotate are planned, not LIVE. Author Aziel Eliab.",
+        " Cap-7 is a mesh DNS factory (4 hub mirrors + 3 decoys), not a public ICANN registrar. Not a VPN. Not AZVPN. packet_forwarding false. geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane and are not a public egress IP. Author Aziel Eliab.",
     },
     servers: [{ url: APP_HOST }],
     paths: {
@@ -154,7 +160,10 @@ function openapiSpec() {
       "/v1/shuffle/ping": { post: { operationId: "miragegrid_shuffle_ping", summary: "Ping until land." } },
       "/v1/shuffle/update": { post: { operationId: "miragegrid_shuffle_update", summary: "Update via the landed Cap-7 site. No hard-coded host." } },
       "/v1/cap7": { get: { operationId: "miragegrid_cap7", summary: "Factory roster. Four hub mirrors, three decoys. LIVE factory honesty. Not a public ICANN registrar. Not per-node .aziel slots." } },
-      "/v1/planned": { get: { operationId: "miragegrid_planned", summary: "Cite-only. geo-target, session-stick, egress-rotate are planned. live false. Not ICANN publish. Not a packet hop. Not AZVPN." } },
+      "/v1/planned": { get: { operationId: "miragegrid_planned", summary: "Cap-7 control plane. geo-target, session-stick, egress-rotate are live. Not ICANN publish. Not a packet hop. Not a public egress IP. Not AZVPN." } },
+      "/v1/geo-target": { post: { operationId: "geoTarget", summary: "LIVE region label on a mesh node and a Cap-7 land. Not an IP exit." } },
+      "/v1/session-stick": { post: { operationId: "sessionStick", summary: "LIVE sticky mesh node and Cap-7 land. Not a sticky public IP." } },
+      "/v1/egress-rotate": { post: { operationId: "egressRotateAlias", summary: "LIVE Cap-7 land rotation. Not packet egress." } },
       "/v1/aznet": { get: { operationId: "miragegrid_aznet_pair", summary: "AZnet pairing cite. sidenet = AZnet. Not ICANN. Softwares frozen." } },
       "/v1/aznet/access": { post: { operationId: "miragegrid_aznet_access", summary: "AZnet + AZ Browser pair, or one of two public browser gateways." } },
       "/v1/health": { get: { operationId: "health", summary: "Liveness." } },
@@ -163,12 +172,12 @@ function openapiSpec() {
       "/v1/skill": { get: { operationId: "skill", summary: "Skill markdown." } },
       "/v1/nodes": { get: { operationId: "nodes", summary: "25 mesh nodes." } },
       "/v1/doctor": { get: { operationId: "doctor", summary: "Law stamp." } },
-      "/v1/assign": { post: { operationId: "assign", summary: "Assign a mesh-node session. Geo, sticky IP, and egress rotation refuse." } },
-      "/v1/egress": { get: { operationId: "egressCite", summary: "Cite geo, sticky IP, and egress rotation as not live." } },
-      "/v1/egress/geo": { post: { operationId: "egressGeo", summary: "Refuse geo targeting until a real pool exists." } },
-      "/v1/egress/sticky": { post: { operationId: "egressSticky", summary: "Refuse sticky public IPs." } },
-      "/v1/egress/rotate": { post: { operationId: "egressRotate", summary: "Refuse egress IP rotation." } },
-      "/v1/session/sticky": { post: { operationId: "sessionSticky", summary: "Stick a mesh node label to sticky_key. Not an IP." } },
+      "/v1/assign": { post: { operationId: "assign", summary: "Assign a mesh-node session. Optional region label, sticky_key, or Cap-7 land rotate. Public egress IP refuses." } },
+      "/v1/egress": { get: { operationId: "egressCite", summary: "Cite Cap-7 geo, sticky mesh, and land rotate as LIVE. Public egress IP is not hosted." } },
+      "/v1/egress/geo": { post: { operationId: "egressGeo", summary: "LIVE geo-target. Region label only. No IP exit." } },
+      "/v1/egress/sticky": { post: { operationId: "egressSticky", summary: "LIVE session-stick. Not a sticky public IP." } },
+      "/v1/egress/rotate": { post: { operationId: "egressRotate", summary: "LIVE Cap-7 land rotation. Not packet egress." } },
+      "/v1/session/sticky": { post: { operationId: "sessionSticky", summary: "Bind sticky_key to a mesh node and a Cap-7 land. Not an IP." } },
       "/v1/verify-receipt": { post: { operationId: "verifyReceipt", summary: "Verify a receipt." } },
     },
   };
@@ -194,12 +203,24 @@ function doctor() {
     cap7: cap7ShuffleDict(),
     egress: {
       spec: EGRESS_SPEC,
-      geo: "refuse",
-      sticky_ip: "refuse",
-      ip_rotation: "refuse",
-      sticky_mesh_node: "deterministic-label",
+      geo: "cap7-region-label",
+      geo_target: "live",
+      sticky_ip: "not-hosted",
+      sticky_public_ip: false,
+      sticky_mesh_node: "live",
+      session_stick: "live",
+      ip_rotation: "not-hosted",
+      land_rotate: "live",
+      egress_rotate: "live",
+      ip_exit: false,
+      cf_geo_exit_pool: false,
+      public_egress_ip: false,
       residential: false,
       vpn_hosted_live: false,
+      packet_forwarding: false,
+      hosted_vpn: false,
+      wireguard: false,
+      openvpn: false,
       azvpn: "separate",
     },
     ...outlastHonesty(),
@@ -358,7 +379,7 @@ export default {
         packet_forwarding: false,
         hosted_vpn: false,
         azvpn: false,
-        shift_stack: ["staticlock", "miragegrid-cloak", "planned-egress"],
+        shift_stack: ["staticlock", "miragegrid-cloak", "cap7-egress"],
         planned_egress: plannedEgressSlot(),
         ...factorySeparation(),
         planned: plannedAdaptation(),
@@ -430,6 +451,27 @@ export default {
         resolves_to_hub: false,
         anonymity_network: false,
         azvpn: false,
+        wireguard: false,
+        openvpn: false,
+        l3_exit: false,
+        public_egress_ip: false,
+        sticky_public_ip: false,
+        cf_geo_exit_pool: false,
+        ip_exit: false,
+        cap7_control_plane: {
+          geo_target: true,
+          session_stick: true,
+          egress_rotate: true,
+          live: true,
+          ip_exit: false,
+          sticky_public_ip: false,
+          cf_geo_exit_pool: false,
+          public_egress_ip: false,
+          packet_forwarding: false,
+          hosted_vpn: false,
+          azvpn: false,
+          public_icann: false,
+        },
         app_worker: APP_HOST,
         download_worker: DOWNLOAD_HOST,
         ...outlastHonesty(),
@@ -479,7 +521,7 @@ export default {
       return json(doctor());
     }
 
-    if (path === "/v1/egress" || path.startsWith("/v1/egress/") || path === "/v1/session" || path.startsWith("/v1/session/")) {
+    if (path === "/v1/egress" || path.startsWith("/v1/egress/") || path === "/v1/session" || path.startsWith("/v1/session/") || path === "/v1/geo-target" || path === "/v1/session-stick" || path === "/v1/egress-rotate") {
       let egressBody = {};
       if (method === "POST") {
         const parsed = await readJsonBody(request);

@@ -3,7 +3,7 @@
 **Author:** Aziel Eliab only  
 **Not this PR.** Large or cross-repo work after the 2026-09-18 audit.
 
-2026-09-30 honesty lock: do not cite MirageGrid as a LIVE VPN, an anonymity network, or AZVPN. Hosted `packet_forwarding` stays false. Cap-7 is a mesh DNS factory, not a public ICANN registrar. geo-target, session-stick, and egress-rotate stay planned.
+2026-09-30 honesty lock: do not cite MirageGrid as a LIVE VPN, an anonymity network, or AZVPN. Hosted `packet_forwarding` stays false. Cap-7 is a mesh DNS factory, not a public ICANN registrar. Operator Cap-7 Cut D (2026-09-30) made geo-target, session-stick, and egress-rotate LIVE as control-plane metadata only. They are not a public egress IP, not a Cloudflare geo-exit pool, and not WireGuard. `vpn-hop`, `hop`, `tunnel`, and `mesh` stay FG-STUB.
 
 FragGate stays THE door. Do not add a second exec path, an unmarked hydra, or a fake Cap-7 `/mcp`.
 

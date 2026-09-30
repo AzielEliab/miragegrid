@@ -17,7 +17,7 @@ const ONE_LINE =
 const MOTTO =
   "You enter the booth. The mesh selects a booth and builds a circuit. You leave with no persistent booth identity.";
 const BANNER =
-  "THIS IS: a 25-node session assignment engine for AZ-OS — logical identities, circuit maps, and receipts. Hosted /v1 assigns and verifies; it does not forward packets. THIS IS NOT: a VPN, an anonymity network, AZVPN, a hosted hop, a crime tool, a log-wipe, or a guarantee against a global adversary. Cap-7 is a mesh DNS factory (4 hub mirrors + 3 decoys), not a public ICANN registrar. geo-target, session-stick, and egress-rotate are planned, not LIVE. Isolated counter: not VibeLock. Author Aziel Eliab.";
+  "THIS IS: a 25-node session assignment engine for AZ-OS — logical identities, circuit maps, and receipts. Hosted /v1 assigns and verifies; it does not forward packets. THIS IS NOT: a VPN, an anonymity network, AZVPN, a hosted hop, a public egress IP, a Cloudflare geo-exit pool, a crime tool, a log-wipe, or a guarantee against a global adversary. Cap-7 is a mesh DNS factory (4 hub mirrors + 3 decoys), not a public ICANN registrar. geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane (region label, sticky mesh, land rotate). Isolated counter: not VibeLock. Author Aziel Eliab.";
 const DESC =
   "MirageGrid by Aziel Eliab — ephemeral session node assignment with receipts. Not a VPN and not an anonymity network. Apache-2.0. Forks welcome.";
 
@@ -25,7 +25,7 @@ export function citeDocument() {
   return {
     author: "Aziel Eliab",
     title: "MirageGrid",
-    version: "0.2.0",
+    version: "0.3.0",
     one_line: ONE_LINE,
     github: GITHUB_REPO,
     homepage: HOST + "/",
@@ -72,7 +72,7 @@ export function renderIndexHtml(stats) {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "MirageGrid",
-    softwareVersion: "0.2.0",
+    softwareVersion: "0.3.0",
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Linux, macOS, Windows",
     author: { "@type": "Person", name: "Aziel Eliab", url: "https://github.com/AzielEliab" },

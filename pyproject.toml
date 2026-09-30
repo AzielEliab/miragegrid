@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "miragegrid"
-version = "0.2.0"
+version = "0.3.0"
 description = "Session assignment and Cap-7 mesh DNS factory for AZ-OS. Not a VPN, not an anonymity network, and not AZVPN. Hosted packet forwarding is false. Author Aziel Eliab."
 readme = "README.md"
 license = {file = "LICENSE"}

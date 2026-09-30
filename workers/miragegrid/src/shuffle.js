@@ -17,6 +17,7 @@ import {
   siteRecord,
 } from "./cap7.js";
 import { outlastHonesty, refuseCallGenerator, refuseGetEnableOrPlant } from "../../download-tracker/src/mesh.js";
+import { regionStamp } from "./egress.js";
 
 function verdict(ok, code, v, message, extra) {
   return {
@@ -198,6 +199,17 @@ export async function ping(body, { method } = {}) {
       hardcoded_host: false,
     });
   }
+  if (b.egress_ip || b.exit_ip || b.new_ip || b.residential || b.socks || b.socks5 || b.anyip || b.cf_geo || b.cf_geo_exit || b.wireguard || b.openvpn) {
+    return verdict(false, "MG-NO-IP-EXIT", "refuse", "Cap-7 shuffle does not host a public egress IP or a Cloudflare geo-exit pool. A region label may ride on the land. IP exit is not this Worker.", {
+      ip_exit: false,
+      public_egress_ip: false,
+      cf_geo_exit_pool: false,
+      packet_forwarding: false,
+      hosted_vpn: false,
+      azvpn: false,
+      public_icann: false,
+    });
+  }
   if (b.channel_plane_is_vpn || b.hosted_vpn || b.pairing_is_tunnel || b.second_door || b.open_proxy) {
     return verdict(false, "CAP7-NO-VPN-LIE", "refuse", "hosted Cap-7 is a communication/cite plane; not a VPN, tunnel, second FragGate door, or open proxy", {
       ...outlastHonesty(),
@@ -236,6 +248,7 @@ export async function ping(body, { method } = {}) {
       node_id: node,
       hardcoded_host: false,
       sites: cap7Roster(),
+      ...regionStamp(b),
       app_worker: appWorker(),
     });
   }
@@ -276,6 +289,7 @@ export async function ping(body, { method } = {}) {
       is_live_door: false,
       channel_plane_is_vpn: false,
       second_door: false,
+      ...regionStamp(b),
       app_worker: appWorker(),
     },
   );

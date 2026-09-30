@@ -2,15 +2,15 @@
 
 Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate
 from per-node ``.aziel`` slots. It shifts with StaticLock + MirageGrid
-cloak + a planned egress slot. It is not a public ICANN registrar and
-not a hosted VPN. Not AZVPN.
+cloak + cap7-egress (land rotate, not packet egress). It is not a public
+ICANN registrar and not a hosted VPN. Not AZVPN. Not a public egress IP.
 
 Internet reaches AZ domains only, via the four hub websites. Those
 drop-ins shuffle once, mirror the hubs while they are up, stand alone,
 and stay immutable after the hubs die. Live nodes anchor both layers.
 Factory honesty is LIVE (no SLOT hedge).
 
-geo-target, session-stick, and egress-rotate are planned, not LIVE.
+geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane.
 
 AZ Generator exits FRONT Node Gate only. radio_phy stays false.
 Not an ICANN registrar purchase of a ccTLD.
@@ -51,15 +51,13 @@ from miragegrid.semantic_bridge import (
 
 CAP7_SHUFFLE_LAW = "CAP-7 LIVE SHUFFLE"
 CAP7_SHUFFLE_SPEC = "CAP7-SHUFFLE-1.0"
-# Cap-7 FragGate stubs. Not LIVE. Match Softwares stub_ops. Runtime FG-STUB.
+# Packet hops that stay FG-STUB. Worker executes geo-target, session-stick, egress-rotate.
+# Softwares catalog unstub is the runtime companion, not this package.
 FRAGGATE_CAP7_STUBS: tuple[str, ...] = (
     "vpn-hop",
     "hop",
     "tunnel",
     "mesh",
-    "geo-target",
-    "session-stick",
-    "egress-rotate",
 )
 DOWNLOAD_WORKER_HOST = WORKER_HOST
 AZIEL_RUNTIME = "https://aziel-runtime.vibelock.workers.dev"
@@ -67,29 +65,35 @@ AZNET_PRODUCT = "aznet"
 AZBROWSER_PRODUCT = "azbrowser"
 
 
-def _planned_slot(name: str, note: str) -> dict[str, Any]:
+def _live_slot(name: str, note: str) -> dict[str, Any]:
     return {
         "name": name,
-        "status": "planned",
-        "live": False,
-        "hosted": False,
+        "status": "live",
+        "live": True,
+        "hosted": True,
+        "executable": True,
         "packet_forwarding": False,
         "packet_hop": False,
         "public_icann": False,
         "typed_on_icann_dns": False,
         "icann_publish": False,
         "ip_exit": False,
+        "public_egress_ip": False,
+        "sticky_public_ip": False,
+        "cf_geo_exit_pool": False,
         "azvpn": False,
+        "hosted_vpn": False,
         "note": note,
     }
 
 
 def planned_adaptation() -> dict[str, Any]:
-    """Design-only. Not executable. Not ICANN publish. Not AZVPN."""
+    """Cap-7 control plane. Executable factory metadata. Not ICANN. Not AZVPN. Not a public egress IP."""
     return {
-        "status": "planned",
-        "live": False,
-        "executable": False,
+        "status": "live",
+        "live": True,
+        "hosted": True,
+        "executable": True,
         "hosted_vpn": False,
         "packet_forwarding": False,
         "packet_hop": False,
@@ -99,25 +103,44 @@ def planned_adaptation() -> dict[str, Any]:
         "anonymity_network": False,
         "azvpn_softwares": False,
         "not_azvpn": True,
+        "ip_exit": False,
+        "public_egress_ip": False,
+        "sticky_public_ip": False,
+        "cf_geo_exit_pool": False,
+        "wireguard": False,
+        "openvpn": False,
+        "l3_exit": False,
         "fraggate_stubs": list(FRAGGATE_CAP7_STUBS),
+        "worker_live_ops": ["geo-target", "session-stick", "egress-rotate"],
+        "softwares_catalog_live": False,
+        "softwares_note": (
+            "Worker doors for geo-target, session-stick, and egress-rotate are live. "
+            "Softwares public_door_ops and one_line stay on the runtime companion until AZBot CLEAR after deploy."
+        ),
         "fraggate_stub_code": "FG-STUB",
-        "fraggate_executable": False,
+        "fraggate_stub_executable": False,
+        "control_plane_executable": True,
         "mesh_op_is_qnm_suite_mesh": False,
         "mesh_op_note": (
             "FragGate op mesh stays non-executable (runtime FG-STUB). "
-            "It is not QNM suite mesh_* and it is not GET /v1/mesh status."
+            "It is not QNM suite mesh_* and it is not GET /v1/mesh status. "
+            "Cap-7 geo-target, session-stick, and egress-rotate are control-plane LIVE."
         ),
-        "geo_target": _planned_slot(
+        "sticky_ip_means": (
+            "session/land stick on the Cap-7 plane. sticky_public_ip is false. "
+            "MirageGrid does not host a sticky public egress address or a Cloudflare geo-exit pool."
+        ),
+        "geo_target": _live_slot(
             "geo-target",
-            "Optional region label on assign or shuffle land. Metadata only. No IP geo-exit.",
+            "Optional region label on assign or shuffle land. Metadata only. No IP geo-exit. No Cloudflare geo-exit pool.",
         ),
-        "session_stick": _planned_slot(
+        "session_stick": _live_slot(
             "session-stick",
-            "Bind a session or land to the same Cap-7 site or node id for a TTL. Not implemented.",
+            "Bind a session or land to the same Cap-7 site and node id for a TTL. Sticky mesh label, not a public IP.",
         ),
-        "egress_rotate": _planned_slot(
+        "egress_rotate": _live_slot(
             "egress-rotate",
-            "Rotate the hosted update land among Cap-7 sites. Not ICANN publish. Not a packet hop.",
+            "Rotate the hosted update land among Cap-7 sites. Not ICANN publish. Not a packet hop. Not a public egress IP.",
         ),
     }
 
@@ -144,10 +167,13 @@ def factory_separation() -> dict[str, Any]:
 
 def planned_egress_slot() -> dict[str, Any]:
     return {
-        "name": "planned-egress",
-        "status": "planned",
-        "live": False,
-        "hosted": False,
+        "name": "cap7-egress",
+        "former_label": "planned-egress",
+        "status": "live",
+        "live": True,
+        "hosted": True,
+        "executable": True,
+        "kind": "control-plane-land-rotate",
         "packet_forwarding": False,
         "packet_hop": False,
         "hosted_vpn": False,
@@ -155,15 +181,20 @@ def planned_egress_slot() -> dict[str, Any]:
         "public_icann": False,
         "typed_on_icann_dns": False,
         "icann_publish": False,
+        "ip_exit": False,
+        "public_egress_ip": False,
+        "cf_geo_exit_pool": False,
+        "sticky_public_ip": False,
+        "note": "Rotate the update land among the seven Cap-7 sites. Not a public egress IP. Not AZVPN. Not ICANN.",
     }
 
 
 def outlast_honesty() -> dict[str, Any]:
     """Factory honesty is LIVE. Hosted HTTP is not a packet VPN.
 
-    The shift stack cites StaticLock + MirageGrid cloak + planned-egress.
-    planned-egress is not a hosted VPN. Live nodes anchor the factory
-    and the AZ domain doors.
+    The shift stack cites StaticLock + MirageGrid cloak + cap7-egress.
+    cap7-egress rotates a factory land. It is not a hosted VPN. Live nodes
+    anchor the factory and the AZ domain doors.
     """
     return {
         "communication_plane": True,
@@ -249,7 +280,7 @@ AZ_DOMAIN_DROP_INS: tuple[dict[str, str], ...] = (
 # One real .az duplication per hub. The other three names are decoys.
 REAL_HUB_DUPLICATIONS: tuple[str, ...] = ("azgrid", "azcloak", "azvault", "azshift")
 FALSE_SITES: tuple[str, ...] = ("azbooth", "azflag", "azstandby")
-SHIFT_STACK: tuple[str, ...] = ("staticlock", "miragegrid-cloak", "planned-egress")
+SHIFT_STACK: tuple[str, ...] = ("staticlock", "miragegrid-cloak", "cap7-egress")
 
 # MirageGrid-only factory names. Not hub hostnames. Not azcorpus/azlibrary.
 CAP7_FACTORY_SITES: tuple[dict[str, Any], ...] = (
@@ -400,6 +431,7 @@ def site_record(site: Mapping[str, Any]) -> dict[str, Any]:
         "shift_stack": list(SHIFT_STACK),
         "staticlock": True,
         "miragegrid_cloak": True,
+        "cap7_egress": planned_egress_slot(),
         "planned_egress": planned_egress_slot(),
         "packet_forwarding": False,
         "hosted_vpn": False,
@@ -446,6 +478,7 @@ def cap7_shuffle_dict() -> dict[str, Any]:
         "shift_stack": list(SHIFT_STACK),
         "staticlock": True,
         "miragegrid_cloak": True,
+        "cap7_egress": planned_egress_slot(),
         "planned_egress": planned_egress_slot(),
         "packet_forwarding": False,
         "hosted_vpn": False,
@@ -468,7 +501,7 @@ def cap7_shuffle_dict() -> dict[str, Any]:
         "canonical_hubs": [row["canonical_hub"] for row in CANONICAL_HUBS],
         "named_mesh_designs": ["azcorpus", "azlibrary"],
         **outlast_honesty(),
-        "note": "Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. It shifts with StaticLock + MirageGrid cloak + planned-egress. It is not a public ICANN registrar and not a hosted VPN. geo-target, session-stick TTL, and egress-rotate are planned, not LIVE. POST /v1/session/sticky selects a mesh node label only (not an IP, no TTL). Geo, sticky public IP, and egress rotation refuse. The update URL is this app Worker and does not vary by land label. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door. Not AZVPN.",
+        "note": "Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. It shifts with StaticLock + MirageGrid cloak + cap7-egress (former label planned-egress). It is not a public ICANN registrar and not a hosted VPN. geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane: a region label, a sticky mesh node plus factory land for a TTL, and land rotation among the seven sites. They are not a public egress IP, not a Cloudflare geo-exit pool, and not packet forwarding. The update URL is this app Worker and does not vary by land label. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door. vpn-hop, hop, tunnel, and mesh stay FG-STUB. Not AZVPN.",
     }
 
 
@@ -788,6 +821,7 @@ def hosted_bridge_doors() -> dict[str, Any]:
         "false_site_count": 3,
         "az_domains": az_domain_rows(),
         "shift_stack": list(SHIFT_STACK),
+        "cap7_egress": planned_egress_slot(),
         "planned_egress": planned_egress_slot(),
         **factory_separation(),
         "planned": planned_adaptation(),

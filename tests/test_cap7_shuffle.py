@@ -84,9 +84,12 @@ def test_sites_inherit_hub_dna_only() -> None:
     assert by_label["azgrid"]["resolves_to_hub_means"] == "design-pair-not-public-dns"
     assert "miragegrid_vpn" not in by_label["azgrid"]
     assert "miragegrid-vpn" not in by_label["azgrid"]["shift_stack"]
-    assert by_label["azgrid"]["shift_stack"][2] == "planned-egress"
-    assert by_label["azgrid"]["planned_egress"]["status"] == "planned"
-    assert by_label["azgrid"]["planned_egress"]["hosted"] is False
+    assert by_label["azgrid"]["shift_stack"][2] == "cap7-egress"
+    assert by_label["azgrid"]["cap7_egress"]["status"] == "live"
+    assert by_label["azgrid"]["cap7_egress"]["hosted"] is True
+    assert by_label["azgrid"]["cap7_egress"]["live"] is True
+    assert by_label["azgrid"]["cap7_egress"]["ip_exit"] is False
+    assert by_label["azgrid"]["planned_egress"]["former_label"] == "planned-egress"
     assert by_label["azgrid"]["public_browser_gateway"] is True
     assert by_label["azbooth"]["false_site"] is True
     assert by_label["azbooth"]["decoy"] is True
@@ -320,54 +323,58 @@ def test_cap7_cite_is_not_hosted_vpn_or_icann_registrar() -> None:
     assert law["separate_from_per_node_aziel_slots"] is True
     assert law["per_node_aziel_slots"]["same_as_cap7_factory"] is False
     assert "miragegrid-vpn" not in law["shift_stack"]
-    assert "planned-egress" in law["shift_stack"]
+    assert "cap7-egress" in law["shift_stack"]
+    assert "planned-egress" not in law["shift_stack"]
     assert "miragegrid_vpn" not in law
     planned = law["planned"]
-    assert planned["status"] == "planned"
-    assert planned["live"] is False
-    assert planned["executable"] is False
+    assert planned["status"] == "live"
+    assert planned["live"] is True
+    assert planned["executable"] is True
     assert planned["azvpn_softwares"] is False
     assert planned["packet_hop"] is False
     assert planned["icann_publish"] is False
+    assert planned["ip_exit"] is False
+    assert planned["sticky_public_ip"] is False
+    assert planned["cf_geo_exit_pool"] is False
     for name in ("geo_target", "session_stick", "egress_rotate"):
         slot = planned[name]
-        assert slot["status"] == "planned"
-        assert slot["live"] is False
+        assert slot["status"] == "live"
+        assert slot["live"] is True
+        assert slot["hosted"] is True
+        assert slot["executable"] is True
         assert slot["packet_forwarding"] is False
         assert slot["ip_exit"] is False
     assert planned["geo_target"]["name"] == "geo-target"
     assert planned["session_stick"]["name"] == "session-stick"
     assert planned["egress_rotate"]["name"] == "egress-rotate"
     assert planned["fraggate_stubs"] == list(FRAGGATE_CAP7_STUBS)
-    assert planned["fraggate_stubs"] == [
-        "vpn-hop",
-        "hop",
-        "tunnel",
-        "mesh",
-        "geo-target",
-        "session-stick",
-        "egress-rotate",
-    ]
-    assert planned["fraggate_executable"] is False
+    assert planned["fraggate_stubs"] == ["vpn-hop", "hop", "tunnel", "mesh"]
+    assert planned["worker_live_ops"] == ["geo-target", "session-stick", "egress-rotate"]
+    assert "geo-target" not in planned["fraggate_stubs"]
+    assert "mesh" in planned["fraggate_stubs"]
+    assert planned["softwares_catalog_live"] is False
+    assert planned["fraggate_stub_executable"] is False
     assert planned["fraggate_stub_code"] == "FG-STUB"
     mesh_js = (ROOT / "workers/download-tracker/src/mesh.js").read_text(encoding="utf-8")
     stub_block = mesh_js.split("export const FRAGGATE_CAP7_STUBS", 1)[1].split("]);", 1)[0]
     for name in planned["fraggate_stubs"]:
         assert f'"{name}"' in stub_block
+    assert "geo-target" not in stub_block
     assert "fraggate_stubs: FRAGGATE_CAP7_STUBS.slice()" in mesh_js
     assert planned["mesh_op_is_qnm_suite_mesh"] is False
     for row in law["sites"]:
         assert "miragegrid_vpn" not in row
         assert "miragegrid-vpn" not in row["shift_stack"]
-        assert row["planned_egress"]["status"] == "planned"
-        assert row["planned_egress"]["hosted"] is False
-        assert row["planned_egress"]["packet_forwarding"] is False
+        assert row["cap7_egress"]["status"] == "live"
+        assert row["cap7_egress"]["hosted"] is True
+        assert row["cap7_egress"]["packet_forwarding"] is False
         assert row["public_icann"] is False
         assert row["public_icann_registrar"] is False
         assert row["separate_from_per_node_aziel_slots"] is True
     assert "miragegrid-vpn" not in APP_CAP7
     assert "miragegrid_vpn" not in APP_CAP7
-    assert "planned-egress" in APP_CAP7
+    assert "cap7-egress" in APP_CAP7
+    assert "former_label" in APP_CAP7
     assert "/v1/planned" in APP_INDEX
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")

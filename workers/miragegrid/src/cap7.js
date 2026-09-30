@@ -1,7 +1,7 @@
 /**
  * CAP7-SHUFFLE-1.0 — MirageGrid-only factory roster.
  * Cap-7 auto-generates .az hub mirrors and shifts them with
- * StaticLock + MirageGrid cloak + a planned egress slot.
+ * StaticLock + MirageGrid cloak + cap7-egress (land rotate, not packet egress).
  * Four hub mirrors, three decoys. Not a public ICANN registrar.
  * Separate from per-node .aziel slots. Not a hosted VPN. Not AZVPN.
  * Author: Aziel Eliab only.
@@ -33,7 +33,7 @@ export const AZ_DOMAIN_DROP_INS = Object.freeze([
 ]);
 export const REAL_HUB_DUPLICATIONS = Object.freeze(["azgrid", "azcloak", "azvault", "azshift"]);
 export const FALSE_SITES = Object.freeze(["azbooth", "azflag", "azstandby"]);
-export const SHIFT_STACK = Object.freeze(["staticlock", "miragegrid-cloak", "planned-egress"]);
+export const SHIFT_STACK = Object.freeze(["staticlock", "miragegrid-cloak", "cap7-egress"]);
 
 export function factorySeparation() {
   return {
@@ -52,12 +52,16 @@ export function factorySeparation() {
   };
 }
 
+/** Cap-7 land rotation. Former label planned-egress. Not packet egress. */
 export function plannedEgressSlot() {
   return {
-    name: "planned-egress",
-    status: "planned",
-    live: false,
-    hosted: false,
+    name: "cap7-egress",
+    former_label: "planned-egress",
+    status: "live",
+    live: true,
+    hosted: true,
+    executable: true,
+    kind: "control-plane-land-rotate",
     packet_forwarding: false,
     packet_hop: false,
     hosted_vpn: false,
@@ -65,6 +69,11 @@ export function plannedEgressSlot() {
     public_icann: false,
     typed_on_icann_dns: false,
     icann_publish: false,
+    ip_exit: false,
+    public_egress_ip: false,
+    cf_geo_exit_pool: false,
+    sticky_public_ip: false,
+    note: "Rotate the update land among the seven Cap-7 sites. Not a public egress IP. Not AZVPN. Not ICANN.",
   };
 }
 
@@ -245,6 +254,7 @@ export function siteRecord(site) {
     shift_stack: SHIFT_STACK.slice(),
     staticlock: true,
     miragegrid_cloak: true,
+    cap7_egress: plannedEgressSlot(),
     planned_egress: plannedEgressSlot(),
     packet_forwarding: false,
     hosted_vpn: false,
@@ -296,6 +306,7 @@ export function cap7ShuffleDict() {
     shift_stack: SHIFT_STACK.slice(),
     staticlock: true,
     miragegrid_cloak: true,
+    cap7_egress: plannedEgressSlot(),
     planned_egress: plannedEgressSlot(),
     packet_forwarding: false,
     hosted_vpn: false,
@@ -318,7 +329,7 @@ export function cap7ShuffleDict() {
     canonical_hubs: [HUB_AE, HUB_CORPUS, HUB_GODLOCK, HUB_HDJ],
     named_mesh_designs: ["azcorpus", "azlibrary"],
     ...outlastHonesty(),
-    note: "Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. It shifts with StaticLock + MirageGrid cloak + planned-egress. It is not a public ICANN registrar and not a hosted VPN. geo-target, session-stick TTL, and egress-rotate are planned, not LIVE. POST /v1/session/sticky selects a mesh node label only (not an IP, no TTL). Geo, sticky public IP, and egress rotation refuse. The update URL is this app Worker and does not vary by land label. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door. Not AZVPN.",
+    note: "Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. It shifts with StaticLock + MirageGrid cloak + cap7-egress (former label planned-egress). It is not a public ICANN registrar and not a hosted VPN. geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane: a region label, a sticky mesh node plus factory land for a TTL, and land rotation among the seven sites. They are not a public egress IP, not a Cloudflare geo-exit pool, and not packet forwarding. The update URL is this app Worker and does not vary by land label. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door. vpn-hop, hop, tunnel, and mesh stay FG-STUB. Not AZVPN.",
   };
 }
 
@@ -353,6 +364,7 @@ export function hostedBridgeDoors() {
     false_site_count: 3,
     az_domains: azDomainRows(),
     shift_stack: SHIFT_STACK.slice(),
+    cap7_egress: plannedEgressSlot(),
     planned_egress: plannedEgressSlot(),
     ...factorySeparation(),
     planned: plannedAdaptation(),
@@ -385,9 +397,13 @@ export function hostedBridgeDoors() {
       azvpn: false,
       public_icann_registrar: false,
       second_door: false,
-      geo_target: "planned",
-      session_stick: "planned",
-      egress_rotate: "planned",
+      geo_target: "live",
+      session_stick: "live",
+      egress_rotate: "live",
+      ip_exit: false,
+      sticky_public_ip: false,
+      cf_geo_exit_pool: false,
+      public_egress_ip: false,
     },
     ...outlastHonesty(),
     az_generator: law.az_generator,
