@@ -8,7 +8,7 @@ import { APP_HOST, CAP7_SHUFFLE_SPEC, DOWNLOAD_HOST, IDENTITY, cap7Roster, perso
 
 const TITLE = "MirageGrid — Cap-7 LIVE shuffle";
 const MOTTO = "Nodes ping MirageGrid until they land on one Cap-7 site. That land is the update endpoint for the round.";
-const BANNER = "THIS IS: the named app Worker (miragegrid). Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. Shift stack is StaticLock + MirageGrid cloak + planned-egress. Factory honesty is LIVE. Cap-7 is not a public ICANN registrar and is not typed on ICANN DNS. Internet reaches AZ domains only via the hub websites. Live nodes anchor the factory and the AZ doors. AZ Generator exits FRONT Node Gate only. FragGate is THE exec door. THIS IS NOT: a VPN, an anonymity network, AZVPN, hosted packet forwarding, an ICANN registrar purchase of a ccTLD, a second door, or the download-tracker. geo-target, session-stick, and egress-rotate are planned, not LIVE. Author Aziel Eliab.";
+const BANNER = "THIS IS: the named app Worker (miragegrid). Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. Shift stack is StaticLock + MirageGrid cloak + planned-egress. Factory honesty is LIVE. Cap-7 is not a public ICANN registrar and is not typed on ICANN DNS. Internet reaches AZ domains only via the hub websites. Live nodes anchor the factory and the AZ doors. AZ Generator exits FRONT Node Gate only. FragGate is THE exec door. THIS IS NOT: a VPN, an anonymity network, AZVPN, hosted packet forwarding, an ICANN registrar purchase of a ccTLD, a second door, or the download-tracker. geo-target, session-stick TTL, and egress-rotate are planned, not LIVE. A sticky mesh-node label is not an IP. Author Aziel Eliab.";
 
 export function citeDocument() {
   return {
@@ -128,7 +128,7 @@ export function renderIndexHtml() {
 
   <section class="card" id="cap7">
     <h2>Cap-7 factory sites</h2>
-    <p class="kid">Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node <code>.aziel</code> slots. This page is <code>resolves_to_hub:false</code>. Cap-7 is not an ICANN hub resolve. Shift stack is StaticLock + cloak + planned-egress. Not a public ICANN registrar. Not typed on ICANN DNS. Internet reaches AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, and AZ.HeDidntJump.AZ via the hub websites. Factory honesty is LIVE. Live nodes anchor both layers. Communication plane — not a packet VPN, not an anonymity network, not AZVPN. geo-target, session-stick, and egress-rotate are planned, not LIVE. FragGate vpn-hop / hop / tunnel / mesh stay non-executable. FragGate is THE door.</p>
+    <p class="kid">Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node <code>.aziel</code> slots. This page is <code>resolves_to_hub:false</code>. Cap-7 is not an ICANN hub resolve. Shift stack is StaticLock + cloak + planned-egress. Not a public ICANN registrar. Not typed on ICANN DNS. Internet reaches AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, and AZ.HeDidntJump.AZ via the hub websites. Factory honesty is LIVE. Live nodes anchor both layers. Communication plane — not a packet VPN, not an anonymity network, not AZVPN. geo-target, session-stick TTL, and egress-rotate are planned, not LIVE. <code>POST /v1/session/sticky</code> sticks a mesh node label only. FragGate vpn-hop / hop / tunnel / mesh stay non-executable. FragGate is THE door.</p>
     <table>
       <thead><tr><th>Label</th><th>Public</th><th>Reach</th><th>design_of</th><th>Path</th></tr></thead>
       <tbody>${rows}</tbody>
@@ -155,6 +155,14 @@ export function renderIndexHtml() {
     </div>
     <p class="status" id="ws-status">Ready. Ping to land.</p>
     <pre id="ws-out">No ping yet.</pre>
+  </section>
+
+  <section class="card" id="egress">
+    <h2>Geo, sticky session, egress</h2>
+    <p class="kid">Questions about geo targeting, sticky sessions, and IP rotation land here. There is no residential IP pool. <code>POST /v1/egress/geo</code>, <code>POST /v1/egress/sticky</code>, and <code>POST /v1/egress/rotate</code> refuse until a real pool exists. <code>POST /v1/session/sticky</code> sticks a mesh node label (<code>node-01</code> … <code>node-25</code>) to <code>sticky_key</code>. That label is not an IP and has no TTL. AZVPN stays a separate product. FragGate <code>vpn-hop</code> / <code>hop</code> / <code>tunnel</code> / <code>mesh</code> stay stub.</p>
+    <div class="ops">
+      <button type="button" id="op-egress">Egress cite</button>
+    </div>
   </section>
 
   <section class="card" id="cite">
@@ -194,6 +202,7 @@ export function renderIndexHtml() {
   document.getElementById("op-assign").onclick = function () {
     call("/v1/assign", { method: "POST", body: "{}" });
   };
+  document.getElementById("op-egress").onclick = function () { call("/v1/egress"); };
   document.getElementById("op-health").onclick = function () { call("/v1/health"); };
   document.getElementById("op-bridge").onclick = function () { call("/bridge"); };
 })();

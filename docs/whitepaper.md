@@ -255,7 +255,9 @@ an anonymity network, and not AZVPN. Hosted packet forwarding is false.
 - Peer listener: `miragegrid node` (loopback by default).
 
 It does not guarantee anonymity against a global adversary. It is not
-a crime tool.
+a crime tool. Hosted geo targeting, sticky public IPs, and egress IP
+rotation refuse until a real pool exists ([MG-EGRESS-1.0.md](MG-EGRESS-1.0.md)).
+`POST /v1/session/sticky` sticks a mesh node label only.
 
 The Worker homepage shows a suite Live Nodes strip. `/v1/mesh/*` PROXY
 to aziel-runtime. Suite mesh default OFF. QNM rollup is

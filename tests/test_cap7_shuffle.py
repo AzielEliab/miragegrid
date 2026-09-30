@@ -80,9 +80,18 @@ def test_sites_inherit_hub_dna_only() -> None:
     assert by_label["azgrid"]["hub_duplication"] is True
     assert by_label["azgrid"]["false_site"] is False
     assert by_label["azgrid"]["resolves_to_hub"] is True
+    assert by_label["azgrid"]["resolves_to_hub_means"] == "design-pair-not-public-dns"
+    assert "miragegrid_vpn" not in by_label["azgrid"]
+    assert "miragegrid-vpn" not in by_label["azgrid"]["shift_stack"]
+    assert by_label["azgrid"]["shift_stack"][2] == "planned-egress"
+    assert by_label["azgrid"]["planned_egress"]["status"] == "planned"
+    assert by_label["azgrid"]["planned_egress"]["hosted"] is False
+    assert by_label["azgrid"]["public_browser_gateway"] is True
     assert by_label["azbooth"]["false_site"] is True
     assert by_label["azbooth"]["decoy"] is True
     assert by_label["azbooth"]["resolves_to_hub"] is False
+    assert by_label["azbooth"]["public_browser_gateway"] is True
+    assert by_label["azcloak"]["public_browser_gateway"] is False
     assert sum(1 for row in cap7_roster() if row["hub_duplication"]) == 4
     assert sum(1 for row in cap7_roster() if row["false_site"]) == 3
 
@@ -169,6 +178,8 @@ def test_update_proof_land_is_update_endpoint() -> None:
     assert upd["internet_reachable"] is False
     assert upd["hosted_update"] == "LIVE"
     assert upd["factory_honesty"] == "LIVE"
+    assert upd["update_endpoint_varies_by_land"] is False
+    assert upd["land_label"] == out["land"]["label"]
     waiting = apply_update(node_id="node-07")
     assert waiting["phase"] == "ping"
     assert waiting["continue"] is True

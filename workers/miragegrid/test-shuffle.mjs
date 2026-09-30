@@ -1,7 +1,7 @@
 import worker from "./src/index.js";
 import { CAP7_FACTORY_SITES, FACTORY_LABELS, FALSE_SITES, REAL_HUB_DUPLICATIONS, hostedBridgeDoors, publicGateway } from "./src/cap7.js";
 import { applyUpdate, landIndex, ping, shuffleCite, shuffleSeed } from "./src/shuffle.js";
-import { applyGridShift, attachQnsCd } from "../download-tracker/src/mesh.js";
+import { applyGridShift, attachQnsCd, hostedStubRefuse } from "../download-tracker/src/mesh.js";
 
 function assert(cond, label) {
   if (!cond) throw new Error(label);
@@ -300,5 +300,130 @@ const hostedRestore = await call("/v1/aznet/restore", {
 });
 const hostedRestoreBody = await hostedRestore.json();
 assert(hostedRestore.status === 403 && hostedRestoreBody.code === "AZG-NOT-CALLABLE", "hosted restore " + hostedRestoreBody.code);
+
+assert(landA.update_endpoint_varies_by_land === false, "land url does not vary");
+assert(landA.land_label === landA.land.label, "land label cited");
+assert(!Object.prototype.hasOwnProperty.call(landA.land, "miragegrid_vpn"), "no vpn key on land");
+assert(!landA.land.shift_stack.includes("miragegrid-vpn"), "no vpn stack label");
+assert(landA.land.shift_stack.includes("planned-egress"), "planned egress slot");
+assert(landA.land.planned_egress && landA.land.planned_egress.status === "planned" && landA.land.planned_egress.hosted === false, "planned slot");
+assert(landA.land.resolves_to_hub_means === "design-pair-not-public-dns" || landA.land.resolves_to_hub_means === "decoy-not-a-hub-pair", "resolve means");
+
+const egress = await call("/v1/egress");
+assert(egress.status === 200, "egress cite");
+const egressBody = await egress.json();
+assert(egressBody.code === "MG-EGRESS-CITE", "egress code " + egressBody.code);
+assert(egressBody.residential === false && egressBody.egress_ip === null, "no residential pool");
+assert(egressBody.vpn_hosted_live === false && egressBody.azvpn_merged === false, "not azvpn");
+assert(egressBody.fraggate_stub_ops.includes("vpn-hop"), "stub ops cited");
+
+const geo = await call("/v1/egress/geo", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ country: "US", city: "Miami" }),
+});
+const geoBody = await geo.json();
+assert(geo.status === 403 && geoBody.code === "MG-GEO-NOT-READY", "geo refuse " + geoBody.code);
+assert(geoBody.egress_ip === null && geoBody.node_id == null, "geo did not assign");
+
+const stickyIp = await call("/v1/egress/sticky", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ sticky: true, ttl_seconds: 600 }),
+});
+const stickyIpBody = await stickyIp.json();
+assert(stickyIp.status === 403 && stickyIpBody.code === "MG-STICKY-IP-NOT-READY", "sticky ip " + stickyIpBody.code);
+
+const rotate = await call("/v1/egress/rotate", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ rotate: true, residential: true }),
+});
+const rotateBody = await rotate.json();
+assert(rotate.status === 403 && rotateBody.code === "MG-EGRESS-IP-NOT-READY", "rotate " + rotateBody.code);
+assert(rotateBody.ip_rotated === false, "did not rotate");
+
+const painted = await call("/v1/assign", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ endpoints: { "node-01": "203.0.113.8:443" } }),
+});
+const paintedBody = await painted.json();
+assert(painted.status === 403 && paintedBody.code === "MG-NO-EGRESS-PAINT", "paint " + paintedBody.code);
+
+const geoAssign = await call("/v1/assign", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ country: "US" }),
+});
+const geoAssignBody = await geoAssign.json();
+assert(geoAssign.status === 403 && geoAssignBody.code === "MG-GEO-NOT-READY", "assign geo " + geoAssignBody.code);
+assert(geoAssignBody.receipt == null, "geo assign minted no receipt");
+
+const badHops = await call("/v1/assign", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ hops: 99 }),
+});
+const badHopsBody = await badHops.json();
+assert(badHops.status === 400 && badHopsBody.code === "MG-BAD-HOPS", "bad hops " + badHopsBody.code);
+
+const badJson = await call("/v1/assign", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: "{",
+});
+const badJsonBody = await badJson.json();
+assert(badJson.status === 400 && badJsonBody.code === "MG-BAD-JSON", "bad json " + badJsonBody.code);
+
+const stickyA = await call("/v1/session/sticky", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ sticky_key: "booth-1" }),
+});
+const stickyB = await call("/v1/session/sticky", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ sticky_key: "booth-1" }),
+});
+const stickyABody = await stickyA.json();
+const stickyBBody = await stickyB.json();
+assert(stickyA.status === 200 && stickyABody.code == null, "sticky mesh " + stickyA.status);
+assert(stickyABody.node_id === "node-21", "vector node " + stickyABody.node_id);
+assert(stickyBBody.node_id === stickyABody.node_id, "sticky stable");
+assert(stickyABody.session_id !== stickyBBody.session_id, "receipt session is fresh");
+assert(stickyABody.sticky_ip === false && stickyABody.egress_ip === null, "sticky not ip");
+assert(stickyABody.ttl_enforced === false && stickyABody.circuit_built === false, "no ttl no circuit");
+assert(stickyABody.receipt && stickyABody.receipt.mirage_node === 21, "sticky receipt");
+
+const stickyGeo = await call("/v1/session/sticky", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ sticky_key: "booth-1", country: "DE", ttl_seconds: 30 }),
+});
+const stickyGeoBody = await stickyGeo.json();
+assert(stickyGeo.status === 403 && stickyGeoBody.code === "MG-GEO-NOT-READY", "sticky geo " + stickyGeoBody.code);
+assert(stickyGeoBody.node_id == null, "sticky geo no node");
+
+const stickyTtl = await call("/v1/session/sticky", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ sticky_key: "booth-1", ttl_seconds: 30 }),
+});
+const stickyTtlBody = await stickyTtl.json();
+assert(stickyTtl.status === 403 && stickyTtlBody.code === "MG-STICKY-TTL-NOT-READY", "ttl " + stickyTtlBody.code);
+
+assert(assignHonestyBody.receipt_covers === "entry-node", "receipt covers entry");
+assert(assignHonestyBody.endpoints_applied === false, "defaults not painted");
+assert(assignHonestyBody.egress_ip === null, "assign has no egress ip");
+
+const stubHop = hostedStubRefuse("vpn-hop");
+assert(stubHop && stubHop.code === "MESH-STUB" && stubHop.ok === false, "vpn-hop stays stub");
+assert(hostedStubRefuse("hop").code === "MESH-STUB", "hop stays stub");
+assert(hostedStubRefuse("tunnel").code === "MESH-STUB", "tunnel stays stub");
+assert(hostedStubRefuse("assign") == null, "assign not stubbed");
+
+assert(html.includes("no residential IP pool") || html.includes("There is no residential IP pool"), "home egress honesty");
+assert(html.includes("/v1/session/sticky"), "home sticky door");
 
 console.log("cap7 shuffle worker smoke ok land=" + pingBody.land.label);

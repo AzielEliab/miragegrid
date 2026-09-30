@@ -216,6 +216,8 @@ export function siteRecord(site) {
     false_site: falseSite,
     decoy: falseSite,
     resolves_to_hub: real,
+    resolves_to_hub_means: real ? "design-pair-not-public-dns" : "decoy-not-a-hub-pair",
+    public_browser_gateway: label === "azgrid" || label === "azbooth",
     name_may_change: true,
     public_icann: false,
     typed_on_icann_dns: false,
@@ -300,6 +302,7 @@ export function cap7ShuffleDict() {
     azvpn: false,
     ...factorySeparation(),
     planned: plannedAdaptation(),
+    update_endpoint_varies_by_land: false,
     az_generator: {
       callable: false,
       lives: "deep-node",
@@ -315,7 +318,7 @@ export function cap7ShuffleDict() {
     canonical_hubs: [HUB_AE, HUB_CORPUS, HUB_GODLOCK, HUB_HDJ],
     named_mesh_designs: ["azcorpus", "azlibrary"],
     ...outlastHonesty(),
-    note: "Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. It shifts with StaticLock + MirageGrid cloak + planned-egress. It is not a public ICANN registrar and not a hosted VPN. geo-target, session-stick, and egress-rotate are planned, not LIVE. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door. Not AZVPN.",
+    note: "Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. It shifts with StaticLock + MirageGrid cloak + planned-egress. It is not a public ICANN registrar and not a hosted VPN. geo-target, session-stick TTL, and egress-rotate are planned, not LIVE. POST /v1/session/sticky selects a mesh node label only (not an IP, no TTL). Geo, sticky public IP, and egress rotation refuse. The update URL is this app Worker and does not vary by land label. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door. Not AZVPN.",
   };
 }
 

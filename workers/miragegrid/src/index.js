@@ -10,7 +10,8 @@ import {
   MOTTO,
   PRODUCT,
   VERSION,
-  assign,
+  handleEgressRequest,
+  hostedAssign,
   listNodes,
   receiptFromDict,
   hashOk,
@@ -34,6 +35,7 @@ import { plannedAdaptation } from "../../download-tracker/src/mesh.js";
 import { applyUpdate, ping, shuffleCite } from "./shuffle.js";
 import { handleSidenet } from "./sidenet.js";
 import { citeDocument, renderIndexHtml } from "./homepage.js";
+import { EGRESS_SPEC } from "./egress.js";
 
 const SKILL = `---
 name: MirageGrid
@@ -64,7 +66,12 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | GET | \`/v1/skill\` | This markdown. |
 | GET | \`/v1/nodes\` | 25 mesh nodes. |
 | GET | \`/v1/doctor\` | Law stamp + Worker role. |
-| POST | \`/v1/assign\` | Session circuit. |
+| POST | \`/v1/assign\` | Session circuit. Geo, sticky IP, rotation, and painted endpoints refuse. |
+| GET | \`/v1/egress\` | MG-EGRESS-1.0 cite. Geo, sticky IP, and egress rotation are not live. |
+| POST | \`/v1/egress/geo\` | Refuse. No country/city/ASN pool. |
+| POST | \`/v1/egress/sticky\` | Refuse. No sticky public IP. |
+| POST | \`/v1/egress/rotate\` | Refuse. No egress address to rotate. |
+| POST | \`/v1/session/sticky\` | Same sticky_key, same mesh node label. Not an IP. No TTL. |
 | POST | \`/v1/verify-receipt\` | Verify receipt. |
 | GET | \`/v1/mesh\` | PROXY. Default OFF. GET never enables. |
 
@@ -121,10 +128,12 @@ async function readJsonBody(request, { required = false } = {}) {
   }
   try {
     const body = JSON.parse(text);
-    return { body: body && typeof body === "object" ? body : {} };
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return { error: { ok: false, code: "MG-BAD-JSON", error: "JSON object required" }, status: 400 };
+    }
+    return { body };
   } catch {
-    if (required) return { error: { error: "JSON body required" }, status: 400 };
-    return { body: {} };
+    return { error: { ok: false, code: "MG-BAD-JSON", error: "JSON body required" }, status: 400 };
   }
 }
 
@@ -154,7 +163,12 @@ function openapiSpec() {
       "/v1/skill": { get: { operationId: "skill", summary: "Skill markdown." } },
       "/v1/nodes": { get: { operationId: "nodes", summary: "25 mesh nodes." } },
       "/v1/doctor": { get: { operationId: "doctor", summary: "Law stamp." } },
-      "/v1/assign": { post: { operationId: "assign", summary: "Assign a session circuit." } },
+      "/v1/assign": { post: { operationId: "assign", summary: "Assign a mesh-node session. Geo, sticky IP, and egress rotation refuse." } },
+      "/v1/egress": { get: { operationId: "egressCite", summary: "Cite geo, sticky IP, and egress rotation as not live." } },
+      "/v1/egress/geo": { post: { operationId: "egressGeo", summary: "Refuse geo targeting until a real pool exists." } },
+      "/v1/egress/sticky": { post: { operationId: "egressSticky", summary: "Refuse sticky public IPs." } },
+      "/v1/egress/rotate": { post: { operationId: "egressRotate", summary: "Refuse egress IP rotation." } },
+      "/v1/session/sticky": { post: { operationId: "sessionSticky", summary: "Stick a mesh node label to sticky_key. Not an IP." } },
       "/v1/verify-receipt": { post: { operationId: "verifyReceipt", summary: "Verify a receipt." } },
     },
   };
@@ -178,6 +192,16 @@ function doctor() {
     hardcoded_host: false,
     az_generator: { callable: false, exit: "node-gate-front" },
     cap7: cap7ShuffleDict(),
+    egress: {
+      spec: EGRESS_SPEC,
+      geo: "refuse",
+      sticky_ip: "refuse",
+      ip_rotation: "refuse",
+      sticky_mesh_node: "deterministic-label",
+      residential: false,
+      vpn_hosted_live: false,
+      azvpn: "separate",
+    },
     ...outlastHonesty(),
     author: IDENTITY,
     identity: IDENTITY,
@@ -455,6 +479,23 @@ export default {
       return json(doctor());
     }
 
+    if (path === "/v1/egress" || path.startsWith("/v1/egress/") || path === "/v1/session" || path.startsWith("/v1/session/")) {
+      let egressBody = {};
+      if (method === "POST") {
+        const parsed = await readJsonBody(request);
+        if (parsed.error) return json(parsed.error, parsed.status);
+        egressBody = parsed.body;
+      }
+      const egress = await handleEgressRequest(method, path, egressBody);
+      if (egress) {
+        if (method === "HEAD" && egress.status === 200) {
+          return new Response(null, { status: 200, headers: corsHeaders() });
+        }
+        const payload = egress.status === 200 ? { ...egress.body, ...outlastHonesty() } : egress.body;
+        return json(payload, egress.status);
+      }
+    }
+
     if (path === "/v1/nodes" && method === "GET") return json(listNodes());
 
     if (path === "/openapi.json" && method === "GET") return json(openapiSpec());
@@ -462,9 +503,10 @@ export default {
     if (path === "/v1/assign" && method === "POST") {
       const parsed = await readJsonBody(request);
       if (parsed.error) return json(parsed.error, parsed.status);
-      const assigned = await assign(parsed.body && typeof parsed.body === "object" ? parsed.body : {});
+      const assigned = await hostedAssign(parsed.body);
+      if (assigned.status !== 200) return json(assigned.body, assigned.status);
       return json({
-        ...assigned,
+        ...assigned.body,
         hosted_kind: "session-assignment",
         ...outlastHonesty(),
       });

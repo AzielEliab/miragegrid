@@ -100,6 +100,7 @@ for that round**.
 - Ping without a seed stays `phase: ping`, `continue: true` — do not
   invent a land.
 - Same seed → same land for every node. GET never plants a claim.
+- The update **URL** is always this app Worker (`POST /v1/shuffle/update`). `update_endpoint_varies_by_land` is **false**. The land **label** is which factory name the round cites. Do not describe that label as a distinct public host.
 
 ## AZnet survival surface
 
@@ -114,9 +115,11 @@ These are design intent only. No LIVE flag. No ICANN publish. No packet hop.
 
 | Name | Meaning | Honesty |
 | --- | --- | --- |
-| `geo-target` | Optional region label on assign or shuffle land | metadata only; `ip_exit: false` |
-| `session-stick` | Bind a session or land to the same Cap-7 site or node id for a TTL | `status: planned` |
-| `egress-rotate` | Rotate the hosted update land among the Cap-7 roster | not ICANN DNS; not a packet hop |
+| `geo-target` | Optional region label on assign or shuffle land | metadata only; `ip_exit: false`. Worker door `MG-GEO-NOT-READY`. |
+| `session-stick` | Bind a session or land for a TTL | `status: planned`. A TTL refuses `MG-STICKY-TTL-NOT-READY`. |
+| `egress-rotate` | Rotate the hosted update land among the Cap-7 roster | not ICANN DNS; not a packet hop. Worker door `MG-EGRESS-IP-NOT-READY`. |
+
+`POST /v1/session/sticky` is a separate live mesh-node label (`SHA-256` of the key). It is not an IP and not the planned TTL stick. Sticky public IPs refuse `MG-STICKY-IP-NOT-READY`. See [MG-EGRESS-1.0.md](MG-EGRESS-1.0.md).
 
 FragGate ops `vpn-hop`, `hop`, `tunnel`, and `mesh` stay non-executable
 (runtime `FG-STUB`). The FragGate `mesh` op is not QNM suite `mesh_*`
@@ -146,7 +149,8 @@ FragGate LIVE_OPS stay `health`, `assign`, `verify-receipt`, `bridge`,
 - GET enable / GET radio-on / GET claim plant / GET `prev`+`lockset` update plant
 - Hosted cloak-burst name plant (`MGS-NO-HOSTED-PLANT`)
 - Invented radio PHY
-- Merging AZnet / AZ Browser / MirageGrid into one product
+- Merging AZnet / AZ Browser / AZVPN / MirageGrid into one product
+- Treating geo, sticky public IP, or egress rotation as live ([MG-EGRESS-1.0.md](MG-EGRESS-1.0.md))
 - SLOT hedges on factory honesty, hosted update, hosted MCP, or shuffle land
 - Citing the named Worker as CF 1042 dead after this deploy
 
