@@ -113,9 +113,9 @@ The **public Worker door** is HTTPS on Cloudflare. Encryption in transit
 for that door is **Cloudflare TLS**. Do not add Worker-side theater
 crypto (XOR, homemade “encrypt”, FoldLock-as-TLS, zip-as-crypto).
 
-Local onion ChaCha20-Poly1305 + X25519 stay the **mesh VPN** primitives
-(RFC 8439 / RFC 7748, in-tree). That is not the public door and is not
-theater.
+Local onion ChaCha20-Poly1305 + X25519 stay the session-circuit primitives
+(RFC 8439 / RFC 7748, in-tree). That is not a hosted VPN, not AZVPN,
+not the public door, and not theater.
 
 ## FoldLock (cite-only)
 

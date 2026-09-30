@@ -1,4 +1,4 @@
-"""Stdlib mesh-VPN primitives: HKDF-SHA256, X25519, ChaCha20-Poly1305.
+"""Stdlib session-mesh primitives: HKDF-SHA256, X25519, ChaCha20-Poly1305.
 
 These are the same families WireGuard uses (RFC 7748, RFC 8439). Implemented
 in-tree so the core stays dependency-free. Tested against the public RFC

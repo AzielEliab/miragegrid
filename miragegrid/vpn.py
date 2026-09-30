@@ -1,6 +1,8 @@
-"""Userspace node-mesh VPN gateway.
+"""Loopback listener kept under the historical ``vpn`` command name.
 
-Local SOCKS5 on loopback. Streams are onion-wrapped through a MirageGrid
+Not a hosted VPN, not AZVPN, and not an anonymity network.
+Hosted packet forwarding is false. Local sockets stay on loopback.
+Streams are onion-wrapped through a MirageGrid
 circuit and forwarded along the 25-node mesh. Default bind is 127.0.0.1.
 
 This is a lawful privacy tool. It is not a crime kit. It does not wipe
@@ -56,7 +58,7 @@ class VpnStatus:
 
 
 class MeshVpn:
-    """SOCKS5 gateway bound to a live ``MirageSession`` circuit."""
+    """Loopback listener bound to a live ``MirageSession`` circuit. Not a hosted VPN. Not AZVPN."""
 
     def __init__(
         self,
@@ -288,8 +290,8 @@ def serve_vpn(
     sess = session if session is not None else MirageSession(mesh=mesh)
     vpn = MeshVpn(sess, host=host, port=port)
     h, p = vpn.start()
-    print(f"miragegrid vpn  socks5://{h}:{p}/  entry={vpn.circuit.entry.node_id} exit={vpn.circuit.exit.node_id}")
-    print("Lawful privacy tool. Loopback SOCKS5 over the 25-node mesh.")
+    print(f"loopback listener on {h}:{p}  entry={vpn.circuit.entry.node_id} exit={vpn.circuit.exit.node_id}")
+    print("Not a hosted VPN. Not AZVPN. Not an anonymity network. Hosted packet forwarding is false.")
     try:
         while True:
             threading.Event().wait(3600)

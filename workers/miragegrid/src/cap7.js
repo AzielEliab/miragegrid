@@ -1,12 +1,13 @@
 /**
  * CAP7-SHUFFLE-1.0 — MirageGrid-only factory roster.
- * Cap-7 auto-generates .az hub duplications and shifts them with
- * StaticLock + MirageGrid cloak and VPN. Four real, three decoys.
- * Not typed on ICANN DNS. Internet reaches AZ domains only.
+ * Cap-7 auto-generates .az hub mirrors and shifts them with
+ * StaticLock + MirageGrid cloak + a planned egress slot.
+ * Four hub mirrors, three decoys. Not a public ICANN registrar.
+ * Separate from per-node .aziel slots. Not a hosted VPN. Not AZVPN.
  * Author: Aziel Eliab only.
  */
 
-import { outlastHonesty } from "../../download-tracker/src/mesh.js";
+import { outlastHonesty, plannedAdaptation } from "../../download-tracker/src/mesh.js";
 
 export const CAP7_SHUFFLE_SPEC = "CAP7-SHUFFLE-1.0";
 export const SEMANTIC_BRIDGE_SPEC = "SEMANTIC-BRIDGE-1.0";
@@ -32,7 +33,40 @@ export const AZ_DOMAIN_DROP_INS = Object.freeze([
 ]);
 export const REAL_HUB_DUPLICATIONS = Object.freeze(["azgrid", "azcloak", "azvault", "azshift"]);
 export const FALSE_SITES = Object.freeze(["azbooth", "azflag", "azstandby"]);
-export const SHIFT_STACK = Object.freeze(["staticlock", "miragegrid-cloak", "miragegrid-vpn"]);
+export const SHIFT_STACK = Object.freeze(["staticlock", "miragegrid-cloak", "planned-egress"]);
+
+export function factorySeparation() {
+  return {
+    factory_shape: "4-hub-mirrors+3-decoys",
+    hub_mirrors: 4,
+    decoys: 3,
+    public_icann_registrar: false,
+    separate_from_per_node_aziel_slots: true,
+    per_node_aziel_slots: {
+      same_as_cap7_factory: false,
+      public_icann: false,
+      typed_on_icann_dns: false,
+      registrar: false,
+      note: "Per-node .az → .aziel → pivot claim slots are not the seven Cap-7 factory names and are not a public ICANN registrar.",
+    },
+  };
+}
+
+export function plannedEgressSlot() {
+  return {
+    name: "planned-egress",
+    status: "planned",
+    live: false,
+    hosted: false,
+    packet_forwarding: false,
+    packet_hop: false,
+    hosted_vpn: false,
+    azvpn: false,
+    public_icann: false,
+    typed_on_icann_dns: false,
+    icann_publish: false,
+  };
+}
 
 export function azDomainRows() {
   return AZ_DOMAIN_DROP_INS.map((row) => ({
@@ -209,7 +243,12 @@ export function siteRecord(site) {
     shift_stack: SHIFT_STACK.slice(),
     staticlock: true,
     miragegrid_cloak: true,
-    miragegrid_vpn: true,
+    planned_egress: plannedEgressSlot(),
+    packet_forwarding: false,
+    hosted_vpn: false,
+    azvpn: false,
+    public_icann_registrar: false,
+    separate_from_per_node_aziel_slots: true,
     internet_door: drop ? drop.display_name : null,
     is_live_door: false,
     aznet_payload_host: false,
@@ -255,7 +294,12 @@ export function cap7ShuffleDict() {
     shift_stack: SHIFT_STACK.slice(),
     staticlock: true,
     miragegrid_cloak: true,
-    miragegrid_vpn: true,
+    planned_egress: plannedEgressSlot(),
+    packet_forwarding: false,
+    hosted_vpn: false,
+    azvpn: false,
+    ...factorySeparation(),
+    planned: plannedAdaptation(),
     az_generator: {
       callable: false,
       lives: "deep-node",
@@ -271,7 +315,7 @@ export function cap7ShuffleDict() {
     canonical_hubs: [HUB_AE, HUB_CORPUS, HUB_GODLOCK, HUB_HDJ],
     named_mesh_designs: ["azcorpus", "azlibrary"],
     ...outlastHonesty(),
-    note: "Cap-7 auto-generates .az duplications of the four hubs and shifts them with StaticLock + MirageGrid cloak and VPN. Four names are real hub duplications; three are false sites. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door.",
+    note: "Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. It shifts with StaticLock + MirageGrid cloak + planned-egress. It is not a public ICANN registrar and not a hosted VPN. geo-target, session-stick, and egress-rotate are planned, not LIVE. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door. Not AZVPN.",
   };
 }
 
@@ -306,6 +350,9 @@ export function hostedBridgeDoors() {
     false_site_count: 3,
     az_domains: azDomainRows(),
     shift_stack: SHIFT_STACK.slice(),
+    planned_egress: plannedEgressSlot(),
+    ...factorySeparation(),
+    planned: plannedAdaptation(),
     doors: {
       bridge: APP_HOST + "/bridge",
       bridge_json: APP_HOST + "/bridge.json",
@@ -330,7 +377,14 @@ export function hostedBridgeDoors() {
       public_shuffle_land_exec: "LIVE",
       anchored_by_live_nodes: true,
       channel_plane_is_vpn: false,
+      hosted_vpn: false,
+      packet_forwarding: false,
+      azvpn: false,
+      public_icann_registrar: false,
       second_door: false,
+      geo_target: "planned",
+      session_stick: "planned",
+      egress_rotate: "planned",
     },
     ...outlastHonesty(),
     az_generator: law.az_generator,

@@ -294,3 +294,55 @@ def test_app_worker_wrangler_named_miragegrid() -> None:
     assert "channel_plane_is_vpn" in audit
     assert "MGS-NO-HOSTED-APPLY" in audit
     assert "CAP7-NO-VPN-LIE" in audit
+
+
+def test_cap7_cite_is_not_hosted_vpn_or_icann_registrar() -> None:
+    law = cap7_shuffle_dict()
+    assert law["typed_on_icann_dns"] is False
+    assert law["public_icann_registrar"] is False
+    assert law["packet_forwarding"] is False
+    assert law["hosted_vpn"] is False
+    assert law["azvpn"] is False
+    assert law["hub_mirrors"] == 4
+    assert law["decoys"] == 3
+    assert law["separate_from_per_node_aziel_slots"] is True
+    assert law["per_node_aziel_slots"]["same_as_cap7_factory"] is False
+    assert "miragegrid-vpn" not in law["shift_stack"]
+    assert "planned-egress" in law["shift_stack"]
+    assert "miragegrid_vpn" not in law
+    planned = law["planned"]
+    assert planned["status"] == "planned"
+    assert planned["live"] is False
+    assert planned["executable"] is False
+    assert planned["azvpn_softwares"] is False
+    assert planned["packet_hop"] is False
+    assert planned["icann_publish"] is False
+    for name in ("geo_target", "session_stick", "egress_rotate"):
+        slot = planned[name]
+        assert slot["status"] == "planned"
+        assert slot["live"] is False
+        assert slot["packet_forwarding"] is False
+        assert slot["ip_exit"] is False
+    assert planned["geo_target"]["name"] == "geo-target"
+    assert planned["session_stick"]["name"] == "session-stick"
+    assert planned["egress_rotate"]["name"] == "egress-rotate"
+    assert "mesh" in planned["fraggate_stubs"]
+    assert planned["mesh_op_is_qnm_suite_mesh"] is False
+    for row in law["sites"]:
+        assert "miragegrid_vpn" not in row
+        assert "miragegrid-vpn" not in row["shift_stack"]
+        assert row["planned_egress"]["status"] == "planned"
+        assert row["planned_egress"]["hosted"] is False
+        assert row["planned_egress"]["packet_forwarding"] is False
+        assert row["public_icann"] is False
+        assert row["public_icann_registrar"] is False
+        assert row["separate_from_per_node_aziel_slots"] is True
+    assert "miragegrid-vpn" not in APP_CAP7
+    assert "miragegrid_vpn" not in APP_CAP7
+    assert "planned-egress" in APP_CAP7
+    assert "/v1/planned" in APP_INDEX
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    assert "node-mesh VPN" not in readme
+    assert "anonymity network for AZ-OS" not in pyproject
+    assert "not AZVPN" in pyproject or "not AZVPN" in readme

@@ -87,9 +87,11 @@ cite-only.
 
 ### Cap-7 duplication, not a public ICANN type
 
-Cap-7 auto-generates `.az` duplications of all 4 hubs and shifts them
-with StaticLock + MirageGrid cloak and VPN. Exactly **4** factory names
-are real hub duplications. Exactly **3** are false sites (decoys).
+Cap-7 auto-generates `.az` mirrors of all 4 hubs and shifts them
+with StaticLock + MirageGrid cloak + planned-egress. Exactly **4** factory
+names are hub mirrors. Exactly **3** are decoys. Those seven names are
+separate from per-node `.aziel` slots and are not a public ICANN registrar.
+Not a hosted VPN. Not AZVPN.
 Factory honesty is **LIVE**. Live nodes anchor the factory.
 
 Cap-7 is **not** publicly typed on ICANN DNS. Standard internet reaches

@@ -320,7 +320,11 @@ export const NO_FAN = Object.freeze({
 export const PUBLIC_STACK = Object.freeze({
   author: IDENTITY,
   pieces: ["anonymity-network", "node-gate", "auto-heal"],
-  anonymity_network: "onion/mesh privacy (existing MVP; lawful privacy tool)",
+  anonymity_network: "named public-stack piece; MirageGrid does not claim LIVE anonymity or a VPN",
+  miragegrid_is_anonymity_network: false,
+  miragegrid_is_vpn: false,
+  azvpn: false,
+  packet_forwarding: false,
   node_gate: "MirageGrid admission/claim surface for .az names (not official hubs)",
   auto_heal: "REHEAL-1.0 / MESH-REHEAL: own last good tip + verified trusted pull, or phoenix-WAIT",
   softwares_tab_products: ["miragegrid"],
@@ -431,6 +435,56 @@ export const REDLINE = Object.freeze({
   smaller_door: true,
 });
 
+/** Design-only adaptation. Not executable. Not ICANN publish. Not AZVPN. */
+export function plannedAdaptation() {
+  const slot = (name, note) => ({
+    name,
+    status: "planned",
+    live: false,
+    hosted: false,
+    packet_forwarding: false,
+    packet_hop: false,
+    public_icann: false,
+    typed_on_icann_dns: false,
+    icann_publish: false,
+    ip_exit: false,
+    azvpn: false,
+    note,
+  });
+  return {
+    status: "planned",
+    live: false,
+    executable: false,
+    hosted_vpn: false,
+    packet_forwarding: false,
+    packet_hop: false,
+    public_icann: false,
+    typed_on_icann_dns: false,
+    icann_publish: false,
+    anonymity_network: false,
+    azvpn_softwares: false,
+    not_azvpn: true,
+    fraggate_stubs: ["vpn-hop", "hop", "tunnel", "mesh"],
+    fraggate_stub_code: "FG-STUB",
+    fraggate_executable: false,
+    mesh_op_is_qnm_suite_mesh: false,
+    mesh_op_note:
+      "FragGate op mesh stays non-executable (runtime FG-STUB). It is not QNM suite mesh_* and it is not GET /v1/mesh status.",
+    geo_target: slot(
+      "geo-target",
+      "Optional region label on assign or shuffle land. Metadata only. No IP geo-exit.",
+    ),
+    session_stick: slot(
+      "session-stick",
+      "Bind a session or land to the same Cap-7 site or node id for a TTL. Not implemented.",
+    ),
+    egress_rotate: slot(
+      "egress-rotate",
+      "Rotate the hosted update land among Cap-7 sites. Not ICANN publish. Not a packet hop.",
+    ),
+  };
+}
+
 /** BAN-SURVIVAL / OUTLAST companion stamps. Hosted Worker is cite/assign, not VPN or a second door. */
 export const OUTLAST_HONESTY = Object.freeze({
   communication_plane: true,
@@ -438,6 +492,9 @@ export const OUTLAST_HONESTY = Object.freeze({
   pairing_is_tunnel: false,
   hosted_vpn: false,
   packet_forwarding: false,
+  anonymity_network: false,
+  azvpn: false,
+  public_icann_registrar: false,
   second_door: false,
   open_proxy: false,
   fraggate_single_door: true,
@@ -472,7 +529,11 @@ export const HASH_RECEIPT_CONTINUITY = Object.freeze({
 });
 
 export function outlastHonesty() {
-  return { ...OUTLAST_HONESTY, hash_receipt: { ...HASH_RECEIPT_CONTINUITY } };
+  return {
+    ...OUTLAST_HONESTY,
+    hash_receipt: { ...HASH_RECEIPT_CONTINUITY },
+    planned: plannedAdaptation(),
+  };
 }
 
 export function meshLawFields() {

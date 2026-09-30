@@ -45,7 +45,7 @@ class CircuitHop:
 
 @dataclass
 class Circuit:
-    """One anonymity circuit on the 25-node mesh."""
+    """One session circuit on the 25-node mesh. Not an anonymity claim."""
 
     circuit_id: bytes
     hops: tuple[CircuitHop, ...]

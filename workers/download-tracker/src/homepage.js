@@ -17,7 +17,7 @@ const ONE_LINE =
 const MOTTO =
   "You enter the booth. The mesh selects a booth and builds a circuit. You leave with no persistent booth identity.";
 const BANNER =
-  "THIS IS: a 25-node session assignment engine for AZ-OS — logical identities, circuit maps, and receipts. Hosted /v1 assigns and verifies; it does not forward packets. THIS IS NOT: a VPN, an anonymity network, a hosted hop, a crime tool, a log-wipe, or a guarantee against a global adversary. Isolated counter: not VibeLock. Author Aziel Eliab.";
+  "THIS IS: a 25-node session assignment engine for AZ-OS — logical identities, circuit maps, and receipts. Hosted /v1 assigns and verifies; it does not forward packets. THIS IS NOT: a VPN, an anonymity network, AZVPN, a hosted hop, a crime tool, a log-wipe, or a guarantee against a global adversary. Cap-7 is a mesh DNS factory (4 hub mirrors + 3 decoys), not a public ICANN registrar. geo-target, session-stick, and egress-rotate are planned, not LIVE. Isolated counter: not VibeLock. Author Aziel Eliab.";
 const DESC =
   "MirageGrid by Aziel Eliab — ephemeral session node assignment with receipts. Not a VPN and not an anonymity network. Apache-2.0. Forks welcome.";
 

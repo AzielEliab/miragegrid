@@ -1,7 +1,8 @@
-"""MirageGrid: node-mesh VPN and anonymity network for AZ-OS.
+"""MirageGrid: session assignment and Cap-7 mesh DNS factory for AZ-OS.
 
-Version 0.2.0 — persistent 25-node mesh, onion circuits, userspace
-SOCKS5 VPN. Author: Aziel Eliab (2026).
+Version 0.2.0 — persistent 25-node mesh and session circuits.
+Not a VPN, not an anonymity network, and not AZVPN.
+Hosted packet forwarding is false. Author: Aziel Eliab (2026).
 
 A static pool of 25 named mesh nodes. At session init the system
 selects an entry node and builds a multi-hop circuit. Traffic is

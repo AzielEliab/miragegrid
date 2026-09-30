@@ -25,9 +25,12 @@ import {
   aznetCite,
   cap7Roster,
   cap7ShuffleDict,
+  factorySeparation,
   hostedBridgeDoors,
+  plannedEgressSlot,
   publicGateway,
 } from "./cap7.js";
+import { plannedAdaptation } from "../../download-tracker/src/mesh.js";
 import { applyUpdate, ping, shuffleCite } from "./shuffle.js";
 import { handleSidenet } from "./sidenet.js";
 import { citeDocument, renderIndexHtml } from "./homepage.js";
@@ -65,7 +68,15 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | POST | \`/v1/verify-receipt\` | Verify receipt. |
 | GET | \`/v1/mesh\` | PROXY. Default OFF. GET never enables. |
 
-Naming lock: sidenet = AZnet. Cap-7 mesh DNS pairs with AZnet and AZ Browser. Softwares stay frozen. \`public_icann\` stays false. AZ Generator is not callable (\`AZG-NOT-CALLABLE\`). Exactly 2 Cap-7 names are public browser gateways (\`azgrid\`, \`azbooth\`). Other mesh names need an AZnet pairing token and an azbrowser flag. This Worker does not verify that token, does not run the AZnet engine, and does not run Node Gate claim/plant/flag/restore. \`radio_phy: false\`. Cap-7 is not typed on ICANN DNS. Internet reaches AZ domains only (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Factory honesty is LIVE. Live nodes anchor the factory and those doors. FragGate is THE exec door.
+Naming lock: sidenet = AZnet. Cap-7 mesh DNS pairs with AZnet and AZ Browser. Softwares stay frozen. \`public_icann\` stays false. AZ Generator is not callable (\`AZG-NOT-CALLABLE\`). Exactly 2 Cap-7 names are public browser gateways (\`azgrid\`, \`azbooth\`). Other mesh names need an AZnet pairing token and an azbrowser flag. This Worker does not verify that token, does not run the AZnet engine, and does not run Node Gate claim/plant/flag/restore. \`radio_phy: false\`. Cap-7 is a mesh DNS factory (4 hub mirrors + 3 decoys), separate from per-node \`.aziel\` slots. It is not a public ICANN registrar and is not typed on ICANN DNS. Internet reaches AZ domains only (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Factory honesty is LIVE. Live nodes anchor the factory and those doors. FragGate is THE exec door.
+
+**THIS IS NOT:** a VPN, an anonymity network, AZVPN, or hosted packet forwarding (\`packet_forwarding: false\`).
+
+## Planned (not LIVE)
+
+\`geo-target\`, \`session-stick\`, and \`egress-rotate\` are **planned**. \`live: false\`. They do not publish Cap-7 names on ICANN DNS and they do not hop packets.
+
+FragGate ops \`vpn-hop\`, \`hop\`, \`tunnel\`, and \`mesh\` stay non-executable (runtime \`FG-STUB\`). The FragGate \`mesh\` op is not QNM suite \`mesh_*\` and it is not \`GET /v1/mesh\` status.
 `;
 
 function corsHeaders() {
@@ -123,7 +134,9 @@ function openapiSpec() {
     info: {
       title: "MirageGrid app Worker",
       version: VERSION,
-      description: BANNER + " Cap-7 LIVE shuffle. Author Aziel Eliab.",
+      description:
+        BANNER +
+        " Cap-7 is a mesh DNS factory (4 hub mirrors + 3 decoys), not a public ICANN registrar. Not a VPN. Not AZVPN. packet_forwarding false. geo-target, session-stick, and egress-rotate are planned, not LIVE. Author Aziel Eliab.",
     },
     servers: [{ url: APP_HOST }],
     paths: {
@@ -131,7 +144,8 @@ function openapiSpec() {
       "/v1/shuffle": { get: { operationId: "miragegrid_shuffle_cite", summary: "CAP7-SHUFFLE-1.0 cite." } },
       "/v1/shuffle/ping": { post: { operationId: "miragegrid_shuffle_ping", summary: "Ping until land." } },
       "/v1/shuffle/update": { post: { operationId: "miragegrid_shuffle_update", summary: "Update via the landed Cap-7 site. No hard-coded host." } },
-      "/v1/cap7": { get: { operationId: "miragegrid_cap7", summary: "Factory roster. Four real hub duplications, three false sites. LIVE. Not ICANN DNS." } },
+      "/v1/cap7": { get: { operationId: "miragegrid_cap7", summary: "Factory roster. Four hub mirrors, three decoys. LIVE factory honesty. Not a public ICANN registrar. Not per-node .aziel slots." } },
+      "/v1/planned": { get: { operationId: "miragegrid_planned", summary: "Cite-only. geo-target, session-stick, egress-rotate are planned. live false. Not ICANN publish. Not a packet hop. Not AZVPN." } },
       "/v1/aznet": { get: { operationId: "miragegrid_aznet_pair", summary: "AZnet pairing cite. sidenet = AZnet. Not ICANN. Softwares frozen." } },
       "/v1/aznet/access": { post: { operationId: "miragegrid_aznet_access", summary: "AZnet + AZ Browser pair, or one of two public browser gateways." } },
       "/v1/health": { get: { operationId: "health", summary: "Liveness." } },
@@ -313,9 +327,17 @@ export default {
         factory_honesty: "LIVE",
         anchored_by_live_nodes: true,
         public_icann: false,
+        public_icann_registrar: false,
         name_may_change: true,
         radio_phy: false,
         hardcoded_host: false,
+        packet_forwarding: false,
+        hosted_vpn: false,
+        azvpn: false,
+        shift_stack: ["staticlock", "miragegrid-cloak", "planned-egress"],
+        planned_egress: plannedEgressSlot(),
+        ...factorySeparation(),
+        planned: plannedAdaptation(),
         app_worker: APP_HOST,
         author: IDENTITY,
       });
@@ -380,7 +402,10 @@ export default {
         kind: "cap-7-shuffle-app",
         radio_phy: false,
         public_icann: false,
+        public_icann_registrar: false,
         resolves_to_hub: false,
+        anonymity_network: false,
+        azvpn: false,
         app_worker: APP_HOST,
         download_worker: DOWNLOAD_HOST,
         ...outlastHonesty(),
@@ -396,6 +421,27 @@ export default {
         });
       }
       return json(body);
+    }
+
+    if (path === "/v1/planned" && (method === "GET" || method === "HEAD")) {
+      return json({
+        ok: true,
+        code: "MG-PLANNED",
+        product: PRODUCT,
+        version: VERSION,
+        banner: BANNER,
+        worker_name: "miragegrid",
+        public_icann: false,
+        public_icann_registrar: false,
+        packet_forwarding: false,
+        hosted_vpn: false,
+        anonymity_network: false,
+        azvpn: false,
+        ...factorySeparation(),
+        planned_egress: plannedEgressSlot(),
+        ...plannedAdaptation(),
+        author: IDENTITY,
+      });
     }
 
     if (path === "/v1/skill" && method === "GET") {

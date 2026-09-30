@@ -26,12 +26,13 @@ the download-tracker *is* the app Worker.
 
 ## Cap-7 sites (auto `.az` duplication / shift)
 
-Exactly **7** factory sites. Cap-7 **auto-generates `.az` duplications
+Exactly **7** factory sites. Cap-7 **auto-generates `.az` mirrors
 of all 4 hubs** and **shifts** them with **StaticLock** + **MirageGrid
-cloak** and **MirageGrid VPN**.
+cloak** + **planned-egress**. planned-egress is not a hosted packet VPN
+and not AZVPN.
 
-**Exactly 4** are real hub duplications (one per hub). **Exactly 3**
-are false sites (decoys).
+**Exactly 4** are hub mirrors (one per hub). **Exactly 3**
+are decoys. Those seven names are separate from per-node `.aziel` slots.
 
 Factory honesty is **LIVE**. There is no SLOT hedge on hosted update,
 hosted MCP, shuffle land, or the factory itself. Live nodes anchor
@@ -55,7 +56,10 @@ Stamps on every factory site:
 - `internet_reachable: false`
 - `hosted_update` / `hosted_mcp` / `public_shuffle_land_exec`: **LIVE**
 - `anchored_by_live_nodes: true`
-- `shift_stack`: `staticlock`, `miragegrid-cloak`, `miragegrid-vpn`
+- `shift_stack`: `staticlock`, `miragegrid-cloak`, `planned-egress`
+- `planned_egress.status`: `planned` (`hosted: false`, `packet_forwarding: false`, `live: false`)
+- `public_icann_registrar: false`
+- `separate_from_per_node_aziel_slots: true`
 - `radio_phy: false`
 - AZ Generator exit: **FRONT Node Gate only** (`callable: false`)
 - Real four: `hub_duplication: true`, `resolves_to_hub: true` (the `.az` duplicate pairs to that hub)
@@ -101,7 +105,22 @@ for that round**.
 
 Cap-7 is the duplication/shift/cloak layer. AZnet and AZ Browser stay
 **separate Softwares** (pairing only; never merge). The hosted HTTP
-channel is not a packet VPN. The shift stack still cites MirageGrid VPN.
+channel is not a packet VPN and not AZVPN. The third shift-stack name
+is `planned-egress`.
+
+## Planned adaptation (not LIVE)
+
+These are design intent only. No LIVE flag. No ICANN publish. No packet hop.
+
+| Name | Meaning | Honesty |
+| --- | --- | --- |
+| `geo-target` | Optional region label on assign or shuffle land | metadata only; `ip_exit: false` |
+| `session-stick` | Bind a session or land to the same Cap-7 site or node id for a TTL | `status: planned` |
+| `egress-rotate` | Rotate the hosted update land among the Cap-7 roster | not ICANN DNS; not a packet hop |
+
+FragGate ops `vpn-hop`, `hop`, `tunnel`, and `mesh` stay non-executable
+(runtime `FG-STUB`). The FragGate `mesh` op is not QNM suite `mesh_*`
+and it is not `GET /v1/mesh` status.
 
 Worker `/cap7/{label}` cites the LIVE factory site. It does not publish
 that name on ICANN DNS.

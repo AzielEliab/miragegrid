@@ -4,11 +4,11 @@
  * /v1 never touches DOWNLOADS KV.
  * /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME (handled in index.js before this catch-all).
  */
-import { meshOpenApiPaths, meshPointer, refuseCallGenerator } from "./mesh.js";
+import { meshOpenApiPaths, meshPointer, plannedAdaptation, refuseCallGenerator } from "./mesh.js";
 const PRODUCT = "miragegrid";
 const VERSION = "0.2.0";
 const MOTTO = "You enter the booth. The mesh selects a booth and builds a circuit. You leave with no persistent booth identity.";
-const BANNER = "MirageGrid is not a VPN and not an anonymity network. Ephemeral session node assignment with receipts. Packet forwarding is not hosted. Author Aziel Eliab.";
+const BANNER = "MirageGrid is not a VPN, not an anonymity network, and not AZVPN. Ephemeral session node assignment with receipts. Packet forwarding is not hosted. Cap-7 is a mesh DNS factory, not a public ICANN registrar. geo-target, session-stick, and egress-rotate are planned, not LIVE. Author Aziel Eliab.";
 const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
 const SKILL = `---
 name: MirageGrid
@@ -73,7 +73,13 @@ miragegrid ui
 miragegrid doctor
 \`\`\`
 
-Then open http://127.0.0.1:8080 (loopback console). Hosted MirageGrid is not a VPN.
+Then open http://127.0.0.1:8080 (loopback console). Hosted MirageGrid is not a VPN, not an anonymity network, and not AZVPN. \`packet_forwarding\` is false.
+
+## Planned (not LIVE)
+
+\`geo-target\`, \`session-stick\`, and \`egress-rotate\` stay **planned**. They are not ICANN DNS publish and not a packet hop.
+
+FragGate ops \`vpn-hop\`, \`hop\`, \`tunnel\`, and \`mesh\` stay non-executable (runtime \`FG-STUB\`). The FragGate \`mesh\` op is not QNM suite \`mesh_*\` and it is not \`GET /v1/mesh\` status. Cap-7 is four hub mirrors plus three decoys, separate from per-node \`.aziel\` slots, and not a public ICANN registrar.
 
 Apache-2.0 (or the repo LICENSE). Forks are welcome and always allowed.
 `;
@@ -359,7 +365,12 @@ async function assign(body) {
     timestamp,
     circuit,
     receipt,
-    note: "Control-plane assignment. Circuit mapping is in-request only. Packet forwarding runs in the local package (miragegrid vpn).",
+    note: "Control-plane assignment. Hosted packet forwarding is false. Not a VPN, not an anonymity network, not AZVPN. Historical kind name is not hosted egress.",
+    packet_forwarding: false,
+    hosted_vpn: false,
+    anonymity_network: false,
+    azvpn: false,
+    planned: plannedAdaptation(),
   };
 }
 
@@ -419,7 +430,7 @@ function openapiSpec() {
     info: {
       title: "MirageGrid runtime",
       version: VERSION,
-      description: BANNER + " " + MOTTO + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Aziel Eliab only. Apache-2.0.",
+      description: BANNER + " " + MOTTO + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Not AZVPN. packet_forwarding false. geo-target, session-stick, and egress-rotate are planned, not LIVE. Aziel Eliab only. Apache-2.0.",
     },
     servers: [{ url: HOST }],
     paths: {
@@ -546,7 +557,21 @@ export async function handleRuntimeApi(request, url) {
       return json(refuseCallGenerator(path), 403); // AZG-NOT-CALLABLE
     }
     if (path === "/v1/health" && request.method === "GET") {
-      return json({ ok: true, product: PRODUCT, version: VERSION, banner: BANNER, kind: "session-assignment", mesh: meshPointer() });
+      return json({
+        ok: true,
+        product: PRODUCT,
+        version: VERSION,
+        banner: BANNER,
+        kind: "session-assignment",
+        packet_forwarding: false,
+        hosted_vpn: false,
+        anonymity_network: false,
+        public_icann: false,
+        public_icann_registrar: false,
+        azvpn: false,
+        planned: plannedAdaptation(),
+        mesh: meshPointer(),
+      });
     }
     if (path === "/v1/skill" && request.method === "GET") {
       return new Response(SKILL, {

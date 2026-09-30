@@ -421,7 +421,7 @@ def cap7_bridge_cite() -> dict[str, Any]:
         "person": person_id(),
         "resolves_to_hub": False,
         "name_may_change": True,
-        "cap7_note": "Cap-7 auto-generates .az duplications of the four hubs and shifts with StaticLock + MirageGrid cloak and VPN. Not publicly typed on ICANN DNS.",
+        "cap7_note": "Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. Shift stack is StaticLock + MirageGrid cloak + planned-egress. Not a public ICANN registrar. Not a hosted VPN. Not AZVPN. geo-target, session-stick, and egress-rotate are planned, not LIVE.",
         "canonical_hubs": [row["canonical_hub"] for row in CANONICAL_HUBS],
         "named_mesh_sites": list(PREFERRED_PUBLIC_PAIR),
         "design_of": cap7_design_of_map(),

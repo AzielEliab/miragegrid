@@ -1,5 +1,5 @@
 name: miragegrid
-description: Assign a MirageGrid mesh circuit (entry 1-25 plus hops). Companion to the node-mesh VPN. Author Aziel Eliab.
+description: Assign a MirageGrid mesh circuit (entry 1-25 plus hops). Not a VPN. Not an anonymity network. Not AZVPN. Author Aziel Eliab.
 publish_to: "none"
 version: 0.2.0+1
 
