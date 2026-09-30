@@ -128,7 +128,7 @@ export function renderIndexHtml() {
 
   <section class="card" id="cap7">
     <h2>Cap-7 factory sites</h2>
-    <p class="kid">Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node <code>.aziel</code> slots. Shift stack is StaticLock + cloak + planned-egress. Not a public ICANN registrar. Not typed on ICANN DNS. Internet reaches AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, and AZ.HeDidntJump.AZ via the hub websites. Factory honesty is LIVE. Live nodes anchor both layers. Not a VPN, not an anonymity network, not AZVPN, and not packet forwarding. geo-target, session-stick, and egress-rotate are planned, not LIVE. FragGate vpn-hop / hop / tunnel / mesh stay non-executable. FragGate is THE door.</p>
+    <p class="kid">Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node <code>.aziel</code> slots. This page is <code>resolves_to_hub:false</code>. Cap-7 is not an ICANN hub resolve. Shift stack is StaticLock + cloak + planned-egress. Not a public ICANN registrar. Not typed on ICANN DNS. Internet reaches AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, and AZ.HeDidntJump.AZ via the hub websites. Factory honesty is LIVE. Live nodes anchor both layers. Communication plane — not a packet VPN, not an anonymity network, not AZVPN. geo-target, session-stick, and egress-rotate are planned, not LIVE. FragGate vpn-hop / hop / tunnel / mesh stay non-executable. FragGate is THE door.</p>
     <table>
       <thead><tr><th>Label</th><th>Public</th><th>Reach</th><th>design_of</th><th>Path</th></tr></thead>
       <tbody>${rows}</tbody>
