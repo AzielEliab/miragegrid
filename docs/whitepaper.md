@@ -15,16 +15,18 @@ Conceptual Whitepaper — Formal Architecture Draft
 
 ## Implementation note (package `miragegrid` 0.2.0)
 
-This repository implements a **userspace node-mesh VPN and anonymity
-network**: persistent 25-node mesh, X25519 identities, circulant peer
-routing, ChaCha20-Poly1305 onion circuits, and a loopback SOCKS5
-gateway. Optional `endpoint` strings are listen targets.
+This repository implements **session assignment** on a persistent
+25-node mesh: X25519 identities, circulant peer routing, and
+ChaCha20-Poly1305 session circuits. It is **not a VPN**, **not an
+anonymity network**, and **not AZVPN**. Hosted `packet_forwarding` is
+false. Optional `endpoint` strings are listen targets. The historical
+`vpn` command is a loopback listener, not hosted egress.
 
 Session mapping drop is in-process forget of the assignment and onion
 keys, not a log wipe. Hosted `/v1` is the control plane (assign / mesh
-/ route / receipt). Packet forwarding runs in the local package.
+status / route / receipt).
 
-GodLock already used a 25-node grid. This is the standalone mesh VPN
+GodLock already used a 25-node grid. This package is the session mesh
 with receipts and session lifecycle.
 
 The conceptual paper (sections 1–11) is the architecture story.
@@ -116,8 +118,8 @@ External Network
 ```
 
 In v0.2.0 the selected node is the circuit **entry**. The session also
-builds middle/exit hops and a mesh walk. SOCKS5 (`miragegrid vpn`)
-opens sockets on loopback.
+builds middle/exit hops and a mesh walk. The historical `vpn` command
+opens a loopback listener. That listener is not a hosted VPN and not AZVPN.
 
 ### 3.4 Receipt Layer
 
@@ -157,9 +159,10 @@ key), ephemeral onion circuit, default listen `127.0.0.1:19000+N`.
 Next session receives a new node selection.
 
 **Open-core mapping:** step 3 builds a ChaCha20-Poly1305 onion circuit
-and may start the local SOCKS5 gateway. Step 6 drops circuit keys and
-sets the session node to `None` (`MappingDestroyedError` on access).
-It does not shred operator logs.
+and may start the historical loopback listener. That listener is not a
+hosted VPN and not AZVPN. Step 6 drops circuit keys and sets the session
+node to `None` (`MappingDestroyedError` on access). It does not shred
+operator logs.
 
 ## 6. Random Selection Protocol
 
@@ -209,8 +212,8 @@ Integration modules:
 - receipt generator
 
 v0.2.0 ships the node randomizer, receipt generator, mesh router,
-onion circuit manager, and userspace SOCKS5 gateway. A full metadata
-scrubber remains a later layer.
+and onion circuit manager. The historical loopback listener is not a
+hosted VPN and not AZVPN. A full metadata scrubber remains a later layer.
 
 ## 9. Security Model
 
@@ -237,9 +240,10 @@ outbound network identity is randomly selected from a fixed pool of
 persistent nodes, preventing correlation between sessions while
 maintaining deterministic internal auditability.
 
-## 12. Mesh VPN MVP (package 0.2.0)
+## 12. Session mesh (package 0.2.0)
 
-The open-core package is a lawful privacy **node-mesh VPN**:
+The open-core package is a lawful session mesh. It is not a VPN, not
+an anonymity network, and not AZVPN. Hosted packet forwarding is false.
 
 - Topology: circulant graph C_25(1,2,5), diameter 3, always connected.
 - Identities: X25519 per node, derived from a mesh seed (RFC 7748).
@@ -247,7 +251,7 @@ The open-core package is a lawful privacy **node-mesh VPN**:
   section 6. Further hops use
   `SHA-256(entropy || timestamp_utf8 || "|hop|" || salt_u32be)`.
 - Payload: ChaCha20-Poly1305 onion (RFC 8439). Link keys: X25519 DH.
-- Local VPN: SOCKS5 CONNECT on 127.0.0.1:1080 (`miragegrid vpn`).
+- Historical loopback listener: 127.0.0.1:1080 (`miragegrid vpn`). Not hosted egress. Not AZVPN.
 - Peer listener: `miragegrid node` (loopback by default).
 
 It does not guarantee anonymity against a global adversary. It is not
@@ -260,8 +264,9 @@ transfer) is a hub cite / Worker mesh cross-map only — local qnsd is
 qnm-node; runtime cites live in aziel-runtime. No Node Gate. No public
 qnsd proxy. No auto-heal. Not an anonymity network. Anon-broadcast is
 not a publish path. Hosted MirageGrid remains session assignment;
-packet forwarding stays local. Assign stays live. Hosted mesh /
-vpn-hop / tunnel stubs remain refuse.
+`packet_forwarding` stays false. Assign stays live. Hosted vpn-hop /
+hop / tunnel stubs remain refuse. FragGate `mesh` stays non-executable
+and is not QNM suite `mesh_*`.
 
 ## 13. Locked mesh law (STW-1.0 · CCS-1.0 · RH-1.0)
 
@@ -389,10 +394,12 @@ bridge. Internet reaches AZ domains only
 (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ,
 AZ.HeDidntJump.AZ) via the four hub websites
 (`public_icann: true`, `resolves_to_hub: true`). Cap-7 auto-generates
-`.az` duplications of those hubs and shifts them with StaticLock +
-MirageGrid cloak and VPN. Four factory names are real hub duplications.
-Three are false sites. Factory honesty is LIVE. Cap-7 is not typed on
-ICANN DNS. Named sites azcorpus + azlibrary are designs inside
+`.az` mirrors of those hubs and shifts them with StaticLock +
+MirageGrid cloak + planned-egress. Four factory names are hub mirrors.
+Three are decoys, separate from per-node `.aziel` slots. Factory honesty
+is LIVE. Cap-7 is not a public ICANN registrar and is not typed on
+ICANN DNS. Not a VPN. Not AZVPN. geo-target, session-stick, and
+egress-rotate are planned, not LIVE. Named sites azcorpus + azlibrary are designs inside
 azielcorpuslibrary.net (hash-absolute `/design-packs/*`) and stay
 `public_icann: false`. Growth-ON. CROSS-NETWORK-SURVIVAL + NO-LIE.
 Re-expand is archive, not index. Named app Worker is

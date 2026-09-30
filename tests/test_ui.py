@@ -18,7 +18,10 @@ def test_ui_html_is_self_contained() -> None:
     assert "https://" not in html
     assert "<style>" in html
     assert "127.0.0.1" in html or "loopback" in html.lower()
-    assert "VPN" in html or "anonymity" in html.lower()
+    lower = html.lower()
+    assert "not a vpn" in lower
+    assert "not an anonymity network" in lower
+    assert "not azvpn" in lower
     assert "node-mesh" in html.lower() or "mesh" in html.lower()
     assert "prefers-color-scheme" in html
     assert ":focus-visible" in html

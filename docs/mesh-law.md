@@ -166,9 +166,10 @@ bridge. Internet reaches **AZ domains only**
 (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ,
 AZ.HeDidntJump.AZ) via the four hub websites
 (`public_icann: true`, `resolves_to_hub: true`). Cap-7 is the auto
-`.az` duplication/shift layer (StaticLock + MirageGrid cloak and VPN):
-four real hub duplications, three false sites, factory honesty LIVE,
-not typed on ICANN DNS. Crawlers pull `/llms.txt`, `/ai.txt`,
+`.az` duplication/shift layer (StaticLock + MirageGrid cloak + planned-egress):
+four hub mirrors, three decoys, separate from per-node `.aziel` slots,
+factory honesty LIVE, not a public ICANN registrar, not typed on ICANN DNS.
+Not a VPN. Not AZVPN. geo-target, session-stick, and egress-rotate are planned, not LIVE. Crawlers pull `/llms.txt`, `/ai.txt`,
 `/cite.json`, `/bridge.json`, `/v1/bridge`,
 `/design-packs/azcorpus.json`, `/design-packs/azlibrary.json`, and
 `GET /v1/mesh/az-generator`. Re-expand is archive, not index.

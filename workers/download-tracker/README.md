@@ -7,7 +7,7 @@ Does **not** 302 to GitHub on `/download`. Serves gzip via `ASSETS.fetch`,
 
 `GET /` is the **product homepage** (workspace + download/install + cite).
 Hosted `/v1` is session assignment (assign / mesh / route / circuit /
-receipt). MirageGrid is **not** a VPN and not an anonymity network.
+receipt). MirageGrid is **not** a VPN, not an anonymity network, and not AZVPN. Hosted packet forwarding is false.
 
 GET `/` increments a **page-view** counter (separate from downloads).
 GET `/download` increments **downloads**.
@@ -16,7 +16,7 @@ GET `/install.sh` one-click install (does not increment; script curls `/download
 GET `/v1/skill` returns skill markdown (`text/markdown`). Does not increment views or downloads.
 GET `/cite.json` citation record plus Cap-7 SEMANTIC-BRIDGE-1.0 section (`design_of` + factory honesty LIVE). No invented Zenodo DOI.
 GET `/llms.txt` and `/ai.txt` Growth-ON agent maps (HTTP 200). AZ domain doors are `public_icann:true`. Cap-7 factory names are `public_icann:false`.
-GET `/bridge.json` and `/v1/bridge` honest map. Internet reaches AZ domains only via the four hub websites. Cap-7 is the auto `.az` duplication/shift layer: four real hub duplications, three false sites, factory honesty LIVE, not typed on ICANN DNS. Named mesh sites azcorpus + azlibrary listed as designs (hash-absolute `GET /design-packs/{label}.json`, `public_icann:false`). Mesh names do not CNAME/redirect to azieleliab.com / corpus / godlock / HDJ.
+GET `/bridge.json` and `/v1/bridge` honest map. Internet reaches AZ domains only via the four hub websites. Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node `.aziel` slots, factory honesty LIVE, not a public ICANN registrar, not typed on ICANN DNS. geo-target, session-stick, and egress-rotate are planned, not LIVE. Named mesh sites azcorpus + azlibrary listed as designs (hash-absolute `GET /design-packs/{label}.json`, `public_icann:false`). Mesh names do not CNAME/redirect to azieleliab.com / corpus / godlock / HDJ.
 GET `/shelves` cites https://www.azielcorpuslibrary.net/shelves (COLD-MULTI-SHELF-1.0). Framagit URL is null — not invented.
 Download host: `https://miragegrid-download-tracker.vibelock.workers.dev`. Named app Worker `https://miragegrid.vibelock.workers.dev` is LIVE (Cap-7 shuffle). Historical CF 1042 is closed by creating Worker `miragegrid`.
 REDLINE-1.0: GET never enables radios or plants Cap-7 claims. AZ Generator is not callable. Fake ICANN registrar purchase refuses. Claiming Cap-7 is typed on ICANN DNS refuses (`CAP7-NOT-ICANN-DNS`). Designed AZ-domain `resolves_to_hub: true` is the public internet path.

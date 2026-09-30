@@ -1,7 +1,7 @@
-"""Localhost UI for the node-mesh VPN.
+"""Localhost UI for session assignment.
 
 Binds 127.0.0.1 only. Self-contained HTML/CSS, no CDN.
-Shows circuit hops, mesh route, and local SOCKS5 status.
+Shows circuit hops and the mesh route. Not a VPN. Not an anonymity network. Not AZVPN.
 
 Author: Aziel Eliab
 """
@@ -41,6 +41,10 @@ class _State:
                 "closed": True,
                 "live_integrity": "FAIL",
                 "kind": "mesh-vpn-circuit",
+                "hosted_vpn": False,
+                "packet_forwarding": False,
+                "anonymity_network": False,
+                "azvpn": False,
                 "circuit": None,
                 "vpn": None,
             }

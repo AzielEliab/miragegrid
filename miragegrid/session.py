@@ -150,6 +150,10 @@ class MirageSession:
             "session_id": self.session_id,
             "closed": self._closed,
             "kind": "mesh-vpn-circuit",
+            "hosted_vpn": False,
+            "packet_forwarding": False,
+            "anonymity_network": False,
+            "azvpn": False,
         }
         if self._closed:
             payload["node_id"] = None

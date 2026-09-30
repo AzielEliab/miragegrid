@@ -24,9 +24,11 @@ The console is at http://127.0.0.1:8080 (this computer only).
 `miragegrid doctor` checks the install. `miragegrid --help` lists commands.
 People get short text. Machines use `--json`.
 
-Cap-7 is the mesh DNS factory: four hub mirrors and three decoys. It keeps those names on the mesh. It does not register names at a public ICANN registrar.
+Cap-7 is the mesh DNS factory: four hub mirrors and three decoys, separate from per-node `.aziel` slots. It keeps those names on the mesh. It is not a public ICANN registrar.
 
-A local SOCKS5 proxy, when you want it:
+MirageGrid is not a VPN, not an anonymity network, and not the AZVPN Softwares product. Hosted packet forwarding is false. geo-target, session-stick, and egress-rotate are planned, not LIVE.
+
+The historical `vpn` command is a loopback listener on this computer. It is not hosted egress:
 
 ```bash
 miragegrid vpn
@@ -40,7 +42,7 @@ See [RUN.txt](RUN.txt), the spec [docs/whitepaper.md](docs/whitepaper.md), and [
 
 This is a lawful privacy tool for personal privacy, journalism, and research where you have the right to use it.
 
-The public stack is three pieces: the anonymity network (this local mesh VPN), Node Gate (the admission surface for mesh `.az` names; the hub websites stay the hub websites), and auto-heal (REHEAL-1.0 / MESH-REHEAL: own last good tip plus a verified trusted pull, or phoenix-WAIT). AZ Generator and Node Gate are MirageGrid subsystems. AZ Generator is the Cap-7 mesh DNS factory. It lives deep in the node and exits through the front Node Gate. A node may publish two hosted HTTPS mirrors of the mesh tip; the other Cap-7 names stay on the mesh. Access for mesh names is AZnet and AZ Browser, which stay separate products. See [docs/AZ-GENERATOR-1.0.md](docs/AZ-GENERATOR-1.0.md), [docs/MIRAGE-GRID-SHIFT-1.0.md](docs/MIRAGE-GRID-SHIFT-1.0.md), and [docs/AIRGAP-1.0.md](docs/AIRGAP-1.0.md).
+The public stack names three pieces: anonymity-network, Node Gate (the admission surface for mesh `.az` names; the hub websites stay the hub websites), and auto-heal (REHEAL-1.0 / MESH-REHEAL: own last good tip plus a verified trusted pull, or phoenix-WAIT). MirageGrid does not claim the anonymity-network piece as a LIVE VPN or as AZVPN. Hosted `anonymity_network` and `packet_forwarding` stay false. AZ Generator and Node Gate are MirageGrid subsystems. AZ Generator is the Cap-7 mesh DNS factory. It lives deep in the node and exits through the front Node Gate. A node may publish two hosted HTTPS mirrors of the mesh tip; the other Cap-7 names stay on the mesh. Access for mesh names is AZnet and AZ Browser, which stay separate products. See [docs/AZ-GENERATOR-1.0.md](docs/AZ-GENERATOR-1.0.md), [docs/MIRAGE-GRID-SHIFT-1.0.md](docs/MIRAGE-GRID-SHIFT-1.0.md), and [docs/AIRGAP-1.0.md](docs/AIRGAP-1.0.md).
 
 
 ## One-click install
@@ -51,7 +53,7 @@ curl -fsSL https://miragegrid-download-tracker.vibelock.workers.dev/install.sh |
 
 The script curls the **counted** tarball from this project's Worker
 (`/download`, User-Agent `Mozilla/5.0`), extracts, makes a venv, and
-`pip install -e .`. Then run `miragegrid ui` or `miragegrid vpn`.
+`pip install -e .`. Then run `miragegrid ui`. The historical `vpn` command is a loopback listener, not a hosted VPN.
 
 Or use the Worker homepage (assign / mesh / route / receipts, plus
 **Download** / **One-click install**):
@@ -69,12 +71,12 @@ The Worker serves the gzip itself (HTTP 200, no 302 to GitHub).
 - Suite mesh proxy: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh](https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated; QNS-CD-1.0 photon QNS1 cross-map (no public qnsd). Locked law: **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0**, **AIRGAP-1.0** ([docs/mesh-law.md](docs/mesh-law.md))
 - OpenAPI: [https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json](https://miragegrid-download-tracker.vibelock.workers.dev/openapi.json)
 - Named app Worker (Cap-7 LIVE shuffle): [https://miragegrid.vibelock.workers.dev/](https://miragegrid.vibelock.workers.dev/) — `GET /bridge` · `GET /v1/shuffle` · `POST /v1/shuffle/ping` · `GET /v1/cap7`. Nodes ping until they land on one factory site. That land is the update endpoint for the round. No hard-coded Cap-7 host. Historical CF 1042 is closed by Worker `miragegrid`.
-- Semantic bridge (Growth-ON): [app /bridge](https://miragegrid.vibelock.workers.dev/bridge) · [download llms.txt](https://miragegrid-download-tracker.vibelock.workers.dev/llms.txt) · [download bridge.json](https://miragegrid-download-tracker.vibelock.workers.dev/v1/bridge) · [cite.json](https://miragegrid-download-tracker.vibelock.workers.dev/cite.json) · [azcorpus pack](https://miragegrid-download-tracker.vibelock.workers.dev/design-packs/azcorpus.json) · [azlibrary pack](https://miragegrid-download-tracker.vibelock.workers.dev/design-packs/azlibrary.json) · [shelves cite](https://miragegrid-download-tracker.vibelock.workers.dev/shelves) — Internet reaches AZ domains only (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Cap-7 auto-generates `.az` duplications of those hubs and shifts them with StaticLock + MirageGrid cloak and VPN: four real hub duplications, three false sites, factory honesty LIVE, not typed on ICANN DNS. Named mesh sites azcorpus + azlibrary remain designs inside azielcorpuslibrary.net. REDLINE-1.0: GET never enables radios or plants claims.
+- Semantic bridge (Growth-ON): [app /bridge](https://miragegrid.vibelock.workers.dev/bridge) · [download llms.txt](https://miragegrid-download-tracker.vibelock.workers.dev/llms.txt) · [download bridge.json](https://miragegrid-download-tracker.vibelock.workers.dev/v1/bridge) · [cite.json](https://miragegrid-download-tracker.vibelock.workers.dev/cite.json) · [azcorpus pack](https://miragegrid-download-tracker.vibelock.workers.dev/design-packs/azcorpus.json) · [azlibrary pack](https://miragegrid-download-tracker.vibelock.workers.dev/design-packs/azlibrary.json) · [shelves cite](https://miragegrid-download-tracker.vibelock.workers.dev/shelves) — Internet reaches AZ domains only (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node `.aziel` slots. The shift stack is StaticLock + MirageGrid cloak + planned-egress. Factory honesty is LIVE. Cap-7 is not a public ICANN registrar and is not typed on ICANN DNS. geo-target, session-stick, and egress-rotate are planned, not LIVE. Not a VPN. Not AZVPN. Named mesh sites azcorpus + azlibrary remain designs inside azielcorpuslibrary.net. REDLINE-1.0: GET never enables radios or plants claims.
 - GitHub: [https://github.com/AzielEliab/miragegrid](https://github.com/AzielEliab/miragegrid)
 
 Isolated counter: Worker `miragegrid-download-tracker`, KV `MIRAGEGRID_DOWNLOADS`. `/v1` does not increment downloads.
 
-Open http://127.0.0.1:8080 (loopback only). No CDN, no telemetry. **Node-mesh VPN** — persistent peers, onion circuits, userspace SOCKS5.
+Open http://127.0.0.1:8080 (loopback only). No CDN, no telemetry. Session assignment on this computer. Not a VPN. Not an anonymity network. Not AZVPN. Hosted packet forwarding is false.
 
 Counted download: [https://miragegrid-download-tracker.vibelock.workers.dev/](https://miragegrid-download-tracker.vibelock.workers.dev/)
 
@@ -84,24 +86,25 @@ Counted download: [https://miragegrid-download-tracker.vibelock.workers.dev/](ht
 
 ## Architecture (what is real in this tree)
 
-MirageGrid is a **userspace node-mesh VPN** and **anonymity network**:
+MirageGrid assigns a session on a 25-peer mesh and cites the Cap-7 mesh DNS factory. It is **not a VPN**, **not an anonymity network**, and **not AZVPN**. Hosted `packet_forwarding` is false.
 
 1. **Persistent mesh** — 25 named peers (`node-01` … `node-25`) with
    X25519 identities and a circulant adjacency (`±1, ±2, ±5`). The
    mesh exists whether or not a session is open.
-2. **Peer routing** — shortest-path forwarding on that graph. Optional
+2. **Peer routing** — shortest-path maps on that graph. Optional
    `endpoint` strings are listen targets (`127.0.0.1:19001` by default).
 3. **Session circuits** — SHA-256 selection of an entry node, then
    distinct middle/exit hops. Payload is ChaCha20-Poly1305 onion-wrapped
    (exit layer innermost). Link hops use X25519-derived keys.
-4. **Userspace VPN** — `miragegrid vpn` binds SOCKS5 on 127.0.0.1:1080.
-   CONNECT streams are packed, unwrapped at the exit hop, then opened.
+4. **Historical `vpn` command** — a loopback listener on 127.0.0.1:1080.
+   It is not hosted egress, not AZVPN, and not an anonymity claim.
 5. **Receipts** — internal: session_id, mirage_node (entry 1–25),
    timestamp, integrity. Mapping drop is in-process forget, not a wipe.
 
-The hosted Worker is the **control plane** (assign / mesh / route /
-receipt). Packet forwarding runs in the **local package**. Assign stays
-live. Hosted mesh / vpn-hop / tunnel stubs remain refuse.
+The hosted Worker is the **control plane** (assign / mesh status / route /
+receipt). Assign stays live. Hosted vpn-hop / hop / tunnel stubs remain
+refuse. The FragGate `mesh` op stays non-executable and is not QNM suite
+`mesh_*`.
 
 **SPLIT THE WIRES** — the 0.5–1s tip tick is presence + tip hash only
 (fixed-size; no body/diff/file). Payload is pull-only (never sender
@@ -189,7 +192,7 @@ Query params: `owner`, `repo` (`owner/repo` is accepted), `branch`,
    Further hops use `SHA-256(entropy || timestamp || b"|hop|" || salt)`.
    Uses `secrets.token_bytes` / `hashlib.sha256`. Not `random.choice`.
 3. **Lifecycle** — initiate → assign entry + circuit → operate
-   (`MirageSession` / SOCKS5) → end → mapping and onion keys destroyed
+   (`MirageSession`) → end → mapping and onion keys destroyed
    (`MappingDestroyedError` on `session.node` after close).
 4. **Receipt** — internal: session_id (hex), mirage_node (1–25),
    timestamp UTC ISO, integrity PASS/FAIL. Default: in-memory, not a
@@ -206,7 +209,7 @@ Localhost UI: `miragegrid ui` (alias `serve`) binds **127.0.0.1 only**.
 
 Flutter sources: [`mobile/`](mobile/). Application id `com.azieeliab.miragegrid`. Offline. No analytics. Dark matte / gold.
 
-Assign a mesh circuit (entry 1–25 plus hops) and mint a receipt. Companion to the desktop node-mesh VPN.
+Assign a mesh circuit (entry 1–25 plus hops) and mint a receipt. Companion to the desktop session mesh. Not a VPN. Not AZVPN.
 
 ```bash
 cd mobile
@@ -243,7 +246,6 @@ miragegrid --help
 miragegrid ui
 miragegrid doctor
 miragegrid assign
-miragegrid vpn
 ```
 
 Advanced commands stay available: `mesh`, `route`, `circuit`, `verify-receipt`, `node`, `import`, `export`, `generator-tick`, and `serve` (same as `ui`). Add `--json` for the machine document. `assign` still prints the entry peer, session id, circuit hops, and mesh path. A receipt file is written only if `--emit-receipt` is passed.
@@ -272,7 +274,7 @@ pip install -e ".[dev]"
 python -m pytest -q
 ```
 
-Offline. Stdlib runtime. Mesh/VPN tests use loopback only.
+Offline. Stdlib runtime. Mesh tests use loopback only.
 
 ## Layout
 
@@ -289,13 +291,13 @@ docs/REDLINE-1.0.md        attack-surface law · GET never enables · sims REFUS
 docs/audit/                Cap-7 LIVE Worker security findings + follow-on
 examples/              assign a circuit
 workers/download-tracker/   Cloudflare Worker + wrangler.toml (undeployed)
-CONTRIBUTING.md        forks first-class; lawful privacy mesh VPN
+CONTRIBUTING.md        forks first-class; not a VPN; not AZVPN
 mobile/              Flutter iPhone + Android (`flutter create .`)
 ```
 
 ## Use with AI assistants
 
-Live HTTPS control plane on the existing download-tracker Worker. **Mesh assignment, peer routes, circuit hops.** Packet forwarding is the local package.
+Live HTTPS control plane on the existing download-tracker Worker. **Mesh assignment, peer routes, circuit hops.** Hosted packet forwarding is false. Not a VPN. Not AZVPN.
 
 Any MCP- or OpenAPI-capable assistant can import this API, including:
 

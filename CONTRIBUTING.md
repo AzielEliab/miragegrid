@@ -24,10 +24,12 @@ pytest is the dev extra.
 1. Treat `origin` as one peer among many. Downstream forks are part of
    the download-tracking model (see `workers/download-tracker`): they
    report as `{owner}/{repo}`, not as anonymous noise.
-2. **This is a lawful privacy mesh VPN.** Keep default binds on
-   loopback (`127.0.0.1`) unless the operator opts into a listen
-   address. Do not add crime instructions, log-wipe APIs, source-address
-   spoofing, or traffic-analysis evasion cookbooks.
+2. **This is a lawful session-assignment tool.** It is not a VPN, not
+   an anonymity network, and not AZVPN. Hosted packet forwarding stays
+   false. Keep default binds on loopback (`127.0.0.1`) unless the
+   operator opts into a listen address. Do not add crime instructions,
+   log-wipe APIs, source-address spoofing, or traffic-analysis evasion
+   cookbooks.
 3. **Do not destroy logs to evade inspection.** Session mapping drop is
    in-process forget of the assignment and onion keys. It is documented.
    It is not a wipe API.
@@ -76,7 +78,7 @@ pytest is the dev extra.
 - Mesh / routing: `miragegrid/mesh.py`
 - Onion circuits: `miragegrid/circuit.py`
 - Crypto: `miragegrid/crypto.py`
-- SOCKS5 VPN: `miragegrid/vpn.py`
+- Historical loopback listener: `miragegrid/vpn.py` (not a hosted VPN, not AZVPN)
 - Peer transport: `miragegrid/transport.py`
 - Section 6 RNG: `miragegrid/rng.py`
 - Session lifecycle: `miragegrid/session.py`

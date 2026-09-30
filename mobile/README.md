@@ -11,7 +11,7 @@ Application id: `com.azieeliab.miragegrid`
 2. `flutter pub get && flutter run`
 3. Choose **Open a circuit**.
 
-The SOCKS5 proxy stays in the desktop package (`miragegrid vpn`).
+The desktop package has a historical loopback listener (`miragegrid vpn`). It is not a hosted VPN and not AZVPN.
 
 ## Open in Android Studio / Xcode
 
@@ -30,8 +30,8 @@ Xcode.
 
 ## Scope
 
-This phone app assigns a mesh circuit and shows hops. The full userspace
-SOCKS5 VPN runs in the desktop package (`miragegrid vpn`).
+This phone app assigns a mesh circuit and shows hops. It is not a VPN,
+not an anonymity network, and not AZVPN. Hosted packet forwarding is false.
 
 ## Desktop package (counted download)
 

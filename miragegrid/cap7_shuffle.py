@@ -1,14 +1,16 @@
 """CAP7-SHUFFLE-1.0 — ping MirageGrid until land; land is the update door.
 
-Cap-7 auto-generates ``.az`` duplications of the four hubs and shifts them
-with StaticLock + MirageGrid cloak and VPN. Four factory names are real
-hub duplications. Three are false sites (decoys). Cap-7 is not typed on
-ICANN DNS and is not the public internet door.
+Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate
+from per-node ``.aziel`` slots. It shifts with StaticLock + MirageGrid
+cloak + a planned egress slot. It is not a public ICANN registrar and
+not a hosted VPN. Not AZVPN.
 
 Internet reaches AZ domains only, via the four hub websites. Those
 drop-ins shuffle once, mirror the hubs while they are up, stand alone,
 and stay immutable after the hubs die. Live nodes anchor both layers.
 Factory honesty is LIVE (no SLOT hedge).
+
+geo-target, session-stick, and egress-rotate are planned, not LIVE.
 
 AZ Generator exits FRONT Node Gate only. radio_phy stays false.
 Not an ICANN registrar purchase of a ccTLD.
@@ -55,12 +57,103 @@ AZNET_PRODUCT = "aznet"
 AZBROWSER_PRODUCT = "azbrowser"
 
 
-def outlast_honesty() -> dict[str, Any]:
-    """Factory honesty is LIVE. Cap-7 is not the public internet door.
+def _planned_slot(name: str, note: str) -> dict[str, Any]:
+    return {
+        "name": name,
+        "status": "planned",
+        "live": False,
+        "hosted": False,
+        "packet_forwarding": False,
+        "packet_hop": False,
+        "public_icann": False,
+        "typed_on_icann_dns": False,
+        "icann_publish": False,
+        "ip_exit": False,
+        "azvpn": False,
+        "note": note,
+    }
 
-    Hosted HTTP is not a packet VPN. The Cap-7 shift stack still cites
-    StaticLock + MirageGrid cloak + MirageGrid VPN. Live nodes anchor
-    the factory and the AZ domain doors.
+
+def planned_adaptation() -> dict[str, Any]:
+    """Design-only. Not executable. Not ICANN publish. Not AZVPN."""
+    return {
+        "status": "planned",
+        "live": False,
+        "executable": False,
+        "hosted_vpn": False,
+        "packet_forwarding": False,
+        "packet_hop": False,
+        "public_icann": False,
+        "typed_on_icann_dns": False,
+        "icann_publish": False,
+        "anonymity_network": False,
+        "azvpn_softwares": False,
+        "not_azvpn": True,
+        "fraggate_stubs": ["vpn-hop", "hop", "tunnel", "mesh"],
+        "fraggate_stub_code": "FG-STUB",
+        "fraggate_executable": False,
+        "mesh_op_is_qnm_suite_mesh": False,
+        "mesh_op_note": (
+            "FragGate op mesh stays non-executable (runtime FG-STUB). "
+            "It is not QNM suite mesh_* and it is not GET /v1/mesh status."
+        ),
+        "geo_target": _planned_slot(
+            "geo-target",
+            "Optional region label on assign or shuffle land. Metadata only. No IP geo-exit.",
+        ),
+        "session_stick": _planned_slot(
+            "session-stick",
+            "Bind a session or land to the same Cap-7 site or node id for a TTL. Not implemented.",
+        ),
+        "egress_rotate": _planned_slot(
+            "egress-rotate",
+            "Rotate the hosted update land among Cap-7 sites. Not ICANN publish. Not a packet hop.",
+        ),
+    }
+
+
+def factory_separation() -> dict[str, Any]:
+    return {
+        "factory_shape": "4-hub-mirrors+3-decoys",
+        "hub_mirrors": 4,
+        "decoys": 3,
+        "public_icann_registrar": False,
+        "separate_from_per_node_aziel_slots": True,
+        "per_node_aziel_slots": {
+            "same_as_cap7_factory": False,
+            "public_icann": False,
+            "typed_on_icann_dns": False,
+            "registrar": False,
+            "note": (
+                "Per-node .az → .aziel → pivot claim slots are not the seven "
+                "Cap-7 factory names and are not a public ICANN registrar."
+            ),
+        },
+    }
+
+
+def planned_egress_slot() -> dict[str, Any]:
+    return {
+        "name": "planned-egress",
+        "status": "planned",
+        "live": False,
+        "hosted": False,
+        "packet_forwarding": False,
+        "packet_hop": False,
+        "hosted_vpn": False,
+        "azvpn": False,
+        "public_icann": False,
+        "typed_on_icann_dns": False,
+        "icann_publish": False,
+    }
+
+
+def outlast_honesty() -> dict[str, Any]:
+    """Factory honesty is LIVE. Hosted HTTP is not a packet VPN.
+
+    The shift stack cites StaticLock + MirageGrid cloak + planned-egress.
+    planned-egress is not a hosted VPN. Live nodes anchor the factory
+    and the AZ domain doors.
     """
     return {
         "communication_plane": True,
@@ -68,6 +161,9 @@ def outlast_honesty() -> dict[str, Any]:
         "pairing_is_tunnel": False,
         "hosted_vpn": False,
         "packet_forwarding": False,
+        "anonymity_network": False,
+        "azvpn": False,
+        "public_icann_registrar": False,
         "second_door": False,
         "open_proxy": False,
         "fraggate_single_door": True,
@@ -88,6 +184,7 @@ def outlast_honesty() -> dict[str, Any]:
         "payload_host": "stub",
         "is_live_door": False,
         "public_hostname_resurrection": False,
+        "planned": planned_adaptation(),
         "hash_receipt": {
             "worker_session_hash": True,
             "second_receipt_door": False,
@@ -142,7 +239,7 @@ AZ_DOMAIN_DROP_INS: tuple[dict[str, str], ...] = (
 # One real .az duplication per hub. The other three names are decoys.
 REAL_HUB_DUPLICATIONS: tuple[str, ...] = ("azgrid", "azcloak", "azvault", "azshift")
 FALSE_SITES: tuple[str, ...] = ("azbooth", "azflag", "azstandby")
-SHIFT_STACK: tuple[str, ...] = ("staticlock", "miragegrid-cloak", "miragegrid-vpn")
+SHIFT_STACK: tuple[str, ...] = ("staticlock", "miragegrid-cloak", "planned-egress")
 
 # MirageGrid-only factory names. Not hub hostnames. Not azcorpus/azlibrary.
 CAP7_FACTORY_SITES: tuple[dict[str, Any], ...] = (
@@ -291,7 +388,12 @@ def site_record(site: Mapping[str, Any]) -> dict[str, Any]:
         "shift_stack": list(SHIFT_STACK),
         "staticlock": True,
         "miragegrid_cloak": True,
-        "miragegrid_vpn": True,
+        "planned_egress": planned_egress_slot(),
+        "packet_forwarding": False,
+        "hosted_vpn": False,
+        "azvpn": False,
+        "public_icann_registrar": False,
+        "separate_from_per_node_aziel_slots": True,
         "internet_door": None if drop is None else drop["display_name"],
         "is_live_door": False,
         "aznet_payload_host": False,
@@ -332,7 +434,12 @@ def cap7_shuffle_dict() -> dict[str, Any]:
         "shift_stack": list(SHIFT_STACK),
         "staticlock": True,
         "miragegrid_cloak": True,
-        "miragegrid_vpn": True,
+        "planned_egress": planned_egress_slot(),
+        "packet_forwarding": False,
+        "hosted_vpn": False,
+        "azvpn": False,
+        **factory_separation(),
+        "planned": planned_adaptation(),
         "az_generator": {
             "callable": False,
             "lives": "deep-node",
@@ -348,7 +455,7 @@ def cap7_shuffle_dict() -> dict[str, Any]:
         "canonical_hubs": [row["canonical_hub"] for row in CANONICAL_HUBS],
         "named_mesh_designs": ["azcorpus", "azlibrary"],
         **outlast_honesty(),
-        "note": "Cap-7 auto-generates .az duplications of the four hubs and shifts them with StaticLock + MirageGrid cloak and VPN. Four names are real hub duplications; three are false sites. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door.",
+        "note": "Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. It shifts with StaticLock + MirageGrid cloak + planned-egress. It is not a public ICANN registrar and not a hosted VPN. geo-target, session-stick, and egress-rotate are planned, not LIVE. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door. Not AZVPN.",
     }
 
 
@@ -664,6 +771,9 @@ def hosted_bridge_doors() -> dict[str, Any]:
         "false_site_count": 3,
         "az_domains": az_domain_rows(),
         "shift_stack": list(SHIFT_STACK),
+        "planned_egress": planned_egress_slot(),
+        **factory_separation(),
+        "planned": planned_adaptation(),
         "doors": cite["doors"],
         "first_flag": FIRST_CLAIM_NAME,
         "invented_first_flag_https": False,
@@ -679,7 +789,14 @@ def hosted_bridge_doors() -> dict[str, Any]:
             "public_shuffle_land_exec": "LIVE",
             "anchored_by_live_nodes": True,
             "channel_plane_is_vpn": False,
+            "hosted_vpn": False,
+            "packet_forwarding": False,
+            "azvpn": False,
+            "public_icann_registrar": False,
             "second_door": False,
+            "geo_target": "planned",
+            "session_stick": "planned",
+            "egress_rotate": "planned",
         },
         **outlast_honesty(),
         "az_generator": cite["az_generator"],

@@ -25,10 +25,11 @@ _LOOPBACK = ("127.0.0.1", "localhost", "::1")
 
 
 def render_help() -> str:
-    return f"""miragegrid — local node-mesh VPN
+    return f"""miragegrid — local session mesh
 
-Open a circuit on this computer and send it through {POOL_SIZE} mesh peers.
-Loopback only. Author: {__author__}.
+Open a circuit on this computer across {POOL_SIZE} mesh peers.
+Not a VPN. Not an anonymity network. Not AZVPN.
+Hosted packet forwarding is false. Loopback only. Author: {__author__}.
 
 Usage:
   miragegrid
@@ -38,7 +39,7 @@ Common commands:
   ui               Open the local console
   doctor           Check this install
   assign           Open a circuit and print the entry peer
-  vpn              Start SOCKS5 on 127.0.0.1:1080
+  vpn              Loopback listener on 127.0.0.1:1080 (not hosted VPN, not AZVPN)
   nodes            List the {POOL_SIZE} mesh peers
   version          Print miragegrid {__version__}
 
@@ -150,7 +151,7 @@ def _build_parser() -> MirageParser:
     p_ver = sub.add_parser("verify-receipt", help="Check a local receipt JSON file.")
     p_ver.add_argument("file", help="Receipt JSON path.")
 
-    p_vpn = sub.add_parser("vpn", help="Start the local SOCKS5 proxy (loopback).")
+    p_vpn = sub.add_parser("vpn", help="Loopback listener (not a hosted VPN, not AZVPN, not anonymity).")
     p_vpn.add_argument("--host", default="127.0.0.1", help="Bind host (loopback only).")
     p_vpn.add_argument("--port", type=int, default=1080, help="Bind port (default 1080).")
 
@@ -458,7 +459,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         from miragegrid.vpn import serve_vpn
 
         if not as_json:
-            sys.stdout.write(f"SOCKS5 proxy on {host}:{int(args.port)}\n")
+            sys.stdout.write(
+                f"Loopback listener on {host}:{int(args.port)}. "
+                "Not a hosted VPN. Not AZVPN. Not an anonymity network.\n"
+            )
         serve_vpn(host=host, port=int(args.port))
         return 0
 

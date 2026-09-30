@@ -3,6 +3,8 @@
 **Author:** Aziel Eliab only  
 **Not this PR.** Large or cross-repo work after the 2026-09-18 audit.
 
+2026-09-30 honesty lock: do not cite MirageGrid as a LIVE VPN, an anonymity network, or AZVPN. Hosted `packet_forwarding` stays false. Cap-7 is a mesh DNS factory, not a public ICANN registrar. geo-target, session-stick, and egress-rotate stay planned.
+
 FragGate stays THE door. Do not add a second exec path, an unmarked hydra, or a fake Cap-7 `/mcp`.
 
 | ID | Work | Why later |
@@ -15,7 +17,7 @@ FragGate stays THE door. Do not add a second exec path, an unmarked hydra, or a 
 | F6 | Shared Python/JS land helper published as one golden vector file (all 7 labels hit). | Nice-to-have after BigInt fix. |
 | F7 | CORS allowlist for mesh enable if a browser credential flow is added. | None today. |
 | F8 | Live-node API remains SLOT until a node publishes named origin + FragGate-only exec + digest + same hop strip (`BAN-NO-OPEN-NODE-PROXY`). | Runtime follow-on, not this repo. |
-| F9 | Hosted `assign.kind` still says `mesh-vpn-circuit` (local VPN vocabulary). `hosted_kind` + `channel_plane_is_vpn:false` are the honesty overlay. Rename hosted kind only after clients stop keying on it. | Compatibility. |
+| F9 | Hosted `assign.kind` still says `mesh-vpn-circuit` (historical field name). `hosted_kind` + `channel_plane_is_vpn:false` + `packet_forwarding:false` are the honesty overlay. The field name is not a LIVE VPN claim and not AZVPN. Rename it only after clients stop keying on it. | Compatibility. |
 | F10 | Runtime BAN-SURVIVAL `/survival` shuffle still marks public Worker shuffle land SLOT. Keep land **exec** SLOT here; cite/land coordination stays LIVE. Sync papers, do not invent public land `/mcp`. | Cross-repo wording. |
 
 Identity: **Aziel Eliab** only.

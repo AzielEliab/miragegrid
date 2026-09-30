@@ -5,16 +5,15 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "miragegrid"
 version = "0.2.0"
-description = "Node-mesh VPN and anonymity network for AZ-OS: 25 persistent peers, onion circuits, userspace SOCKS5 (MirageGrid 0.2). Author Aziel Eliab."
+description = "Session assignment and Cap-7 mesh DNS factory for AZ-OS. Not a VPN, not an anonymity network, and not AZVPN. Hosted packet forwarding is false. Author Aziel Eliab."
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [{name = "Aziel Eliab"}]
 requires-python = ">=3.10"
 keywords = [
-    "vpn",
     "mesh",
-    "anonymity",
-    "onion",
+    "session",
+    "cap-7",
     "privacy",
     "az-os",
     "miragegrid",
