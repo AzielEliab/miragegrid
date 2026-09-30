@@ -5,6 +5,7 @@
  * /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME (handled in index.js before this catch-all).
  */
 import { meshOpenApiPaths, meshPointer, plannedAdaptation, refuseCallGenerator } from "./mesh.js";
+import { assignLiveStamps, refusalForAssign, routeEgress } from "../../miragegrid/src/egress.js";
 const PRODUCT = "miragegrid";
 const VERSION = "0.2.0";
 const MOTTO = "You enter the booth. The mesh selects a booth and builds a circuit. You leave with no persistent booth identity.";
@@ -41,7 +42,9 @@ Host: \`https://miragegrid-download-tracker.vibelock.workers.dev\`
 | GET | \`/v1/mesh/nodes\` | PROXY Live Nodes roster (5-minute presence). Same QNS-CD-1.0 cross-map. |
 | POST | \`/v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}\` | PROXY. Bearer required to enable. No auto-heal. |
 | POST | \`/v1/route\` | Shortest peer path between two nodes. |
-| POST | \`/v1/assign\` | Assign a session circuit (entry + hops + path). |
+| POST | \`/v1/assign\` | Assign a session circuit (entry + hops + path). Geo, sticky IP, rotation, and painted endpoints refuse. |
+| GET | \`/v1/egress\` | Cite geo / sticky IP / egress rotation. Those pools are not live. |
+| POST | \`/v1/session/sticky\` | Stick a mesh node label to sticky_key. Not an IP. |
 | POST | \`/v1/circuit\` | Build circuit hops from entropy/timestamp (or fresh). |
 | POST | \`/v1/verify-receipt\` | Verify an internal receipt. |
 
@@ -291,6 +294,9 @@ async function selectIndex(entropy, timestamp) {
 }
 
 async function selectCircuitIndices(entropy, timestamp, hops = 3) {
+  if (!Number.isInteger(hops) || hops < 1 || hops > POOL_SIZE) {
+    throw new Error("hops must be 1..25");
+  }
   const chosen = [await selectIndex(entropy, timestamp)];
   const used = new Set(chosen);
   let salt = 0;
@@ -343,11 +349,17 @@ async function buildCircuit(entropy, timestamp, hops = 3) {
 }
 
 async function assign(body) {
-  const pool = makePool(body && body.endpoints);
+  const pool = makePool();
   const session_id = (body && body.session_id) || hex32();
-  const timestamp = (body && body.timestamp) || utcNow();
+  const timestamp = utcNow();
   const entropy = crypto.getRandomValues(new Uint8Array(32));
-  const hops = Number.isInteger(body && body.hops) ? body.hops : 3;
+  let hops = 3;
+  if (body && body.hops != null) {
+    if (!Number.isInteger(body.hops) || body.hops < 1 || body.hops > POOL_SIZE) {
+      throw new Error("hops must be 1..25");
+    }
+    hops = body.hops;
+  }
   const index = await selectIndex(entropy, timestamp);
   const node = pool.byIndex(index);
   const receipt = await mintReceipt(session_id, node, timestamp, pool, false);
@@ -363,15 +375,88 @@ async function assign(body) {
     node_label: node.label,
     mirage_node: node.number,
     timestamp,
+    caller_timestamp_ignored: !!(body && body.timestamp != null && body.timestamp !== ""),
     circuit,
     receipt,
-    note: "Control-plane assignment. Hosted packet forwarding is false. Not a VPN, not an anonymity network, not AZVPN. Historical kind name is not hosted egress.",
+    receipt_covers: "entry-node",
+    listen_targets: "loopback-defaults",
+    endpoints_applied: false,
+    note: "Control-plane assignment. Hosted packet forwarding is false. Not a VPN, not an anonymity network, not AZVPN. The receipt covers the entry node. Listen targets stay loopback defaults. This is not an egress IP.",
     packet_forwarding: false,
     hosted_vpn: false,
     anonymity_network: false,
     azvpn: false,
     planned: plannedAdaptation(),
   };
+}
+
+async function assignStickyMesh(stickyKey) {
+  const pool = makePool();
+  const digestHex = await sha256Hex("mg-sticky-v1|" + stickyKey);
+  const index = Number(BigInt("0x" + digestHex) % BigInt(POOL_SIZE));
+  const node = pool.byIndex(index);
+  const timestamp = utcNow();
+  const session_id = hex32();
+  const receipt = await mintReceipt(session_id, node, timestamp, pool, false);
+  return {
+    product: PRODUCT,
+    version: VERSION,
+    motto: MOTTO,
+    banner: BANNER,
+    kind: "sticky-mesh-node",
+    hosted_kind: "sticky-mesh-node",
+    session_id,
+    node_id: node.id,
+    node_label: node.label,
+    mirage_node: node.number,
+    timestamp,
+    receipt,
+    receipt_covers: "entry-node",
+    sticky_key_accepted: true,
+    sticky_mesh_node: true,
+    sticky_ip: false,
+    session_id_sticky: false,
+    ttl_enforced: false,
+    durable: "deterministic-hash",
+    circuit_built: false,
+    egress_ip: null,
+    geo_applied: false,
+    residential: false,
+    ip_rotated: false,
+    vpn_hosted_live: false,
+    azvpn_separate: true,
+    packet_forwarding: false,
+    anonymity_network: false,
+    listen_targets: "loopback-defaults",
+    spec: "MG-EGRESS-1.0",
+    note: "Same sticky_key selects the same mesh node label. This is not a sticky public IP, not geo, and not egress rotation.",
+  };
+}
+
+async function hostedAssign(body) {
+  const refused = refusalForAssign(body);
+  if (refused) return refused;
+  const assigned = await assign(body && typeof body === "object" ? body : {});
+  return { status: 200, body: { ...assigned, ...assignLiveStamps() } };
+}
+
+async function readObjectBody(request) {
+  let text = "";
+  try {
+    text = await request.text();
+  } catch {
+    text = "";
+  }
+  if (!String(text || "").trim()) return { body: {} };
+  try {
+    const body = JSON.parse(text);
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return { error: { ok: false, code: "MG-BAD-JSON", error: "JSON object required" }, status: 400 };
+    }
+    return { body };
+  } catch {
+    return { error: { ok: false, code: "MG-BAD-JSON", error: "JSON body required" }, status: 400 };
+  }
 }
 
 function listNodes() {
@@ -536,6 +621,8 @@ export {
   MOTTO,
   BANNER,
   assign,
+  hostedAssign,
+  assignStickyMesh,
   listNodes,
   meshView,
   routeView,
@@ -546,6 +633,15 @@ export {
   utcNow,
   buildCircuit,
 };
+
+export async function handleEgressRequest(method, path, body) {
+  const routed = routeEgress(method, path, body);
+  if (!routed) return null;
+  if (routed.sticky) {
+    return { status: 200, body: await assignStickyMesh(routed.sticky_key) };
+  }
+  return routed;
+}
 
 export async function handleRuntimeApi(request, url) {
   const path = url.pathname;
@@ -592,19 +688,27 @@ export async function handleRuntimeApi(request, url) {
       const dst = (body && (body.to || body.dst)) || "node-13";
       return json(routeView(src, dst));
     }
+    if (path === "/v1/egress" || path.startsWith("/v1/egress/") || path === "/v1/session" || path.startsWith("/v1/session/")) {
+      const parsed = await readObjectBody(request);
+      if (parsed.error) return json(parsed.error, parsed.status);
+      const egress = await handleEgressRequest(request.method, path, parsed.body);
+      if (egress) return json(egress.body, egress.status);
+    }
     if (path === "/v1/circuit" && request.method === "POST") {
-      let body = {};
-      try { body = await request.json(); } catch { body = {}; }
-      const timestamp = (body && body.timestamp) || utcNow();
+      const parsed = await readObjectBody(request);
+      if (parsed.error) return json(parsed.error, parsed.status);
+      const body = parsed.body;
+      const timestamp = utcNow();
       const entropy = crypto.getRandomValues(new Uint8Array(32));
-      const hops = Number.isInteger(body && body.hops) ? body.hops : 3;
+      const hops = body.hops == null ? 3 : body.hops;
       const circuit = await buildCircuit(entropy, timestamp, hops);
-      return json({ product: PRODUCT, version: VERSION, banner: BANNER, timestamp, circuit });
+      return json({ product: PRODUCT, version: VERSION, banner: BANNER, timestamp, circuit, packet_forwarding: false });
     }
     if (path === "/v1/assign" && request.method === "POST") {
-      let body = {};
-      try { body = await request.json(); } catch { body = {}; }
-      return json(await assign(body && typeof body === "object" ? body : {}));
+      const parsed = await readObjectBody(request);
+      if (parsed.error) return json(parsed.error, parsed.status);
+      const out = await hostedAssign(parsed.body);
+      return json(out.body, out.status);
     }
     if (path === "/v1/verify-receipt" && request.method === "POST") {
       let body;

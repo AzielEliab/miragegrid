@@ -41,7 +41,9 @@ Ops (do **not** increment downloads or views):
 - `GET /v1/mesh/nodes` — PROXY Live Nodes roster (5-minute presence). Same QNS-CD-1.0 cross-map.
 - `POST /v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}` — PROXY. Bearer required to enable. No auto-heal. Anon-broadcast is not a publish path.
 - `POST /v1/route` — peer path
-- `POST /v1/assign` — session circuit
+- `POST /v1/assign` — session circuit. Geo, sticky IP, rotation, and painted endpoints refuse (`MG-GEO-NOT-READY`, `MG-STICKY-IP-NOT-READY`, `MG-EGRESS-IP-NOT-READY`, `MG-NO-EGRESS-PAINT`).
+- `GET /v1/egress` — MG-EGRESS-1.0 cite. No residential pool. AZVPN stays separate. FragGate `vpn-hop` / `hop` / `tunnel` / `mesh` stay stub.
+- `POST /v1/session/sticky` — same `sticky_key`, same mesh node label. Not an IP. A TTL refuses (`MG-STICKY-TTL-NOT-READY`).
 - Product POSTs listed in OpenAPI
 
 Works with any OpenAPI- or MCP-capable assistant: ChatGPT (GPT Actions / OpenAI), Grok (xAI), Venice, Claude (Anthropic), Cursor (MCP), Glama (MCP), Perplexity, Microsoft Copilot / Bing, Google Gemini / Vertex, Mistral, Meta AI, Apple Intelligence surfaces, Amazon Q tooling, DuckAssist, You.com, Cohere, and other MCP/OpenAPI-capable assistants.

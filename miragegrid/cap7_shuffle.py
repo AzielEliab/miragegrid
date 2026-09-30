@@ -361,6 +361,8 @@ def site_record(site: Mapping[str, Any]) -> dict[str, Any]:
         "false_site": false_site,
         "decoy": false_site,
         "resolves_to_hub": real,
+        "resolves_to_hub_means": "design-pair-not-public-dns" if real else "decoy-not-a-hub-pair",
+        "public_browser_gateway": label in {"azgrid", "azbooth"},
         "name_may_change": True,
         "public_icann": False,
         "typed_on_icann_dns": False,
@@ -440,6 +442,7 @@ def cap7_shuffle_dict() -> dict[str, Any]:
         "azvpn": False,
         **factory_separation(),
         "planned": planned_adaptation(),
+        "update_endpoint_varies_by_land": False,
         "az_generator": {
             "callable": False,
             "lives": "deep-node",
@@ -455,7 +458,7 @@ def cap7_shuffle_dict() -> dict[str, Any]:
         "canonical_hubs": [row["canonical_hub"] for row in CANONICAL_HUBS],
         "named_mesh_designs": ["azcorpus", "azlibrary"],
         **outlast_honesty(),
-        "note": "Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. It shifts with StaticLock + MirageGrid cloak + planned-egress. It is not a public ICANN registrar and not a hosted VPN. geo-target, session-stick, and egress-rotate are planned, not LIVE. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door. Not AZVPN.",
+        "note": "Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. It shifts with StaticLock + MirageGrid cloak + planned-egress. It is not a public ICANN registrar and not a hosted VPN. geo-target, session-stick TTL, and egress-rotate are planned, not LIVE. POST /v1/session/sticky selects a mesh node label only (not an IP, no TTL). Geo, sticky public IP, and egress rotation refuse. The update URL is this app Worker and does not vary by land label. Internet reaches AZ domains only, via hub HTTPS. Factory honesty is LIVE. Live nodes anchor the factory and the AZ doors. FragGate stays THE door. Not AZVPN.",
     }
 
 
@@ -557,6 +560,8 @@ def apply_update(
             "land": site,
             "update": True,
             "update_endpoint": site["update_path"],
+            "update_endpoint_varies_by_land": False,
+            "land_label": site.get("label"),
             "round_seed": landed.get("round_seed"),
             "node_id": landed.get("node_id"),
             "hardcoded_host": False,
@@ -687,6 +692,8 @@ def ping(
             "land": site,
             "update": update,
             "update_endpoint": site["update_path"],
+            "update_endpoint_varies_by_land": False,
+            "land_label": site.get("label"),
             "round_seed": seed,
             "node_id": node,
             "hardcoded_host": False,
