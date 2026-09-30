@@ -121,9 +121,10 @@ These are design intent only. No LIVE flag. No ICANN publish. No packet hop.
 
 `POST /v1/session/sticky` is a separate live mesh-node label (`SHA-256` of the key). It is not an IP and not the planned TTL stick. Sticky public IPs refuse `MG-STICKY-IP-NOT-READY`. See [MG-EGRESS-1.0.md](MG-EGRESS-1.0.md).
 
-FragGate ops `vpn-hop`, `hop`, `tunnel`, and `mesh` stay non-executable
-(runtime `FG-STUB`). The FragGate `mesh` op is not QNM suite `mesh_*`
-and it is not `GET /v1/mesh` status.
+FragGate ops `vpn-hop`, `hop`, `tunnel`, `mesh`, `geo-target`, `session-stick`,
+and `egress-rotate` stay non-executable (runtime `FG-STUB`). The FragGate
+`mesh` op is not QNM suite `mesh_*` and it is not `GET /v1/mesh` status.
+Cap-7 is not an ICANN registrar. AZVPN is not MirageGrid.
 
 Worker `/cap7/{label}` cites the LIVE factory site. It does not publish
 that name on ICANN DNS.

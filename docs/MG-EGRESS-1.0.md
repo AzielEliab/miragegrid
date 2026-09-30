@@ -35,8 +35,9 @@ is a different product. Cap-7 JSON does not carry a VPN shift-stack label.
 
 These doors do not mint a receipt and do not return `node_id`.
 
-FragGate stub ops stay stub: `vpn-hop`, `hop`, `tunnel`, `mesh`.
-This slice does not add catalog LIVE_OPS.
+FragGate stub ops stay stub: `vpn-hop`, `hop`, `tunnel`, `mesh`, `geo-target`,
+`session-stick`, `egress-rotate`. This slice does not add catalog LIVE_OPS.
+Cap-7 is not an ICANN registrar. AZVPN is not MirageGrid.
 
 ## Still planned
 
@@ -50,7 +51,8 @@ This slice does not add catalog LIVE_OPS.
 No runtime catalog PR is required for this slice. Leave the Softwares
 `one_line` as: assign a short-lived session node and cite mesh-name
 metadata. Do not rewrite it to claim residential geo, sticky IPs, or
-egress rotation. Do not unstub `vpn-hop`, `hop`, `tunnel`, or `mesh`.
+egress rotation. Do not unstub `vpn-hop`, `hop`, `tunnel`, `mesh`, `geo-target`,
+`session-stick`, or `egress-rotate`.
 Do not merge MirageGrid into AZVPN. Do not enable `GET /v1/mesh` radios.
 Do not invent a Zenodo DOI.
 

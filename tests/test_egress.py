@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from miragegrid.cap7_shuffle import FRAGGATE_CAP7_STUBS
 from miragegrid.egress import (
     STICKY_VECTOR,
     egress_cite,
@@ -20,7 +21,17 @@ def test_cite_does_not_claim_a_pool() -> None:
     assert cite["vpn_hosted_live"] is False
     assert cite["azvpn_merged"] is False
     assert cite["anonymity_network"] is False
-    assert "vpn-hop" in cite["fraggate_stub_ops"]
+    assert cite["fraggate_stub_ops"] == list(FRAGGATE_CAP7_STUBS)
+    assert cite["fraggate_stub_ops"] == [
+        "vpn-hop",
+        "hop",
+        "tunnel",
+        "mesh",
+        "geo-target",
+        "session-stick",
+        "egress-rotate",
+    ]
+    assert cite["vpn_hosted_live"] is False
     assert cite["fulfilled"] is False
 
 

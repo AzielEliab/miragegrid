@@ -180,11 +180,29 @@ assert(slotHonestyBody.internet_reachable === false, "slot not internet");
 assert(slotHonestyBody.hub_duplication === true, "azcloak real duplication");
 assert(slotHonestyBody.radio_phy === false, "slot radio");
 
+const CAP7_STUBS = ["vpn-hop", "hop", "tunnel", "mesh", "geo-target", "session-stick", "egress-rotate"];
+function assertCap7Stubs(list, label) {
+  assert(Array.isArray(list) && JSON.stringify(list) === JSON.stringify(CAP7_STUBS), label + " " + JSON.stringify(list));
+}
+
 const healthHonesty = await call("/v1/health");
 const healthHonestyBody = await healthHonesty.json();
 assert(healthHonestyBody.channel_plane_is_vpn === false, "health not vpn");
 assert(healthHonestyBody.second_door === false, "health no second door");
 assert(healthHonestyBody.hash_receipt && healthHonestyBody.hash_receipt.second_receipt_door === false, "health hash continuity");
+assert(healthHonestyBody.public_icann_registrar === false && healthHonestyBody.azvpn === false, "health not icann or azvpn");
+assert(healthHonestyBody.planned && healthHonestyBody.planned.live === false && healthHonestyBody.planned.executable === false, "planned not live");
+assertCap7Stubs(healthHonestyBody.planned.fraggate_stubs, "health stubs");
+assert(healthHonestyBody.planned.geo_target.live === false, "geo slot not live");
+assert(healthHonestyBody.planned.session_stick.live === false, "session slot not live");
+assert(healthHonestyBody.planned.egress_rotate.live === false, "egress slot not live");
+assert(healthHonestyBody.planned.fraggate_executable === false && healthHonestyBody.planned.fraggate_stub_code === "FG-STUB", "stubs stay FG-STUB");
+
+const plannedRoute = await call("/v1/planned");
+const plannedRouteBody = await plannedRoute.json();
+assert(plannedRoute.status === 200 && plannedRouteBody.live === false, "planned route");
+assertCap7Stubs(plannedRouteBody.fraggate_stubs, "planned route stubs");
+assert(plannedRouteBody.geo_target.live === false && plannedRouteBody.session_stick.live === false && plannedRouteBody.egress_rotate.live === false, "planned objects not live");
 
 const assignHonesty = await call("/v1/assign", { method: "POST", headers: { "content-type": "application/json" }, body: "{}" });
 const assignHonestyBody = await assignHonesty.json();
@@ -314,8 +332,8 @@ assert(egress.status === 200, "egress cite");
 const egressBody = await egress.json();
 assert(egressBody.code === "MG-EGRESS-CITE", "egress code " + egressBody.code);
 assert(egressBody.residential === false && egressBody.egress_ip === null, "no residential pool");
-assert(egressBody.vpn_hosted_live === false && egressBody.azvpn_merged === false, "not azvpn");
-assert(egressBody.fraggate_stub_ops.includes("vpn-hop"), "stub ops cited");
+assert(egressBody.vpn_hosted_live === false && egressBody.azvpn_merged === false && egressBody.fulfilled === false, "not azvpn");
+assertCap7Stubs(egressBody.fraggate_stub_ops, "egress stub ops");
 
 const geo = await call("/v1/egress/geo", {
   method: "POST",

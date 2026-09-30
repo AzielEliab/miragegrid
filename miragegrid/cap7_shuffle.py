@@ -51,6 +51,16 @@ from miragegrid.semantic_bridge import (
 
 CAP7_SHUFFLE_LAW = "CAP-7 LIVE SHUFFLE"
 CAP7_SHUFFLE_SPEC = "CAP7-SHUFFLE-1.0"
+# Cap-7 FragGate stubs. Not LIVE. Match Softwares stub_ops. Runtime FG-STUB.
+FRAGGATE_CAP7_STUBS: tuple[str, ...] = (
+    "vpn-hop",
+    "hop",
+    "tunnel",
+    "mesh",
+    "geo-target",
+    "session-stick",
+    "egress-rotate",
+)
 DOWNLOAD_WORKER_HOST = WORKER_HOST
 AZIEL_RUNTIME = "https://aziel-runtime.vibelock.workers.dev"
 AZNET_PRODUCT = "aznet"
@@ -89,7 +99,7 @@ def planned_adaptation() -> dict[str, Any]:
         "anonymity_network": False,
         "azvpn_softwares": False,
         "not_azvpn": True,
-        "fraggate_stubs": ["vpn-hop", "hop", "tunnel", "mesh"],
+        "fraggate_stubs": list(FRAGGATE_CAP7_STUBS),
         "fraggate_stub_code": "FG-STUB",
         "fraggate_executable": False,
         "mesh_op_is_qnm_suite_mesh": False,

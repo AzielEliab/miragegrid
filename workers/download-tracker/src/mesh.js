@@ -435,6 +435,17 @@ export const REDLINE = Object.freeze({
   smaller_door: true,
 });
 
+/** Cap-7 FragGate stubs. Not LIVE. Match Softwares stub_ops. Runtime FG-STUB. */
+export const FRAGGATE_CAP7_STUBS = Object.freeze([
+  "vpn-hop",
+  "hop",
+  "tunnel",
+  "mesh",
+  "geo-target",
+  "session-stick",
+  "egress-rotate",
+]);
+
 /** Design-only adaptation. Not executable. Not ICANN publish. Not AZVPN. */
 export function plannedAdaptation() {
   const slot = (name, note) => ({
@@ -464,7 +475,7 @@ export function plannedAdaptation() {
     anonymity_network: false,
     azvpn_softwares: false,
     not_azvpn: true,
-    fraggate_stubs: ["vpn-hop", "hop", "tunnel", "mesh"],
+    fraggate_stubs: FRAGGATE_CAP7_STUBS.slice(),
     fraggate_stub_code: "FG-STUB",
     fraggate_executable: false,
     mesh_op_is_qnm_suite_mesh: false,
