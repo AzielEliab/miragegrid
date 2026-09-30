@@ -13,6 +13,7 @@ from miragegrid.cap7_shuffle import (
     CAP7_FACTORY_SITES,
     FACTORY_LABELS,
     FALSE_SITES,
+    FRAGGATE_CAP7_STUBS,
     REAL_HUB_DUPLICATIONS,
     apply_update,
     az_domain_rows,
@@ -337,7 +338,23 @@ def test_cap7_cite_is_not_hosted_vpn_or_icann_registrar() -> None:
     assert planned["geo_target"]["name"] == "geo-target"
     assert planned["session_stick"]["name"] == "session-stick"
     assert planned["egress_rotate"]["name"] == "egress-rotate"
-    assert "mesh" in planned["fraggate_stubs"]
+    assert planned["fraggate_stubs"] == list(FRAGGATE_CAP7_STUBS)
+    assert planned["fraggate_stubs"] == [
+        "vpn-hop",
+        "hop",
+        "tunnel",
+        "mesh",
+        "geo-target",
+        "session-stick",
+        "egress-rotate",
+    ]
+    assert planned["fraggate_executable"] is False
+    assert planned["fraggate_stub_code"] == "FG-STUB"
+    mesh_js = (ROOT / "workers/download-tracker/src/mesh.js").read_text(encoding="utf-8")
+    stub_block = mesh_js.split("export const FRAGGATE_CAP7_STUBS", 1)[1].split("]);", 1)[0]
+    for name in planned["fraggate_stubs"]:
+        assert f'"{name}"' in stub_block
+    assert "fraggate_stubs: FRAGGATE_CAP7_STUBS.slice()" in mesh_js
     assert planned["mesh_op_is_qnm_suite_mesh"] is False
     for row in law["sites"]:
         assert "miragegrid_vpn" not in row

@@ -4,6 +4,7 @@
  * Sticky mesh-node labels are deterministic. Sticky public IPs are not.
  * AZVPN stays a separate product. Author: Aziel Eliab only.
  */
+import { FRAGGATE_CAP7_STUBS } from "../../download-tracker/src/mesh.js";
 
 export const EGRESS_SPEC = "MG-EGRESS-1.0";
 export const IDENTITY = "Aziel Eliab";
@@ -113,7 +114,7 @@ export function honestyStamps() {
     anonymity_network: false,
     azvpn_separate: true,
     azvpn_merged: false,
-    fraggate_stub_ops: ["vpn-hop", "hop", "tunnel", "mesh"],
+    fraggate_stub_ops: FRAGGATE_CAP7_STUBS.slice(),
     fulfilled: false,
   };
 }
@@ -201,7 +202,7 @@ export function stickyTtlRefuse(body) {
 
 export function vpnRefuse(body) {
   const fields = asObject(body);
-  return verdict(false, "MG-NOT-VPN", 403, "Hosted MirageGrid is not a VPN, not a tunnel, and not an anonymity network. FragGate vpn-hop, hop, tunnel, and mesh stay stub. AZVPN is separate.", {
+  return verdict(false, "MG-NOT-VPN", 403, "Hosted MirageGrid is not a VPN, not a tunnel, and not an anonymity network. FragGate vpn-hop, hop, tunnel, mesh, geo-target, session-stick, and egress-rotate stay stub. AZVPN is separate.", {
     requested: requested(fields, VPN_KEYS),
   });
 }

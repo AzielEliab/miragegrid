@@ -83,7 +83,7 @@ Naming lock: sidenet = AZnet. Cap-7 mesh DNS pairs with AZnet and AZ Browser. So
 
 \`geo-target\`, \`session-stick\`, and \`egress-rotate\` are **planned**. \`live: false\`. They do not publish Cap-7 names on ICANN DNS and they do not hop packets.
 
-FragGate ops \`vpn-hop\`, \`hop\`, \`tunnel\`, and \`mesh\` stay non-executable (runtime \`FG-STUB\`). The FragGate \`mesh\` op is not QNM suite \`mesh_*\` and it is not \`GET /v1/mesh\` status.
+FragGate ops \`vpn-hop\`, \`hop\`, \`tunnel\`, \`mesh\`, \`geo-target\`, \`session-stick\`, and \`egress-rotate\` stay non-executable (runtime \`FG-STUB\`). The FragGate \`mesh\` op is not QNM suite \`mesh_*\` and it is not \`GET /v1/mesh\` status. Cap-7 is not an ICANN registrar. AZVPN is not MirageGrid.
 `;
 
 function corsHeaders() {

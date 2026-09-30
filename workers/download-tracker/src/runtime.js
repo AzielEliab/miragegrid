@@ -82,7 +82,7 @@ Then open http://127.0.0.1:8080 (loopback console). Hosted MirageGrid is not a V
 
 \`geo-target\`, \`session-stick\`, and \`egress-rotate\` stay **planned**. They are not ICANN DNS publish and not a packet hop.
 
-FragGate ops \`vpn-hop\`, \`hop\`, \`tunnel\`, and \`mesh\` stay non-executable (runtime \`FG-STUB\`). The FragGate \`mesh\` op is not QNM suite \`mesh_*\` and it is not \`GET /v1/mesh\` status. Cap-7 is four hub mirrors plus three decoys, separate from per-node \`.aziel\` slots, and not a public ICANN registrar.
+FragGate ops \`vpn-hop\`, \`hop\`, \`tunnel\`, \`mesh\`, \`geo-target\`, \`session-stick\`, and \`egress-rotate\` stay non-executable (runtime \`FG-STUB\`). The FragGate \`mesh\` op is not QNM suite \`mesh_*\` and it is not \`GET /v1/mesh\` status. Cap-7 is four hub mirrors plus three decoys, separate from per-node \`.aziel\` slots, and not a public ICANN registrar. AZVPN is not MirageGrid.
 
 Apache-2.0 (or the repo LICENSE). Forks are welcome and always allowed.
 `;
