@@ -32,8 +32,9 @@ def test_counted_archive_version_and_metadata() -> None:
         assert '__version__ = "0.3.0"' in _text(tar, "miragegrid/__init__.py")
         planned = _text(tar, "miragegrid/cap7_shuffle.py")
         assert '"softwares_catalog_live": True' in planned
-        assert "softwares_note" not in planned
-        assert "AZBot CLEAR" not in planned
+        assert "softwares_note" in planned
+        assert "CLEARED:" in planned
+        assert "until AZBot " + "CLEAR" not in planned
         assert '"vpn-hop"' in planned
         assert "public_egress_ip" in planned
 

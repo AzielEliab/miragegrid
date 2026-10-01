@@ -438,9 +438,16 @@ export const REDLINE = Object.freeze({
 /**
  * Packet hops that stay FG-STUB on this Worker.
  * geo-target, session-stick, and egress-rotate execute here.
- * Runtime Softwares already lists those three public_door_ops LIVE.
+ * Softwares companion on aziel-runtime is CLEARED. Desk layout stays there. Count stays 42.
  */
 export const FRAGGATE_CAP7_STUBS = Object.freeze(["vpn-hop", "hop", "tunnel", "mesh"]);
+
+/** AZBot CLEAR received. Cite the companion; do not redraw the Softwares desk. */
+export const SOFTWARES_COMPANION_TIP = "be1c7990452094536b122645103d41f595c03c76";
+export const SOFTWARES_COMPANION_VERSION_ID = "1c2de0ef-f315-4444-86aa-aec03f730a58";
+export const SOFTWARES_COUNT = 42;
+export const SOFTWARES_COMPANION_NOTE =
+  "CLEARED: Softwares companion on aziel-runtime (tip be1c7990452094536b122645103d41f595c03c76, version_id 1c2de0ef-f315-4444-86aa-aec03f730a58) lists geo-target, session-stick, and egress-rotate in public_door_ops (MirageGrid 0.3.0). Cap-7 control-plane LIVE only — not a public egress IP, not residential, not AZVPN. Softwares desk layout unchanged; Softwares count stays 42.";
 
 /**
  * Cap-7 control plane. geo-target, session-stick, and egress-rotate are
@@ -491,6 +498,11 @@ export function plannedAdaptation() {
     fraggate_stubs: FRAGGATE_CAP7_STUBS.slice(),
     worker_live_ops: ["geo-target", "session-stick", "egress-rotate"],
     softwares_catalog_live: true,
+    softwares_count: SOFTWARES_COUNT,
+    softwares_desk_frozen: true,
+    softwares_companion_tip: SOFTWARES_COMPANION_TIP,
+    softwares_companion_version_id: SOFTWARES_COMPANION_VERSION_ID,
+    softwares_note: SOFTWARES_COMPANION_NOTE,
     fraggate_stub_code: "FG-STUB",
     fraggate_stub_executable: false,
     control_plane_executable: true,

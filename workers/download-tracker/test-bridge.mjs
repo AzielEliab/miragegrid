@@ -229,14 +229,16 @@ const healthDoc = await healthRes.json();
 assert(healthDoc.version === "0.3.0", "health version " + healthDoc.version);
 assert(healthDoc.public_egress_ip === false && healthDoc.hosted_vpn === false && healthDoc.azvpn === false, "health locks");
 assert(healthDoc.planned && healthDoc.planned.softwares_catalog_live === true, "planned catalog live");
-assert(!Object.prototype.hasOwnProperty.call(healthDoc.planned, "softwares_note"), "health drops softwares_note");
+assert(String(healthDoc.planned.softwares_note || "").startsWith("CLEARED:"), "planned note cleared");
+assert(healthDoc.planned.public_egress_ip === false && healthDoc.planned.hosted_vpn === false, "planned not egress or vpn");
 assert(JSON.stringify(healthDoc.planned.fraggate_stubs) === JSON.stringify(["vpn-hop", "hop", "tunnel", "mesh"]), "packet stubs");
-assert(!JSON.stringify(healthDoc).includes("AZBot CLEAR"), "health has no AZBot CLEAR wait");
+assert(!String(healthDoc.planned.softwares_note || "").includes("until AZBot " + "CLEAR"), "health note not waiting");
 
 const skillRes = await hit("/v1/skill");
 assert(skillRes.status === 200, "skill HTTP " + skillRes.status);
 const skillText = await skillRes.text();
-assert(!skillText.includes("AZBot CLEAR"), "skill drops AZBot CLEAR wait");
+assert(skillText.includes("CLEARED:"), "skill cites cleared companion");
+assert(!skillText.includes("until AZBot " + "CLEAR"), "skill not waiting on clear");
 assert(skillText.includes("miragegrid-0.3.0.tar.gz"), "skill names 0.3.0 archive");
 
 const store = new Map();
