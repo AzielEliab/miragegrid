@@ -192,7 +192,13 @@ assert(healthHonestyBody.second_door === false, "health no second door");
 assert(healthHonestyBody.hash_receipt && healthHonestyBody.hash_receipt.second_receipt_door === false, "health hash continuity");
 assert(healthHonestyBody.public_icann_registrar === false && healthHonestyBody.azvpn === false, "health not icann or azvpn");
 assert(healthHonestyBody.planned && healthHonestyBody.planned.live === true && healthHonestyBody.planned.executable === true, "control plane live");
-assert(healthHonestyBody.planned.softwares_catalog_live === false, "softwares catalog not claimed");
+assert(healthHonestyBody.planned.softwares_catalog_live === true, "softwares companion cleared");
+assert(healthHonestyBody.planned.softwares_desk_frozen === true && healthHonestyBody.planned.softwares_count === 42, "desk frozen count 42");
+assert(String(healthHonestyBody.planned.softwares_note || "").startsWith("CLEARED:"), "health note cleared");
+const waitingOnClear = "until AZBot " + "CLEAR";
+const deferredCompanion = "stay on the runtime companion " + "until";
+assert(!String(healthHonestyBody.planned.softwares_note || "").includes(waitingOnClear), "health note not waiting");
+assert(!String(healthHonestyBody.planned.softwares_note || "").includes(deferredCompanion), "health note not deferred");
 assertCap7Stubs(healthHonestyBody.planned.fraggate_stubs, "health stubs");
 assert(healthHonestyBody.planned.geo_target.live === true, "geo slot live");
 assert(healthHonestyBody.planned.session_stick.live === true, "session slot live");
@@ -202,7 +208,9 @@ assert(healthHonestyBody.planned.fraggate_stub_executable === false && healthHon
 const plannedRoute = await call("/v1/planned");
 const plannedRouteBody = await plannedRoute.json();
 assert(plannedRoute.status === 200 && plannedRouteBody.live === true, "planned route");
-assert(plannedRouteBody.softwares_catalog_live === false, "planned route does not claim softwares");
+assert(plannedRouteBody.softwares_catalog_live === true, "planned route cites cleared companion");
+assert(String(plannedRouteBody.softwares_note || "").includes("Softwares count stays 42"), "count stays 42");
+assert(plannedRouteBody.public_icann === false && plannedRouteBody.azvpn_softwares === false && plannedRouteBody.hosted_vpn === false, "planned still not icann or azvpn");
 assertCap7Stubs(plannedRouteBody.fraggate_stubs, "planned route stubs");
 assert(plannedRouteBody.geo_target.live === true && plannedRouteBody.session_stick.live === true && plannedRouteBody.egress_rotate.live === true, "planned objects live");
 
@@ -336,7 +344,9 @@ assert(egress.status === 200, "egress cite");
 const egressBody = await egress.json();
 assert(egressBody.code === "MG-EGRESS-CITE", "egress code " + egressBody.code);
 assert(egressBody.residential === false && egressBody.egress_ip === null, "no residential pool");
-assert(egressBody.vpn_hosted_live === false && egressBody.azvpn_merged === false && egressBody.softwares_catalog_live === false, "not azvpn");
+assert(egressBody.vpn_hosted_live === false && egressBody.azvpn_merged === false, "not azvpn");
+assert(egressBody.softwares_catalog_live === true && String(egressBody.softwares_note || "").startsWith("CLEARED:"), "egress cites cleared companion");
+assert(egressBody.planned && egressBody.planned.softwares_catalog_live === true, "egress planned cleared");
 assert(egressBody.sticky_public_ip === false && egressBody.worker_live_ops.includes("session-stick"), "cite worker stick");
 assertCap7Stubs(egressBody.fraggate_stub_ops, "egress stub ops");
 

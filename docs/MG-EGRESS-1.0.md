@@ -15,7 +15,7 @@ MirageGrid. This paper says what that mapping is allowed to claim.
 | `POST /v1/session/sticky`, `POST /v1/session-stick`, `POST /v1/egress/sticky` | Same `sticky_key` selects the same mesh node and the same Cap-7 site. Vector without a TTL: `booth-1` → `node-21`. A `ttl_seconds` value (60..86400) folds `floor(unix/ttl)` into the digest. Code `MG-SESSION-STICK`. |
 | `POST /v1/egress/rotate` and `POST /v1/egress-rotate` | Moves the factory land to the next roster label (`from_label`) or a seed hash. Update URL stays this Worker. Code `MG-EGRESS-ROTATE`. `ip_rotated: false`. |
 | `POST /v1/assign` | Fresh circuit, unless `sticky_key` binds the node. A region label is stamped when present. |
-| FragGate names | `geo-target`, `session-stick`, `egress-rotate` are the control-plane ops. The runtime catalog unstub is a companion PR. This Worker executes the HTTP doors. |
+| FragGate names | `geo-target`, `session-stick`, `egress-rotate` are the control-plane ops. Softwares companion on aziel-runtime is CLEARED (tip `be1c7990452094536b122645103d41f595c03c76`, version_id `1c2de0ef-f315-4444-86aa-aec03f730a58`). `public_door_ops` lists these three (MirageGrid 0.3.0). This Worker executes the HTTP doors. Desk layout unchanged. Softwares count stays 42. |
 
 The Cap-7 shift stack is `staticlock`, `miragegrid-cloak`, `cap7-egress`
 (former label `planned-egress`). `cap7-egress` is `status: live` and
@@ -50,7 +50,7 @@ and `MG-STICKY-TTL-NOT-READY` are retired. Those doors return 200 for
 the control-plane ask.
 
 FragGate stub ops stay stub: `vpn-hop`, `hop`, `tunnel`, `mesh`.
-WireGuard, OpenVPN, and L3 exit stay false. This Worker does not mark the Softwares catalog live. Cap-7 is not an ICANN registrar. AZVPN is not MirageGrid.
+WireGuard, OpenVPN, and L3 exit stay false. `softwares_catalog_live` is true because the Softwares companion lists the three Cap-7 ops. This repo does not change the Softwares desk. Softwares count stays 42. Cap-7 is not an ICANN registrar. AZVPN is not MirageGrid.
 
 ## TTL without a session store
 
@@ -61,6 +61,8 @@ false. That is enforcement, not an ignored expiry.
 
 ## GitBaby / AZBot
 
-Softwares `one_line` is the runtime companion’s job. This repo’s health may show the three Worker ops `live: true`. Do not claim Softwares LIVE until that companion lands and AZBot CLEAR follows deploy. Do not unstub `vpn-hop`, `hop`, `tunnel`, or `mesh`. Do not merge MirageGrid into AZVPN. Do not enable `GET /v1/mesh` radios. Do not invent a Zenodo DOI. Do not claim ICANN publish. Do not claim a public egress IP.
+AZBot CLEAR is received. Softwares companion is LIVE on aziel-runtime tip `be1c7990452094536b122645103d41f595c03c76` (version_id `1c2de0ef-f315-4444-86aa-aec03f730a58`). MirageGrid card 0.3.0. `public_door_ops` includes geo-target, session-stick, and egress-rotate. `one_line` says the Cap-7 plane is LIVE and is not a public or residential egress IP and is not AZVPN. Softwares desk layout stays frozen. Softwares count stays 42.
+
+Do not unstub `vpn-hop`, `hop`, `tunnel`, or `mesh`. Do not merge MirageGrid into AZVPN. Do not enable `GET /v1/mesh` radios. Do not invent a Zenodo DOI. Do not claim ICANN publish. Do not claim a public egress IP.
 
 Identity: **Aziel Eliab** only.

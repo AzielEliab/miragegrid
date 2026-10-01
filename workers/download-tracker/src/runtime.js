@@ -100,7 +100,7 @@ Then open http://127.0.0.1:8080 (loopback console). Hosted MirageGrid is not a V
 - \`session-stick\` binds \`sticky_key\` to the same mesh node id and the same Cap-7 site. A TTL is a time-bucket hash (\`floor(now/ttl)\` in the digest), not a KV store and not a public address. \`sticky_public_ip\` is false.
 - \`egress-rotate\` moves the hosted update **land label** among the seven factory sites. The update URL stays this Worker. \`ip_rotated\` is false.
 
-They do not publish Cap-7 names on ICANN DNS and they do not hop packets. Worker health may show them \`live: true\`. Softwares \`one_line\` and catalog unstub are the runtime companion, after deploy and AZBot CLEAR.
+They do not publish Cap-7 names on ICANN DNS and they do not hop packets. Worker health may show them \`live: true\`. CLEARED: Softwares companion on aziel-runtime (tip be1c7990452094536b122645103d41f595c03c76, version_id 1c2de0ef-f315-4444-86aa-aec03f730a58) lists \`geo-target\`, \`session-stick\`, and \`egress-rotate\` in \`public_door_ops\` (MirageGrid 0.3.0). Cap-7 control-plane LIVE only — not a public egress IP, not residential, not AZVPN. Softwares desk layout unchanged; Softwares count stays 42.
 
 FragGate ops \`vpn-hop\`, \`hop\`, \`tunnel\`, and \`mesh\` stay non-executable (runtime \`FG-STUB\`). The FragGate \`mesh\` op is not QNM suite \`mesh_*\` and it is not \`GET /v1/mesh\` status. Cap-7 is four hub mirrors plus three decoys, separate from per-node \`.aziel\` slots, and not a public ICANN registrar. Not AZVPN. Not WireGuard.
 

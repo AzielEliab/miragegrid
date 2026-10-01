@@ -7,7 +7,7 @@
  * Not a VPN. Not AZVPN. Not an ICANN registrar.
  * Author: Aziel Eliab only.
  */
-import { FRAGGATE_CAP7_STUBS } from "../../download-tracker/src/mesh.js";
+import { FRAGGATE_CAP7_STUBS, SOFTWARES_COMPANION_NOTE } from "../../download-tracker/src/mesh.js";
 
 import { CAP7_FACTORY_SITES, FACTORY_LABELS, siteRecord } from "./cap7.js";
 
@@ -126,7 +126,8 @@ export function honestyStamps() {
     typed_on_icann_dns: false,
     fraggate_stub_ops: FRAGGATE_STUB_OPS.slice(),
     worker_live_ops: WORKER_LIVE_OPS.slice(),
-    softwares_catalog_live: false,
+    softwares_catalog_live: true,
+    softwares_note: SOFTWARES_COMPANION_NOTE,
   };
 }
 
