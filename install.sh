@@ -4,7 +4,7 @@
 set -euo pipefail
 
 HOST="${MIRAGEGRID_HOME_HOST:-https://miragegrid-download-tracker.vibelock.workers.dev}"
-ASSET="${MIRAGEGRID_HOME_ASSET:-miragegrid-0.2.0.tar.gz}"
+ASSET="${MIRAGEGRID_HOME_ASSET:-miragegrid-0.3.0.tar.gz}"
 WORKDIR="${MIRAGEGRID_HOME:-$HOME/miragegrid}"
 
 mkdir -p "$WORKDIR"

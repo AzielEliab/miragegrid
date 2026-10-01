@@ -92,6 +92,8 @@ miragegrid doctor
 
 Then open http://127.0.0.1:8080 (loopback console). Hosted MirageGrid is not a VPN, not an anonymity network, and not AZVPN. \`packet_forwarding\` is false.
 
+Counted download (gzip HTTP 200, no 302): https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.3.0.tar.gz
+
 ## Cap-7 control plane (LIVE)
 
 \`geo-target\`, \`session-stick\`, and \`egress-rotate\` are **LIVE** on the Cap-7 plane.

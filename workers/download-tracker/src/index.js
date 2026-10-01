@@ -39,7 +39,7 @@ import {
 const PROJECT = "miragegrid";
 const KEYS = isolatedKeys(PROJECT);
 
-const DEFAULT_ASSET = "miragegrid-0.2.0.tar.gz";
+const DEFAULT_ASSET = "miragegrid-0.3.0.tar.gz";
 const DEFAULT_OWNER = "AzielEliab";
 const DEFAULT_REPO = "miragegrid";
 const DEFAULT_BRANCH = "main";
