@@ -12,7 +12,7 @@ import hashlib
 import re
 from typing import Any
 
-from miragegrid.cap7_shuffle import FRAGGATE_CAP7_STUBS
+from miragegrid.cap7_shuffle import FRAGGATE_CAP7_STUBS, SOFTWARES_COMPANION_NOTE
 
 EGRESS_SPEC = "MG-EGRESS-1.0"
 IDENTITY = "Aziel Eliab"
@@ -127,7 +127,8 @@ def honesty_stamps() -> dict[str, Any]:
         "public_icann_registrar": False,
         "fraggate_stub_ops": list(FRAGGATE_STUB_OPS),
         "worker_live_ops": list(WORKER_LIVE_OPS),
-        "softwares_catalog_live": False,
+        "softwares_catalog_live": True,
+        "softwares_note": SOFTWARES_COMPANION_NOTE,
     }
 
 
@@ -267,7 +268,7 @@ def vpn_refuse(body: dict[str, Any] | None = None) -> dict[str, Any]:
         False,
         "MG-NOT-VPN",
         403,
-        "Hosted MirageGrid is not a VPN, not a tunnel, and not an anonymity network. FragGate vpn-hop, hop, tunnel, mesh, geo-target, session-stick, and egress-rotate stay stub. AZVPN is separate.",
+        "Hosted MirageGrid is not a VPN, not a tunnel, and not an anonymity network. FragGate vpn-hop, hop, tunnel, and mesh stay stub. AZVPN is separate. Cap-7 land hop is egress-rotate, not a packet hop.",
         {"requested": _requested(fields, VPN_KEYS)},
     )
 

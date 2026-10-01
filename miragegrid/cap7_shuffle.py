@@ -52,7 +52,7 @@ from miragegrid.semantic_bridge import (
 CAP7_SHUFFLE_LAW = "CAP-7 LIVE SHUFFLE"
 CAP7_SHUFFLE_SPEC = "CAP7-SHUFFLE-1.0"
 # Packet hops that stay FG-STUB. Worker executes geo-target, session-stick, egress-rotate.
-# Softwares catalog unstub is the runtime companion, not this package.
+# Softwares companion on aziel-runtime is CLEARED. Desk layout stays in that repo. Count stays 42.
 FRAGGATE_CAP7_STUBS: tuple[str, ...] = (
     "vpn-hop",
     "hop",
@@ -63,6 +63,17 @@ DOWNLOAD_WORKER_HOST = WORKER_HOST
 AZIEL_RUNTIME = "https://aziel-runtime.vibelock.workers.dev"
 AZNET_PRODUCT = "aznet"
 AZBROWSER_PRODUCT = "azbrowser"
+# AZBot CLEAR received. Cite the companion; do not redraw the Softwares desk.
+SOFTWARES_COMPANION_TIP = "be1c7990452094536b122645103d41f595c03c76"
+SOFTWARES_COMPANION_VERSION_ID = "1c2de0ef-f315-4444-86aa-aec03f730a58"
+SOFTWARES_COUNT = 42
+SOFTWARES_COMPANION_NOTE = (
+    "CLEARED: Softwares companion on aziel-runtime "
+    f"(tip {SOFTWARES_COMPANION_TIP}, version_id {SOFTWARES_COMPANION_VERSION_ID}) "
+    "lists geo-target, session-stick, and egress-rotate in public_door_ops (MirageGrid 0.3.0). "
+    "Cap-7 control-plane LIVE only — not a public egress IP, not residential, not AZVPN. "
+    "Softwares desk layout unchanged; Softwares count stays 42."
+)
 
 
 def _live_slot(name: str, note: str) -> dict[str, Any]:
@@ -112,11 +123,12 @@ def planned_adaptation() -> dict[str, Any]:
         "l3_exit": False,
         "fraggate_stubs": list(FRAGGATE_CAP7_STUBS),
         "worker_live_ops": ["geo-target", "session-stick", "egress-rotate"],
-        "softwares_catalog_live": False,
-        "softwares_note": (
-            "Worker doors for geo-target, session-stick, and egress-rotate are live. "
-            "Softwares public_door_ops and one_line stay on the runtime companion until AZBot CLEAR after deploy."
-        ),
+        "softwares_catalog_live": True,
+        "softwares_count": SOFTWARES_COUNT,
+        "softwares_desk_frozen": True,
+        "softwares_companion_tip": SOFTWARES_COMPANION_TIP,
+        "softwares_companion_version_id": SOFTWARES_COMPANION_VERSION_ID,
+        "softwares_note": SOFTWARES_COMPANION_NOTE,
         "fraggate_stub_code": "FG-STUB",
         "fraggate_stub_executable": False,
         "control_plane_executable": True,
