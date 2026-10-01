@@ -29,7 +29,7 @@ def test_cite_does_not_claim_a_pool() -> None:
     assert cite["fraggate_stub_ops"] == ["vpn-hop", "hop", "tunnel", "mesh"]
     assert cite["worker_live_ops"] == ["geo-target", "session-stick", "egress-rotate"]
     assert "geo-target" not in cite["fraggate_stub_ops"]
-    assert cite["softwares_catalog_live"] is False
+    assert cite["softwares_catalog_live"] is True
 
 
 def test_assign_allows_control_plane_and_refuses_ip_exit() -> None:

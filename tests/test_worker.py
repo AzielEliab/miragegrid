@@ -43,7 +43,9 @@ def test_worker_live_count_and_isolation() -> None:
     assert 'name = "miragegrid-download-tracker"' in toml
     assert "ac575a9b822bea2bed97d0ab73aed238" in toml
     assert '"/count"' in toml
-    assert "0.2.0" in js or "miragegrid-0.2.0.tar.gz" in js
+    assert "miragegrid-0.3.0.tar.gz" in js
+    assert 'const VERSION = "0.3.0"' in js
+    assert "miragegrid-0.2.0.tar.gz" not in js
 
 
 def test_worker_product_homepage() -> None:

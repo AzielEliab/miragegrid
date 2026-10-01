@@ -192,7 +192,8 @@ assert(healthHonestyBody.second_door === false, "health no second door");
 assert(healthHonestyBody.hash_receipt && healthHonestyBody.hash_receipt.second_receipt_door === false, "health hash continuity");
 assert(healthHonestyBody.public_icann_registrar === false && healthHonestyBody.azvpn === false, "health not icann or azvpn");
 assert(healthHonestyBody.planned && healthHonestyBody.planned.live === true && healthHonestyBody.planned.executable === true, "control plane live");
-assert(healthHonestyBody.planned.softwares_catalog_live === false, "softwares catalog not claimed");
+assert(healthHonestyBody.planned.softwares_catalog_live === true, "softwares catalog live");
+assert(!Object.prototype.hasOwnProperty.call(healthHonestyBody.planned, "softwares_note"), "stale softwares_note dropped");
 assertCap7Stubs(healthHonestyBody.planned.fraggate_stubs, "health stubs");
 assert(healthHonestyBody.planned.geo_target.live === true, "geo slot live");
 assert(healthHonestyBody.planned.session_stick.live === true, "session slot live");
@@ -202,7 +203,8 @@ assert(healthHonestyBody.planned.fraggate_stub_executable === false && healthHon
 const plannedRoute = await call("/v1/planned");
 const plannedRouteBody = await plannedRoute.json();
 assert(plannedRoute.status === 200 && plannedRouteBody.live === true, "planned route");
-assert(plannedRouteBody.softwares_catalog_live === false, "planned route does not claim softwares");
+assert(plannedRouteBody.softwares_catalog_live === true, "planned route matches Softwares");
+assert(!Object.prototype.hasOwnProperty.call(plannedRouteBody, "softwares_note"), "planned route drops softwares_note");
 assertCap7Stubs(plannedRouteBody.fraggate_stubs, "planned route stubs");
 assert(plannedRouteBody.geo_target.live === true && plannedRouteBody.session_stick.live === true && plannedRouteBody.egress_rotate.live === true, "planned objects live");
 
@@ -336,7 +338,7 @@ assert(egress.status === 200, "egress cite");
 const egressBody = await egress.json();
 assert(egressBody.code === "MG-EGRESS-CITE", "egress code " + egressBody.code);
 assert(egressBody.residential === false && egressBody.egress_ip === null, "no residential pool");
-assert(egressBody.vpn_hosted_live === false && egressBody.azvpn_merged === false && egressBody.softwares_catalog_live === false, "not azvpn");
+assert(egressBody.vpn_hosted_live === false && egressBody.azvpn_merged === false && egressBody.softwares_catalog_live === true, "not azvpn; catalog live");
 assert(egressBody.sticky_public_ip === false && egressBody.worker_live_ops.includes("session-stick"), "cite worker stick");
 assertCap7Stubs(egressBody.fraggate_stub_ops, "egress stub ops");
 

@@ -438,7 +438,7 @@ export const REDLINE = Object.freeze({
 /**
  * Packet hops that stay FG-STUB on this Worker.
  * geo-target, session-stick, and egress-rotate execute here.
- * Softwares catalog unstub is the runtime companion, not this file.
+ * Runtime Softwares already lists those three public_door_ops LIVE.
  */
 export const FRAGGATE_CAP7_STUBS = Object.freeze(["vpn-hop", "hop", "tunnel", "mesh"]);
 
@@ -490,9 +490,7 @@ export function plannedAdaptation() {
     l3_exit: false,
     fraggate_stubs: FRAGGATE_CAP7_STUBS.slice(),
     worker_live_ops: ["geo-target", "session-stick", "egress-rotate"],
-    softwares_catalog_live: false,
-    softwares_note:
-      "Worker doors for geo-target, session-stick, and egress-rotate are live. Softwares public_door_ops and one_line stay on the runtime companion until AZBot CLEAR after deploy.",
+    softwares_catalog_live: true,
     fraggate_stub_code: "FG-STUB",
     fraggate_stub_executable: false,
     control_plane_executable: true,

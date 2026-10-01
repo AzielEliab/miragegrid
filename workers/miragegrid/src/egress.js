@@ -126,7 +126,7 @@ export function honestyStamps() {
     typed_on_icann_dns: false,
     fraggate_stub_ops: FRAGGATE_STUB_OPS.slice(),
     worker_live_ops: WORKER_LIVE_OPS.slice(),
-    softwares_catalog_live: false,
+    softwares_catalog_live: true,
   };
 }
 

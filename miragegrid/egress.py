@@ -127,7 +127,7 @@ def honesty_stamps() -> dict[str, Any]:
         "public_icann_registrar": False,
         "fraggate_stub_ops": list(FRAGGATE_STUB_OPS),
         "worker_live_ops": list(WORKER_LIVE_OPS),
-        "softwares_catalog_live": False,
+        "softwares_catalog_live": True,
     }
 
 

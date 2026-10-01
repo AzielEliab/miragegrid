@@ -223,6 +223,71 @@ const azgDoc = await azg.json();
 assert(azgDoc.public_icann === false, "azg cite public_icann");
 assert(azgDoc.callable === false, "azg not callable");
 
+const healthRes = await hit("/v1/health");
+assert(healthRes.status === 200, "health HTTP " + healthRes.status);
+const healthDoc = await healthRes.json();
+assert(healthDoc.version === "0.3.0", "health version " + healthDoc.version);
+assert(healthDoc.public_egress_ip === false && healthDoc.hosted_vpn === false && healthDoc.azvpn === false, "health locks");
+assert(healthDoc.planned && healthDoc.planned.softwares_catalog_live === true, "planned catalog live");
+assert(!Object.prototype.hasOwnProperty.call(healthDoc.planned, "softwares_note"), "health drops softwares_note");
+assert(JSON.stringify(healthDoc.planned.fraggate_stubs) === JSON.stringify(["vpn-hop", "hop", "tunnel", "mesh"]), "packet stubs");
+assert(!JSON.stringify(healthDoc).includes("AZBot CLEAR"), "health has no AZBot CLEAR wait");
+
+const skillRes = await hit("/v1/skill");
+assert(skillRes.status === 200, "skill HTTP " + skillRes.status);
+const skillText = await skillRes.text();
+assert(!skillText.includes("AZBot CLEAR"), "skill drops AZBot CLEAR wait");
+assert(skillText.includes("miragegrid-0.3.0.tar.gz"), "skill names 0.3.0 archive");
+
+const store = new Map();
+const kv = {
+  async get(key) {
+    return store.has(key) ? store.get(key) : null;
+  },
+  async put(key, value) {
+    store.set(key, String(value));
+  },
+  async list() {
+    return { keys: [...store.keys()].map((name) => ({ name })), list_complete: true };
+  },
+};
+const assets = {
+  async fetch(req) {
+    const path = new URL(req.url).pathname;
+    if (path === "/miragegrid-0.3.0.tar.gz") {
+      return new Response(new Uint8Array([0x1f, 0x8b, 0, 0]), {
+        status: 200,
+        headers: { "Content-Length": "4" },
+      });
+    }
+    return new Response("missing", { status: 404 });
+  },
+};
+const dlEnv = { ASSETS: assets, DOWNLOADS: kv };
+async function download(path, method = "GET") {
+  return worker.fetch(new Request("https://miragegrid-download-tracker.vibelock.workers.dev" + path, {
+    method,
+    headers: { "user-agent": "Mozilla/5.0", accept: "*/*" },
+  }), dlEnv);
+}
+const expectedName = 'attachment; filename="miragegrid-0.3.0.tar.gz"';
+for (const path of ["/download", "/download?asset=miragegrid-0.3.0.tar.gz", "/download/miragegrid-0.3.0.tar.gz", "/go"]) {
+  const res = await download(path);
+  assert(res.status === 200, path + " " + res.status);
+  assert(res.headers.get("Content-Type") === "application/gzip", path + " type");
+  assert(res.headers.get("Content-Disposition") === expectedName, path + " disposition " + res.headers.get("Content-Disposition"));
+}
+const head = await download("/download", "HEAD");
+assert(head.status === 200, "download HEAD");
+assert(head.headers.get("Content-Disposition") === expectedName, "HEAD disposition");
+const install = await download("/install.sh");
+assert(install.status === 200, "install.sh");
+const installText = await install.text();
+assert(installText.includes("miragegrid-0.3.0.tar.gz"), "install.sh asset");
+assert(!installText.includes("miragegrid-0.2.0.tar.gz"), "install.sh not 0.2.0");
+
 console.log("bridge JSON empty-claims SLOT + named azcorpus/azlibrary designs");
 console.log("public_icann=false resolves_to_hub=false fifth_product=false hash-absolute packs");
 console.log("Worker fetch: llms/ai/bridge/cite/packs/robots/sitemap/az-generator all 200");
+console.log('download Content-Disposition attachment; filename="miragegrid-0.3.0.tar.gz"');
+console.log("health version 0.3.0 planned.softwares_catalog_live true");

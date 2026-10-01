@@ -36,7 +36,7 @@ miragegrid vpn
 
 It listens at `127.0.0.1:1080`.
 
-See [RUN.txt](RUN.txt), the spec [docs/whitepaper.md](docs/whitepaper.md), and [CONTRIBUTING.md](CONTRIBUTING.md). License: [Apache-2.0](LICENSE). Version 0.3.0. The counted tarball filename remains `miragegrid-0.2.0.tar.gz` until a new archive is published.
+See [RUN.txt](RUN.txt), the spec [docs/whitepaper.md](docs/whitepaper.md), and [CONTRIBUTING.md](CONTRIBUTING.md). License: [Apache-2.0](LICENSE). Version 0.3.0. The counted tarball is `miragegrid-0.3.0.tar.gz`.
 
 ## Notes
 
@@ -65,7 +65,7 @@ https://miragegrid-download-tracker.vibelock.workers.dev/
 The Worker serves the gzip itself (HTTP 200, no 302 to GitHub).
 
 - Homepage: [https://miragegrid-download-tracker.vibelock.workers.dev/](https://miragegrid-download-tracker.vibelock.workers.dev/)
-- Direct tarball: [miragegrid-0.2.0.tar.gz](https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.2.0.tar.gz)
+- Direct tarball: [miragegrid-0.3.0.tar.gz](https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.3.0.tar.gz)
 - One-click install: [https://miragegrid-download-tracker.vibelock.workers.dev/install.sh](https://miragegrid-download-tracker.vibelock.workers.dev/install.sh)
 - Skill: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill](https://miragegrid-download-tracker.vibelock.workers.dev/v1/skill)
 - Suite mesh proxy: [https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh](https://miragegrid-download-tracker.vibelock.workers.dev/v1/mesh) — default OFF; QNM live / locked / isolated; QNS-CD-1.0 photon QNS1 cross-map (no public qnsd). Locked law: **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0**, **AIRGAP-1.0** ([docs/mesh-law.md](docs/mesh-law.md))
@@ -166,7 +166,7 @@ or endpoint compromise.
 
 # → [https://miragegrid-download-tracker.vibelock.workers.dev/](https://miragegrid-download-tracker.vibelock.workers.dev/) ←
 
-Direct file: [miragegrid-0.2.0.tar.gz](https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.2.0.tar.gz)
+Direct file: [miragegrid-0.3.0.tar.gz](https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.3.0.tar.gz)
 
 - Tracker home: [https://miragegrid-download-tracker.vibelock.workers.dev/](https://miragegrid-download-tracker.vibelock.workers.dev/)
 - Stats: [https://miragegrid-download-tracker.vibelock.workers.dev/stats](https://miragegrid-download-tracker.vibelock.workers.dev/stats)
@@ -233,7 +233,7 @@ pip install -e ".[dev]"
 From a release artifact:
 
 ```bash
-python -m pip install miragegrid-0.2.0.tar.gz
+python -m pip install miragegrid-0.3.0.tar.gz
 ```
 
 ## CLI

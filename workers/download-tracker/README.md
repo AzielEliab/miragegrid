@@ -3,7 +3,9 @@
 Isolated Worker `miragegrid-download-tracker`. Project `miragegrid`.
 KV namespace `MIRAGEGRID_DOWNLOADS` bound as `DOWNLOADS`.
 Does **not** 302 to GitHub on `/download`. Serves gzip via `ASSETS.fetch`,
-`Cache-Control: private, no-store`.
+`Cache-Control: private, no-store`. Default asset is `miragegrid-0.3.0.tar.gz`
+(`Content-Disposition` filename matches package 0.3.0). `/go` and
+`/download/<asset>` use the same name when no other asset is requested.
 
 `GET /` is the **product homepage** (workspace + download/install + cite).
 Hosted `/v1` is session assignment (assign / mesh / route / circuit /

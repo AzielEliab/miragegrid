@@ -352,7 +352,8 @@ def test_cap7_cite_is_not_hosted_vpn_or_icann_registrar() -> None:
     assert planned["worker_live_ops"] == ["geo-target", "session-stick", "egress-rotate"]
     assert "geo-target" not in planned["fraggate_stubs"]
     assert "mesh" in planned["fraggate_stubs"]
-    assert planned["softwares_catalog_live"] is False
+    assert planned["softwares_catalog_live"] is True
+    assert "softwares_note" not in planned
     assert planned["fraggate_stub_executable"] is False
     assert planned["fraggate_stub_code"] == "FG-STUB"
     mesh_js = (ROOT / "workers/download-tracker/src/mesh.js").read_text(encoding="utf-8")

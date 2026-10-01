@@ -52,7 +52,7 @@ from miragegrid.semantic_bridge import (
 CAP7_SHUFFLE_LAW = "CAP-7 LIVE SHUFFLE"
 CAP7_SHUFFLE_SPEC = "CAP7-SHUFFLE-1.0"
 # Packet hops that stay FG-STUB. Worker executes geo-target, session-stick, egress-rotate.
-# Softwares catalog unstub is the runtime companion, not this package.
+# Runtime Softwares already lists those three public_door_ops LIVE.
 FRAGGATE_CAP7_STUBS: tuple[str, ...] = (
     "vpn-hop",
     "hop",
@@ -112,11 +112,7 @@ def planned_adaptation() -> dict[str, Any]:
         "l3_exit": False,
         "fraggate_stubs": list(FRAGGATE_CAP7_STUBS),
         "worker_live_ops": ["geo-target", "session-stick", "egress-rotate"],
-        "softwares_catalog_live": False,
-        "softwares_note": (
-            "Worker doors for geo-target, session-stick, and egress-rotate are live. "
-            "Softwares public_door_ops and one_line stay on the runtime companion until AZBot CLEAR after deploy."
-        ),
+        "softwares_catalog_live": True,
         "fraggate_stub_code": "FG-STUB",
         "fraggate_stub_executable": False,
         "control_plane_executable": True,
