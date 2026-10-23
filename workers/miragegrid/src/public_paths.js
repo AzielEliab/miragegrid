@@ -12,7 +12,7 @@ const FRAGGATE_MCP = RUNTIME + "/mcp";
 const ATTEST_SPEC = "MG-ATTEST-1.0";
 const PUBLIC_MCP_SPEC = "MG-PUBLIC-MCP-1.0";
 
-/** Operator hold: no paid registrar; free register only at Node Gate front (not hosted). */
+/** Operator hold: names-plane factory is active-use LIVE. No paid registrar; free register only at Node Gate front (not hosted). */
 export function cap7OperatorHold() {
   return {
     cap7_entity: "TBD",
@@ -26,16 +26,17 @@ export function cap7OperatorHold() {
     registrar_work: "none",
     spend: "none",
     cap7_registrar_live: false,
-    cap7_live: false,
-    cap7_factory_live: false,
+    cap7_live: true,
+    cap7_factory_live: true,
+    factory_honesty_live: true,
     cap7_names_only: true,
     cap7_names_are_not_icann: true,
     note:
-      "Cap-7 is a mesh DNS factory (Node Gate claim/plant at the front), not an ICANN or paid .az registrar. No domain spend on this Worker. Names are coordination labels only.",
+      "Cap-7 names-plane factory is active-use LIVE. It is a mesh DNS factory (Node Gate claim/plant at the front), not an ICANN or paid .az registrar. No domain spend on this Worker. Names are coordination labels only. Active use on the names plane is not ICANN DNS and is not a public egress.",
   };
 }
 
-/** Honesty overlay for SHIP public paths — Cap-7 *live* flags stay false; route cite only. */
+/** Honesty overlay for SHIP public paths — names-plane factory is active-use LIVE. Registrar, ICANN, and egress stay false. */
 export function publicPathCap7Honesty() {
   return {
     ...cap7OperatorHold(),
@@ -43,10 +44,10 @@ export function publicPathCap7Honesty() {
     public_icann_registrar: false,
     typed_on_icann_dns: false,
     cap7_typed_on_icann_dns: false,
-    factory_honesty: "cite",
-    factory_honesty_live: false,
+    factory_honesty: "LIVE",
+    factory_honesty_live: true,
     factory_honesty_plane: "names-plane",
-    factory_honesty_means: "public-path cite of Cap-7 names; not a public ICANN or DNS publish",
+    factory_honesty_means: "names-plane active use; not a public ICANN or DNS publish",
     cap7_hosted_endpoints: "cite",
     cap7_hosted_endpoints_plane: "names-plane",
     cap7_hosted_endpoints_means: "public-path cite; control-plane names only; not a public ICANN or DNS publish",
@@ -252,7 +253,7 @@ export function landPathNote() {
   };
 }
 
-/** Names-plane cite for one Cap-7 site row on a public path. Not an ICANN publish. */
+/** Names-plane row on a public path. Factory is active-use LIVE. Not an ICANN publish. */
 export function citeCap7PublicRow(row) {
   if (!row || typeof row !== "object" || Array.isArray(row)) return row;
   return {
@@ -264,6 +265,7 @@ export function citeCap7PublicRow(row) {
     typed_on_icann_dns: false,
     icann_dns_publish: false,
     cap7_names_only: true,
+    cap7_names_are_not_icann: true,
     names_plane: "cap7-names",
     hosted_mcp: "cite",
     hosted_update: "cite",
@@ -271,19 +273,23 @@ export function citeCap7PublicRow(row) {
     cap7_hosted_endpoints: "cite",
     cap7_hosted_endpoints_plane: "names-plane",
     cap7_hosted_endpoints_means: "public-path cite; control-plane names only; not a public ICANN or DNS publish",
-    factory_honesty: "cite",
+    factory_honesty: "LIVE",
+    factory_honesty_live: true,
     factory_honesty_plane: "names-plane",
-    factory_honesty_means: "public-path cite of Cap-7 names; not a public ICANN or DNS publish",
+    factory_honesty_means: "names-plane active use; not a public ICANN or DNS publish",
     honesty_public: "cite",
     hosted_status: "cite",
     public_shuffle_land_exec: false,
-    cap7_live: false,
-    cap7_factory_live: false,
+    cap7_live: true,
+    cap7_factory_live: true,
     cap7_registrar_live: false,
+    paid_registrar: false,
+    packet_forwarding: false,
+    public_egress_ip: false,
   };
 }
 
-/** Strip Cap-7 LIVE stamps from ping land payloads on public /land. */
+/** Public /land keeps the names-plane factory LIVE. ICANN, registrar, and egress stay false. */
 export function overlayPublicLandHonesty(landed) {
   if (!landed || typeof landed !== "object") return landed;
   const overlay = publicPathCap7Honesty();

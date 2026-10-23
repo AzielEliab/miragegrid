@@ -67,7 +67,7 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | GET | \`/v1/cap7\` | Seven factory sites. Four real hub duplications, three decoys. LIVE. |
 | GET | \`/v1/aznet\` | AZnet pairing cite. sidenet = AZnet. Not ICANN. |
 | POST | \`/v1/aznet/access\` | AZnet token + AZ Browser flag, or one of 2 browser gateways. |
-| GET | \`/v1/health\` | Liveness plus deploy tip (\`tip\` / \`git_sha\`) and Cloudflare \`version_id\`. Cap-7 live flags stay false. |
+| GET | \`/v1/health\` | Liveness plus deploy tip (\`tip\` / \`git_sha\`) and Cloudflare \`version_id\`. Names-plane \`cap7_live\` and \`cap7_factory_live\` are true. Registrar, ICANN, and public egress stay false. |
 | GET | \`/stats\` / \`/v1/stats\` | Honest app/download-plane stats. |
 | GET | \`/v1/skill\` | This markdown. |
 | GET | \`/v1/nodes\` | 25 mesh nodes. |
@@ -184,7 +184,7 @@ function openapiSpec() {
       "/v1/egress-rotate": { post: { operationId: "egressRotateAlias", summary: "LIVE Cap-7 land rotation. Not packet egress." } },
       "/v1/aznet": { get: { operationId: "miragegrid_aznet_pair", summary: "AZnet pairing cite. sidenet = AZnet. Not ICANN. Softwares frozen." } },
       "/v1/aznet/access": { post: { operationId: "miragegrid_aznet_access", summary: "AZnet + AZ Browser pair, or one of two public browser gateways." } },
-      "/v1/health": { get: { operationId: "health", summary: "Liveness. tip and git_sha are the deploy stamp. version_id is CF_VERSION_METADATA.id at serve time. cap7_live stays false." } },
+      "/v1/health": { get: { operationId: "health", summary: "Liveness. tip and git_sha are the deploy stamp. version_id is CF_VERSION_METADATA.id at serve time. cap7_live and cap7_factory_live are true on the names plane. cap7_registrar_live, public_icann, and public egress stay false." } },
       "/stats": { get: { operationId: "stats", summary: "Honest app/download-plane stats." } },
       "/v1/stats": { get: { operationId: "v1Stats", summary: "Honest app/download-plane stats alias." } },
       "/v1/skill": { get: { operationId: "skill", summary: "Skill markdown." } },

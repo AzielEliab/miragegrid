@@ -25,7 +25,7 @@ Always send `User-Agent: Mozilla/5.0`. Cloudflare Workers may 403 an empty agent
 
 Ops (do **not** increment downloads or views):
 
-- `GET /v1/health` — liveness. App Worker also reports deploy `tip` / `git_sha` (wrangler `GIT_SHA` or the Workers Builds commit baked at bundle time) and `version_id` (`CF_VERSION_METADATA.id` at serve time). `cap7_live`, `cap7_factory_live`, `cap7_registrar_live`, `paid_registrar`, and `public_icann` stay false. `cap7_names_only` stays true.
+- `GET /v1/health` — liveness. App Worker also reports deploy `tip` / `git_sha` (wrangler `GIT_SHA` or the Workers Builds commit baked at bundle time) and `version_id` (`CF_VERSION_METADATA.id` at serve time). `cap7_live`, `cap7_factory_live`, and `factory_honesty_live` are true on the names plane (active use). `cap7_registrar_live`, `paid_registrar`, `public_icann`, and public egress stay false. `cap7_names_only` and `cap7_names_are_not_icann` stay true.
 - `GET /v1/skill` — this file
 - `GET /v1/topology` — persistent 25-node circulant topology (local op)
 - `GET /v1/mesh` — PROXY suite mesh status. Node mesh ON (`mesh_node_live`, `alt_internet`, `packet_path`). QNM live|locked|isolated. QNS-CD-1.0 cross-map (photon QNS1 packet transfer) is stamped for peers. Never enables. No public qnsd proxy. Stamps **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0**, **AIRGAP-1.0**, paper-vault-on-node.
