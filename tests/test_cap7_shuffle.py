@@ -284,6 +284,15 @@ def test_app_worker_wrangler_named_miragegrid() -> None:
     assert "nodejs_compat" in APP_CFG
     assert "observability" in APP_CFG
     assert "/bridge" in APP_INDEX
+    assert 'path === "/mcp"' in APP_INDEX
+    assert 'path === "/land"' in APP_INDEX
+    assert 'path === "/attest"' in APP_INDEX
+    assert "public_paths.js" in APP_INDEX
+    pub = (ROOT / "workers/miragegrid/src/public_paths.js").read_text(encoding="utf-8")
+    assert "cap7OperatorHold" in pub
+    assert "publicPathCap7Honesty" in pub
+    assert "register_policy" in pub and "free-only" in pub
+    assert "cap7_live: false" in pub
     assert "/v1/shuffle/ping" in APP_INDEX
     assert "CAP7-SHUFFLE-1.0" in APP_CAP7
     assert "hardcoded_host" in APP_SHUFFLE

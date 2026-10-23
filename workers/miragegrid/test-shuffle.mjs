@@ -530,4 +530,45 @@ assert(html.includes("no residential IP pool") || html.includes("There is no res
 assert(html.includes("/v1/session/sticky"), "home sticky door");
 assert(html.includes("not a sticky public IP") || html.includes("Not a sticky public IP") || html.includes("not a sticky public IP".toLowerCase()) || html.includes("sticky public IP"), "home denies sticky public ip");
 
+const mcpCite = await call("/mcp");
+assert(mcpCite.status === 200, "mcp cite http");
+const mcpBody = await mcpCite.json();
+assert(mcpBody.code === "MG-PUBLIC-MCP-CITE", "mcp code " + mcpBody.code);
+assert(mcpBody.is_live_door === false && mcpBody.second_door === false, "mcp not exec door");
+assert(mcpBody.cap7_entity === "TBD" && mcpBody.domain_purchase === "held", "mcp operator hold");
+assert(mcpBody.register_policy === "free-only" && mcpBody.paid_registrar === false, "mcp free only");
+assert(mcpBody.cap7_live === false && mcpBody.cap7_factory_live === false, "mcp cap7 live false");
+assert(mcpBody.hosted_mcp === "cite" && mcpBody.hosted_mcp_live === false, "mcp cite not live");
+assert(mcpBody.public_icann === false && mcpBody.cap7_registrar_live === false, "mcp not icann registrar");
+const mcpPost = await call("/mcp", { method: "POST", headers: { "content-type": "application/json" }, body: "{}" });
+assert(mcpPost.status === 403, "mcp post refuse");
+const mcpPostBody = await mcpPost.json();
+assert(mcpPostBody.code === "MG-MCP-CITE-ONLY", "mcp post code");
+
+const landPub = await call("/land?round_id=ship-round&node_id=node-01");
+assert(landPub.status === 200, "land public");
+const landPubBody = await landPub.json();
+assert(landPubBody.code === "CAP7-LAND" && landPubBody.public_path === "/land", "land public path");
+assert(landPubBody.cap7_live === false && landPubBody.public_shuffle_land_exec === false, "land cap7 live flags false");
+assert(landPubBody.register_policy === "free-only" && landPubBody.paid_registrar === false, "land free only");
+assert(landPubBody.land && landPubBody.land.factory_honesty === "cite", "land nested cite");
+const landGetPlant = await call("/land?prev=p&lockset=l&node_id=node-01");
+assert(landGetPlant.status === 403 && (await landGetPlant.json()).code === "MESH-GET-NO-ENABLE", "land get prev lockset refuses");
+
+const attestGet = await call("/attest");
+assert(attestGet.status === 200, "attest cite");
+const attestGetBody = await attestGet.json();
+assert(attestGetBody.code === "MG-ATTEST-CITE" && attestGetBody.attest.syntactic_only === true, "attest cite");
+assert(attestGetBody.attest.chainlock_verify === "SLOT", "attest chainlock slot");
+const attestBad = await call("/attest", { method: "POST", headers: { "content-type": "application/json" }, body: "{}" });
+assert(attestBad.status === 400 && (await attestBad.json()).code === "MG-ATTEST-NEED-PROOF", "attest need proof");
+const attestOk = await call("/attest", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({ prev: "p", lockset: "l", node_id: "node-01" }),
+});
+const attestOkBody = await attestOk.json();
+assert(attestOk.status === 200 && attestOkBody.code === "MG-ATTEST-SYNTACTIC", "attest syntactic " + attestOkBody.code);
+assert(attestOkBody.attest.fraggate_zkattest === "SLOT", "attest zk slot");
+
 console.log("cap7 shuffle worker smoke ok land=" + pingBody.land.label);

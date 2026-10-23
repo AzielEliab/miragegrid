@@ -133,6 +133,9 @@ that name on ICANN DNS.
 
 Runtime cites the app Worker:
 
+- `GET /mcp` — public cite map (not a second FragGate `/mcp`). Cap-7 entity TBD; no domain purchase/register.
+- `GET /land` · `POST /land` — shuffle land cite (alias of `/v1/shuffle/land`).
+- `GET /attest` · `POST /attest` — syntactic update proof cite; cryptographic attest SLOT.
 - `GET /bridge` (also `/bridge.json`, `/v1/bridge`)
 - `GET /v1/shuffle` · `POST /v1/shuffle/ping` · `GET /v1/shuffle/land`
 - `GET /v1/cap7`
