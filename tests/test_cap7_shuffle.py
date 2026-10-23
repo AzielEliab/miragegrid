@@ -292,7 +292,25 @@ def test_app_worker_wrangler_named_miragegrid() -> None:
     assert "cap7OperatorHold" in pub
     assert "publicPathCap7Honesty" in pub
     assert "register_policy" in pub and "free-only" in pub
-    assert "cap7_live: false" in pub
+    assert "cap7_live: true" in pub
+    assert "cap7_factory_live: true" in pub
+    assert "factory_honesty_live: true" in pub
+    assert "cap7_live: false" not in pub
+    assert "cap7_factory_live: false" not in pub
+    assert "factory_honesty_live: false" not in pub
+    assert 'factory_honesty_plane: "names-plane"' in pub
+    assert "cap7_is_mesh_dns_factory: true" in pub
+    assert "cap7_names_only: true" in pub
+    assert "cap7_names_are_not_icann: true" in pub
+    assert "cap7_registrar_live: false" in pub
+    assert "paid_registrar: false" in pub
+    assert "icann_az_paid_registrar: false" in pub
+    assert "public_icann_registrar: false" in pub
+    assert "cap7_public_icann: false" in pub
+    assert "cap7_public_egress: false" in pub
+    assert "packet_forwarding: false" in pub
+    assert "spend: \"none\"" in pub
+    assert "domain_purchase: \"held\"" in pub
     assert "/v1/shuffle/ping" in APP_INDEX
     assert "CAP7-SHUFFLE-1.0" in APP_CAP7
     assert "hardcoded_host" in APP_SHUFFLE

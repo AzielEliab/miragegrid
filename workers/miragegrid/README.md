@@ -26,8 +26,9 @@ curl -sS -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/v1/health
 # expect worker_name=miragegrid  — CF 1042 is gone
 # tip and git_sha: deploy stamp (null until GIT_SHA or WORKERS_CI_COMMIT_SHA is injected)
 # version_id: CF_VERSION_METADATA.id at serve time (null when the binding is absent)
-# cap7_live / cap7_factory_live / cap7_registrar_live / paid_registrar / public_icann: false
-# cap7_names_only: true
+# cap7_live / cap7_factory_live / factory_honesty_live: true (names-plane active use)
+# cap7_registrar_live / paid_registrar / public_icann / cap7_public_egress: false
+# cap7_names_only: true — names are not ICANN
 ```
 
 `npm run deploy` stays `wrangler deploy --name miragegrid --config wrangler.jsonc`. That string is what `test_app_worker_wrangler_named_miragegrid` asserts. It does not pass `GIT_SHA`. `bash deploy.sh` is the stamped operator path: it sets `GIT_SHA=$(git rev-parse HEAD)` as a wrangler var and bakes the same commit. Workers Builds does not need that flag: `build.command` reads `WORKERS_CI_COMMIT_SHA` during either deploy. Neither path hardcodes a tip.
@@ -36,7 +37,7 @@ curl -sS -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/v1/health
 
 | Path | Honesty |
 | --- | --- |
-| `GET /mcp` | Public cite map on this Worker. **Not** FragGate JSON-RPC exec (catalog stays on AZ runtime `/mcp`). Cap-7 live flags **false**; register **free-only** policy (no paid ICANN/.az). |
+| `GET /mcp` | Public cite map on this Worker. **Not** FragGate JSON-RPC exec (catalog stays on AZ runtime `/mcp`). Names-plane factory is active-use LIVE (`cap7_live`, `cap7_factory_live`, `factory_honesty_live`). Register stays **free-only** (no paid ICANN/.az). |
 | `GET /land` `POST /land` | Cap-7 shuffle land cite (alias of `/v1/shuffle/land`). Mesh DNS factory names only; `public_shuffle_land_exec` false on this path. GET `prev`+`lockset` refuses. |
 | `GET /attest` `POST /attest` | Attest cite + syntactic `prev`/`lockset` check. ChainLock / zkattest SLOT (F1). |
 | `GET /` | App homepage (shuffle + assign) |
@@ -52,7 +53,7 @@ curl -sS -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/v1/health
 | `POST /v1/egress/rotate` `/v1/egress-rotate` | LIVE land rotation among the seven sites. Not packet egress |
 | `GET /cap7/{label}` | LIVE factory cite. Not typed on ICANN DNS |
 | `GET /aznet/cap7/{label}` | AZnet-plane factory cite (LIVE). Not a public internet door |
-| `GET /v1/health` | Liveness plus deploy `tip` / `git_sha` and Cloudflare `version_id`. Cap-7 live flags false. |
+| `GET /v1/health` | Liveness plus deploy `tip` / `git_sha` and Cloudflare `version_id`. Names-plane `cap7_live` and `cap7_factory_live` are true. Registrar, ICANN, and public egress stay false. |
 | `GET /v1/skill` `/v1/nodes` `/v1/doctor` | FragGate LIVE_OPS |
 | `POST /v1/assign` `/v1/verify-receipt` | Session assignment |
 | `GET /v1/mesh` | PROXY. Node mesh ON (`mesh_node_live`, `alt_internet`, `packet_path`). GET never enables radios. Cap-7 stays names-only. |
