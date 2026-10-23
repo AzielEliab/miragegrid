@@ -15,7 +15,7 @@ MirageGrid. This paper says what that mapping is allowed to claim.
 | `POST /v1/session/sticky`, `POST /v1/session-stick`, `POST /v1/egress/sticky` | Same `sticky_key` selects the same mesh node and the same Cap-7 site. Vector without a TTL: `booth-1` → `node-21`. A `ttl_seconds` value (60..86400) folds `floor(unix/ttl)` into the digest. Code `MG-SESSION-STICK`. |
 | `POST /v1/egress/rotate` and `POST /v1/egress-rotate` | Moves the factory land to the next roster label (`from_label`) or a seed hash. Update URL stays this Worker. Code `MG-EGRESS-ROTATE`. `ip_rotated: false`. |
 | `POST /v1/assign` | Fresh circuit, unless `sticky_key` binds the node. A region label is stamped when present. |
-| FragGate names | `geo-target`, `session-stick`, `egress-rotate` are the control-plane ops. Softwares companion on aziel-runtime is CLEARED (tip `be1c7990452094536b122645103d41f595c03c76`, version_id `1c2de0ef-f315-4444-86aa-aec03f730a58`). `public_door_ops` lists these three (MirageGrid 0.3.0). This Worker executes the HTTP doors. Desk layout unchanged. Softwares count stays 42. |
+| FragGate names | `geo-target`, `session-stick`, `egress-rotate` are the control-plane ops. Softwares companion on aziel-runtime is CLEARED (tip `6f27394fbcafb640a1ede7017b599a6f66c68769`, version_id `1c2de0ef-f315-4444-86aa-aec03f730a58`). The tip is the git lockstep pin. That version_id is not a deploy stamp of this tip. `public_door_ops` lists these three (MirageGrid 0.3.0). This Worker executes the HTTP doors. Desk layout unchanged. Softwares count stays 42. |
 
 The Cap-7 shift stack is `staticlock`, `miragegrid-cloak`, `cap7-egress`
 (former label `planned-egress`). `cap7-egress` is `status: live` and
@@ -61,7 +61,7 @@ false. That is enforcement, not an ignored expiry.
 
 ## GitBaby / AZBot
 
-AZBot CLEAR is received. Softwares companion is LIVE on aziel-runtime tip `be1c7990452094536b122645103d41f595c03c76` (version_id `1c2de0ef-f315-4444-86aa-aec03f730a58`). MirageGrid card 0.3.0. `public_door_ops` includes geo-target, session-stick, and egress-rotate. `one_line` says the Cap-7 plane is LIVE and is not a public or residential egress IP and is not AZVPN. Softwares desk layout stays frozen. Softwares count stays 42.
+AZBot CLEAR is received. Softwares companion is LIVE on aziel-runtime tip `6f27394fbcafb640a1ede7017b599a6f66c68769` (version_id `1c2de0ef-f315-4444-86aa-aec03f730a58`). The tip is the git lockstep pin. That version_id is not a deploy stamp of this tip. MirageGrid card 0.3.0. `public_door_ops` includes geo-target, session-stick, and egress-rotate. `one_line` says the Cap-7 plane is LIVE and is not a public or residential egress IP and is not AZVPN. Softwares desk layout stays frozen. Softwares count stays 42.
 
 Do not unstub `vpn-hop`, `hop`, `tunnel`, or `mesh`. Do not merge MirageGrid into AZVPN. Do not enable `GET /v1/mesh` radios. Do not invent a Zenodo DOI. Do not claim ICANN publish. Do not claim a public egress IP.
 

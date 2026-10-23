@@ -260,7 +260,7 @@ rotation refuse until a real pool exists ([MG-EGRESS-1.0.md](MG-EGRESS-1.0.md)).
 `POST /v1/session/sticky` binds a mesh node and a Cap-7 land. It is not a sticky public IP. Package 0.3.0 makes geo-target, session-stick, and egress-rotate LIVE on that control plane.
 
 The Worker homepage shows a suite Live Nodes strip. `/v1/mesh/*` PROXY
-to aziel-runtime. Suite mesh default OFF. QNM rollup is
+to aziel-runtime. Node mesh is ON (`mesh_node_live`, `alt_internet`, `packet_path`). Cap-7 stays names-only (`public_icann` false). QNM rollup is
 live|locked|isolated counts only. QNS-CD-1.0 (photon QNS1 packet
 transfer) is a hub cite / Worker mesh cross-map only — local qnsd is
 qnm-node; runtime cites live in aziel-runtime. No Node Gate. No public

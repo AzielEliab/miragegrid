@@ -3,7 +3,7 @@
 Named Cloudflare Worker **`miragegrid`**. Host
 `https://miragegrid.vibelock.workers.dev`.
 
-This is the **Cap-7 LIVE shuffle** app door. It is **not** the
+This is the **Cap-7 LIVE shuffle** app door (names plane / control plane; `public_icann: false`; not an ICANN DNS publish). It is **not** the
 download-tracker. Counted downloads stay on
 `miragegrid-download-tracker`.
 
@@ -47,7 +47,7 @@ curl -sS -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/v1/health
 | `GET /aznet/cap7/{label}` | AZnet-plane factory cite (LIVE). Not a public internet door |
 | `GET /v1/health` `/v1/skill` `/v1/nodes` `/v1/doctor` | FragGate LIVE_OPS |
 | `POST /v1/assign` `/v1/verify-receipt` | Session assignment |
-| `GET /v1/mesh` | PROXY (default OFF). GET never enables. |
+| `GET /v1/mesh` | PROXY. Node mesh ON (`mesh_node_live`, `alt_internet`, `packet_path`). GET never enables radios. Cap-7 stays names-only. |
 
 AZ Generator is not callable. Cap-7 `public_icann: false` and
 `typed_on_icann_dns: false`. AZ domain doors are `public_icann: true`

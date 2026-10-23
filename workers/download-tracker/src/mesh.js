@@ -1,7 +1,9 @@
 /**
  * Suite node mesh — QNM-BUILD-1.0 Live Nodes contract.
  * QNS-CD-1.0 cross-map (photon QNS1 packet transfer) — hub cite only.
- * Default OFF. Public rollup is live|locked|isolated counts only.
+ * Node mesh ON. mesh_node_live, alt_internet, and packet_path are LIVE.
+ * Public rollup is live|locked|isolated counts only. Counts are not invented.
+ * Cap-7 stays names-only (public_icann false). Not a public egress.
  * No Node Gate. No auto-heal. Not an anonymity network.
  * No public qnsd proxy. Local qnsd lives in AzielEliab/qnm-node.
  * /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME binding).
@@ -34,7 +36,11 @@ const IDENTITY = "Aziel Eliab";
 export const QNM_SPEC = "QNM-BUILD-1.0";
 export const QNS_CD_SPEC = "QNS-CD-1.0";
 export const MESH_KERNEL = "NM-0.1";
-export const MESH_DEFAULT_OFF = true;
+/** Suite node-mesh policy is ON. GET still never enables radios. */
+export const MESH_DEFAULT_OFF = false;
+export const MESH_NODE_LIVE = true;
+export const ALT_INTERNET = true;
+export const PACKET_PATH = true;
 export const MESH_ANONYMITY_NETWORK = false;
 export const MESH_NODE_GATE = false;
 export const MESH_AUTO_HEAL = false;
@@ -67,7 +73,11 @@ export const QNS_CD = Object.freeze({
   public_proxy: false,
   qnsd_proxy: false,
   node_gate: false,
-  default_off: true,
+  default_off: false,
+  node_mesh: true,
+  mesh_node_live: true,
+  alt_internet: true,
+  packet_path: true,
   local: "qnsd",
   local_process: "qnm-node/",
   local_repo: QNM_NODE_REPO,
@@ -77,11 +87,11 @@ export const QNS_CD = Object.freeze({
   pair_custody: AZINTERFACE_REPO,
   author: IDENTITY,
   identity: IDENTITY,
-  note: "QNS-CD-1.0 photon QNS1 packet transfer. Local qnsd is coded in AzielEliab/qnm-node. Runtime cites + catalog field live in AzielEliab/aziel-runtime. AZInterface has pair custody. Hub cite / Worker mesh cross-map only. Not a Softwares-tab product. No public qnsd proxy. No Node Gate. Mesh default OFF. Author: Aziel Eliab only.",
+  note: "QNS-CD-1.0 photon QNS1 packet transfer. Local qnsd is coded in AzielEliab/qnm-node. Runtime cites + catalog field live in AzielEliab/aziel-runtime. AZInterface has pair custody. Hub cite / Worker mesh cross-map only. Not a Softwares-tab product. No public qnsd proxy. No Node Gate. Node mesh ON. mesh_node_live LIVE. alt_internet ON. packet_path ON. Cap-7 names-only; public_icann false; not a public egress. Carriers refuse QNM-RADIO-ABSENT when hardware is absent. Author: Aziel Eliab only.",
 });
 
 export const MESH_NOTE =
-  "QNM-BUILD-1.0. QNS-CD-1.0 photon QNS1 packet transfer. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. NO-LIE. NO-REWRITE. NO-FAN-1.0. No falsification. No ambiguity. No misleading. Suite mesh default off. Live|locked|isolated counts only. No Node Gate. No auto-heal. Not an anonymity network. No public qnsd proxy. Author: Aziel Eliab only.";
+  "QNM-BUILD-1.0. QNS-CD-1.0 photon QNS1 packet transfer. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. NO-LIE. NO-REWRITE. NO-FAN-1.0. No falsification. No ambiguity. No misleading. Node mesh ON. mesh_node_live LIVE. alt_internet ON. packet_path ON. Live|locked|isolated counts only (not invented). No Node Gate. No auto-heal. Not an anonymity network. No public qnsd proxy. Cap-7 names-only; public_icann false; not a public ICANN DNS publish and not a public egress. Carriers refuse QNM-RADIO-ABSENT when hardware is absent. No mock radio LIVE. Author: Aziel Eliab only.";
 
 export const SPLIT_WIRES_LAW = "SPLIT THE WIRES";
 export const SPLIT_WIRES_SPEC = "STW-1.0";
@@ -442,12 +452,17 @@ export const REDLINE = Object.freeze({
  */
 export const FRAGGATE_CAP7_STUBS = Object.freeze(["vpn-hop", "hop", "tunnel", "mesh"]);
 
-/** AZBot CLEAR received. Cite the companion; do not redraw the Softwares desk. */
-export const SOFTWARES_COMPANION_TIP = "be1c7990452094536b122645103d41f595c03c76";
+/**
+ * AZBot CLEAR received. Cite the companion; do not redraw the Softwares desk.
+ * Git lockstep pin: aziel-runtime main after Softwares #365. Not a live Worker
+ * deploy stamp. version_id stays the last cited CF id; this tip has no CF
+ * version_id, so none is invented.
+ */
+export const SOFTWARES_COMPANION_TIP = "6f27394fbcafb640a1ede7017b599a6f66c68769";
 export const SOFTWARES_COMPANION_VERSION_ID = "1c2de0ef-f315-4444-86aa-aec03f730a58";
 export const SOFTWARES_COUNT = 42;
 export const SOFTWARES_COMPANION_NOTE =
-  "CLEARED: Softwares companion on aziel-runtime (tip be1c7990452094536b122645103d41f595c03c76, version_id 1c2de0ef-f315-4444-86aa-aec03f730a58) lists geo-target, session-stick, and egress-rotate in public_door_ops (MirageGrid 0.3.0). Cap-7 control-plane LIVE only — not a public egress IP, not residential, not AZVPN. Softwares desk layout unchanged; Softwares count stays 42.";
+  "CLEARED: Softwares companion on aziel-runtime (tip 6f27394fbcafb640a1ede7017b599a6f66c68769, version_id 1c2de0ef-f315-4444-86aa-aec03f730a58) lists geo-target, session-stick, and egress-rotate in public_door_ops (MirageGrid 0.3.0). The tip is the git lockstep pin. That version_id is not a deploy stamp of this tip. Cap-7 control-plane LIVE only — not a public egress IP, not residential, not AZVPN. Softwares desk layout unchanged; Softwares count stays 42.";
 
 /**
  * Cap-7 control plane. geo-target, session-stick, and egress-rotate are
@@ -543,10 +558,21 @@ export const OUTLAST_HONESTY = Object.freeze({
   node_gate_exit: "node-gate-front",
   radio_phy: false,
   factory_honesty: "LIVE",
+  factory_honesty_plane: "names-plane",
+  factory_honesty_means: "control-plane names coordination; not a public ICANN or DNS publish",
   hosted_endpoints: "LIVE",
+  cap7_hosted_endpoints: "live",
+  cap7_hosted_endpoints_plane: "names-plane",
+  cap7_hosted_endpoints_means: "control-plane names coordination on this Worker; not a public ICANN or DNS publish",
   hosted_update: "LIVE",
   hosted_mcp: "LIVE",
   public_shuffle_land_exec: "LIVE",
+  cap7_names_only: true,
+  cap7_public_icann: false,
+  public_icann: false,
+  icann_dns_publish: false,
+  cap7_public_egress: false,
+  public_egress_ip: false,
   anchored_by_live_nodes: true,
   domain_anchor: "live-nodes",
   internet_reaches: "az-domains",
@@ -577,9 +603,58 @@ export function outlastHonesty() {
   };
 }
 
+/**
+ * QNM operator lock (2026-10-23). Node mesh, alt internet, and packet path
+ * are ON. Cap-7 / .aziel stay names-only. Not ICANN. Not a public egress.
+ * Carriers still refuse QNM-RADIO-ABSENT when that hardware is absent.
+ * Live-node counts are not invented here.
+ */
+export function qnmOperatorLock() {
+  return {
+    mesh_default: "on",
+    mesh_default_off: false,
+    default_off: false,
+    node_mesh: true,
+    mesh_enabled: true,
+    mesh_node_live: true,
+    mesh_node_live_status: "LIVE",
+    alt_internet: true,
+    alt_internet_status: "LIVE",
+    alt_internet_live: true,
+    packet_path: true,
+    packet_path_status: "LIVE",
+    packet_path_live: true,
+    alt_internet_means:
+      "QNM track-2 plane flag ON. Not a public ICANN internet, not BGP, and not a public egress IP. Carriers refuse QNM-RADIO-ABSENT when hardware is absent.",
+    packet_path_means:
+      "QNM packet-path flag ON. Not hosted packet forwarding, not a public egress IP, and not AZVPN. FragGate vpn-hop, hop, tunnel, and mesh stay FG-STUB.",
+    cap7_names_only: true,
+    cap7_public_icann: false,
+    public_icann: false,
+    icann_dns_publish: false,
+    cap7_public_egress: false,
+    public_egress_ip: false,
+    public_icann_registrar: false,
+    cap7_registrar_live: false,
+    packet_forwarding: false,
+    packet_forward: false,
+    worker_hardware: false,
+    worker_radios_live: false,
+    radio_phy: false,
+    invented_hardware: false,
+    mock_live: false,
+    carrier_hw_absent: "QNM-RADIO-ABSENT",
+    get_never_enables: true,
+    hub_get_enables_mesh: false,
+    not_a_second_internet: true,
+    aznet_replaces_internet: false,
+  };
+}
+
 export function meshLawFields() {
   return {
     assign_live: ASSIGN_LIVE,
+    ...qnmOperatorLock(),
     split_wires: SPLIT_WIRES,
     cold_copy: COLD_COPY,
     reheal: REHEAL,
@@ -620,6 +695,7 @@ export function attachQnsCd(data) {
     hosted_hop: false,
     fraggate_single_door: true,
     ...outlastHonesty(),
+    ...qnmOperatorLock(),
   };
 }
 
@@ -764,7 +840,7 @@ export function refuseGetEnableOrPlant(method, path, search) {
   if (!intent) return null;
   return lawVerdict(false, "MESH-GET-NO-ENABLE", "refuse", "GET never enables radios or plants mesh claims", {
     enabled: false,
-    default_off: true,
+    radios_enabled_by_get: false,
     radio_phy: false,
     claim_plant: false,
     hub_get_enables_mesh: false,
@@ -1119,7 +1195,7 @@ export const MESH_OPS = Object.freeze([
 ]);
 
 export const MESH_PROXY_ROUTES = Object.freeze([
-  { path: MESH_PATH, methods: ["get", "head"], op: "status", summary: "PROXY to aziel-runtime GET /v1/mesh. Suite mesh status. Default OFF. Not a local op." },
+  { path: MESH_PATH, methods: ["get", "head"], op: "status", summary: "PROXY to aziel-runtime GET /v1/mesh. Node mesh ON. GET never enables radios. Not a local op." },
   { path: MESH_STATUS_PATH, methods: ["get"], op: "status", summary: "PROXY alias of GET /v1/mesh. Not a local op." },
   { path: MESH_NODES_PATH, methods: ["get"], op: "nodes", summary: "PROXY to aziel-runtime GET /v1/mesh/nodes. Live Nodes (5-minute presence). Not a local op." },
   { path: MESH_ENABLE_PATH, methods: ["post"], op: "enable", summary: "PROXY to aziel-runtime POST /v1/mesh/enable. Operator bearer required. Rate-limited. Not a local op." },
@@ -1224,10 +1300,11 @@ export function emptyMesh(extra = {}) {
     code: extra.code || "MESH-OK",
     spec: QNM_SPEC,
     kernel: MESH_KERNEL,
-    enabled: false,
-    default_off: true,
+    enabled: true,
+    default_off: false,
+    node_mesh: true,
     live_nodes: 0,
-    status: extra.status || "off",
+    status: extra.status || "on",
     source: extra.source || "fallback",
     node_gate: false,
     auto_heal: false,
@@ -1281,9 +1358,12 @@ export function parseMeshDoc(body) {
     .map(compactMeshNode)
     .filter(Boolean);
   const rollup = parseRollup(inner, listed.length ? listed.length : null);
-  const enabled = truthyEnabled(inner.enabled)
+  const statusWord = String(inner.status || "").toLowerCase();
+  const explicitOff = inner.enabled === false || inner.mesh_enabled === false || statusWord === "off";
+  const explicitOn = truthyEnabled(inner.enabled)
     || truthyEnabled(inner.mesh_enabled)
-    || String(inner.status || "").toLowerCase() === "on";
+    || statusWord === "on";
+  const enabled = explicitOn || (!explicitOff && !MESH_DEFAULT_OFF);
   const unavailable = inner.ok === false
     && !enabled
     && (inner.error || inner.status === "unavailable" || inner.status === "not_found");
@@ -1298,7 +1378,7 @@ export function parseMeshDoc(body) {
   return emptyMesh({
     ok: inner.ok !== false,
     enabled,
-    default_off: inner.default_off !== false,
+    default_off: inner.default_off === true,
     live_nodes: live,
     rollup: { live, locked, isolated },
     products_present: products,
@@ -1320,7 +1400,7 @@ export function publicMesh(mesh) {
     spec: QNM_SPEC,
     kernel: MESH_KERNEL,
     enabled,
-    default_off: m.default_off !== false,
+    default_off: false,
     live_nodes: enabled ? rollup.live : 0,
     rollup,
     status: enabled ? "on" : (m.status === "unavailable" ? "unavailable" : "off"),
@@ -1360,7 +1440,7 @@ export function meshStatusLine(mesh) {
   if (m.status === "unavailable") {
     return "Suite mesh: off (unavailable). QNM-BUILD-1.0. QNS-CD-1.0. Not an anonymity network.";
   }
-  return "Suite mesh: off (default). QNM-BUILD-1.0. QNS-CD-1.0. Not an anonymity network.";
+  return "Node mesh: on. mesh_node_live LIVE. alt_internet ON. packet_path ON. QNM-BUILD-1.0. Not an anonymity network. Not public ICANN.";
 }
 
 /** Public Live Nodes count. Never auto-heal a visiting floor. */
@@ -1373,7 +1453,9 @@ export function meshPointer() {
   return {
     pointer: true,
     path: MESH_PATH,
-    enabled_default: false,
+    enabled_default: true,
+    node_mesh: true,
+    mesh_node_live: true,
     spec: QNM_SPEC,
     kernel: MESH_KERNEL,
     rollup: "live|locked|isolated",
@@ -1475,7 +1557,8 @@ function meshErrFields({ message, door_url, http_status, content_type, via, extr
     auto_heal: false,
     anonymity_network: false,
     enabled: false,
-    default_off: true,
+    default_off: false,
+    node_mesh: true,
     message,
     door_url: door_url || "",
     http_status: http_status == null ? null : http_status,
@@ -1787,7 +1870,7 @@ export async function runMeshProxy(env, request, pathAndQuery) {
   }
 
   if (method === "HEAD") {
-    return { status: res.status, data: attachQnsCd({ ok: res.ok, code: res.ok ? "MESH-OK" : "MESH-ERR", door: "mesh", via, enabled: false }) };
+    return { status: res.status, data: attachQnsCd({ ok: res.ok, code: res.ok ? "MESH-OK" : "MESH-ERR", door: "mesh", via, enabled: !!res.ok }) };
   }
 
   const buf = await res.arrayBuffer();

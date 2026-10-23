@@ -183,3 +183,18 @@ def test_mesh_dict_cites_locked_law() -> None:
     assert law["az_generator"]["clock"]["period_s"] == 497
     assert law["az_generator"]["softwares_tab"] is False
     assert law["grid_shift"]["softwares_tab"] is False
+    assert law["mesh_node_live"] is True
+    assert law["alt_internet"] is True and law["alt_internet_live"] is True
+    assert law["packet_path"] is True and law["packet_path_live"] is True
+    assert law["mesh_node_live_status"] == "LIVE"
+    assert law["cap7_public_icann"] is False
+    assert law["public_icann"] is False
+    assert law["cap7_public_egress"] is False
+    assert law["public_egress_ip"] is False
+    assert law["packet_forwarding"] is False
+    assert law["worker_hardware"] is False
+    assert law["mock_live"] is False
+    assert law["cap7_names_only"] is True
+    assert doc["mesh_node_live"] is True
+    assert doc["packet_path_live"] is True
+    assert doc["cap7_public_icann"] is False

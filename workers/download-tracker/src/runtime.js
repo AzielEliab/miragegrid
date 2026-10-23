@@ -24,7 +24,7 @@ const BANNER = "MirageGrid is not a VPN, not an anonymity network, and not AZVPN
 const HOST = "https://miragegrid-download-tracker.vibelock.workers.dev";
 const SKILL = `---
 name: MirageGrid
-description: Use when assigning a session node, routing peers, or installing MirageGrid. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime catalog). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
+description: Use when assigning a session node, routing peers, or installing MirageGrid. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Node mesh ON (mesh_node_live, alt_internet, packet_path). Cap-7 names-only; public_icann false. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime catalog). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
 ---
 
 # MirageGrid
@@ -49,7 +49,7 @@ Host: \`https://miragegrid-download-tracker.vibelock.workers.dev\`
 | GET | \`/v1/skill\` | This markdown. Does not increment downloads. |
 | GET | \`/v1/nodes\` | List the 25 mesh nodes. |
 | GET | \`/v1/topology\` | Persistent 25-node circulant topology (local op). |
-| GET | \`/v1/mesh\` | PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 cross-map (photon QNS1). SPLIT THE WIRES + COLD-COPY SURVIVAL + REHEAL + AZ-GENERATOR-1.0 + MIRAGE-GRID-SHIFT-1.0 + AIRGAP-1.0 + PAPER-VAULT-ON-NODE. Never enables. No public qnsd. |
+| GET | \`/v1/mesh\` | PROXY suite mesh status. Node mesh ON (\`mesh_node_live\`, \`alt_internet\`, \`packet_path\`). QNM live|locked|isolated. QNS-CD-1.0 cross-map (photon QNS1). SPLIT THE WIRES + COLD-COPY SURVIVAL + REHEAL + AZ-GENERATOR-1.0 + MIRAGE-GRID-SHIFT-1.0 + AIRGAP-1.0 + PAPER-VAULT-ON-NODE. Never enables. No public qnsd. |
 | GET | \`/v1/mesh/nodes\` | PROXY Live Nodes roster (5-minute presence). Same QNS-CD-1.0 cross-map. |
 | POST | \`/v1/mesh/{enable,disable,join,heartbeat,leave,broadcast}\` | PROXY. Bearer required to enable. No auto-heal. |
 | POST | \`/v1/route\` | Shortest peer path between two nodes. |
@@ -102,7 +102,7 @@ Counted download (gzip HTTP 200, no 302): https://miragegrid-download-tracker.vi
 - \`session-stick\` binds \`sticky_key\` to the same mesh node id and the same Cap-7 site. A TTL is a time-bucket hash (\`floor(now/ttl)\` in the digest), not a KV store and not a public address. \`sticky_public_ip\` is false.
 - \`egress-rotate\` moves the hosted update **land label** among the seven factory sites. The update URL stays this Worker. \`ip_rotated\` is false.
 
-They do not publish Cap-7 names on ICANN DNS and they do not hop packets. Worker health may show them \`live: true\`. CLEARED: Softwares companion on aziel-runtime (tip be1c7990452094536b122645103d41f595c03c76, version_id 1c2de0ef-f315-4444-86aa-aec03f730a58) lists \`geo-target\`, \`session-stick\`, and \`egress-rotate\` in \`public_door_ops\` (MirageGrid 0.3.0). Cap-7 control-plane LIVE only — not a public egress IP, not residential, not AZVPN. Softwares desk layout unchanged; Softwares count stays 42.
+They do not publish Cap-7 names on ICANN DNS and they do not hop packets. Worker health may show them \`live: true\`. CLEARED: Softwares companion on aziel-runtime (tip 6f27394fbcafb640a1ede7017b599a6f66c68769, version_id 1c2de0ef-f315-4444-86aa-aec03f730a58) lists \`geo-target\`, \`session-stick\`, and \`egress-rotate\` in \`public_door_ops\` (MirageGrid 0.3.0). The tip is the git lockstep pin. That version_id is not a deploy stamp of this tip. Cap-7 control-plane LIVE only — not a public egress IP, not residential, not AZVPN. Softwares desk layout unchanged; Softwares count stays 42.
 
 FragGate ops \`vpn-hop\`, \`hop\`, \`tunnel\`, and \`mesh\` stay non-executable (runtime \`FG-STUB\`). The FragGate \`mesh\` op is not QNM suite \`mesh_*\` and it is not \`GET /v1/mesh\` status. Cap-7 is four hub mirrors plus three decoys, separate from per-node \`.aziel\` slots, and not a public ICANN registrar. Not AZVPN. Not WireGuard.
 
@@ -651,7 +651,7 @@ function openapiSpec() {
     info: {
       title: "MirageGrid runtime",
       version: VERSION,
-      description: BANNER + " " + MOTTO + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Not AZVPN. packet_forwarding false. geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane and are not a public egress IP. Aziel Eliab only. Apache-2.0.",
+      description: BANNER + " " + MOTTO + " Suite mesh /v1/mesh/* PROXY to aziel-runtime (AZIEL_RUNTIME). Node mesh ON (mesh_node_live, alt_internet, packet_path). Cap-7 names-only; public_icann false. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only. SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Not AZVPN. packet_forwarding false. geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane and are not a public egress IP. Aziel Eliab only. Apache-2.0.",
     },
     servers: [{ url: HOST }],
     paths: {
@@ -745,7 +745,7 @@ function aiHtml() {
   </ul>
   <h2>MCP catalog</h2>
   <p>The shared catalog (ships separately) is <code>https://aziel-runtime.vibelock.workers.dev/mcp</code> (catalog <code>mesh_*</code> + FragGate <code>slug=mesh</code>).</p>
-  <p>Suite mesh: <code>GET ${HOST}/v1/mesh</code> PROXY to aziel-runtime. Default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (no public qnsd). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. No Node Gate. No auto-heal. Not anonymity. Author: Aziel Eliab only.</p>
+  <p>Suite mesh: <code>GET ${HOST}/v1/mesh</code> PROXY to aziel-runtime. Node mesh ON (mesh_node_live, alt_internet, packet_path). Cap-7 names-only; public_icann false. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (no public qnsd). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. PAPER-VAULT-ON-NODE. No Node Gate. No auto-heal. Not anonymity. Author: Aziel Eliab only.</p>
   <p><a href="/openapi.json">openapi.json</a> · <a href="/v1/health">health</a> · <a href="/v1/mesh">/v1/mesh</a> · <a href="/">MirageGrid</a></p>
 </body>
 </html>`;

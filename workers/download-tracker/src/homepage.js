@@ -215,7 +215,7 @@ ${JSON.stringify(jsonLd, null, 2)}
   <p class="banner">${escapeHtml(BANNER)}</p>
   <div id="meshStrip" aria-label="Suite Live Nodes">
     <div class="live"><b id="meshLiveCount">0</b> Live Nodes</div>
-    <div id="meshLine">Suite mesh: off (default). QNM-BUILD-1.0. QNS-CD-1.0. Not an anonymity network.</div>
+    <div id="meshLine">Node mesh: on. mesh_node_live LIVE. alt_internet ON. packet_path ON. QNM-BUILD-1.0. Not an anonymity network. Not public ICANN.</div>
     <div class="rollup">live <b id="qnmLive">0</b> · locked <b id="qnmLocked">0</b> · isolated <b id="qnmIsolated">0</b></div>
     <div>No Node Gate · No auto-heal · GET never enables radios or plants claims · REDLINE-1.0 · no invented completeness · Cloudflare TLS only · FoldLock cite-only · Lamb Lens · SPLIT THE WIRES · COLD-COPY SURVIVAL · REHEAL · AZ-GENERATOR-1.0 Cap-7 mesh DNS factory (deep-node → front Node Gate; four real hub duplications, three false sites; not typed on ICANN DNS; AZnet+AZ Browser) · CAP7-SHUFFLE-1.0 ping→land · MIRAGE-GRID-SHIFT-1.0 · AIRGAP-1.0 · PAPER-VAULT-ON-NODE · NO-FAN-1.0 · No falsification. No ambiguity. No misleading. · download cite miragegrid-download-tracker.vibelock.workers.dev · app Worker miragegrid.vibelock.workers.dev is LIVE (historical CF 1042 closed) · Aziel Eliab only</div>
     <div>
@@ -520,7 +520,7 @@ ${JSON.stringify(jsonLd, null, 2)}
           var line = $("meshLine");
           if (on) line.textContent = "Suite mesh: on · live " + live + " · locked " + locked + " · isolated " + isolated + ". Not an anonymity network.";
           else if (j.status === "unavailable" || (j.ok === false && j.error)) line.textContent = "Suite mesh: off (unavailable). QNM-BUILD-1.0. QNS-CD-1.0. Not an anonymity network.";
-          else line.textContent = "Suite mesh: off (default). QNM-BUILD-1.0. QNS-CD-1.0. Not an anonymity network.";
+          else line.textContent = "Node mesh: on (no roster on this read). mesh_node_live LIVE. QNM-BUILD-1.0. Not an anonymity network. Not public ICANN.";
           var products = j.products_present || j.products || [];
           var names = Array.isArray(products) ? products.map(function (p) { return typeof p === "string" ? p : (p && (p.product || p.slug)) || ""; }).filter(Boolean) : [];
           var nodes = Array.isArray(j.nodes) ? j.nodes : [];

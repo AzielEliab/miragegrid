@@ -34,7 +34,7 @@ MirageGrid’s public stack is now three named pieces:
 AZ Generator and Node Gate are MirageGrid subsystems / law. They are not
 Softwares-tab products. MirageGrid remains the Softwares product.
 
-Suite mesh `/v1/mesh` (QNM-BUILD-1.0) stays default OFF. That strip is
+Suite mesh `/v1/mesh` (QNM-BUILD-1.0) is ON (`mesh_node_live`, `alt_internet`, `packet_path`). Cap-7 stays names-only (`public_icann` false; not a public egress). That strip is
 not Node Gate, not auto-heal, and not the anonymity network.
 
 ## SPLIT THE WIRES (STW-1.0)
