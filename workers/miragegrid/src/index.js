@@ -64,10 +64,10 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | GET | \`/v1/shuffle\` | CAP7-SHUFFLE-1.0 cite. |
 | POST | \`/v1/shuffle/ping\` | Ping until land. |
 | POST | \`/v1/shuffle/update\` | Update via the landed Cap-7 site. |
-| GET | \`/v1/cap7\` | Seven factory sites. Four real hub duplications, three decoys. LIVE. |
+| GET | \`/v1/cap7\` | Seven factory sites. Four real hub duplications, three decoys. Factory active for operators. Not an ICANN registrar. |
 | GET | \`/v1/aznet\` | AZnet pairing cite. sidenet = AZnet. Not ICANN. |
 | POST | \`/v1/aznet/access\` | AZnet token + AZ Browser flag, or one of 2 browser gateways. |
-| GET | \`/v1/health\` | Liveness plus deploy tip (\`tip\` / \`git_sha\`) and Cloudflare \`version_id\`. Cap-7 live flags stay false. |
+| GET | \`/v1/health\` | Liveness plus deploy tip (\`tip\` / \`git_sha\`) and Cloudflare \`version_id\`. \`cap7_live\` and \`cap7_factory_live\` are true. \`cap7_registrar_live\`, \`paid_registrar\`, and \`public_icann\` stay false. |
 | GET | \`/stats\` / \`/v1/stats\` | Honest app/download-plane stats. |
 | GET | \`/v1/skill\` | This markdown. |
 | GET | \`/v1/nodes\` | 25 mesh nodes. |
@@ -177,14 +177,14 @@ function openapiSpec() {
       "/v1/shuffle": { get: { operationId: "miragegrid_shuffle_cite", summary: "CAP7-SHUFFLE-1.0 cite." } },
       "/v1/shuffle/ping": { post: { operationId: "miragegrid_shuffle_ping", summary: "Ping until land." } },
       "/v1/shuffle/update": { post: { operationId: "miragegrid_shuffle_update", summary: "Update via the landed Cap-7 site. No hard-coded host." } },
-      "/v1/cap7": { get: { operationId: "miragegrid_cap7", summary: "Factory roster. Four hub mirrors, three decoys. LIVE factory honesty. Not a public ICANN registrar. Not per-node .aziel slots." } },
+      "/v1/cap7": { get: { operationId: "miragegrid_cap7", summary: "Factory roster. Four hub mirrors, three decoys. Mesh DNS factory active for operators. Not a public ICANN registrar. Not per-node .aziel slots. No domain spend." } },
       "/v1/planned": { get: { operationId: "miragegrid_planned", summary: "Cap-7 control plane. geo-target, session-stick, egress-rotate are live. Not ICANN publish. Not a packet hop. Not a public egress IP. Not AZVPN." } },
       "/v1/geo-target": { post: { operationId: "geoTarget", summary: "LIVE region label on a mesh node and a Cap-7 land. Not an IP exit." } },
       "/v1/session-stick": { post: { operationId: "sessionStick", summary: "LIVE sticky mesh node and Cap-7 land. Not a sticky public IP." } },
       "/v1/egress-rotate": { post: { operationId: "egressRotateAlias", summary: "LIVE Cap-7 land rotation. Not packet egress." } },
       "/v1/aznet": { get: { operationId: "miragegrid_aznet_pair", summary: "AZnet pairing cite. sidenet = AZnet. Not ICANN. Softwares frozen." } },
       "/v1/aznet/access": { post: { operationId: "miragegrid_aznet_access", summary: "AZnet + AZ Browser pair, or one of two public browser gateways." } },
-      "/v1/health": { get: { operationId: "health", summary: "Liveness. tip and git_sha are the deploy stamp. version_id is CF_VERSION_METADATA.id at serve time. cap7_live stays false." } },
+      "/v1/health": { get: { operationId: "health", summary: "Liveness. tip and git_sha are the deploy stamp. version_id is CF_VERSION_METADATA.id at serve time. cap7_live and cap7_factory_live are true. cap7_registrar_live, paid_registrar, and public_icann stay false." } },
       "/stats": { get: { operationId: "stats", summary: "Honest app/download-plane stats." } },
       "/v1/stats": { get: { operationId: "v1Stats", summary: "Honest app/download-plane stats alias." } },
       "/v1/skill": { get: { operationId: "skill", summary: "Skill markdown." } },
@@ -437,6 +437,8 @@ export default {
         anchored_by_live_nodes: true,
         public_icann: false,
         public_icann_registrar: false,
+        icann_dns_publish: false,
+        public_egress_ip: false,
         name_may_change: true,
         radio_phy: false,
         hardcoded_host: false,
@@ -448,6 +450,7 @@ export default {
         ...factorySeparation(),
         planned: plannedAdaptation(),
         app_worker: APP_HOST,
+        ...cap7OperatorHold(),
         author: IDENTITY,
       });
     }

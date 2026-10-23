@@ -292,7 +292,17 @@ def test_app_worker_wrangler_named_miragegrid() -> None:
     assert "cap7OperatorHold" in pub
     assert "publicPathCap7Honesty" in pub
     assert "register_policy" in pub and "free-only" in pub
-    assert "cap7_live: false" in pub
+    assert "cap7_operator_hold: false" in pub
+    assert "cap7_live: true" in pub
+    assert "cap7_factory_live: true" in pub
+    assert "cap7_registrar_live: false" in pub
+    assert "cap7_live: false" not in pub
+    assert "paid_registrar: false" in pub
+    assert "cap7_names_only: true" in pub
+    assert "Not vendored" in pub
+    assert "SOFTWARES_COMPANION_TIP" in pub
+    mesh_src = (ROOT / "workers/download-tracker/src/mesh.js").read_text(encoding="utf-8")
+    assert 'SOFTWARES_COMPANION_TIP = "6f27394fbcafb640a1ede7017b599a6f66c68769"' in mesh_src
     assert "/v1/shuffle/ping" in APP_INDEX
     assert "CAP7-SHUFFLE-1.0" in APP_CAP7
     assert "hardcoded_host" in APP_SHUFFLE

@@ -5,16 +5,25 @@
  */
 
 import { APP_HOST, CAP7_SHUFFLE_SPEC, IDENTITY, RUNTIME, appWorker, hostedBridgeDoors } from "./cap7.js";
-import { HASH_RECEIPT_CONTINUITY } from "../../download-tracker/src/mesh.js";
+import { HASH_RECEIPT_CONTINUITY, SOFTWARES_COMPANION_TIP } from "../../download-tracker/src/mesh.js";
 import { PRODUCT, VERSION } from "../../download-tracker/src/runtime.js";
 
 const FRAGGATE_MCP = RUNTIME + "/mcp";
 const ATTEST_SPEC = "MG-ATTEST-1.0";
 const PUBLIC_MCP_SPEC = "MG-PUBLIC-MCP-1.0";
 
-/** Operator hold: no paid registrar; free register only at Node Gate front (not hosted). */
+/**
+ * Factory hold is off. Mesh DNS factory and control plane are active for operators.
+ * Registrar meaning stays names-only ≠ ICANN. No paid registrar. No domain spend.
+ * Not an ICANN DNS publish. Not a public egress IP.
+ * Softwares Cap-7 active-use is not vendored here; the CLEARED pin stays the geo/stick/rotate companion.
+ */
 export function cap7OperatorHold() {
   return {
+    cap7_operator_hold: false,
+    cap7_active_use: true,
+    cap7_active_use_means:
+      "Mesh DNS factory and control plane are active for operators. Not an ICANN registrar, not a paid registrar, and not a public egress IP.",
     cap7_entity: "TBD",
     cap7_is_mesh_dns_factory: true,
     node_gate_claim_plant: "front-only-not-on-this-worker",
@@ -26,16 +35,28 @@ export function cap7OperatorHold() {
     registrar_work: "none",
     spend: "none",
     cap7_registrar_live: false,
-    cap7_live: false,
-    cap7_factory_live: false,
+    cap7_live: true,
+    cap7_factory_live: true,
     cap7_names_only: true,
     cap7_names_are_not_icann: true,
+    public_icann: false,
+    public_icann_registrar: false,
+    icann_dns_publish: false,
+    cap7_public_icann: false,
+    cap7_public_egress: false,
+    public_egress_ip: false,
+    packet_forwarding: false,
+    ip_exit: false,
+    softwares_cap7_active_use_companion:
+      "Not vendored. A Softwares Cap-7 active-use PR may land first on aziel-runtime. This Worker does not pin a new tip for it. CLEARED companion pin " +
+      SOFTWARES_COMPANION_TIP +
+      " stays geo-target, session-stick, and egress-rotate only.",
     note:
-      "Cap-7 is a mesh DNS factory (Node Gate claim/plant at the front), not an ICANN or paid .az registrar. No domain spend on this Worker. Names are coordination labels only.",
+      "Cap-7 mesh DNS factory and control plane are active for operators (cap7_operator_hold false). Names-only is not an ICANN or paid .az registrar. No domain spend on this Worker. cap7_registrar_live, paid_registrar, public_icann, and IP egress stay false. GET /v1/mesh never enables radios.",
   };
 }
 
-/** Honesty overlay for SHIP public paths — Cap-7 *live* flags stay false; route cite only. */
+/** Public-path honesty. Factory active-use is on. This route still cites and does not publish ICANN DNS. GET never plants. */
 export function publicPathCap7Honesty() {
   return {
     ...cap7OperatorHold(),
@@ -263,7 +284,6 @@ export function citeCap7PublicRow(row) {
     cap7_public_egress: false,
     typed_on_icann_dns: false,
     icann_dns_publish: false,
-    cap7_names_only: true,
     names_plane: "cap7-names",
     hosted_mcp: "cite",
     hosted_update: "cite",
@@ -277,13 +297,19 @@ export function citeCap7PublicRow(row) {
     honesty_public: "cite",
     hosted_status: "cite",
     public_shuffle_land_exec: false,
-    cap7_live: false,
-    cap7_factory_live: false,
+    cap7_operator_hold: false,
+    cap7_active_use: true,
+    cap7_live: true,
+    cap7_factory_live: true,
     cap7_registrar_live: false,
+    cap7_names_only: true,
+    cap7_names_are_not_icann: true,
+    paid_registrar: false,
+    public_egress_ip: false,
   };
 }
 
-/** Strip Cap-7 LIVE stamps from ping land payloads on public /land. */
+/** Public /land overlay. Factory active-use stays on. Nested rows cite names and do not publish ICANN DNS. */
 export function overlayPublicLandHonesty(landed) {
   if (!landed || typeof landed !== "object") return landed;
   const overlay = publicPathCap7Honesty();
