@@ -11,6 +11,7 @@ import {
   CAP7_SHUFFLE_SPEC,
   CAP_7,
   IDENTITY,
+  RUNTIME,
   appWorker,
   cap7Roster,
   cap7ShuffleDict,
@@ -152,6 +153,9 @@ export function shuffleCite() {
   return verdict(true, "CAP7-SHUFFLE-CITE", "yes", "CAP7-SHUFFLE-1.0 cite. Four real .az hub duplications, three false sites. Internet reaches AZ domains only.", {
     ...law,
     doors: {
+      mcp: APP_HOST + "/mcp",
+      land_public: APP_HOST + "/land",
+      attest: APP_HOST + "/attest",
       bridge: APP_HOST + "/bridge",
       bridge_json: APP_HOST + "/bridge.json",
       v1_bridge: APP_HOST + "/v1/bridge",
@@ -160,6 +164,7 @@ export function shuffleCite() {
       land: APP_HOST + "/v1/shuffle/land",
       update: APP_HOST + "/v1/shuffle/update",
       cap7: APP_HOST + "/v1/cap7",
+      fraggate_catalog_mcp: RUNTIME + "/mcp",
     },
     phase: "cite",
     continue: false,

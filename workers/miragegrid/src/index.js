@@ -36,6 +36,7 @@ import { applyUpdate, ping, shuffleCite } from "./shuffle.js";
 import { handleSidenet } from "./sidenet.js";
 import { citeDocument, renderIndexHtml } from "./homepage.js";
 import { EGRESS_SPEC } from "./egress.js";
+import { attestCite, attestSyntactic, mcpCite, mcpPostRefuse, overlayPublicLandHonesty } from "./public_paths.js";
 
 const SKILL = `---
 name: MirageGrid
@@ -54,6 +55,10 @@ Always send \`User-Agent: Mozilla/5.0\`.
 
 | Method | Path | What |
 |--------|------|------|
+| GET | \`/mcp\` | LIVE public cite map (not JSON-RPC exec). Catalog MCP stays on AZ runtime. |
+| GET | \`/land\` | Cap-7 shuffle land cite (alias of \`/v1/shuffle/land\`). GET never plants. |
+| GET | \`/attest\` | Attest cite: syntactic prev+lockset only; ChainLock/zkattest SLOT. |
+| POST | \`/attest\` | Syntactic prev+lockset check → land coordination (not zkattest). |
 | GET | \`/bridge\` | LIVE door for aziel-runtime. Cap-7 shuffle + honesty. |
 | GET | \`/v1/shuffle\` | CAP7-SHUFFLE-1.0 cite. |
 | POST | \`/v1/shuffle/ping\` | Ping until land. |
@@ -155,6 +160,18 @@ function openapiSpec() {
     },
     servers: [{ url: APP_HOST }],
     paths: {
+      "/mcp": {
+        get: { operationId: "miragegrid_public_mcp_cite", summary: "Public cite map. Not FragGate JSON-RPC exec." },
+        post: { operationId: "miragegrid_public_mcp_refuse", summary: "Refuse — cite-only; use AZ runtime /mcp for exec." },
+      },
+      "/land": {
+        get: { operationId: "miragegrid_public_land", summary: "Cap-7 land cite (round_id query). GET never plants." },
+        post: { operationId: "miragegrid_public_land_post", summary: "Land cite via JSON body (same as shuffle ping land phase)." },
+      },
+      "/attest": {
+        get: { operationId: "miragegrid_attest_cite", summary: "Attest honesty cite. ChainLock/zkattest SLOT." },
+        post: { operationId: "miragegrid_attest_syntactic", summary: "Syntactic prev+lockset coordination check." },
+      },
       "/bridge": { get: { operationId: "miragegrid_bridge", summary: "Cap-7 shuffle + SEMANTIC-BRIDGE doors." } },
       "/v1/shuffle": { get: { operationId: "miragegrid_shuffle_cite", summary: "CAP7-SHUFFLE-1.0 cite." } },
       "/v1/shuffle/ping": { post: { operationId: "miragegrid_shuffle_ping", summary: "Ping until land." } },
@@ -291,6 +308,52 @@ export default {
         status: 200,
         headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "private, no-store", ...corsHeaders() },
       });
+    }
+
+    if (path === "/mcp" && (method === "GET" || method === "HEAD")) {
+      const doc = mcpCite();
+      return method === "HEAD"
+        ? new Response(null, { status: 200, headers: { "Content-Type": "application/json; charset=utf-8", ...corsHeaders() } })
+        : json(doc);
+    }
+    if (path === "/mcp" && method === "POST") {
+      return json(mcpPostRefuse(), 403);
+    }
+
+    if (path === "/attest" && (method === "GET" || method === "HEAD")) {
+      const doc = attestCite();
+      return method === "HEAD"
+        ? new Response(null, { status: 200, headers: { "Content-Type": "application/json; charset=utf-8", ...corsHeaders() } })
+        : json(doc);
+    }
+    if (path === "/attest" && method === "POST") {
+      const parsed = await readJsonBody(request);
+      if (parsed.error) return json(parsed.error, parsed.status);
+      const out = await attestSyntactic(parsed.body, ping);
+      return json(out, out.ok ? 200 : out.code === "MG-ATTEST-NEED-PROOF" ? 400 : 403);
+    }
+
+    if (path === "/land") {
+      if (method === "GET" || method === "HEAD") {
+        const landed = await ping(
+          {
+            node_id: url.searchParams.get("node_id"),
+            round_id: url.searchParams.get("round_id") || url.searchParams.get("round"),
+            prev: url.searchParams.get("prev"),
+            lockset: url.searchParams.get("lockset"),
+          },
+          { method },
+        );
+        const body = overlayPublicLandHonesty(landed);
+        return method === "HEAD" ? new Response(null, { status: landed.ok === false ? 403 : 200, headers: corsHeaders() }) : json(body, landed.ok === false ? 403 : 200);
+      }
+      if (method === "POST") {
+        const parsed = await readJsonBody(request);
+        if (parsed.error) return json(parsed.error, parsed.status);
+        const landed = await ping(parsed.body, { method });
+        return json(overlayPublicLandHonesty(landed), landed.ok === false ? 403 : 200);
+      }
+      return json({ error: "method not allowed", path, hint: "GET /land?round_id= or POST JSON" }, 405);
     }
 
     if ((path === "/bridge" || path === "/bridge.json" || path === "/v1/bridge") && (method === "GET" || method === "HEAD")) {

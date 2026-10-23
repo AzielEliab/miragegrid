@@ -369,6 +369,9 @@ export function hostedBridgeDoors() {
     ...factorySeparation(),
     planned: plannedAdaptation(),
     doors: {
+      mcp: APP_HOST + "/mcp",
+      land_public: APP_HOST + "/land",
+      attest: APP_HOST + "/attest",
       bridge: APP_HOST + "/bridge",
       bridge_json: APP_HOST + "/bridge.json",
       v1_bridge: APP_HOST + "/v1/bridge",
@@ -377,6 +380,7 @@ export function hostedBridgeDoors() {
       land: APP_HOST + "/v1/shuffle/land",
       update: APP_HOST + "/v1/shuffle/update",
       cap7: APP_HOST + "/v1/cap7",
+      fraggate_catalog_mcp: RUNTIME + "/mcp",
     },
     first_flag: FIRST_FLAG,
     invented_first_flag_https: false,

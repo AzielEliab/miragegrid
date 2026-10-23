@@ -29,6 +29,9 @@ curl -sS -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/v1/health
 
 | Path | Honesty |
 | --- | --- |
+| `GET /mcp` | Public cite map on this Worker. **Not** FragGate JSON-RPC exec (catalog stays on AZ runtime `/mcp`). Cap-7 live flags **false**; register **free-only** policy (no paid ICANN/.az). |
+| `GET /land` `POST /land` | Cap-7 shuffle land cite (alias of `/v1/shuffle/land`). Mesh DNS factory names only; `public_shuffle_land_exec` false on this path. GET `prev`+`lockset` refuses. |
+| `GET /attest` `POST /attest` | Attest cite + syntactic `prev`/`lockset` check. ChainLock / zkattest SLOT (F1). |
 | `GET /` | App homepage (shuffle + assign) |
 | `GET /bridge` `/bridge.json` `/v1/bridge` | Cap-7 shuffle + SEMANTIC-BRIDGE map |
 | `GET /v1/shuffle` | Cite CAP7-SHUFFLE-1.0 |

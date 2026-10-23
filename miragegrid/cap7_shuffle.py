@@ -785,6 +785,9 @@ def shuffle_cite() -> dict[str, Any]:
         extra={
             **law,
             "doors": {
+                "mcp": APP_WORKER_HOST + "/mcp",
+                "land_public": APP_WORKER_HOST + "/land",
+                "attest": APP_WORKER_HOST + "/attest",
                 "bridge": APP_WORKER_HOST + "/bridge",
                 "bridge_json": APP_WORKER_HOST + "/bridge.json",
                 "v1_bridge": APP_WORKER_HOST + "/v1/bridge",
@@ -793,6 +796,7 @@ def shuffle_cite() -> dict[str, Any]:
                 "land": APP_WORKER_HOST + "/v1/shuffle/land",
                 "update": APP_WORKER_HOST + "/v1/shuffle/update",
                 "cap7": APP_WORKER_HOST + "/v1/cap7",
+                "fraggate_catalog_mcp": AZIEL_RUNTIME + "/mcp",
             },
             "phase": "cite",
             "continue": False,
