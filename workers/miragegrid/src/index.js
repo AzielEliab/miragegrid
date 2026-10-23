@@ -540,7 +540,6 @@ export default {
         download_worker: DOWNLOAD_HOST,
         ...outlastHonesty(),
         ...cap7OperatorHold(),
-        public_icann: false,
         ...deployStamp(env),
       });
     }
