@@ -5,9 +5,11 @@
 # https://miragegrid.vibelock.workers.dev
 set -euo pipefail
 cd "$(dirname "$0")"
-# Stamp the commit Cos records. Do not hardcode a SHA.
+# Stamped operator path. Do not hardcode a SHA.
+# package.json "deploy" stays the named wrangler command CI asserts:
+#   wrangler deploy --name miragegrid --config wrangler.jsonc
+# This script is the GIT_SHA stamp: wrangler --var plus the bake.
 # Workers Builds sets WORKERS_CI_COMMIT_SHA and wrangler build.command bakes it.
-# This path also passes GIT_SHA as a runtime var (aziel-runtime deploy_var).
 if [[ -z "${GIT_SHA:-}" ]]; then
   if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     GIT_SHA="$(git rev-parse HEAD)"

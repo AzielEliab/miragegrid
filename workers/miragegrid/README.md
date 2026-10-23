@@ -12,8 +12,9 @@ by deploying Worker **name=`miragegrid`**. Not the download-tracker.
 
 ```bash
 cd workers/miragegrid
-npx wrangler deploy --name miragegrid --config wrangler.jsonc
-# or: bash deploy.sh
+npm run deploy
+# package.json deploy (CI assert): wrangler deploy --name miragegrid --config wrangler.jsonc
+# stamped operator path: bash deploy.sh
 ```
 
 `wrangler.jsonc` `name` is **`miragegrid`** on account
@@ -29,7 +30,7 @@ curl -sS -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/v1/health
 # cap7_names_only: true
 ```
 
-`bash deploy.sh` passes `GIT_SHA=$(git rev-parse HEAD)` as a wrangler var and bakes the same commit. Workers Builds does not need that flag: `build.command` reads `WORKERS_CI_COMMIT_SHA`. Neither path hardcodes a tip.
+`npm run deploy` stays `wrangler deploy --name miragegrid --config wrangler.jsonc`. That string is what `test_app_worker_wrangler_named_miragegrid` asserts. It does not pass `GIT_SHA`. `bash deploy.sh` is the stamped operator path: it sets `GIT_SHA=$(git rev-parse HEAD)` as a wrangler var and bakes the same commit. Workers Builds does not need that flag: `build.command` reads `WORKERS_CI_COMMIT_SHA` during either deploy. Neither path hardcodes a tip.
 
 ## LIVE doors (aziel-runtime cite)
 
