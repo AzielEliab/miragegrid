@@ -1,4 +1,7 @@
+import { readFileSync } from "node:fs";
 import worker from "./src/index.js";
+import { BAKED_GIT_SHA, BAKED_GIT_SHA_SOURCE } from "./build/build-stamp.generated.js";
+import { resolveBuildStamp } from "./scripts/write-build-stamp.mjs";
 import { CAP7_FACTORY_SITES, FACTORY_LABELS, FALSE_SITES, REAL_HUB_DUPLICATIONS, hostedBridgeDoors, publicGateway } from "./src/cap7.js";
 import { applyUpdate, landIndex, ping, shuffleCite, shuffleSeed } from "./src/shuffle.js";
 import { applyGridShift, attachQnsCd, hostedStubRefuse } from "../download-tracker/src/mesh.js";
@@ -523,8 +526,46 @@ assert(healthLiveBody.planned.ip_exit === false && healthLiveBody.planned.sticky
 assert(healthLiveBody.planned.fraggate_stubs.join(",") === "vpn-hop,hop,tunnel,mesh", "stubs " + healthLiveBody.planned.fraggate_stubs);
 assert(!healthLiveBody.planned.fraggate_stubs.includes("geo-target"), "geo not stub");
 assert(healthLiveBody.cap7_control_plane.geo_target === true && healthLiveBody.cap7_control_plane.session_stick === true && healthLiveBody.cap7_control_plane.egress_rotate === true, "health trio");
+assert(healthLiveBody.cap7_control_plane.live === true && healthLiveBody.cap7_control_plane.public_icann === false, "pre-existing control plane live");
 assert(healthLiveBody.public_icann === false && healthLiveBody.packet_forwarding === false && healthLiveBody.azvpn === false, "health locks");
+assert(healthLiveBody.cap7_live === false && healthLiveBody.cap7_factory_live === false && healthLiveBody.cap7_registrar_live === false, "health cap7 live false");
+assert(healthLiveBody.paid_registrar === false && healthLiveBody.cap7_names_only === true, "health names only");
+assert(healthLiveBody.tip === (BAKED_GIT_SHA || null) && healthLiveBody.git_sha === healthLiveBody.tip, "health tip matches bake");
+assert(healthLiveBody.git_sha_source === (BAKED_GIT_SHA ? BAKED_GIT_SHA_SOURCE : "unset"), "health stamp source");
+assert(healthLiveBody.version_id === null && healthLiveBody.version_id_source === "unset", "health version unset without metadata");
+assert(healthLiveBody.version_id_note.includes("CF_VERSION_METADATA.id"), "version id note");
 assert(!healthLiveBody.banner.includes("planned, not LIVE"), "banner no longer says planned");
+
+const probeSha = "0123456789abcdef0123456789abcdef01234567";
+const probeVersion = "11111111-2222-4333-8444-555555555555";
+const healthStampedRes = await worker.fetch(
+  new Request("https://miragegrid.vibelock.workers.dev/v1/health", { headers: { "user-agent": "Mozilla/5.0", accept: "application/json" } }),
+  { ...env, GIT_SHA: probeSha, CF_VERSION_METADATA: { id: probeVersion, tag: "", timestamp: "2026-10-23T00:00:00.000Z" } },
+);
+const healthStamped = await healthStampedRes.json();
+assert(healthStampedRes.status === 200 && healthStamped.tip === probeSha && healthStamped.git_sha === probeSha, "health tip from GIT_SHA");
+assert(healthStamped.git_sha_source === "deploy_var" && healthStamped.git_sha_tracks_deployed_tip === true, "health deploy_var");
+assert(healthStamped.version_id === probeVersion && healthStamped.version_id_source === "cf_version_metadata", "health version metadata");
+assert(healthStamped.cap7_live === false && healthStamped.cap7_factory_live === false && healthStamped.public_icann === false && healthStamped.paid_registrar === false, "stamped health cap7 false");
+const bogus = await worker.fetch(
+  new Request("https://miragegrid.vibelock.workers.dev/v1/health", { headers: { "user-agent": "Mozilla/5.0" } }),
+  { ...env, GIT_SHA: "f49b6a7", CF_VERSION_METADATA: { id: "not-a-version" } },
+);
+const bogusBody = await bogus.json();
+assert(bogusBody.tip === (BAKED_GIT_SHA || null) && bogusBody.version_id === null, "reject short sha and bad version id");
+const ciStamp = resolveBuildStamp({ WORKERS_CI_COMMIT_SHA: probeSha, GITHUB_SHA: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" });
+assert(ciStamp.sha === probeSha && ciStamp.source === "workers_ci", "workers ci wins over github sha");
+const varStamp = resolveBuildStamp({ GIT_SHA: probeSha, WORKERS_CI_COMMIT_SHA: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" });
+assert(varStamp.source === "deploy_var" && varStamp.sha === probeSha, "deploy var wins");
+const emptyStamp = resolveBuildStamp({}, { fromGit: false, gitHead: probeSha });
+assert(emptyStamp.sha === "" && emptyStamp.source === "unset", "no implicit git head");
+const gitStamp = resolveBuildStamp({}, { fromGit: true, gitHead: probeSha });
+assert(gitStamp.sha === probeSha && gitStamp.source === "git_head", "from-git opt in");
+const banned = ["f49b6a7d0be810be26a1d21a5d3c99d41a95197e", "856a3e75-6c26-4e35-9839-c4f73ec0f551"];
+for (const rel of ["src/index.js", "src/build-stamp.js", "scripts/write-build-stamp.mjs", "wrangler.jsonc", "deploy.sh"]) {
+  const text = readFileSync(new URL(rel, import.meta.url), "utf8");
+  for (const needle of banned) assert(!text.includes(needle), rel + " must not hardcode " + needle.slice(0, 12));
+}
 
 assert(html.includes("no residential IP pool") || html.includes("There is no residential IP pool"), "home egress honesty");
 assert(html.includes("/v1/session/sticky"), "home sticky door");

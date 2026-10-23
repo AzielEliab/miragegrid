@@ -36,7 +36,8 @@ import { applyUpdate, ping, shuffleCite } from "./shuffle.js";
 import { handleSidenet } from "./sidenet.js";
 import { citeDocument, renderIndexHtml } from "./homepage.js";
 import { EGRESS_SPEC } from "./egress.js";
-import { attestCite, attestSyntactic, mcpCite, mcpPostRefuse, overlayPublicLandHonesty } from "./public_paths.js";
+import { attestCite, attestSyntactic, cap7OperatorHold, mcpCite, mcpPostRefuse, overlayPublicLandHonesty } from "./public_paths.js";
+import { deployStamp } from "./build-stamp.js";
 
 const SKILL = `---
 name: MirageGrid
@@ -66,7 +67,7 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | GET | \`/v1/cap7\` | Seven factory sites. Four real hub duplications, three decoys. LIVE. |
 | GET | \`/v1/aznet\` | AZnet pairing cite. sidenet = AZnet. Not ICANN. |
 | POST | \`/v1/aznet/access\` | AZnet token + AZ Browser flag, or one of 2 browser gateways. |
-| GET | \`/v1/health\` | Liveness. |
+| GET | \`/v1/health\` | Liveness plus deploy tip (\`tip\` / \`git_sha\`) and Cloudflare \`version_id\`. Cap-7 live flags stay false. |
 | GET | \`/stats\` / \`/v1/stats\` | Honest app/download-plane stats. |
 | GET | \`/v1/skill\` | This markdown. |
 | GET | \`/v1/nodes\` | 25 mesh nodes. |
@@ -183,7 +184,7 @@ function openapiSpec() {
       "/v1/egress-rotate": { post: { operationId: "egressRotateAlias", summary: "LIVE Cap-7 land rotation. Not packet egress." } },
       "/v1/aznet": { get: { operationId: "miragegrid_aznet_pair", summary: "AZnet pairing cite. sidenet = AZnet. Not ICANN. Softwares frozen." } },
       "/v1/aznet/access": { post: { operationId: "miragegrid_aznet_access", summary: "AZnet + AZ Browser pair, or one of two public browser gateways." } },
-      "/v1/health": { get: { operationId: "health", summary: "Liveness." } },
+      "/v1/health": { get: { operationId: "health", summary: "Liveness. tip and git_sha are the deploy stamp. version_id is CF_VERSION_METADATA.id at serve time. cap7_live stays false." } },
       "/stats": { get: { operationId: "stats", summary: "Honest app/download-plane stats." } },
       "/v1/stats": { get: { operationId: "v1Stats", summary: "Honest app/download-plane stats alias." } },
       "/v1/skill": { get: { operationId: "skill", summary: "Skill markdown." } },
@@ -538,6 +539,9 @@ export default {
         app_worker: APP_HOST,
         download_worker: DOWNLOAD_HOST,
         ...outlastHonesty(),
+        ...cap7OperatorHold(),
+        public_icann: false,
+        ...deployStamp(env),
       });
     }
 
