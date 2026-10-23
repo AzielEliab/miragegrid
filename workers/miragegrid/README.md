@@ -12,8 +12,9 @@ by deploying Worker **name=`miragegrid`**. Not the download-tracker.
 
 ```bash
 cd workers/miragegrid
-npx wrangler deploy --name miragegrid --config wrangler.jsonc
-# or: bash deploy.sh
+npm run deploy
+# package.json deploy (CI assert): wrangler deploy --name miragegrid --config wrangler.jsonc
+# stamped operator path: bash deploy.sh
 ```
 
 `wrangler.jsonc` `name` is **`miragegrid`** on account
@@ -23,7 +24,13 @@ npx wrangler deploy --name miragegrid --config wrangler.jsonc
 ```bash
 curl -sS -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/v1/health
 # expect worker_name=miragegrid  — CF 1042 is gone
+# tip and git_sha: deploy stamp (null until GIT_SHA or WORKERS_CI_COMMIT_SHA is injected)
+# version_id: CF_VERSION_METADATA.id at serve time (null when the binding is absent)
+# cap7_live / cap7_factory_live / cap7_registrar_live / paid_registrar / public_icann: false
+# cap7_names_only: true
 ```
+
+`npm run deploy` stays `wrangler deploy --name miragegrid --config wrangler.jsonc`. That string is what `test_app_worker_wrangler_named_miragegrid` asserts. It does not pass `GIT_SHA`. `bash deploy.sh` is the stamped operator path: it sets `GIT_SHA=$(git rev-parse HEAD)` as a wrangler var and bakes the same commit. Workers Builds does not need that flag: `build.command` reads `WORKERS_CI_COMMIT_SHA` during either deploy. Neither path hardcodes a tip.
 
 ## LIVE doors (aziel-runtime cite)
 
@@ -45,7 +52,8 @@ curl -sS -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/v1/health
 | `POST /v1/egress/rotate` `/v1/egress-rotate` | LIVE land rotation among the seven sites. Not packet egress |
 | `GET /cap7/{label}` | LIVE factory cite. Not typed on ICANN DNS |
 | `GET /aznet/cap7/{label}` | AZnet-plane factory cite (LIVE). Not a public internet door |
-| `GET /v1/health` `/v1/skill` `/v1/nodes` `/v1/doctor` | FragGate LIVE_OPS |
+| `GET /v1/health` | Liveness plus deploy `tip` / `git_sha` and Cloudflare `version_id`. Cap-7 live flags false. |
+| `GET /v1/skill` `/v1/nodes` `/v1/doctor` | FragGate LIVE_OPS |
 | `POST /v1/assign` `/v1/verify-receipt` | Session assignment |
 | `GET /v1/mesh` | PROXY. Node mesh ON (`mesh_node_live`, `alt_internet`, `packet_path`). GET never enables radios. Cap-7 stays names-only. |
 
