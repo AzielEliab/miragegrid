@@ -1,7 +1,7 @@
 import worker from "./src/index.js";
 import { CAP7_FACTORY_SITES, FACTORY_LABELS, FALSE_SITES, REAL_HUB_DUPLICATIONS, hostedBridgeDoors, publicGateway } from "./src/cap7.js";
 import { applyUpdate, landIndex, ping, shuffleCite, shuffleSeed } from "./src/shuffle.js";
-import { applyGridShift, attachQnsCd, hostedStubRefuse } from "../download-tracker/src/mesh.js";
+import { applyGridShift, attachQnsCd, emptyMesh, hostedStubRefuse, meshPointer } from "../download-tracker/src/mesh.js";
 
 function assert(cond, label) {
   if (!cond) throw new Error(label);
@@ -157,6 +157,12 @@ assert(stamped.second_door === false, "overlay no second door");
 assert(stamped.open_proxy === false, "overlay no open proxy");
 assert(stamped.hosted_endpoints === "LIVE", "overlay hosted endpoints live");
 assert(stamped.factory_honesty === "LIVE", "overlay factory live");
+assert(stamped.factory_honesty_plane === "names-plane", "factory live is names plane");
+assert(stamped.cap7_hosted_endpoints === "live" && stamped.public_icann === false && stamped.icann_dns_publish === false, "hosted endpoints live is not icann");
+assert(stamped.mesh_node_live === true && stamped.alt_internet === true && stamped.packet_path === true, "qnm flags on");
+assert(stamped.alt_internet_live === true && stamped.packet_path_live === true, "qnm live flags");
+assert(stamped.cap7_public_icann === false && stamped.cap7_public_egress === false && stamped.packet_forwarding === false, "cap7 icann egress stay false");
+assert(stamped.worker_hardware === false && stamped.mock_live === false, "no mock radio");
 assert(stamped.anchored_by_live_nodes === true, "overlay live-node anchor");
 assert(stamped.internet_reaches === "az-domains", "overlay internet az domains");
 assert(stamped.aznet_payload_host === false, "overlay no aznet payload host");
@@ -552,6 +558,30 @@ assert(landPubBody.code === "CAP7-LAND" && landPubBody.public_path === "/land", 
 assert(landPubBody.cap7_live === false && landPubBody.public_shuffle_land_exec === false, "land cap7 live flags false");
 assert(landPubBody.register_policy === "free-only" && landPubBody.paid_registrar === false, "land free only");
 assert(landPubBody.land && landPubBody.land.factory_honesty === "cite", "land nested cite");
+assert(landPubBody.land.honesty_public === "cite", "land site honesty cite");
+assert(landPubBody.land.public_icann === false && landPubBody.land.icann_dns_publish === false, "land site not icann");
+assert(landPubBody.cap7_public_icann === false && landPubBody.public_egress_ip === false, "land cap7 icann egress stay false");
+const landSites = await call("/land?node_id=node-01");
+const landSitesBody = await landSites.json();
+assert(Array.isArray(landSitesBody.sites) && landSitesBody.sites.length === 7, "land sites roster");
+assert(landSitesBody.sites.every((row) => row.honesty_public === "cite" && row.factory_honesty === "cite"), "land sites cite not factory LIVE");
+assert(landSitesBody.sites.every((row) => row.public_icann === false && row.cap7_public_icann === false && row.icann_dns_publish === false), "land sites names-only");
+assert(landSitesBody.cap7_live === false && landSitesBody.cap7_registrar_live === false, "land names-only flags stay false");
+const meshPolicy = emptyMesh();
+assert(meshPolicy.mesh_node_live === true && meshPolicy.alt_internet === true && meshPolicy.packet_path === true, "empty mesh policy on");
+assert(meshPolicy.alt_internet_live === true && meshPolicy.packet_path_live === true && meshPolicy.mesh_node_live_status === "LIVE", "qnm live flags");
+assert(meshPolicy.enabled === true && meshPolicy.default_off === false, "node mesh default on");
+assert(meshPolicy.live_nodes === 0, "no invented live count");
+assert(meshPolicy.cap7_public_icann === false && meshPolicy.public_egress_ip === false && meshPolicy.packet_forwarding === false, "cap7 icann egress stay false");
+assert(meshPolicy.worker_hardware === false && meshPolicy.radio_phy === false && meshPolicy.mock_live === false, "no mock radio");
+assert(meshPolicy.carrier_hw_absent === "QNM-RADIO-ABSENT", "carrier absent code");
+const pointer = meshPointer();
+assert(pointer.enabled_default === true && pointer.mesh_node_live === true && pointer.packet_path_live === true, "mesh pointer on");
+const qnmStamp = attachQnsCd({ ok: true, enabled: true, alt_internet_live: false, packet_path_live: false, public_icann: true, live_nodes: 3 });
+assert(qnmStamp.mesh_node_live === true && qnmStamp.alt_internet_live === true && qnmStamp.packet_path_live === true, "proxy stamp turns qnm flags on");
+assert(qnmStamp.public_icann === false && qnmStamp.cap7_public_icann === false && qnmStamp.cap7_public_egress === false, "proxy stamp keeps cap7 names-only");
+assert(qnmStamp.live_nodes === 3, "proxy stamp does not invent or wipe a real count");
+assert(qnmStamp.packet_forwarding === false && qnmStamp.worker_hardware === false, "stamp is not public egress or fake hardware");
 const landGetPlant = await call("/land?prev=p&lockset=l&node_id=node-01");
 assert(landGetPlant.status === 403 && (await landGetPlant.json()).code === "MESH-GET-NO-ENABLE", "land get prev lockset refuses");
 

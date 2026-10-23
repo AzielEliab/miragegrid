@@ -27,7 +27,7 @@ MirageGrid’s public stack is now three named pieces:
    vote-to-fix / majority fanfic. “Auto-heal” in copy means that lawful
    reheal + archive re-expand, not peer talk-back-to-health.
 
-Suite mesh `/v1/mesh` (QNM-BUILD-1.0) stays default OFF. That strip is
+Suite mesh `/v1/mesh` (QNM-BUILD-1.0) is ON (`mesh_node_live`, `alt_internet`, `packet_path`). Cap-7 stays names-only (`public_icann` false; not a public egress). That strip is
 **not** Node Gate, **not** auto-heal, and **not** the anonymity network.
 `MESH_NODE_GATE` and `MESH_AUTO_HEAL` stay false on the suite rollup.
 Product-plane Node Gate and lawful auto-heal live inside MirageGrid, not

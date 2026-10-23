@@ -222,6 +222,7 @@ class NodeMesh:
             "peers": [p.to_dict() for p in self._peers],
             "adjacency": {node_id_for(i): [node_id_for(n) for n in self._adj[i]] for i in range(POOL_SIZE)},
             "assign_live": ASSIGN_LIVE,
+            **qnm_operator_lock(),
             "split_wires": split_wires_dict(),
             "cold_copy": cold_copy_dict(),
             "reheal": reheal_dict(),
@@ -362,6 +363,10 @@ NO_FAN_PHRASE = "No falsification. No ambiguity. No misleading."
 
 ASSIGN_LIVE = True
 RADIO_PHY = False
+MESH_DEFAULT_OFF = False
+MESH_NODE_LIVE = True
+ALT_INTERNET = True
+PACKET_PATH = True
 HOSTED_STUB_OPS: frozenset[str] = frozenset(
     {"vpn", "hop", "tunnel", "vpn-hop", "mesh-hop"}
 )
@@ -1188,11 +1193,12 @@ def refuse_get_enable_or_plant(
         message="GET never enables radios or plants mesh claims",
         extra={
             "enabled": False,
-            "default_off": True,
+            "radios_enabled_by_get": False,
             "radio_phy": False,
             "claim_plant": False,
             "hub_get_enables_mesh": False,
             "path": path_only,
+            **qnm_operator_lock(),
         },
     )
 
@@ -2504,11 +2510,65 @@ def _sidenet_stamp() -> dict[str, Any]:
     return sidenet_dict()
 
 
+def qnm_operator_lock() -> dict[str, Any]:
+    """QNM operator lock (2026-10-23).
+
+    Node mesh, alt internet, and packet path are ON. Cap-7 / .aziel stay
+    names-only. Not ICANN. Not a public egress. Carriers refuse
+    QNM-RADIO-ABSENT when that hardware is absent. Live-node counts are
+    not invented here.
+    """
+    return {
+        "mesh_default": "on",
+        "mesh_default_off": False,
+        "default_off": False,
+        "node_mesh": True,
+        "mesh_enabled": True,
+        "mesh_node_live": True,
+        "mesh_node_live_status": "LIVE",
+        "alt_internet": True,
+        "alt_internet_status": "LIVE",
+        "alt_internet_live": True,
+        "packet_path": True,
+        "packet_path_status": "LIVE",
+        "packet_path_live": True,
+        "alt_internet_means": (
+            "QNM track-2 plane flag ON. Not a public ICANN internet, not BGP, "
+            "and not a public egress IP. Carriers refuse QNM-RADIO-ABSENT when hardware is absent."
+        ),
+        "packet_path_means": (
+            "QNM packet-path flag ON. Not hosted packet forwarding, not a public egress IP, "
+            "and not AZVPN. FragGate vpn-hop, hop, tunnel, and mesh stay FG-STUB."
+        ),
+        "cap7_names_only": True,
+        "cap7_public_icann": False,
+        "public_icann": False,
+        "icann_dns_publish": False,
+        "cap7_public_egress": False,
+        "public_egress_ip": False,
+        "public_icann_registrar": False,
+        "cap7_registrar_live": False,
+        "packet_forwarding": False,
+        "packet_forward": False,
+        "worker_hardware": False,
+        "worker_radios_live": False,
+        "radio_phy": False,
+        "invented_hardware": False,
+        "mock_live": False,
+        "carrier_hw_absent": "QNM-RADIO-ABSENT",
+        "get_never_enables": True,
+        "hub_get_enables_mesh": False,
+        "not_a_second_internet": True,
+        "aznet_replaces_internet": False,
+    }
+
+
 def mesh_law_dict() -> dict[str, Any]:
     return {
         "author": MESH_LAW_AUTHOR,
         "identity": MESH_LAW_AUTHOR,
         "assign_live": ASSIGN_LIVE,
+        **qnm_operator_lock(),
         "public_stack": public_stack_dict(),
         "split_wires": split_wires_dict(),
         "cold_copy": cold_copy_dict(),

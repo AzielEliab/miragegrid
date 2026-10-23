@@ -45,6 +45,14 @@ export function publicPathCap7Honesty() {
     cap7_typed_on_icann_dns: false,
     factory_honesty: "cite",
     factory_honesty_live: false,
+    factory_honesty_plane: "names-plane",
+    factory_honesty_means: "public-path cite of Cap-7 names; not a public ICANN or DNS publish",
+    cap7_hosted_endpoints: "cite",
+    cap7_hosted_endpoints_plane: "names-plane",
+    cap7_hosted_endpoints_means: "public-path cite; control-plane names only; not a public ICANN or DNS publish",
+    icann_dns_publish: false,
+    cap7_public_icann: false,
+    cap7_public_egress: false,
     hosted_mcp: "cite",
     hosted_mcp_live: false,
     hosted_update: "cite",
@@ -222,7 +230,7 @@ export async function attestSyntactic(body, pingFn) {
     },
     prev_present: true,
     lockset_present: true,
-    land: landed.land || null,
+    land: citeCap7PublicRow(landed.land) || null,
     round_seed: landed.round_seed || null,
     land_label: landed.land_label || (landed.land && landed.land.label) || null,
     phase: landed.phase,
@@ -244,23 +252,44 @@ export function landPathNote() {
   };
 }
 
+/** Names-plane cite for one Cap-7 site row on a public path. Not an ICANN publish. */
+export function citeCap7PublicRow(row) {
+  if (!row || typeof row !== "object" || Array.isArray(row)) return row;
+  return {
+    ...row,
+    public_icann: false,
+    public_icann_registrar: false,
+    cap7_public_icann: false,
+    cap7_public_egress: false,
+    typed_on_icann_dns: false,
+    icann_dns_publish: false,
+    cap7_names_only: true,
+    names_plane: "cap7-names",
+    hosted_mcp: "cite",
+    hosted_update: "cite",
+    hosted_endpoints: "cite",
+    cap7_hosted_endpoints: "cite",
+    cap7_hosted_endpoints_plane: "names-plane",
+    cap7_hosted_endpoints_means: "public-path cite; control-plane names only; not a public ICANN or DNS publish",
+    factory_honesty: "cite",
+    factory_honesty_plane: "names-plane",
+    factory_honesty_means: "public-path cite of Cap-7 names; not a public ICANN or DNS publish",
+    honesty_public: "cite",
+    hosted_status: "cite",
+    public_shuffle_land_exec: false,
+    cap7_live: false,
+    cap7_factory_live: false,
+    cap7_registrar_live: false,
+  };
+}
+
 /** Strip Cap-7 LIVE stamps from ping land payloads on public /land. */
 export function overlayPublicLandHonesty(landed) {
   if (!landed || typeof landed !== "object") return landed;
   const overlay = publicPathCap7Honesty();
   const out = { ...landed, public_path: "/land", ...overlay };
-  if (out.land && typeof out.land === "object") {
-    out.land = {
-      ...out.land,
-      public_icann: false,
-      typed_on_icann_dns: false,
-      hosted_mcp: "cite",
-      hosted_update: "cite",
-      factory_honesty: "cite",
-      honesty_public: "cite",
-      hosted_status: "cite",
-      public_shuffle_land_exec: false,
-    };
-  }
+  if (out.land && typeof out.land === "object") out.land = citeCap7PublicRow(out.land);
+  if (Array.isArray(out.sites)) out.sites = out.sites.map(citeCap7PublicRow);
+  if (Array.isArray(out.cap7)) out.cap7 = out.cap7.map(citeCap7PublicRow);
   return out;
 }

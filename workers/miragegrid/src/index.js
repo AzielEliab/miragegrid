@@ -47,7 +47,7 @@ description: Use when assigning a session node or citing Cap-7 LIVE shuffle. Dua
 
 Named app Worker: \`https://miragegrid.vibelock.workers.dev\`
 
-Cap-7 LIVE shuffle. Nodes ping this Worker until they land on one factory site. That land is the update endpoint for the round. No single hard-coded Cap-7 host.
+Cap-7 LIVE shuffle on the names plane (control-plane coordination; public_icann false; not an ICANN DNS publish). Nodes ping this Worker until they land on one factory site. That land is the update endpoint for the round. No single hard-coded Cap-7 host.
 
 Download plane (separate): \`https://miragegrid-download-tracker.vibelock.workers.dev\`
 
@@ -78,9 +78,9 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | POST | \`/v1/egress/rotate\` | LIVE egress-rotate. Next Cap-7 factory land. Not packet egress. Alias: \`POST /v1/egress-rotate\`. |
 | POST | \`/v1/session/sticky\` | Bind sticky_key to one mesh node and one Cap-7 site. Optional TTL is a time-bucket hash. Not an IP. Alias: \`POST /v1/session-stick\`. |
 | POST | \`/v1/verify-receipt\` | Verify receipt. |
-| GET | \`/v1/mesh\` | PROXY. Default OFF. GET never enables. |
+| GET | \`/v1/mesh\` | PROXY. Node mesh ON (\`mesh_node_live\`, \`alt_internet\`, \`packet_path\`). GET never enables radios. Cap-7 names-only. |
 
-Naming lock: sidenet = AZnet. Cap-7 mesh DNS pairs with AZnet and AZ Browser. Softwares stay frozen. \`public_icann\` stays false. AZ Generator is not callable (\`AZG-NOT-CALLABLE\`). Exactly 2 Cap-7 names are public browser gateways (\`azgrid\`, \`azbooth\`). Other mesh names need an AZnet pairing token and an azbrowser flag. This Worker does not verify that token, does not run the AZnet engine, and does not run Node Gate claim/plant/flag/restore. \`radio_phy: false\`. Cap-7 is a mesh DNS factory (4 hub mirrors + 3 decoys), separate from per-node \`.aziel\` slots. It is not a public ICANN registrar and is not typed on ICANN DNS. Internet reaches AZ domains only (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Factory honesty is LIVE. Live nodes anchor the factory and those doors. FragGate is THE exec door.
+Naming lock: sidenet = AZnet. Cap-7 mesh DNS pairs with AZnet and AZ Browser. Softwares stay frozen. \`public_icann\` stays false. AZ Generator is not callable (\`AZG-NOT-CALLABLE\`). Exactly 2 Cap-7 names are public browser gateways (\`azgrid\`, \`azbooth\`). Other mesh names need an AZnet pairing token and an azbrowser flag. This Worker does not verify that token, does not run the AZnet engine, and does not run Node Gate claim/plant/flag/restore. \`radio_phy: false\`. Cap-7 is a mesh DNS factory (4 hub mirrors + 3 decoys), separate from per-node \`.aziel\` slots. It is not a public ICANN registrar and is not typed on ICANN DNS. Internet reaches AZ domains only (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Factory honesty is LIVE on the names plane (control-plane coordination). public_icann stays false. That LIVE is not an ICANN DNS publish. Live nodes anchor the factory and those doors. FragGate is THE exec door.
 
 **THIS IS NOT:** a VPN, an anonymity network, AZVPN, or hosted packet forwarding (\`packet_forwarding: false\`).
 

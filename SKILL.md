@@ -1,6 +1,6 @@
 ---
 name: MirageGrid
-description: Use when calling MirageGrid hosted /v1 or installing the local package. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Suite mesh default OFF. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime catalog). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. SEMANTIC-BRIDGE-1.0. REDLINE-1.0. NO-FAN-1.0. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
+description: Use when calling MirageGrid hosted /v1 or installing the local package. Dual surface: Worker /v1 + catalog MCP. This Worker /v1/mesh/* PROXY to aziel-runtime via AZIEL_RUNTIME. Node mesh ON (mesh_node_live, alt_internet, packet_path). Cap-7 names-only; public_icann false. QNM-BUILD-1.0 live|locked|isolated. QNS-CD-1.0 photon QNS1 packet transfer is a hub cite / Worker mesh cross-map only (qnm-node qnsd + aziel-runtime catalog). SPLIT THE WIRES. COLD-COPY SURVIVAL. REHEAL. AZ-GENERATOR-1.0. MIRAGE-GRID-SHIFT-1.0. AIRGAP-1.0. SEMANTIC-BRIDGE-1.0. REDLINE-1.0. NO-FAN-1.0. No Node Gate. No public qnsd proxy. No auto-heal. Not anonymity. Hosted MirageGrid is not a VPN. Author Aziel Eliab.
 ---
 
 # MirageGrid
@@ -28,7 +28,7 @@ Ops (do **not** increment downloads or views):
 - `GET /v1/health` — liveness
 - `GET /v1/skill` — this file
 - `GET /v1/topology` — persistent 25-node circulant topology (local op)
-- `GET /v1/mesh` — PROXY suite mesh status. Default OFF. QNM live|locked|isolated. QNS-CD-1.0 cross-map (photon QNS1 packet transfer) is stamped for peers. Never enables. No public qnsd proxy. Stamps **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0**, **AIRGAP-1.0**, paper-vault-on-node.
+- `GET /v1/mesh` — PROXY suite mesh status. Node mesh ON (`mesh_node_live`, `alt_internet`, `packet_path`). QNM live|locked|isolated. QNS-CD-1.0 cross-map (photon QNS1 packet transfer) is stamped for peers. Never enables. No public qnsd proxy. Stamps **SPLIT THE WIRES**, **COLD-COPY SURVIVAL**, **REHEAL**, **AZ-GENERATOR-1.0**, **MIRAGE-GRID-SHIFT-1.0**, **AIRGAP-1.0**, paper-vault-on-node.
 - `POST /v1/mesh/reheal` — local REHEAL law. Own tip+trusted pull or phoenix-WAIT. Neighbor talk-dirty-back-to-health, bodies, diffs, and vote-to-fix refuse. Public-stack auto-heal means this lawful reheal, not vote-to-fix. Suite strip stays No auto-heal.
 - `GET /v1/mesh/az-generator` — cite-only AZ-GENERATOR-1.0 stamps (Cap-7 mesh DNS factory; deep-node → FRONT Node Gate; not callable; `.az` → `.aziel` → pivot; four real hub duplications and three false sites; AZnet+AZ Browser; ≥49 vault; not typed on ICANN DNS). `POST` refuses `AZG-NOT-CALLABLE`.
 - `GET /v1/aznet` on the app Worker — AZnet pairing cite. Naming lock: sidenet = AZnet (not a second product). L0 public path unchanged. `public_icann: false`. Cap-7 mesh DNS pairs with AZnet and AZ Browser. Exactly 2 public browser gateways (`azgrid`, `azbooth`). `POST /v1/aznet/access` needs an AZnet pairing token and an `azbrowser` flag for every other mesh name. This Worker does not verify that token and does not run the AZnet engine. `GET /v1/sidenet` refuses `AZN-NAME-LOCK`. Hosted claim/plant/flag/restore refuse. Softwares stay frozen.
@@ -74,7 +74,7 @@ miragegrid ui
 miragegrid doctor
 ```
 
-Then open http://127.0.0.1:8080 (loopback). Hosted MirageGrid is not a VPN. Worker homepage Live Nodes strip polls `GET /v1/mesh` (default OFF). QNS-CD-1.0 is a hub cite / mesh cross-map only — local qnsd is [qnm-node](https://github.com/AzielEliab/qnm-node); runtime cites live in [aziel-runtime](https://github.com/AzielEliab/aziel-runtime). Not a Softwares-tab product.
+Then open http://127.0.0.1:8080 (loopback). Hosted MirageGrid is not a VPN. Worker homepage Live Nodes strip polls `GET /v1/mesh` (node mesh ON). QNS-CD-1.0 is a hub cite / mesh cross-map only — local qnsd is [qnm-node](https://github.com/AzielEliab/qnm-node); runtime cites live in [aziel-runtime](https://github.com/AzielEliab/aziel-runtime). Not a Softwares-tab product.
 
 Counted download (gzip HTTP 200, no 302): https://miragegrid-download-tracker.vibelock.workers.dev/download?asset=miragegrid-0.3.0.tar.gz
 GitHub: https://github.com/AzielEliab/miragegrid

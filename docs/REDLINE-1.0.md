@@ -38,7 +38,7 @@ Public GET is cite / status / discovery only. GET never **does**.
 
 | Surface | Allowed | Not a door |
 | --- | --- | --- |
-| `GET /v1/mesh` `/status` `/nodes` | Status. Default OFF. Never enables. | Query `enable` / `radio` / `plant` / `claim` |
+| `GET /v1/mesh` `/status` `/nodes` | Status. Node mesh ON. GET never enables radios. | Query `enable` / `radio` / `plant` / `claim` |
 | `GET /v1/mesh/az-generator` | Cite AZ-GENERATOR-1.0 | Callable generator; claim plant |
 | `GET /v1/mesh/grid-shift` | Cite MIRAGE-GRID-SHIFT-1.0 | Generator call |
 | `GET /v1/bridge` `/bridge.json` `/llms.txt` `/ai.txt` `/cite.json` `/design-packs/*` | SEMANTIC-BRIDGE-1.0 maps | ICANN publish; `resolves_to_hub: true` |

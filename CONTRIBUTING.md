@@ -44,7 +44,7 @@ pytest is the dev extra.
 7. **Do not invent evaluation numbers.** If you measure something,
    publish the method next to the number.
 8. **Door vs local op.** `/v1/mesh/*` PROXY to aziel-runtime. Local ops are `/v1/{op}` only.
-   Suite mesh default OFF; QNM rollup live|locked|isolated; no Node Gate;
+   Node mesh ON (`mesh_node_live`, `alt_internet`, `packet_path`); QNM rollup live|locked|isolated; Cap-7 names-only (`public_icann` false); no Node Gate;
    no auto-heal; not anonymity. Product topology stays at `/v1/topology`.
    Mesh law is SPLIT THE WIRES + COLD-COPY SURVIVAL + REHEAL +
    AZ-GENERATOR-1.0 + MIRAGE-GRID-SHIFT-1.0 + AIRGAP-1.0

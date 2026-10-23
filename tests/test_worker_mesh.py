@@ -1,6 +1,6 @@
 """Suite mesh Live Nodes + QNM-BUILD-1.0 contract.
 
-Default OFF. live|locked|isolated. No Node Gate. No auto-heal. Not anonymity.
+Node mesh ON. live|locked|isolated. No Node Gate. No auto-heal. Not anonymity.
 """
 
 from __future__ import annotations
@@ -29,7 +29,15 @@ def test_mesh_contract_default_off_qnm_law() -> None:
     assert "softwares_tab: false" in MESH
     assert "qnsd_proxy: false" in MESH
     assert "public_proxy: false" in MESH
-    assert "MESH_DEFAULT_OFF = true" in MESH
+    assert "MESH_DEFAULT_OFF = false" in MESH
+    assert "MESH_NODE_LIVE = true" in MESH
+    assert "ALT_INTERNET = true" in MESH
+    assert "PACKET_PATH = true" in MESH
+    assert "mesh_node_live: true" in MESH
+    assert "alt_internet_live: true" in MESH
+    assert "packet_path_live: true" in MESH
+    assert "cap7_public_icann: false" in MESH
+    assert "cap7_public_egress: false" in MESH
     assert "MESH_ANONYMITY_NETWORK = false" in MESH
     assert "MESH_NODE_GATE = false" in MESH
     assert "MESH_AUTO_HEAL = false" in MESH
@@ -37,7 +45,7 @@ def test_mesh_contract_default_off_qnm_law() -> None:
     assert 'MESH_PRODUCT = "miragegrid"' in MESH
     assert 'MESH_PATH = "/v1/mesh"' in MESH
     assert "live|locked|isolated" in MESH
-    assert "enabled_default: false" in MESH
+    assert "enabled_default: true" in MESH
     assert "anon_broadcast_publish_path: false" in MESH
     assert "Aziel Eliab" in MESH
     assert "code: extra.code || \"MESH-OK\"" in MESH or '"MESH-OK"' in MESH
@@ -135,7 +143,9 @@ def test_docs_advertise_mesh_proxy() -> None:
     assert "AZIEL_RUNTIME" in WORKER_README
     assert "Live Nodes" in WORKER_README
     assert "MESH-OK" in WORKER_README
-    assert "enabled: false" in WORKER_README
+    assert "mesh_node_live: true" in WORKER_README
+    assert "alt_internet: true" in WORKER_README
+    assert "packet_path: true" in WORKER_README
     assert "Aziel Eliab" in MESH
     assert "QNS-CD-1.0" in README
     assert "QNS-CD-1.0" in SKILL
