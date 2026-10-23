@@ -64,13 +64,17 @@ AZIEL_RUNTIME = "https://aziel-runtime.vibelock.workers.dev"
 AZNET_PRODUCT = "aznet"
 AZBROWSER_PRODUCT = "azbrowser"
 # AZBot CLEAR received. Cite the companion; do not redraw the Softwares desk.
-SOFTWARES_COMPANION_TIP = "be1c7990452094536b122645103d41f595c03c76"
+# Git lockstep pin: aziel-runtime main after Softwares #365. This is not a
+# live Worker deploy stamp. version_id stays the last cited CF id; this tip
+# has no CF version_id, so none is invented.
+SOFTWARES_COMPANION_TIP = "6f27394fbcafb640a1ede7017b599a6f66c68769"
 SOFTWARES_COMPANION_VERSION_ID = "1c2de0ef-f315-4444-86aa-aec03f730a58"
 SOFTWARES_COUNT = 42
 SOFTWARES_COMPANION_NOTE = (
     "CLEARED: Softwares companion on aziel-runtime "
     f"(tip {SOFTWARES_COMPANION_TIP}, version_id {SOFTWARES_COMPANION_VERSION_ID}) "
     "lists geo-target, session-stick, and egress-rotate in public_door_ops (MirageGrid 0.3.0). "
+    "The tip is the git lockstep pin. That version_id is not a deploy stamp of this tip. "
     "Cap-7 control-plane LIVE only — not a public egress IP, not residential, not AZVPN. "
     "Softwares desk layout unchanged; Softwares count stays 42."
 )
