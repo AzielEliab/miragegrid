@@ -93,7 +93,7 @@ Naming lock: sidenet = AZnet. Cap-7 mesh DNS pairs with AZnet and AZ Browser. So
 - \`session-stick\` — same \`sticky_key\` keeps the same node id and the same Cap-7 site. A TTL is \`floor(unix/ttl)\` inside the digest. \`sticky_public_ip: false\`.
 - \`egress-rotate\` — rotate the factory land label. The update URL does not change. \`ip_rotated: false\`.
 
-These three are live on this Worker. CLEARED: Softwares companion on aziel-runtime (tip 6f27394fbcafb640a1ede7017b599a6f66c68769, version_id 1c2de0ef-f315-4444-86aa-aec03f730a58) lists \`geo-target\`, \`session-stick\`, and \`egress-rotate\` in \`public_door_ops\` (MirageGrid 0.3.0). The tip is the git lockstep pin. That version_id is not a deploy stamp of this tip. Cap-7 control-plane LIVE only — not a public egress IP, not residential, not AZVPN. Softwares desk layout unchanged; Softwares count stays 42.
+These three are live on this Worker. CLEARED: Softwares companion on aziel-runtime (tip ed3350c57a870c11c36efec11378581e04ec4777, version_id 8a416c9b-076b-4ed1-bf3a-2baa85b76733) lists \`geo-target\`, \`session-stick\`, and \`egress-rotate\` in \`public_door_ops\` (MirageGrid 0.3.0). The tip is the git lockstep pin. That version_id is the live Softwares deploy of this tip. Cap-7 control-plane LIVE only — not a public egress IP, not residential, not AZVPN. Softwares desk layout unchanged; Softwares count stays 42.
 
 FragGate ops \`vpn-hop\`, \`hop\`, \`tunnel\`, and \`mesh\` stay non-executable (runtime \`FG-STUB\`). The FragGate \`mesh\` op is not QNM suite \`mesh_*\` and it is not \`GET /v1/mesh\` status. A Cap-7 land hop is \`egress-rotate\`, not \`vpn-hop\`. Cap-7 is not an ICANN registrar. AZVPN is not MirageGrid.
 `;

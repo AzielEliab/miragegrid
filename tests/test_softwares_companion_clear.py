@@ -30,12 +30,13 @@ def test_planned_and_egress_cite_the_cleared_companion() -> None:
     note = planned["softwares_note"]
     assert note == SOFTWARES_COMPANION_NOTE
     assert note.startswith("CLEARED:")
-    assert planned["softwares_companion_tip"] == "6f27394fbcafb640a1ede7017b599a6f66c68769"
-    assert "6f27394fbcafb640a1ede7017b599a6f66c68769" in note
+    assert planned["softwares_companion_tip"] == "ed3350c57a870c11c36efec11378581e04ec4777"
+    assert "ed3350c57a870c11c36efec11378581e04ec4777" in note
     assert "be1c7990452094536b122645103d41f595c03c76" not in note
-    assert "1c2de0ef-f315-4444-86aa-aec03f730a58" in note
+    assert "6f27394f" + "bcafb640a1ede7017b599a6f66c68769" not in note
+    assert "8a416c9b-076b-4ed1-bf3a-2baa85b76733" in note
     assert "git lockstep pin" in note
-    assert "not a deploy stamp of this tip" in note
+    assert "the live Softwares deploy of this tip" in note
     assert "public_door_ops" in note
     assert "MirageGrid 0.3.0" in note
     assert "not a public egress IP" in note
@@ -71,11 +72,11 @@ def test_planned_and_egress_cite_the_cleared_companion() -> None:
     assert "softwares_catalog_live: true" in egress_js
     skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
     paper = (ROOT / "docs/MG-EGRESS-1.0.md").read_text(encoding="utf-8")
-    assert "CLEARED" in skill and "6f27394fbcafb640a1ede7017b599a6f66c68769" in skill
+    assert "CLEARED" in skill and "ed3350c57a870c11c36efec11378581e04ec4777" in skill
     assert "be1c7990452094536b122645103d41f595c03c76" not in skill
     assert "AZBot CLEAR is received" in paper
     assert "Softwares count stays 42" in paper
-    assert "6f27394fbcafb640a1ede7017b599a6f66c68769" in paper
+    assert "ed3350c57a870c11c36efec11378581e04ec4777" in paper
 
     old_tip = "be1c7990452094536b122645103d41f595c03c76"
     stale: list[str] = []
