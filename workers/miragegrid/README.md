@@ -3,7 +3,7 @@
 Named Cloudflare Worker **`miragegrid`**. Host
 `https://miragegrid.vibelock.workers.dev`.
 
-This is the **Cap-7 LIVE shuffle** app door (names plane / control plane; `public_icann: false`; not an ICANN DNS publish). It is **not** the
+This is the **Cap-7 mesh-only** app door (names plane / control plane; `public_icann: false`; not an ICANN DNS publish and not a public DNS publish). It is **not** the
 download-tracker. Counted downloads stay on
 `miragegrid-download-tracker`.
 
@@ -40,7 +40,12 @@ curl -sS -A 'Mozilla/5.0' https://miragegrid.vibelock.workers.dev/v1/health
 | `GET /mcp` | Public cite map on this Worker. **Not** FragGate JSON-RPC exec (catalog stays on AZ runtime `/mcp`). Names-plane factory is active-use LIVE (`cap7_live`, `cap7_factory_live`, `factory_honesty_live`). Register stays **free-only** (no paid ICANN/.az). |
 | `GET /land` `POST /land` | Cap-7 shuffle land cite (alias of `/v1/shuffle/land`). Mesh DNS factory names only; `public_shuffle_land_exec` false on this path. GET `prev`+`lockset` refuses. |
 | `GET /attest` `POST /attest` | Attest cite + syntactic `prev`/`lockset` check. ChainLock / zkattest SLOT (F1). |
-| `GET /` | App homepage (shuffle + assign) |
+| `GET /` | App homepage (mesh-only shuffle + assign). Title states Cap-7 is not public DNS. |
+| `GET /doors` | Ecosystem cross-reference of the ten live public sites. MirageGrid stays mesh-only. Not a download-tracker door. |
+| `GET /llms.txt` `/ai.txt` `/.well-known/ai.txt` | First-party agent maps. `public_icann: false`. Not a public DNS publish. |
+| `GET /sitemap.xml` | First-party canonical URLs with real `lastmod`. |
+| `GET /robots.txt` | Growth-ON allow, `Content-Signal`, and `Sitemap`. |
+| `GET /<indexnow-key>.txt` `/.well-known/indexnow-key.txt` | IndexNow key file (`text/plain`). |
 | `GET /bridge` `/bridge.json` `/v1/bridge` | Cap-7 shuffle + SEMANTIC-BRIDGE map |
 | `GET /v1/shuffle` | Cite CAP7-SHUFFLE-1.0 |
 | `POST /v1/shuffle/ping` | Node ping → land |
