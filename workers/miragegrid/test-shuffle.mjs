@@ -3,6 +3,7 @@ import worker from "./src/index.js";
 import { BAKED_GIT_SHA, BAKED_GIT_SHA_SOURCE } from "./build/build-stamp.generated.js";
 import { resolveBuildStamp } from "./scripts/write-build-stamp.mjs";
 import { CAP7_FACTORY_SITES, FACTORY_LABELS, FALSE_SITES, REAL_HUB_DUPLICATIONS, hostedBridgeDoors, publicGateway } from "./src/cap7.js";
+import { CONTENT_SIGNAL, DISCOVERY_LASTMOD, INDEXNOW_KEY, PUBLIC_DOORS, SITEMAP_PATHS } from "./src/discovery.js";
 import { applyUpdate, landIndex, ping, shuffleCite, shuffleSeed } from "./src/shuffle.js";
 import { applyGridShift, attachQnsCd, emptyMesh, hostedStubRefuse, meshPointer } from "../download-tracker/src/mesh.js";
 
@@ -653,5 +654,145 @@ const attestOk = await call("/attest", {
 const attestOkBody = await attestOk.json();
 assert(attestOk.status === 200 && attestOkBody.code === "MG-ATTEST-SYNTACTIC", "attest syntactic " + attestOkBody.code);
 assert(attestOkBody.attest.fraggate_zkattest === "SLOT", "attest zk slot");
+
+const SIGNAL = "search=yes, ai-input=yes, ai-train=yes";
+assert(CONTENT_SIGNAL === SIGNAL, "content signal order");
+assert(/^[0-9a-f]{32}$/.test(INDEXNOW_KEY), "indexnow key is 32 hex");
+assert(PUBLIC_DOORS.length === 10, "ten public doors");
+assert(new Set(PUBLIC_DOORS.map((row) => row.href)).size === 10, "distinct door urls");
+const doorHrefs = PUBLIC_DOORS.map((row) => row.href);
+for (const href of [
+  "https://www.azieleliab.com/",
+  "https://www.azielcorpuslibrary.net/",
+  "https://godlock.uk/",
+  "https://hedidntjump.com/",
+  "https://furnaceisntfree.com/",
+  "https://timetounsealthebook.net/",
+  "https://whitestone.vibelock.workers.dev/",
+  "https://aziel-runtime.vibelock.workers.dev/",
+  "https://trades-runtime.vibelock.workers.dev/",
+  "https://miragegrid.vibelock.workers.dev/",
+]) {
+  assert(doorHrefs.includes(href), "missing door " + href);
+}
+assert(PUBLIC_DOORS.some((row) => row.href.includes("glama.ai")) === false, "glama is a catalog, not a door");
+assert(PUBLIC_DOORS[9].note.includes("public_icann: false"), "miragegrid door stays mesh-only");
+assert(PUBLIC_DOORS[9].note.includes("Not an ICANN registrar"), "miragegrid door denies registrar");
+
+function visibleHtml(html) {
+  return html.replace(/<script[\s\S]*?<\/script>/gi, "");
+}
+function forbidPrivate(text, label) {
+  assert(!text.includes("download-tracker"), label + " download-tracker");
+  assert(!text.includes("thefurnaceisntfree.com"), label + " wrong furnace host");
+  assert(!/lumen/i.test(text), label + " lumen");
+  assert(!text.includes("ark-private"), label + " ark-private");
+  assert(!text.includes("15:20"), label + " 15:20");
+}
+
+assert(html.includes("<title>MirageGrid — Cap-7 mesh-only DNS factory (not public DNS)</title>"), "scoped title");
+assert(!html.includes("<th>Public</th>"), "factory table is not headed Public");
+assert(html.includes("mesh-only, not ICANN"), "factory rows are mesh-only");
+assert(!html.includes("Cap-7 LIVE shuffle"), "title is not an unqualified live shuffle");
+assert(html.includes("not a public DNS publish"), "home denies public DNS publish");
+assert(html.includes("deep-node") || html.includes("Deep-node") || html.includes("deep-node →"), "home names node gate path");
+assert(html.includes("Ecosystem / Doors"), "home ecosystem link");
+assert(html.includes('id="ecosystem-doors"'), "home doors footer");
+const footer = html.split('id="ecosystem-doors"')[1] || "";
+for (const href of doorHrefs) assert(footer.includes(href), "footer missing " + href);
+forbidPrivate(footer, "footer");
+assert(footer.includes("https://glama.ai/mcp/servers/AzielEliab/aziel-runtime"), "footer aziel glama");
+assert(footer.includes("https://glama.ai/mcp/servers/AzielEliab/trades-runtime"), "footer trades glama");
+assert(String(home.headers.get("Content-Signal")) === SIGNAL, "home content-signal");
+const homeLd = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+assert(homeLd.author["@id"] === "https://www.azieleliab.com/#aziel", "person @id");
+assert(homeLd.author.url === "https://www.azieleliab.com/#aziel", "person url");
+for (const alias of ["Aziel Eliab", "AzielEliab", "azieleliab", "Aziel Elroi Eliab", "The Revealer of the Sealed", "Elias Artista"]) {
+  assert(homeLd.author.alternateName.includes(alias), "alias " + alias);
+}
+const homeVisible = visibleHtml(html);
+assert(!homeVisible.includes("Elias Artista"), "alias not visible");
+assert(!homeVisible.includes("The Revealer of the Sealed"), "revealer not visible");
+assert(!homeVisible.includes("Aziel Elroi Eliab"), "elroi not visible");
+assert(!homeVisible.includes("15:20"), "home no 15:20 chrome");
+
+const doors = await call("/doors");
+assert(doors.status === 200, "doors " + doors.status);
+assert(String(doors.headers.get("content-type") || "").includes("text/html"), "doors html");
+assert(String(doors.headers.get("Content-Signal")) === SIGNAL, "doors content-signal");
+const doorsHtml = await doors.text();
+assert(doorsHtml.includes("mesh-only"), "doors mesh-only");
+assert(doorsHtml.includes("public_icann: false"), "doors public_icann false");
+assert(doorsHtml.includes("not an ICANN registrar") || doorsHtml.includes("Not an ICANN registrar"), "doors not registrar");
+assert(doorsHtml.includes("not a public DNS publish") || doorsHtml.includes("Not a public DNS publish"), "doors not public dns");
+for (const href of doorHrefs) assert(doorsHtml.includes('href="' + href + '"'), "doors href " + href);
+assert((doorsHtml.match(/<ol>[\s\S]*<\/ol>/)[0].match(/<li /g) || []).length === 10, "doors lists ten");
+forbidPrivate(doorsHtml, "doors");
+const doorsVisible = visibleHtml(doorsHtml);
+assert(!doorsVisible.includes("Elias Artista"), "doors alias not visible");
+assert(!doorsVisible.includes("15:20"), "doors no 15:20");
+
+async function textOk(path, needle) {
+  const res = await call(path);
+  assert(res.status === 200, path + " " + res.status);
+  assert(String(res.headers.get("Content-Signal")) === SIGNAL, path + " signal");
+  const body = await res.text();
+  if (needle) assert(body.includes(needle), path + " body");
+  return body;
+}
+const llms = await textOk("/llms.txt", "public_icann: false");
+assert(llms.includes("SEMANTIC-BRIDGE-1.0") || llms.startsWith("# MirageGrid"), "llms title");
+assert(llms.includes("not a public DNS publish"), "llms not public dns");
+assert(llms.includes("https://miragegrid.vibelock.workers.dev/llms.txt"), "llms canonical");
+assert(llms.includes("https://furnaceisntfree.com/"), "llms furnace");
+forbidPrivate(llms, "llms");
+const ai = await textOk("/ai.txt", "public_icann:false");
+assert(ai.includes("mesh_only:true"), "ai mesh only");
+assert(ai.includes("not_public_dns_publish:true"), "ai not public dns");
+assert(ai.includes("https://www.azieleliab.com/#aziel"), "ai person");
+const aiWell = await textOk("/.well-known/ai.txt", "public_icann:false");
+assert(aiWell === ai, "well-known ai matches /ai.txt");
+forbidPrivate(ai, "ai");
+
+const robots = await textOk("/robots.txt", "Growth-ON");
+assert(robots.includes("User-agent: *"), "robots star");
+assert(robots.includes("Allow: /"), "robots allow");
+assert(!robots.includes("Disallow:"), "robots stays allow");
+assert(robots.includes("Content-Signal: " + SIGNAL), "robots signal line");
+assert(robots.includes("Sitemap: https://miragegrid.vibelock.workers.dev/sitemap.xml"), "robots sitemap");
+for (const bot of ["GPTBot", "ClaudeBot", "PerplexityBot", "Google-Extended"]) {
+  assert(robots.includes(bot), "robots " + bot);
+}
+forbidPrivate(robots, "robots");
+
+const sitemap = await textOk("/sitemap.xml", "<lastmod>" + DISCOVERY_LASTMOD + "</lastmod>");
+assert(String((await call("/sitemap.xml")).headers.get("content-type") || "").includes("xml") || sitemap.includes("<urlset"), "sitemap xml");
+const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+assert(locs.length === SITEMAP_PATHS.length, "sitemap count " + locs.length);
+assert(locs.every((loc) => loc.startsWith("https://miragegrid.vibelock.workers.dev/")), "sitemap first-party");
+for (const path of ["/llms.txt", "/ai.txt", "/.well-known/ai.txt", "/doors", "/robots.txt", "/bridge"]) {
+  assert(locs.includes("https://miragegrid.vibelock.workers.dev" + path), "sitemap " + path);
+}
+assert((sitemap.match(/<lastmod>/g) || []).length === locs.length, "every url has lastmod");
+forbidPrivate(sitemap, "sitemap");
+
+const keyPath = "/" + INDEXNOW_KEY + ".txt";
+const keyRes = await call(keyPath);
+assert(keyRes.status === 200, "indexnow root");
+assert(String(keyRes.headers.get("content-type") || "").startsWith("text/plain"), "indexnow type");
+assert(String(keyRes.headers.get("Content-Signal")) === SIGNAL, "indexnow signal");
+assert((await keyRes.text()) === INDEXNOW_KEY, "indexnow body");
+const keyWell = await call("/.well-known/indexnow-key.txt");
+assert(keyWell.status === 200, "indexnow well-known");
+assert(String(keyWell.headers.get("content-type") || "").startsWith("text/plain"), "indexnow well-known type");
+assert((await keyWell.text()) === INDEXNOW_KEY, "indexnow well-known body");
+
+const skill = await call("/v1/skill");
+assert(skill.status === 200, "skill");
+assert(String(skill.headers.get("Content-Signal")) === SIGNAL, "skill signal");
+const skillBody = await skill.text();
+assert(skillBody.includes("public_icann false"), "skill scoped");
+assert(skillBody.includes("/doors"), "skill doors");
+assert(!skillBody.includes("15:20"), "skill no 15:20");
 
 console.log("cap7 shuffle worker smoke ok land=" + pingBody.land.label);

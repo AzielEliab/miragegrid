@@ -35,20 +35,29 @@ import { plannedAdaptation } from "../../download-tracker/src/mesh.js";
 import { applyUpdate, ping, shuffleCite } from "./shuffle.js";
 import { handleSidenet } from "./sidenet.js";
 import { citeDocument, renderIndexHtml } from "./homepage.js";
+import {
+  INDEXNOW_KEY,
+  aiTxt,
+  contentSignalHeaders,
+  llmsTxt,
+  renderDoorsHtml,
+  robotsTxt,
+  sitemapXml,
+} from "./discovery.js";
 import { EGRESS_SPEC } from "./egress.js";
 import { attestCite, attestSyntactic, cap7OperatorHold, mcpCite, mcpPostRefuse, overlayPublicLandHonesty } from "./public_paths.js";
 import { deployStamp } from "./build-stamp.js";
 
 const SKILL = `---
 name: MirageGrid
-description: Use when assigning a session node or citing Cap-7 LIVE shuffle. Dual surface: named app Worker /v1 + catalog MCP. Author Aziel Eliab.
+description: Use when assigning a session node or citing the Cap-7 mesh-only names plane (public_icann false; not an ICANN registrar and not a public DNS publish). Dual surface: named app Worker /v1 + catalog MCP. Author Aziel Eliab.
 ---
 
 # MirageGrid
 
 Named app Worker: \`https://miragegrid.vibelock.workers.dev\`
 
-Cap-7 LIVE shuffle on the names plane (control-plane coordination; public_icann false; not an ICANN DNS publish). Nodes ping this Worker until they land on one factory site. That land is the update endpoint for the round. No single hard-coded Cap-7 host.
+Cap-7 mesh-only shuffle on the names plane (control-plane coordination; public_icann false; not an ICANN DNS publish and not a public DNS publish). Nodes ping this Worker until they land on one factory name. That land is the update label for the round. It is not an ICANN host. No single hard-coded Cap-7 host.
 
 Download plane (separate): \`https://miragegrid-download-tracker.vibelock.workers.dev\`
 
@@ -80,6 +89,9 @@ Always send \`User-Agent: Mozilla/5.0\`.
 | POST | \`/v1/session/sticky\` | Bind sticky_key to one mesh node and one Cap-7 site. Optional TTL is a time-bucket hash. Not an IP. Alias: \`POST /v1/session-stick\`. |
 | POST | \`/v1/verify-receipt\` | Verify receipt. |
 | GET | \`/v1/mesh\` | PROXY. Node mesh ON (\`mesh_node_live\`, \`alt_internet\`, \`packet_path\`). GET never enables radios. Cap-7 names-only. |
+| GET | \`/llms.txt\` \`/ai.txt\` \`/.well-known/ai.txt\` | First-party agent maps. Mesh-only. \`public_icann: false\`. Not a public DNS publish. |
+| GET | \`/sitemap.xml\` \`/robots.txt\` | Growth-ON discovery. Sitemap lists first-party canonical URLs with \`lastmod\`. |
+| GET | \`/doors\` | Ecosystem cross-reference of the ten live public sites. Not a download-tracker door. |
 
 Naming lock: sidenet = AZnet. Cap-7 mesh DNS pairs with AZnet and AZ Browser. Softwares stay frozen. \`public_icann\` stays false. AZ Generator is not callable (\`AZG-NOT-CALLABLE\`). Exactly 2 Cap-7 names are public browser gateways (\`azgrid\`, \`azbooth\`). Other mesh names need an AZnet pairing token and an azbrowser flag. This Worker does not verify that token, does not run the AZnet engine, and does not run Node Gate claim/plant/flag/restore. \`radio_phy: false\`. Cap-7 is a mesh DNS factory (4 hub mirrors + 3 decoys), separate from per-node \`.aziel\` slots. It is not a public ICANN registrar and is not typed on ICANN DNS. Internet reaches AZ domains only (AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, AZ.HeDidntJump.AZ) via the four hub websites. Factory honesty is LIVE on the names plane (control-plane coordination). public_icann stays false. That LIVE is not an ICANN DNS publish. Live nodes anchor the factory and those doors. FragGate is THE exec door.
 
@@ -110,6 +122,18 @@ function json(body, status = 200) {
   return new Response(JSON.stringify(body, null, 2), {
     status,
     headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "private, no-store", ...corsHeaders() },
+  });
+}
+
+function textResponse(body, contentType, { status = 200, head = false, cache = "public, max-age=300" } = {}) {
+  return new Response(head ? null : body, {
+    status,
+    headers: {
+      "Content-Type": contentType,
+      "Cache-Control": cache,
+      ...corsHeaders(),
+      ...contentSignalHeaders(contentType),
+    },
   });
 }
 
@@ -174,6 +198,11 @@ function openapiSpec() {
         post: { operationId: "miragegrid_attest_syntactic", summary: "Syntactic prev+lockset coordination check." },
       },
       "/bridge": { get: { operationId: "miragegrid_bridge", summary: "Cap-7 shuffle + SEMANTIC-BRIDGE doors." } },
+      "/llms.txt": { get: { operationId: "llmsTxt", summary: "First-party agent map. Mesh-only. public_icann false. Not a public DNS publish." } },
+      "/ai.txt": { get: { operationId: "aiTxt", summary: "Compact machine twin of /llms.txt. Also at /.well-known/ai.txt." } },
+      "/sitemap.xml": { get: { operationId: "sitemap", summary: "First-party canonical URLs with lastmod." } },
+      "/robots.txt": { get: { operationId: "robots", summary: "Growth-ON allow plus Content-Signal and Sitemap." } },
+      "/doors": { get: { operationId: "doors", summary: "Ten live public ecosystem doors. MirageGrid stays mesh-only and is not an ICANN registrar." } },
       "/v1/shuffle": { get: { operationId: "miragegrid_shuffle_cite", summary: "CAP7-SHUFFLE-1.0 cite." } },
       "/v1/shuffle/ping": { post: { operationId: "miragegrid_shuffle_ping", summary: "Ping until land." } },
       "/v1/shuffle/update": { post: { operationId: "miragegrid_shuffle_update", summary: "Update via the landed Cap-7 site. No hard-coded host." } },
@@ -305,10 +334,31 @@ export default {
     if (mesh) return mesh;
 
     if ((path === "/" || path === "/index.html") && (method === "GET" || method === "HEAD")) {
-      return new Response(method === "HEAD" ? null : renderIndexHtml(), {
-        status: 200,
-        headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "private, no-store", ...corsHeaders() },
+      return textResponse(renderIndexHtml(), "text/html; charset=utf-8", {
+        head: method === "HEAD",
+        cache: "private, no-store",
       });
+    }
+
+    if (path === "/doors" && (method === "GET" || method === "HEAD")) {
+      return textResponse(renderDoorsHtml(), "text/html; charset=utf-8", { head: method === "HEAD" });
+    }
+
+    if ((path === "/llms.txt" || path === "/ai.txt" || path === "/.well-known/ai.txt") && (method === "GET" || method === "HEAD")) {
+      const body = path === "/llms.txt" ? llmsTxt() : aiTxt();
+      return textResponse(body, "text/plain; charset=utf-8", { head: method === "HEAD" });
+    }
+
+    if (path === "/sitemap.xml" && (method === "GET" || method === "HEAD")) {
+      return textResponse(sitemapXml(), "application/xml; charset=utf-8", { head: method === "HEAD" });
+    }
+
+    if (path === "/robots.txt" && (method === "GET" || method === "HEAD")) {
+      return textResponse(robotsTxt(), "text/plain; charset=utf-8", { head: method === "HEAD" });
+    }
+
+    if ((path === "/" + INDEXNOW_KEY + ".txt" || path === "/.well-known/indexnow-key.txt") && (method === "GET" || method === "HEAD")) {
+      return textResponse(INDEXNOW_KEY, "text/plain; charset=utf-8", { head: method === "HEAD" });
     }
 
     if (path === "/mcp" && (method === "GET" || method === "HEAD")) {
@@ -576,11 +626,8 @@ export default {
       });
     }
 
-    if (path === "/v1/skill" && method === "GET") {
-      return new Response(SKILL, {
-        status: 200,
-        headers: { "Content-Type": "text/markdown; charset=utf-8", "Cache-Control": "private, no-store", ...corsHeaders() },
-      });
+    if (path === "/v1/skill" && (method === "GET" || method === "HEAD")) {
+      return textResponse(SKILL, "text/markdown; charset=utf-8", { head: method === "HEAD", cache: "private, no-store" });
     }
 
     if (path === "/v1/doctor" && (method === "GET" || method === "HEAD")) {

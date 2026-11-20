@@ -1,13 +1,15 @@
 /**
- * MirageGrid app homepage — Cap-7 LIVE shuffle.
+ * MirageGrid app homepage — Cap-7 mesh-only names plane.
  * Cap-7 is the .az duplication/shift layer. Internet reaches AZ domains only.
  * Author: Aziel Eliab only.
  */
 
 import { APP_HOST, CAP7_SHUFFLE_SPEC, DOWNLOAD_HOST, IDENTITY, cap7Roster, personId } from "./cap7.js";
+import { doorsFooterHtml, personEntity } from "./discovery.js";
 
-const TITLE = "MirageGrid — Cap-7 LIVE shuffle";
-const MOTTO = "Nodes ping MirageGrid until they land on one Cap-7 site. That land is the update endpoint for the round.";
+const TITLE = "MirageGrid — Cap-7 mesh-only DNS factory (not public DNS)";
+const SCOPE = "Mesh-only. public_icann: false. Cap-7 is a mesh DNS factory (deep-node → Node Gate), not a live ICANN or Cloudflare registrar and not a public DNS publish.";
+const MOTTO = "Nodes ping this Worker until a round lands on one Cap-7 mesh name. That land is a names-plane update label. It is not an ICANN host and not a public DNS record.";
 const BANNER = "THIS IS: the named app Worker (miragegrid). Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node .aziel slots. Shift stack is StaticLock + MirageGrid cloak + cap7-egress. Factory honesty is LIVE on the names plane (control-plane coordination; public_icann false; not an ICANN DNS publish). geo-target, session-stick, and egress-rotate are LIVE on the Cap-7 control plane (region label, sticky mesh, land rotate). Cap-7 is not a public ICANN registrar and is not typed on ICANN DNS. Internet reaches AZ domains only via the hub websites. Live nodes anchor the factory and the AZ doors. Node mesh is ON (mesh_node_live, alt_internet, packet_path). AZ Generator exits FRONT Node Gate only. FragGate is THE exec door. THIS IS NOT: a VPN, an anonymity network, AZVPN, hosted packet forwarding, a public egress IP, a Cloudflare geo-exit pool, a sticky public IP, an ICANN registrar purchase of a ccTLD, a second door, or the download-tracker. Author Aziel Eliab.";
 
 export function citeDocument() {
@@ -71,7 +73,7 @@ export function renderIndexHtml() {
   const rows = sites
     .map(
       (s) =>
-        `<tr><td><code>${escapeHtml(s.label)}</code></td><td>${escapeHtml(s.honesty_public)}</td><td>${escapeHtml(s.reach)}</td><td>${escapeHtml(s.design_of)}</td><td><code>${escapeHtml(s.worker_path)}</code></td></tr>`,
+        `<tr><td><code>${escapeHtml(s.label)}</code></td><td>mesh-only, not ICANN</td><td>${escapeHtml(s.reach)}</td><td>${escapeHtml(s.design_of)}</td><td><code>${escapeHtml(s.worker_path)}</code></td></tr>`,
     )
     .join("");
   const jsonLd = {
@@ -79,9 +81,9 @@ export function renderIndexHtml() {
     "@type": "SoftwareApplication",
     name: "MirageGrid",
     softwareVersion: "0.3.0",
-    author: { "@type": "Person", name: IDENTITY, url: "https://www.azieleliab.com/#aziel" },
+    author: personEntity(),
     url: APP_HOST + "/",
-    description: MOTTO,
+    description: SCOPE + " " + MOTTO,
   };
 
   return `<!doctype html>
@@ -90,7 +92,7 @@ export function renderIndexHtml() {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${TITLE}</title>
-<meta name="description" content="${escapeHtml(MOTTO)}">
+<meta name="description" content="${escapeHtml(SCOPE)}">
 <meta name="author" content="${IDENTITY}">
 <link rel="canonical" href="${APP_HOST}/">
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
@@ -118,10 +120,12 @@ export function renderIndexHtml() {
 </head>
 <body>
   <h1>MirageGrid</h1>
-  <p class="motto">${escapeHtml(MOTTO)} Author ${IDENTITY}.</p>
+  <p class="motto">${escapeHtml(SCOPE)} Author ${IDENTITY}.</p>
+  <p class="kid">${escapeHtml(MOTTO)}</p>
   <p class="banner">${escapeHtml(BANNER)}</p>
 
   <nav class="ops">
+    <a href="/doors">Ecosystem / Doors</a>
     <a href="/bridge">/bridge</a>
     <a href="/v1/shuffle">/v1/shuffle</a>
     <a href="/v1/cap7">/v1/cap7</a>
@@ -135,7 +139,7 @@ export function renderIndexHtml() {
     <h2>Cap-7 factory sites</h2>
     <p class="kid">Cap-7 is a mesh DNS factory: four hub mirrors and three decoys, separate from per-node <code>.aziel</code> slots. This page is <code>resolves_to_hub:false</code>. Cap-7 is not an ICANN hub resolve. Shift stack is StaticLock + cloak + cap7-egress. Not a public ICANN registrar. Not typed on ICANN DNS. Internet reaches AZ.AzielEliab.AZ, AZ.AzielCorpusLibrary.AZ, AZ.Godlock.AZ, and AZ.HeDidntJump.AZ via the hub websites. Factory honesty is LIVE on the names plane (control-plane coordination; public_icann false; not an ICANN DNS publish). Live nodes anchor both layers. Communication plane — not a packet VPN, not an anonymity network, not AZVPN. geo-target, session-stick, and egress-rotate are LIVE on this Worker. <code>POST /v1/session/sticky</code> binds a mesh node and a factory land. It is not a sticky public IP. FragGate vpn-hop / hop / tunnel / mesh stay non-executable. Softwares companion is CLEARED (public_door_ops lists geo-target, session-stick, and egress-rotate). Desk layout unchanged. Softwares count stays 42. FragGate is THE door. Cap-7 is not an ICANN registrar. AZVPN is not MirageGrid.</p>
     <table>
-      <thead><tr><th>Label</th><th>Public</th><th>Reach</th><th>design_of</th><th>Path</th></tr></thead>
+      <thead><tr><th>Label</th><th>Plane</th><th>Reach</th><th>design_of</th><th>Path</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
   </section>
@@ -175,8 +179,10 @@ export function renderIndexHtml() {
 
   <section class="card" id="cite">
     <h2>Cite</h2>
-    <p class="kid">App Worker <code>${APP_HOST}</code> is LIVE. Download plane <a href="${DOWNLOAD_HOST}/">${DOWNLOAD_HOST}</a>. Historical CF 1042 is closed by creating Worker <code>miragegrid</code>. Author ${IDENTITY} only. Apache-2.0. Forks welcome.</p>
+    <p class="kid">App Worker <code>${APP_HOST}</code> is the named mesh-only app (names plane; <code>public_icann: false</code>). Download plane <a href="${DOWNLOAD_HOST}/">${DOWNLOAD_HOST}</a> is the counted download plane, not a public ecosystem door. Historical CF 1042 is closed by creating Worker <code>miragegrid</code>. Author ${IDENTITY} only. Apache-2.0. Forks welcome.</p>
   </section>
+
+  ${doorsFooterHtml()}
 
 <script>
 (function () {
