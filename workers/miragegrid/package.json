@@ -2,7 +2,7 @@
   "name": "miragegrid",
   "private": true,
   "type": "module",
-  "description": "MirageGrid app Worker — Cap-7 LIVE shuffle. Author Aziel Eliab.",
+  "description": "MirageGrid app Worker — Cap-7 mesh-only DNS factory (public_icann false; not a public DNS publish). Author Aziel Eliab.",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy --name miragegrid --config wrangler.jsonc",

@@ -145,8 +145,11 @@ Hosted Worker, Growth-ON:
 | `GET /design-packs/azlibrary.json` | Hash-absolute Aziel Library design pack. |
 | `GET /v1/mesh/az-generator` | Cap-7 factory cite (`public_icann: false`). |
 | `GET /shelves` | Cite pointer to https://www.azielcorpuslibrary.net/shelves. Framagit URL is null — not invented. |
-| `GET /robots.txt` | Allow + Content-Signal `ai-input` / `ai-train` / `search` yes; explicit GPTBot / Claude / Perplexity / Google-Extended Allow. |
-| `GET /sitemap.xml` | Includes bridge, llms, az-generator cite, shelves. |
+| `GET /robots.txt` | Allow + Content-Signal `search` / `ai-input` / `ai-train` yes; explicit GPTBot / Claude / Perplexity / Google-Extended Allow. Growth-ON stays allow. |
+| `GET /sitemap.xml` | First-party canonical URLs with real `lastmod`. |
+| `GET /doors` | Ten live public ecosystem sites. MirageGrid is mesh-only (`public_icann: false`), not an ICANN or Cloudflare registrar. |
+
+The named app Worker (`https://miragegrid.vibelock.workers.dev`) serves `/llms.txt`, `/ai.txt`, `/.well-known/ai.txt`, `/sitemap.xml`, `/robots.txt`, and `/doors` itself. Design packs and `/shelves` stay on the download plane. A download-tracker URL is not a public door.
 
 ### Cap-7 bridge section (`cite.json`)
 

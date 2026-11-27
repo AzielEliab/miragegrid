@@ -185,7 +185,7 @@ export function appWorker() {
     role: "cap-7-shuffle-app",
     download_plane: DOWNLOAD_HOST,
     historical_cf_1042: "closed-by-creating-worker-miragegrid",
-    note: "Named app Worker (Cap-7 LIVE shuffle on the names plane / control plane; public_icann false; not an ICANN DNS publish). Download-tracker stays the counted download plane. Historical CF 1042 (Worker missing / 10007) is closed by this Worker.",
+    note: "Named app Worker (Cap-7 mesh-only names plane / control plane; public_icann false; not an ICANN DNS publish and not a public DNS publish). Download-tracker stays the counted download plane. Historical CF 1042 (Worker missing / 10007) is closed by this Worker.",
     author: IDENTITY,
     identity: IDENTITY,
   };
